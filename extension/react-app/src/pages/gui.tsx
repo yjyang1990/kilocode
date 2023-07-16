@@ -20,9 +20,10 @@ import ReactSwitch from "react-switch";
 import { usePostHog } from "posthog-js/react";
 import { useSelector } from "react-redux";
 import { RootStore } from "../redux/store";
-import LoadingCover from "../components/LoadingCover";
 import { postVscMessage } from "../vscode";
 import UserInputContainer from "../components/UserInputContainer";
+import Onboarding from "../components/Onboarding";
+import { isMetaEquivalentKeyPressed } from "../util";
 
 const TopGUIDiv = styled.div`
   overflow: hidden;
@@ -95,11 +96,8 @@ function GUI(props: GUIProps) {
           name: "Welcome to Continue",
           hide: false,
           description: `- Highlight code and ask a question or give instructions
-- Use \`cmd+k\` (Mac) / \`ctrl+k\` (Windows) to open Continue
-- Use \`cmd+shift+e\` / \`ctrl+shift+e\` to open file Explorer
-- Add your own OpenAI API key to VS Code Settings with \`cmd+,\`
-- Use slash commands when you want fine-grained control
-- Past steps are included as part of the context by default`,
+          - Use \`cmd+m\` (Mac) / \`ctrl+m\` (Windows) to open Continue
+          - Use \`/help\` to ask questions about how to use Continue`,
           system_message: null,
           chat_context: [],
           manage_own_chat_context: false,
@@ -140,13 +138,14 @@ function GUI(props: GUIProps) {
   useEffect(() => {
     const listener = (e: any) => {
       // Cmd + i to toggle fast model
-      if (e.key === "i" && e.metaKey && e.shiftKey) {
+      if (e.key === "i" && isMetaEquivalentKeyPressed(e) && e.shiftKey) {
         setUsingFastModel((prev) => !prev);
         // Cmd + backspace to stop currently running step
       } else if (
         e.key === "Backspace" &&
-        e.metaKey &&
-        typeof history?.current_index !== "undefined"
+        isMetaEquivalentKeyPressed(e) &&
+        typeof history?.current_index !== "undefined" &&
+        history.timeline[history.current_index]?.active
       ) {
         client?.deleteAtIndex(history.current_index);
       }
@@ -169,6 +168,7 @@ function GUI(props: GUIProps) {
       const waitingForSteps =
         state.active &&
         state.history.current_index < state.history.timeline.length &&
+        state.history.timeline[state.history.current_index] &&
         state.history.timeline[
           state.history.current_index
         ].step.description?.trim() === "";
@@ -221,7 +221,7 @@ function GUI(props: GUIProps) {
     if (mainTextInputRef.current) {
       let input = (mainTextInputRef.current as any).inputValue;
       // cmd+enter to /edit
-      if (event?.metaKey) {
+      if (isMetaEquivalentKeyPressed(event)) {
         input = `/edit ${input}`;
       }
       (mainTextInputRef.current as any).setInputValue("");
@@ -235,14 +235,14 @@ function GUI(props: GUIProps) {
         history.current_index < history.timeline.length
       ) {
         if (
-          history.timeline[history.current_index].step.name ===
+          history.timeline[history.current_index]?.step.name ===
           "Waiting for user input"
         ) {
           if (input.trim() === "") return;
           onStepUserInput(input, history!.current_index);
           return;
         } else if (
-          history.timeline[history.current_index].step.name ===
+          history.timeline[history.current_index]?.step.name ===
           "Waiting for user confirmation"
         ) {
           onStepUserInput("ok", history!.current_index);
@@ -260,14 +260,13 @@ function GUI(props: GUIProps) {
 
   const onStepUserInput = (input: string, index: number) => {
     if (!client) return;
-    console.log("Sending step user input", input, index);
     client.sendStepUserInput(input, index);
   };
 
   // const iterations = useSelector(selectIterations);
   return (
     <>
-      <LoadingCover hidden={true} message="Downloading local model..." />
+      <Onboarding />
       <TextDialog
         showDialog={showFeedbackDialog}
         onEnter={(text) => {
@@ -278,7 +277,7 @@ function GUI(props: GUIProps) {
           setShowFeedbackDialog(false);
         }}
         message={feedbackDialogMessage}
-      ></TextDialog>
+      />
 
       <TopGUIDiv
         ref={topGuiDivRef}
@@ -348,12 +347,6 @@ function GUI(props: GUIProps) {
         </div>
 
         <ComboBox
-          // disabled={
-          //   history?.timeline.length
-          //     ? history.timeline[history.current_index].step.name ===
-          //       "Waiting for user confirmation"
-          //     : false
-          // }
           ref={mainTextInputRef}
           onEnter={(e) => {
             onMainTextInput(e);
@@ -438,7 +431,7 @@ function GUI(props: GUIProps) {
             if (!usingFastModel) {
               // Show the dialog
               setFeedbackDialogMessage(
-                "We don't yet support local models, but we're working on it! If privacy is a concern of yours, please use the feedback button in the bottom right to let us know."
+                "We don't yet support local models, but we're working on it! If privacy is a concern of yours, please write a short note to let us know."
               );
               setShowFeedbackDialog(true);
             }
