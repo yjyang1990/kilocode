@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
+
+from ...models.websockets import WebsocketsMessage
 
 from fastapi import WebSocket
 
-from ..models.filesystem import RangeInFile, RangeInFileWithContents
-from ..models.filesystem_edit import EditDiff, FileEdit, FileSystemEdit
+from ...models.filesystem import RangeInFile, RangeInFileWithContents
+from ...models.filesystem_edit import EditDiff, FileEdit, FileSystemEdit
 
 
 class AbstractIdeProtocolServer(ABC):
@@ -13,7 +15,7 @@ class AbstractIdeProtocolServer(ABC):
     ide_info: Optional[Dict] = None
 
     @abstractmethod
-    async def handle_json(self, data: Any):
+    async def handle_json(self, msg: WebsocketsMessage):
         """Handle a json message"""
 
     @abstractmethod
@@ -37,28 +39,12 @@ class AbstractIdeProtocolServer(ABC):
         """Set whether suggestions are locked"""
 
     @abstractmethod
-    async def getSessionId(self):
-        """Get a new session ID"""
-
-    @abstractmethod
-    async def showSuggestionsAndWait(self, suggestions: List[FileEdit]) -> bool:
-        """Show suggestions to the user and wait for a response"""
-
-    @abstractmethod
     def onAcceptRejectSuggestion(self, accepted: bool):
         """Called when the user accepts or rejects a suggestion"""
 
     @abstractmethod
     def onFileSystemUpdate(self, update: FileSystemEdit):
         """Called when a file system update is received"""
-
-    @abstractmethod
-    def onCloseGUI(self, session_id: str):
-        """Called when a GUI is closed"""
-
-    @abstractmethod
-    def onOpenGUIRequest(self):
-        """Called when a GUI is requested to be opened"""
 
     @abstractmethod
     async def getOpenFiles(self) -> List[str]:
@@ -111,10 +97,6 @@ class AbstractIdeProtocolServer(ABC):
         edit: Optional[bool] = False,
     ):
         """Called when highlighted code is updated"""
-
-    @abstractmethod
-    def onDeleteAtIndex(self, index: int):
-        """Called when a step is deleted at a given index"""
 
     @abstractmethod
     async def showDiff(self, filepath: str, replacement: str, step_index: int):
