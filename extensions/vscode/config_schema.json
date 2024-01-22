@@ -1,5 +1,5 @@
 {
-  "title": "SerializedContinueConfig",
+  "title": "config.json",
   "$ref": "#/definitions/continuedev__core__config__serialized_config__SerializedContinueConfig",
   "definitions": {
     "BaseCompletionOptions": {
@@ -1069,7 +1069,7 @@
       "required": ["name"]
     },
     "continuedev__core__config__serialized_config__SerializedContinueConfig": {
-      "title": "SerializedContinueConfig",
+      "title": "config.json",
       "type": "object",
       "properties": {
         "allowAnonymousTelemetry": {
