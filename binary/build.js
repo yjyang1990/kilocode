@@ -90,7 +90,7 @@ const targetToLanceDb = {
     entryPoints: ["src/index.ts"],
     bundle: true,
     outfile: esbuildOutputFile,
-    external: ["esbuild", ...DYNAMIC_IMPORTS],
+    external: ["esbuild", ...DYNAMIC_IMPORTS, "./xhr-sync-worker.js"],
     format: "cjs",
     platform: "node",
     sourcemap: true,
@@ -118,6 +118,7 @@ const targetToLanceDb = {
   console.log("[info] Building binaries with pkg...");
   for (const target of targets) {
     const targetDir = `bin/${target}`;
+    fs.mkdirSync(targetDir, { recursive: true });
     console.log(`[info] Building ${target}...`);
     execSync(
       `npx pkg --no-bytecode --public-packages "*" --public pkgJson/${target} --out-path ${targetDir}`,
@@ -141,6 +142,7 @@ const targetToLanceDb = {
 
     // Download and unzip prebuilt esbuild binary for the target
     console.log(`[info] Downloading esbuild for ${target}...`);
+    // Version is pinned to 0.19.11 in package.json to make sure that they match
     execSync(
       `curl -o ${targetDir}/esbuild.tgz https://registry.npmjs.org/@esbuild/${target}/-/${target}-0.19.11.tgz`,
     );
