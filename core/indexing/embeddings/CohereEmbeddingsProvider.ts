@@ -3,18 +3,16 @@ import { EmbedOptions } from "../..";
 import { withExponentialBackoff } from "../../util/withExponentialBackoff";
 import BaseEmbeddingsProvider from "./BaseEmbeddingsProvider";
 
-class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
-  // https://platform.openai.com/docs/api-reference/embeddings/create is 2048
-  // but Voyage is 128
-  static maxBatchSize = 128;
+class CohereEmbeddingsProvider extends BaseEmbeddingsProvider {
+  static maxBatchSize = 96;
 
   static defaultOptions: Partial<EmbedOptions> | undefined = {
-    apiBase: "https://api.openai.com/v1/",
-    model: "text-embedding-3-small",
+    apiBase: "https://api.cohere.ai/v1/",
+    model: "embed-english-v3.0",
   };
 
   get id(): string {
-    return this.options.model ?? "openai";
+    return this.options.model ?? "cohere";
   }
 
   async embed(chunks: string[]) {
@@ -26,10 +24,10 @@ class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
     for (
       let i = 0;
       i < chunks.length;
-      i += OpenAIEmbeddingsProvider.maxBatchSize
+      i += CohereEmbeddingsProvider.maxBatchSize
     ) {
       batchedChunks.push(
-        chunks.slice(i, i + OpenAIEmbeddingsProvider.maxBatchSize),
+        chunks.slice(i, i + CohereEmbeddingsProvider.maxBatchSize),
       );
     }
     return (
@@ -37,11 +35,14 @@ class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
         batchedChunks.map(async (batch) => {
           const fetchWithBackoff = () =>
             withExponentialBackoff<Response>(() =>
-              this.fetch(new URL("embeddings", this.options.apiBase), {
+              this.fetch(new URL("embed", this.options.apiBase), {
                 method: "POST",
                 body: JSON.stringify({
-                  input: batch,
+                  texts: batch,
                   model: this.options.model,
+                  input_type: "search_document",
+                  embedding_types: ["float"],
+                  truncate: "END",
                 }),
                 headers: {
                   Authorization: `Bearer ${this.options.apiKey}`,
@@ -56,13 +57,11 @@ class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
           }
 
           const data = (await resp.json()) as any;
-          return data.data.map(
-            (result: { embedding: number[] }) => result.embedding,
-          );
+          return data.embeddings.float;
         }),
       )
     ).flat();
   }
 }
 
-export default OpenAIEmbeddingsProvider;
+export default CohereEmbeddingsProvider;
