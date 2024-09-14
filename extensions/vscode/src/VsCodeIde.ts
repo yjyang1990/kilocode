@@ -16,6 +16,7 @@ import type {
 } from "core";
 import { Range } from "core";
 import { walkDir } from "core/indexing/walkDir";
+import { GetGhTokenArgs } from "core/protocol/ide";
 import {
   editConfigJson,
   getConfigJsonPath,
@@ -42,6 +43,7 @@ class VsCodeIde implements IDE {
   ) {
     this.ideUtils = new VsCodeIdeUtils();
   }
+
   pathSep(): Promise<string> {
     return Promise.resolve(this.ideUtils.path.sep);
   }
@@ -74,7 +76,7 @@ class VsCodeIde implements IDE {
   private authToken: string | undefined;
   private askedForAuth = false;
 
-  async getGitHubAuthToken(): Promise<string | undefined> {
+  async getGitHubAuthToken(args: GetGhTokenArgs): Promise<string | undefined> {
     // Saved auth token
     if (this.authToken) {
       return this.authToken;
@@ -90,6 +92,14 @@ class VsCodeIde implements IDE {
     }
 
     try {
+      if (args.force) {
+        this.askedForAuth = true;
+        this.authToken = await vscode.authentication
+          .getSession("github", [], { createIfNone: true })
+          .then((session) => session.accessToken);
+        return this.authToken;
+      }
+
       // If we haven't asked yet, give explanation of what is happening and why
       // But don't wait to return this immediately
       // We will use a callback to refresh the config
@@ -107,7 +117,7 @@ class VsCodeIde implements IDE {
                 "continue.continueGUIView.focus",
               );
               (await this.vscodeWebviewProtocolPromise).request(
-                "openOnboarding",
+                "openOnboardingCard",
                 undefined,
               );
 
@@ -191,13 +201,24 @@ class VsCodeIde implements IDE {
     return undefined;
   }
 
-  async infoPopup(message: string): Promise<void> {
-    vscode.window.showInformationMessage(message);
-  }
+  showToast: IDE["showToast"] = async (...params) => {
+    const [type, message, ...otherParams] = params;
+    const { showErrorMessage, showWarningMessage, showInformationMessage } =
+      vscode.window;
 
-  async errorPopup(message: string): Promise<void> {
-    vscode.window.showErrorMessage(message);
-  }
+    switch (type) {
+      case "error":
+        return showErrorMessage(message, "Show logs").then((selection) => {
+          if (selection === "Show logs") {
+            vscode.commands.executeCommand("workbench.action.toggleDevTools");
+          }
+        });
+      case "info":
+        return showInformationMessage(message, ...otherParams);
+      case "warning":
+        return showWarningMessage(message, ...otherParams);
+    }
+  };
 
   async getRepoName(dir: string): Promise<string | undefined> {
     const repo = await this.getRepo(vscode.Uri.file(dir));
