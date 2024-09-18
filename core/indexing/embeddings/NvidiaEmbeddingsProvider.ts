@@ -3,61 +3,64 @@ import { EmbeddingsProviderName, EmbedOptions } from "../../index.js";
 import { withExponentialBackoff } from "../../util/withExponentialBackoff.js";
 import BaseEmbeddingsProvider from "./BaseEmbeddingsProvider.js";
 
-class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
-  static providerName: EmbeddingsProviderName = "openai";
-  // https://platform.openai.com/docs/api-reference/embeddings/create is 2048
-  // but Voyage is 128
-  static maxBatchSize = 128;
+class NvidiaEmbeddingsProvider extends BaseEmbeddingsProvider {
+  static maxBatchSize = 96;
+
+  static providerName: EmbeddingsProviderName = "nvidia";
 
   static defaultOptions: Partial<EmbedOptions> | undefined = {
-    apiBase: "https://api.openai.com/v1/",
-    model: "text-embedding-3-small",
+    apiBase: "https://integrate.api.nvidia.com/v1/",
+    model: "nvidia/nv-embedqa-mistral-7b-v2",
   };
 
-  private _getEndpoint() {
-    if (!this.options.apiBase) {
-      throw new Error(
-        "No API base URL provided. Please set the 'apiBase' option in config.json",
-      );
-    }
-
-    this.options.apiBase = this.options.apiBase.endsWith("/")
-      ? this.options.apiBase
-      : `${this.options.apiBase}/`;
-
-    if (this.options.apiType === "azure") {
-      return new URL(
-        `openai/deployments/${this.options.engine}/embeddings?api-version=${this.options.apiVersion}`,
-        this.options.apiBase,
-      );
-    }
-    return new URL("embeddings", this.options.apiBase);
-  }
-
   async embed(chunks: string[]) {
-    const batchedChunks = this.getBatchedChunks(chunks);
+
+    if (!this.options.apiBase?.endsWith("/")) {
+      this.options.apiBase += "/";
+    }
+
+    const batchedChunks = [];
+    for (
+      let i = 0;
+      i < chunks.length;
+      i += NvidiaEmbeddingsProvider.maxBatchSize
+    ) {
+      batchedChunks.push(
+        chunks.slice(i, i + NvidiaEmbeddingsProvider.maxBatchSize),
+      );
+    }
     return (
       await Promise.all(
         batchedChunks.map(async (batch) => {
           if (batch.length === 0) {
             return [];
           }
+      
+          // Input list must be non empty and all elements must be non empty, therefore, for all empty elements replace it with a token
+          const emptyToken = '[EMPTY]';
+          for (let i = 0; i < batch.length; i++) {
+            if (batch[i].trim() === '') {
+              batch[i] = emptyToken;
+            }
+          }
 
           const fetchWithBackoff = () =>
             withExponentialBackoff<Response>(() =>
-              this.fetch(this._getEndpoint(), {
+              this.fetch(new URL("embeddings", this.options.apiBase), {
                 method: "POST",
                 body: JSON.stringify({
                   input: batch,
                   model: this.options.model,
+                  input_type: 'passage',
+                  truncate: "END",
                 }),
                 headers: {
                   Authorization: `Bearer ${this.options.apiKey}`,
                   "Content-Type": "application/json",
-                  "api-key": this.options.apiKey ?? "", // For Azure
                 },
               }),
             );
+
           const resp = await fetchWithBackoff();
 
           if (!resp.ok) {
@@ -74,4 +77,4 @@ class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
   }
 }
 
-export default OpenAIEmbeddingsProvider;
+export default NvidiaEmbeddingsProvider;
