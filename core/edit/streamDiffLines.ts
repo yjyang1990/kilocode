@@ -5,7 +5,7 @@ import {
   filterLeadingAndTrailingNewLineInsertion,
   skipLines,
   stopAtLines,
-} from "../autocomplete/lineStream.js";
+} from "../autocomplete/streamTransforms/lineStream.js";
 import { streamDiff } from "../diff/streamDiff.js";
 import { streamLines } from "../diff/util.js";
 import {
@@ -15,7 +15,7 @@ import {
   LLMFullCompletionOptions,
 } from "../index.js";
 import { gptEditPrompt } from "../llm/templates/edit.js";
-import { Telemetry } from "./posthog.js";
+import { Telemetry } from "../util/posthog.js";
 
 function constructPrompt(
   prefix: string,

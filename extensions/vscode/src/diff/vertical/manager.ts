@@ -1,9 +1,12 @@
 import { ConfigHandler } from "core/config/ConfigHandler";
 import { pruneLinesFromBottom, pruneLinesFromTop } from "core/llm/countTokens";
 import { getMarkdownLanguageTagForFile } from "core/util";
-import { streamDiffLines } from "core/util/verticalEdit";
+
+import { DiffLine } from "core";
+import { streamDiffLines } from "core/edit/streamDiffLines";
 import * as vscode from "vscode";
-import { VerticalPerLineDiffHandler } from "./handler";
+import { VsCodeWebviewProtocol } from "../../webviewProtocol";
+import { VerticalDiffHandler, VerticalDiffHandlerOptions } from "./handler";
 
 export interface VerticalDiffCodeLens {
   start: number;
@@ -11,25 +14,27 @@ export interface VerticalDiffCodeLens {
   numGreen: number;
 }
 
-export class VerticalPerLineDiffManager {
+export class VerticalDiffManager {
   public refreshCodeLens: () => void = () => {};
 
-  private filepathToHandler: Map<string, VerticalPerLineDiffHandler> =
-    new Map();
+  private filepathToHandler: Map<string, VerticalDiffHandler> = new Map();
 
   filepathToCodeLens: Map<string, VerticalDiffCodeLens[]> = new Map();
 
   private userChangeListener: vscode.Disposable | undefined;
 
-  constructor(private readonly configHandler: ConfigHandler) {
+  constructor(
+    private readonly configHandler: ConfigHandler,
+    private readonly webviewProtocol: VsCodeWebviewProtocol,
+  ) {
     this.userChangeListener = undefined;
   }
 
-  createVerticalPerLineDiffHandler(
+  createVerticalDiffHandler(
     filepath: string,
     startLine: number,
     endLine: number,
-    input: string,
+    options: VerticalDiffHandlerOptions,
   ) {
     if (this.filepathToHandler.has(filepath)) {
       this.filepathToHandler.get(filepath)?.clear(false);
@@ -37,14 +42,14 @@ export class VerticalPerLineDiffManager {
     }
     const editor = vscode.window.activeTextEditor; // TODO
     if (editor && editor.document.uri.fsPath === filepath) {
-      const handler = new VerticalPerLineDiffHandler(
+      const handler = new VerticalDiffHandler(
         startLine,
         endLine,
         editor,
         this.filepathToCodeLens,
         this.clearForFilepath.bind(this),
         this.refreshCodeLens,
-        input,
+        options,
       );
       this.filepathToHandler.set(filepath, handler);
       return handler;
@@ -87,7 +92,7 @@ export class VerticalPerLineDiffManager {
 
   private handleDocumentChange(
     event: vscode.TextDocumentChangeEvent,
-    handler: VerticalPerLineDiffHandler,
+    handler: VerticalDiffHandler,
   ) {
     // Loop through each change in the event
     event.contentChanges.forEach((change) => {
@@ -172,6 +177,83 @@ export class VerticalPerLineDiffManager {
     }
   }
 
+  async streamDiffLines(
+    diffStream: AsyncGenerator<DiffLine>,
+    instant: boolean,
+    streamId: string,
+  ) {
+    vscode.commands.executeCommand("setContext", "continue.diffVisible", true);
+
+    // Get the current editor filepath/range
+    let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+    const filepath = editor.document.uri.fsPath;
+    const startLine = 0;
+    const endLine = editor.document.lineCount - 1;
+
+    // Check for existing handlers in the same file the new one will be created in
+    const existingHandler = this.getHandlerForFile(filepath);
+    if (existingHandler) {
+      existingHandler.clear(false);
+    }
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 200);
+    });
+
+    // Create new handler with determined start/end
+    const diffHandler = this.createVerticalDiffHandler(
+      filepath,
+      startLine,
+      endLine,
+      {
+        instant,
+        onStatusUpdate: (status) =>
+          this.webviewProtocol.request("updateApplyState", {
+            streamId,
+            status,
+          }),
+      },
+    );
+
+    if (!diffHandler) {
+      console.warn("Issue occured while creating new vertical diff handler");
+      return;
+    }
+
+    if (editor.selection) {
+      // Unselect the range
+      editor.selection = new vscode.Selection(
+        editor.selection.active,
+        editor.selection.active,
+      );
+    }
+
+    vscode.commands.executeCommand(
+      "setContext",
+      "continue.streamingDiff",
+      true,
+    );
+
+    try {
+      await diffHandler.run(diffStream);
+
+      // enable a listener for user edits to file while diff is open
+      this.enableDocumentChangeListener();
+    } catch (e) {
+      this.disableDocumentChangeListener();
+      vscode.window.showErrorMessage(`Error streaming diff: ${e}`);
+    } finally {
+      vscode.commands.executeCommand(
+        "setContext",
+        "continue.streamingDiff",
+        false,
+      );
+    }
+  }
+
   /**
    * Streams an edit to the current document based on user input and model output.
    *
@@ -199,6 +281,7 @@ export class VerticalPerLineDiffManager {
   async streamEdit(
     input: string,
     modelTitle: string | undefined,
+    streamId?: string,
     onlyOneInsertion?: boolean,
     quickEdit?: string,
     range?: vscode.Range,
@@ -263,11 +346,19 @@ export class VerticalPerLineDiffManager {
     });
 
     // Create new handler with determined start/end
-    const diffHandler = this.createVerticalPerLineDiffHandler(
+    const diffHandler = this.createVerticalDiffHandler(
       filepath,
       startLine,
       endLine,
-      input,
+      {
+        input,
+        onStatusUpdate: (status) =>
+          streamId &&
+          this.webviewProtocol.request("updateApplyState", {
+            streamId,
+            status,
+          }),
+      },
     );
 
     if (!diffHandler) {
