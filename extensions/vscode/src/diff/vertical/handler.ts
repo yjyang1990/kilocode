@@ -1,4 +1,5 @@
 import type { DiffLine } from "core";
+import { ApplyState } from "core/protocol/ideWebview";
 import * as vscode from "vscode";
 import {
   DecorationTypeRangeManager,
@@ -9,7 +10,13 @@ import {
 } from "./decorations";
 import type { VerticalDiffCodeLens } from "./manager";
 
-export class VerticalPerLineDiffHandler implements vscode.Disposable {
+export interface VerticalDiffHandlerOptions {
+  input?: string;
+  instant?: boolean;
+  onStatusUpdate: (status: ApplyState["status"]) => void;
+}
+
+export class VerticalDiffHandler implements vscode.Disposable {
   private editor: vscode.TextEditor;
   private startLine: number;
   private endLine: number;
@@ -24,7 +31,7 @@ export class VerticalPerLineDiffHandler implements vscode.Disposable {
 
   private newLinesAdded = 0;
 
-  public input?: string;
+  public options: VerticalDiffHandlerOptions;
 
   constructor(
     startLine: number,
@@ -39,13 +46,13 @@ export class VerticalPerLineDiffHandler implements vscode.Disposable {
       accept: boolean,
     ) => void,
     private readonly refreshCodeLens: () => void,
-    input?: string,
+    options: VerticalDiffHandlerOptions,
   ) {
     this.currentLineIndex = startLine;
     this.startLine = startLine;
     this.endLine = endLine;
     this.editor = editor;
-    this.input = input;
+    this.options = options;
 
     this.redDecorationManager = new DecorationTypeRangeManager(
       redDecorationType,
@@ -184,6 +191,11 @@ export class VerticalPerLineDiffHandler implements vscode.Disposable {
   }
 
   private updateIndexLineDecorations() {
+    if (this.options.instant) {
+      // We don't show progress on instant apply
+      return;
+    }
+
     // Highlight the line at the currentLineIndex
     // And lightly highlight all lines between that and endLine
     if (this.currentLineIndex - this.newLinesAdded >= this.endLine) {
@@ -257,6 +269,8 @@ export class VerticalPerLineDiffHandler implements vscode.Disposable {
         undoStopBefore: false,
       },
     );
+
+    this.options.onStatusUpdate("closed");
 
     this.cancelled = true;
     this.refreshCodeLens();
@@ -341,6 +355,8 @@ export class VerticalPerLineDiffHandler implements vscode.Disposable {
       this.clearIndexLineDecorations();
 
       this.refreshCodeLens();
+
+      this.options.onStatusUpdate("done");
 
       // Reject on user typing
       // const listener = vscode.workspace.onDidChangeTextDocument((e) => {
