@@ -4,11 +4,11 @@ import { osModelsEditPrompt } from "../templates/edit.js";
 
 import OpenAI from "./OpenAI.js";
 
-class Deepseek extends OpenAI {
-  static providerName: ModelProvider = "deepseek";
+class Moonshot extends OpenAI {
+  static providerName: ModelProvider = "moonshot";
   static defaultOptions: Partial<LLMOptions> = {
-    apiBase: "https://api.deepseek.com/",
-    model: "deepseek-coder",
+    apiBase: "https://api.moonshot.cn/v1/",
+    model: "moonshot-v1-8k",
     promptTemplates: {
       edit: osModelsEditPrompt,
     },
@@ -26,13 +26,17 @@ class Deepseek extends OpenAI {
     signal: AbortSignal,
     options: CompletionOptions,
   ): AsyncGenerator<string> {
-    const endpoint = new URL("beta/completions", this.apiBase);
+    const endpoint = new URL("v1/chat/completions", this.apiBase);
     const resp = await this.fetch(endpoint, {
       method: "POST",
       body: JSON.stringify({
         model: options.model,
-        prompt: prefix,
-        suffix,
+        messages: [
+          {
+            role: "user",
+            content: prefix + "[fill]" + suffix,
+          },
+        ],
         max_tokens: options.maxTokens,
         temperature: options.temperature,
         top_p: options.topP,
@@ -49,9 +53,9 @@ class Deepseek extends OpenAI {
       signal
     });
     for await (const chunk of streamSse(resp)) {
-      yield chunk.choices[0].text;
+      yield chunk.choices[0].delta.content;
     }
   }
 }
 
-export default Deepseek;
+export default Moonshot;
