@@ -12,7 +12,7 @@ The chat interface consists of the following main elements:
 
 3.  **Action Buttons:** These buttons appear below the input field and allow you to approve or reject Roo Code's proposed actions.  The available buttons change depending on the context.
 
-4. **Send Button:** This looks like a small plane and it located to the far right of the input field. This sends messages to Roo after you've typed them.
+4. **Send Button:** This looks like a small plane and it's located to the far right of the input field. This sends messages to Roo after you've typed them.
 
 5. **Plus Button:** The plus button is located at the top in the header, and it resets the current session.
 
