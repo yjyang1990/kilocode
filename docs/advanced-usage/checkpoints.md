@@ -31,7 +31,6 @@ This will revert all files in your project to their state at that checkpoint.
 ## Limitations
 
 *   Checkpoints are only created during active Roo Code tasks. Changes made outside of a task will not be captured.
-*   Currently, there is no built-in mechanism for deleting old checkpoints.  This may be added in a future version.
 
 ## Enabling/Disabling Checkpoints
 
