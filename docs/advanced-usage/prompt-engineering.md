@@ -5,11 +5,11 @@ Prompt engineering is the art of crafting effective instructions for AI models l
 ## General Principles
 
 *   **Be Clear and Specific:** Clearly state what you want Roo Code to do. Avoid ambiguity.
-    *   **Bad:** "Fix the code."
-    *   **Good:** "Fix the bug in the `calculateTotal` function that causes it to return incorrect results."
+    *   **Bad:** Fix the code.
+    *   **Good:** Fix the bug in the `calculateTotal` function that causes it to return incorrect results.
 
 *   **Provide Context:** Use [Context Mentions](../basic-usage/context-mentions) to refer to specific files, folders, or problems.
-    *   **Good:** `@/src/utils.ts Refactor the \`calculateTotal\` function to use async/await.`
+    *   **Good:** `@/src/utils.ts` Refactor the `calculateTotal` function to use async/await.
 
 *   **Break Down Tasks:** Divide complex tasks into smaller, well-defined steps.
 
@@ -66,7 +66,7 @@ If Roo Code doesn't produce the desired results, you can provide feedback by:
 
 **Good Prompt:**
 
-> @/src/components/Button.tsx Refactor the `Button` component to use the `useState` hook instead of the `useReducer` hook.
+> `@/src/components/Button.tsx` Refactor the `Button` component to use the `useState` hook instead of the `useReducer` hook.
 
 **Bad Prompt:**
 
@@ -82,7 +82,7 @@ If Roo Code doesn't produce the desired results, you can provide feedback by:
 
 **Good Prompt:**
 
-> @problems Address all errors and warnings in the current file.
+> `@problems` Address all errors and warnings in the current file.
 
 **Bad Prompt:**
 
