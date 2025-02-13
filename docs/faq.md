@@ -6,7 +6,7 @@ This page answers some common questions about Roo Code.
 
 ### What is Roo Code?
 
-Roo Code is a VS Code extension that provides an AI-powered coding assistant. It allows you to interact with a large language model (LLM) directly within your editor, using natural language to perform a wide range of coding tasks.
+Roo Code is an AI-powered autonomous coding agent that lives in your editor.
 
 ### How does Roo Code work?
 

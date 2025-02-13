@@ -4,7 +4,7 @@ sidebar_label: Welcome
 
 # Welcome to Roo Code!
 
-This is the documentation for Roo Code. Let's get you set up and ready to code with AI assistance.
+This is the documentation for Roo Code. Let's get you set up and ready to build.
 
 Click the **Next** button below to begin.
 

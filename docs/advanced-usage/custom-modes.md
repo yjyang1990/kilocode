@@ -1,6 +1,6 @@
 # Custom Modes
 
-Roo Code allows you to create **custom modes** to tailor the AI assistant's behavior to specific tasks or workflows. Custom modes let you define:
+Roo Code allows you to create **custom modes** to tailor its behavior to specific tasks or workflows. Custom modes let you define:
 
 *   **A unique name and slug:** For easy identification.
 *   **A role definition:** A description of the mode's purpose and expertise.
