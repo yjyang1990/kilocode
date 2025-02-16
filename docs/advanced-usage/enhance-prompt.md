@@ -21,7 +21,7 @@ The "Enhance Prompt" feature in Roo Code helps you improve the quality and effec
 
 The "Enhance Prompt" feature uses a customizable prompt template.  You can modify this template to tailor the enhancement process to your specific needs.
 
-1.  **Open the Prompts Tab:** Click the notebook icon (<span class="codicon codicon-notebook"></span>) in the Roo Code top menu bar.
+1.  **Open the Prompts Tab:** Click the notebook icon in the Roo Code top menu bar.
 2.  **Select "ENHANCE" Tab:** You should see listed out support prompts, including "ENHANCE". Click on this tab.
 3.  **Edit the Prompt Template:** Modify the text in the "Prompt" field.
 
