@@ -1,4 +1,4 @@
-# Community
+# Community Projects
 
 Welcome to the Roo Code community section! Here you'll find community projects that extend Roo Code's capabilities and a gallery of custom modes shared by other users to enhance your development workflow.
 
