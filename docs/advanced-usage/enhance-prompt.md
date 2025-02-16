@@ -32,7 +32,7 @@ The default prompt template includes the placeholder `${userInput}`, which will 
 The API configuration used for Enhance Prompt is, by default, the same one that is selected for Roo Code tasks,
 but it can be changed:
 
-1.  **Open the Prompts Tab:** Click the notebook icon (<span class="codicon codicon-notebook"></span>) in the Roo Code top menu bar.
+1.  **Open the Prompts Tab:** Click the notebook icon in the Roo Code top menu bar.
 2.  **Select "ENHANCE" Tab:** You should see an "API Configuration" dropdown
 3.  **Select an API Configuration:** Choose an existing configuration, and future Enhance Prompt requests will be sent to that configured provider/model.
 
