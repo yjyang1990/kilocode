@@ -178,4 +178,4 @@ By following these instructions, you can create and manage custom modes to enhan
 
 ## Community Gallery
 
-Ready to explore more? Check out the [Custom Modes Gallery](../community#custom-modes-gallery) to discover and share custom modes created by the community!
+Ready to explore more? Check out the [Custom Modes Gallery](/community#custom-modes-gallery) to discover and share custom modes created by the community!
