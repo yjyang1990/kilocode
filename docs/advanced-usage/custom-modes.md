@@ -2,18 +2,19 @@
 
 Roo Code allows you to create **custom modes** to tailor Roo's behavior to specific tasks or workflows. Custom modes can be either **global** (available across all projects) or **project-specific** (defined within a single project).  They allow you to define:
 
-*   **A unique name and slug:** For easy identification.
-*   **A role definition:** A description of the mode's purpose and expertise.
-*   **Custom instructions:** Specific guidelines for the AI to follow in this mode.
-*   **Allowed tools:** Which Roo Code tools the mode can use (e.g., read files, write files, execute commands).
-*   **File restrictions:** (Optional) Limit file access to specific file types or patterns (e.g., only allow editing `.md` files).
+*   **A unique name and slug:** For easy identification
+*   **A role definition:** Placed at the beginning of the system prompt, this defines Roo's core expertise and personality for the mode. This placement is crucial as it shapes Roo's fundamental understanding and approach to tasks
+*   **Custom instructions:** Added at the end of the system prompt, these provide specific guidelines that modify or refine Roo's behavior. Unlike `.clinerules` files (which only add rules at the end), this structured placement of role and instructions allows for more nuanced control over Roo's responses
+*   **Allowed tools:** Which Roo Code tools the mode can use (e.g., read files, write files, execute commands)
+*   **File restrictions:** (Optional) Limit file access to specific file types or patterns (e.g., only allow editing `.md` files)
 
 ## Why Use Custom Modes?
 
-*   **Specialization:** Create modes optimized for specific tasks, like "Documentation Writer," "Test Engineer," or "Refactoring Expert."
-*   **Safety:** Restrict a mode's access to sensitive files or commands. For example, a "Review Mode" could be limited to read-only operations.
-*   **Experimentation:** Safely experiment with different prompts and configurations without affecting other modes.
-*   **Team Collaboration:** Share custom modes with your team to standardize workflows.
+*   **Specialization:** Create modes optimized for specific tasks, like "Documentation Writer," "Test Engineer," or "Refactoring Expert"
+*   **Default Modes Tool Access Customization:** Modify which tools are allowed for the default modes (Code, Architect, Ask). Note that restricting tools for default modes may cause unintended outcomes in Roo Code's performance
+*   **Safety:** Restrict a mode's access to sensitive files or commands. For example, a "Review Mode" could be limited to read-only operations
+*   **Experimentation:** Safely experiment with different prompts and configurations without affecting other modes
+*   **Team Collaboration:** Share custom modes with your team to standardize workflows
 
 ## Creating Custom Modes
 
@@ -21,157 +22,169 @@ You have three options for creating custom modes:
 
 ### 1. Ask Roo! (Recommended)
 
-The easiest way to create or modify a custom mode is to simply **ask Roo Code to do it!** For example:
+You can quickly create a basic custom mode by asking Roo Code to do it for you. For example:
 
 > Create a new mode called "Documentation Writer". It should only be able to read files and write Markdown files.
 
-Or, to modify an existing mode:
-
-> Modify the "Code" mode to only allow reading files.
-
-Roo Code will guide you through the process.
+Roo Code will guide you through the process. However, for fine-tuning modes or making specific adjustments, you'll want to use the Prompts tab or manual configuration methods described below.
 
 ### 2. Using the Prompts Tab
 
-1.  **Open the Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar.
-2.  **Click "Create New Mode":**  Use the <Codicon name="add" /> button to add a new mode.
-3.  **Fill in the Fields:**  Enter the mode's name, role definition, custom instructions, and select the allowed tool groups.
-4.  **Click "Create Mode":**  Save your new mode.
+1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+2.  **Create New Mode:** Click the <Codicon name="add" /> button to the right of the Modes heading
+3.  **Fill in Fields:**
+    * **Name:** Enter a display name for the mode
+    * **Slug:** Enter a lowercase identifier (letters, numbers, and hyphens only)
+    * **Save Location:** Choose Global (via `cline_custom_modes.json`, available across all workspaces) or Project-specific (via `.roomodes` file in project root)
+    * **Role Definition:** Define Roo's expertise and personality for this mode (appears at the start of the system prompt)
+    * **Available Tools:** Select which tools this mode can use
+    * **Custom Instructions:** (Optional) Add behavioral guidelines specific to this mode (appears at the end of the system prompt)
+4.  **Create Mode:** Click the "Create Mode" button to save your new mode
 
-Note: Adding/editing file type restrictions is not yet supported in the prompts tab UI.
+Note: File type restrictions can only be added through manual configuration.
 
 ### 3. Manual Configuration
 
-Custom modes can be configured by directly editing JSON files. There are two locations for custom mode configurations:
+You can configure custom modes by editing JSON files through the Prompts tab:
 
-1.  **Global Configuration:**
-    *   Located at `[path to global extension storage]/rooveterinaryinc.roo-cline/settings/cline_custom_modes.json`
-    *   These modes are available across all projects.
+Both global and project-specific configurations can be edited through the Prompts tab:
 
-2.  **Project-Specific Configuration:**
-    *   Located in a `.roomodes` file in your project's root directory.
-    *   These modes are only available within that specific project.
-    *   **Project-specific modes take precedence over global modes with the same slug.**  This means if you define a mode with the slug "code" in your `.roomodes` file, it will override the global "code" mode when you're working in that project.
+1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+2.  **Access Settings Menu:** Click the <Codicon name="bracket" /> button to the right of the Modes heading
+3.  **Choose Configuration:**
+    * Select "Edit Global Modes" to edit `cline_custom_modes.json` (available across all workspaces)
+    * Select "Edit Project Modes" to edit `.roomodes` file (in project root)
+4.  **Edit Configuration:** Modify the JSON file that opens
+5.  **Save Changes:** Roo Code will automatically detect the changes
 
-To edit either configuration:
+## Configuration Precedence
 
-1.  **Open the Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar.
-2.  **Open the Settings File:** Click the <Codicon name="code" /> icon in the top right corner of the "Prompts" tab.  (This will allow you to edit either the Global or project-specific configuration file. You can also edit the project-specific configuration by manually creating/opening the `.roomodes` file in your project's root directory.)
-3.  **Edit the JSON:** Add or modify mode configurations within the `customModes` array, following the format described below.
-4.  **Save the File:** Roo Code will automatically detect the changes.
+Mode configurations are applied in this order:
+
+1. Project-level mode configurations (from `.roomodes`)
+2. Global mode configurations (from `cline_custom_modes.json`)
+3. Default mode configurations
+
+This means that project-specific configurations will override global configurations, which in turn override default configurations.
 
 ## Custom Mode Configuration (JSON Format)
 
-Both global and project-specific configuration files use the same JSON format.  The configuration is a JSON object with a `customModes` key, which contains an array of mode definitions. Each mode definition is a JSON object with the following properties:
-
-*   `slug`: (Required) A unique identifier for the mode (lowercase letters, numbers, and hyphens).  Shorter is better.
-*   `name`: (Required) The display name for the mode.
-*   `roleDefinition`: (Required) A detailed description of the mode's role and capabilities.
-*   `groups`: (Required) An array of allowed tool groups. Each group can be specified either as a string (e.g., `"edit"` to allow editing any file) or with file restrictions (e.g., `["edit", { "fileRegex": "\\.md$", "description": "Markdown files only" }]` to only allow editing markdown files).
-    *   Available tool groups are: `"read"`, `"edit"`, `"browser"`, `"command"`, `"mcp"`.
-    *   **Understanding `fileRegex`:** The `fileRegex` property uses a *regular expression* (or *regex*) to define which files the mode is allowed to edit. A regular expression is a sequence of characters that specifies a search pattern. Here's a breakdown of some common regex components used in the examples:
-        *   `\.`: Matches a literal dot (`.`).  The backslash is used to "escape" the dot, since a dot has a special meaning in regular expressions (matching any character).
-        *   `(test|spec)`: Matches either "test" or "spec". The parentheses create a *capturing group*, and the pipe (`|`) acts as an "or".
-        *   `(js|ts|jsx|tsx)`: Matches "js", "ts", "jsx", or "tsx".
-        *   `$`: Matches the end of the string. This ensures that the entire filename matches the pattern, not just a part of it.
-        *   For example, `\\.md$` matches any filename that ends with ".md".  `\\.(test|spec)\\.(js|ts|jsx|tsx)$` matches filenames like "myComponent.test.js", "utils.spec.ts", etc.
-        *   You can learn more about regular expressions on websites like [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
-*   `customInstructions`: (Optional) Additional instructions for the mode.
-
-Here are some examples:
-
-**Example 1: A simple documentation writer mode (could be global or project-specific):**
+Both global and project-specific configurations use the same JSON format. Each configuration file contains a `customModes` array of mode definitions:
 
 ```json
 {
   "customModes": [
     {
-      "slug": "docs-writer",
-      "name": "Docs Writer",
-      "roleDefinition": "You are a technical writer specializing in creating clear and concise documentation.",
-      "customInstructions": "Focus on explaining concepts and providing examples. Use Markdown format.",
-      "groups": [
-        "read",
-        ["edit", { "fileRegex": "\\.md$", "description": "Markdown files only" }]
-      ]
+      "slug": "mode-name",
+      "name": "Mode Display Name",
+      "roleDefinition": "Mode's role and capabilities",
+      "groups": ["read", "edit"],
+      "customInstructions": "Additional guidelines"
     }
   ]
 }
 ```
 
-**Example 2: A test engineer mode (could be global or project-specific):**
+### Required Properties
 
+#### `slug`
+* A unique identifier for the mode
+* Use lowercase letters, numbers, and hyphens
+* Keep it short and descriptive
+* Example: `"docs-writer"`, `"test-engineer"`
+
+#### `name`
+* The display name shown in the UI
+* Can include spaces and proper capitalization
+* Example: `"Documentation Writer"`, `"Test Engineer"`
+
+#### `roleDefinition`
+* Detailed description of the mode's role and capabilities
+* Defines Roo's expertise and personality for this mode
+* Example: `"You are a technical writer specializing in clear documentation"`
+
+#### `groups`
+* Array of allowed tool groups
+* Available groups: `"read"`, `"edit"`, `"browser"`, `"command"`, `"mcp"`
+* Can include file restrictions for the `"edit"` group
+
+##### File Restrictions Format
+```json
+["edit", {
+  "fileRegex": "\\.md$",
+  "description": "Markdown files only"
+}]
+```
+
+### Optional Properties
+
+#### `customInstructions`
+* Additional behavioral guidelines for the mode
+* Example: `"Focus on explaining concepts and providing examples"`
+
+### Understanding File Restrictions
+
+The `fileRegex` property uses regular expressions to control which files a mode can edit:
+
+* `\\.md$` - Match files ending in ".md"
+* `\\.(test|spec)\\.(js|ts)$` - Match test files (e.g., "component.test.js")
+* `\\.(js|ts)$` - Match JavaScript and TypeScript files
+
+Common regex patterns:
+* `\\.` - Match a literal dot
+* `(a|b)` - Match either "a" or "b"
+* `$` - Match the end of the filename
+
+[Learn more about regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
+
+### Example Configurations
+
+Each example shows different aspects of mode configuration:
+
+#### Basic Documentation Writer
 ```json
 {
-  "customModes": [
-    {
-      "slug": "test-engineer",
-      "name": "Test Engineer",
-      "roleDefinition": "You are a test engineer responsible for writing unit and integration tests.",
-      "groups": [
-        "read",
-        ["edit", { "fileRegex": "\\.(test|spec)\\.(js|ts|jsx|tsx)$", "description": "Test files only" }]
-      ]
-    }
-  ]
+  "customModes": [{
+    "slug": "docs-writer",
+    "name": "Documentation Writer",
+    "roleDefinition": "You are a technical writer specializing in clear documentation",
+    "groups": [
+      "read",
+      ["edit", { "fileRegex": "\\.md$", "description": "Markdown files only" }]
+    ],
+    "customInstructions": "Focus on clear explanations and examples"
+  }]
 }
 ```
 
-**Example 3:  Adding a new mode in a `.roomodes` file (project-specific):**
-
+#### Test Engineer with File Restrictions
 ```json
 {
-  "customModes": [
-    {
-      "slug": "data-scientist",
-      "name": "Data Scientist",
-      "roleDefinition": "You are Roo, a data scientist with expertise in data analysis, machine learning, and statistical modeling.",
-      "groups": [
-        "read",
-        "edit",
-        "command"
-      ],
-      "customInstructions": "Focus on data analysis and machine learning tasks."
-    }
-  ]
+  "customModes": [{
+    "slug": "test-engineer",
+    "name": "Test Engineer",
+    "roleDefinition": "You are a test engineer focused on code quality",
+    "groups": [
+      "read",
+      ["edit", { "fileRegex": "\\.(test|spec)\\.(js|ts)$", "description": "Test files only" }]
+    ]
+  }]
 }
 ```
 
-**Example 4: Overriding an existing mode in a `.roomodes` file (project-specific):**
-
+#### Project-Specific Mode Override
 ```json
 {
-  "customModes": [
-    {
-      "slug": "code"
-      "name": "Code (Project-Specific)",
-      "roleDefinition": "You are Roo, a highly skilled software engineer.  In this project, you have limited file access.",
-      "groups": [
-        "read",
-        ["edit", { "fileRegex": "\\.(js|ts)$", "description": "JavaScript and TypeScript files only" }]
-      ],
-      "customInstructions": "Focus on JS and TS files in this project."
-    }
-  ]
-}
-```
-
-**Example 5: Mode with File Restrictions (can be used in global or .roomodes)**
-```json
-{
-  "customModes": [
-    {
-      "slug": "markdown-editor",
-      "name": "Markdown Editor",
-      "roleDefinition": "You are Roo, a markdown editor with expertise in editing and formatting markdown files.",
-      "groups": [
-        "read",
-        ["edit", { "fileRegex": "\\.md$", "description": "Markdown files only" }],
-        "browser"
-      ],
-      "customInstructions": "Focus on editing and formatting markdown files."
-    }
-  ]
+  "customModes": [{
+    "slug": "code",
+    "name": "Code (Project-Specific)",
+    "roleDefinition": "You are a software engineer with project-specific constraints",
+    "groups": [
+      "read",
+      ["edit", { "fileRegex": "\\.(js|ts)$", "description": "JS/TS files only" }]
+    ],
+    "customInstructions": "Focus on project-specific JS/TS development"
+  }]
 }
 ```
 By following these instructions, you can create and manage custom modes to enhance your workflow with Roo-Code.
