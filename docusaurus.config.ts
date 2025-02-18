@@ -39,6 +39,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/',
           editUrl: 'https://github.com/RooVetGit/Roo-Code-Docs/edit/main/',
+          showLastUpdateTime: true,
         },
         sitemap: {
           lastmod: 'date',
