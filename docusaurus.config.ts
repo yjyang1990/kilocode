@@ -41,7 +41,9 @@ const config: Config = {
           editUrl: 'https://github.com/RooVetGit/Roo-Code-Docs/edit/main/',
         },
         sitemap: {
-          lastmod: 'datetime',
+          lastmod: 'date',
+          priority: null,
+          changefreq: null,
         },
         theme: {
           customCss: './src/css/custom.css',
