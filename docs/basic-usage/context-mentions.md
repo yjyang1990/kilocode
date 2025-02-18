@@ -27,6 +27,12 @@ Use the `@problems` mention to include a list of all current errors and warnings
 *   **Example:** "@problems Fix all errors in the current file."
 * **Note:** This is especially useful when you see errors in the Problems panel and want Roo Code to address them.
 
+### Terminal Mention (`@terminal`)
+
+Use the `@terminal` mention to include the last command run in the terminal along with its output.
+
+*   **Example:** "Fix the warnings in the @terminal."
+
 ### Git Commit Mentions (`@a1b2c3d`)
 
 Use a Git commit hash (short or long) to include information about a specific commit.
