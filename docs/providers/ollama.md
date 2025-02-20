@@ -4,37 +4,61 @@ Roo Code supports running models locally using [Ollama](https://ollama.com/). Th
 
 ## Setting up Ollama
 
-1.  **Download and Install Ollama:** Download the Ollama installer for your operating system from the [Ollama website](https://ollama.com/). Follow the installation instructions.
+1.  **Download and Install Ollama:**  Download the Ollama installer for your operating system from the [Ollama website](https://ollama.com/). Follow the installation instructions. Make sure Ollama is running
 
-2.  **Download a Model:** Ollama supports many different models. You can find a list of available models on the [Ollama website](https://ollama.com/library). Some recommended models for coding tasks include:
+    ```bash
+    ollama serve
+    ```
+
+2.  **Download a Model:**  Ollama supports many different models.  You can find a list of available models on the [Ollama website](https://ollama.com/library).  Some recommended models for coding tasks include:
 
     *   `codellama:7b-code` (good starting point, smaller)
     *   `codellama:13b-code` (better quality, larger)
     *   `codellama:34b-code` (even better quality, very large)
+    *   `qwen2.5-coder:32b`
     *   `mistralai/Mistral-7B-Instruct-v0.1` (good general-purpose model)
     *   `deepseek-coder:6.7b-base` (good for coding tasks)
+    * `llama3:8b-instruct-q5_1` (good for general tasks)
 
     To download a model, open your terminal and run:
 
     ```bash
-    ollama run <model_name>
+    ollama pull <model_name>
     ```
 
     For example:
 
     ```bash
-    ollama run codellama:7b-code
+    ollama pull qwen2.5-coder:32b
     ```
-    **Note:** The first time you download a model, it may take a while, depending on the model size and your internet connection. You need to make sure Ollama is up and running before connecting to it.
 
-3. **Start the Ollama server.** By default, Ollama will be running on `http://localhost:11434`
+3. **Configure the Model:** by default, Ollama uses a context window size of 2048 tokens, which is too small for Roo Code requests. You need to have at least 12k to get decent results, ideally - 32k. To configure a model, you actually need to set its parameters and save a copy of it.
 
-## Configuration in Roo Code
+   Load the model (we will use `qwen2.5-coder:32b` as an example):
+   
+    ```bash
+    ollama run qwen2.5-coder:32b
+    ```
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
-2.  **Select Provider:** Choose "Ollama" from the "API Provider" dropdown.
-3.  **Enter Model ID:** Enter the name of the model you downloaded (e.g., `codellama:7b-code`).
-4.  **(Optional) Base URL:** By default, Roo Code will connect to Ollama at `http://localhost:11434`. If you've configured Ollama to use a different address or port, enter the full URL here.
+   Change context size parameter:
+
+    ```bash
+    /set parameter num_ctx 32768
+    ```
+
+    Save the model with a new name:
+
+    ```bash
+    /save your_model_name
+    ```
+
+4.  **Configure Roo Code:**
+    *   Open the Roo Code sidebar (<Codicon name="rocket" /> icon).
+    *   Click the settings gear icon (<Codicon name="gear" />).
+    *   Select "ollama" as the API Provider.
+    *   Enter the Model name from the previous step (e.g., `your_model_name`).
+    *   (Optional) You can configure the base URL if you're running Ollama on a different machine. The default is `http://localhost:11434`.
+    *   (Optional) Configure Model context size in Advanced settings, so Roo Code knows how to manage its sliding window.
 
 ## Tips and Notes
 
