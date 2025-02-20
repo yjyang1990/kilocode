@@ -55,14 +55,14 @@ See the [Installation Guide](getting-started/installing) for detailed instructio
 Roo Code supports a wide range of API providers, including:
 
 *   [Anthropic (Claude)](/providers/anthropic)
-*   [OpenAI (GPT models)](/providers/openai)
-*   [OpenRouter (access to multiple models)](/providers/openrouter)
+*   [OpenAI](/providers/openai)
+*   [OpenRouter](/providers/openrouter)
 *   [Google Gemini](/providers/gemini)
 *   [Glama](/providers/glama)
 *   [AWS Bedrock](/providers/bedrock)
 *   [GCP Vertex AI](/providers/vertex)
-*   [Ollama (local models)](/providers/ollama)
-*   [LM Studio (local models)](/providers/lmstudio)
+*   [Ollama](/providers/ollama)
+*   [LM Studio](/providers/lmstudio)
 *   [DeepSeek](/providers/deepseek)
 *   [Mistral](/providers/mistral)
 *   [Unbound](/providers/unbound)
