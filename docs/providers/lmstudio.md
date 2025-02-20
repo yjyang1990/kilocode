@@ -20,7 +20,7 @@ Roo Code supports running models locally using [LM Studio](https://lmstudio.ai/)
 
 ## Configuration in Roo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (⚙️) in the Roo Code panel.
+1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
 2.  **Select Provider:** Choose "LM Studio" from the "API Provider" dropdown.
 3.  **Enter Model ID:** Enter the *file name* of the model you loaded in LM Studio (e.g., `codellama-7b.Q4_0.gguf`).  You can find this in the LM Studio "Local Server" tab.
 4.  **(Optional) Base URL:**  By default, Roo Code will connect to LM Studio at `http://localhost:1234`.  If you've configured LM Studio to use a different address or port, enter the full URL here.
@@ -31,4 +31,4 @@ Roo Code supports running models locally using [LM Studio](https://lmstudio.ai/)
 *   **Model Selection:**  LM Studio provides a wide range of models.  Experiment to find the one that best suits your needs.
 *   **Local Server:**  The LM Studio local server must be running for Roo Code to connect to it.
 *   **LM Studio Documentation:** Refer to the [LM Studio documentation](https://lmstudio.ai/docs) for more information.
-* **Troubleshooting:** If you see a "Please check the LM Studio developer logs to debug what went wrong" error, you may need to adjust the context length settings in LM Studio.
+*   **Troubleshooting:** If you see a "Please check the LM Studio developer logs to debug what went wrong" error, you may need to adjust the context length settings in LM Studio.
