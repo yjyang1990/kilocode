@@ -19,19 +19,19 @@ Roo Code supports the following models through Vertex AI:
 
 *   `claude-3-5-sonnet-v2@20241022` (Recommended): A powerful model balancing performance and cost. Supports image inputs.
 *	`claude-3-5-sonnet@20240620`
-*   `claude-3-5-haiku@20241022`: Lightweight and fast, suitable for simpler requests.
-*   `claude-3-opus@20240229`: Anthropic's most powerful model, best for complex reasoning.
-*   `claude-3-haiku@20240307`:  Anthropic's fastest and most compact model.
+*   `claude-3-5-haiku@20241022`
+*   `claude-3-opus@20240229`
+*   `claude-3-haiku@20240307`
 
-Refer to the [Google Cloud documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude) for the most up-to-date list of available models and their IDs.  Make sure to use the *model ID*, not the model name, when configuring Roo Code.
+Refer to the [Google Cloud documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude) for the most up-to-date list of available models and their IDs.
 
 ## Configuration in Roo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (⚙️) in the Roo Code panel.
-2.  **Select Provider:** Choose "Vertex" from the "API Provider" dropdown.
+1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+2.  **Select Provider:** Choose "GCP Vertex AI" from the "API Provider" dropdown.
 3.  **Enter Project ID:** Enter your Google Cloud Project ID.
 4.  **Select Region:** Choose the region where your Vertex AI resources are located (e.g., `us-east5`).
-5.  **Select Model:** Choose your desired model from the "Model ID" dropdown.
+5.  **Select Model:** Choose your desired model from the "Model" dropdown.
 
 ## Tips and Notes
 
