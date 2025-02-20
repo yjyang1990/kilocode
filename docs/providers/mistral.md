@@ -12,16 +12,16 @@ Roo Code supports accessing models through the Mistral AI API, including both st
 
 ## Supported Models
 
-Roo Code supports the following Mistral models, along with their context window and max output tokens:
+Roo Code supports the following Mistral models:
 
-| Model Name              | Endpoint                                    | Context Window | Max Output Tokens |
-| :---------------------- | :------------------------------------------ | :------------- | :---------------- |
-| `mistral-small-latest`  | `https://api.mistral.ai`                    | 32k            | 131,000 tokens    |
-| `mistral-medium-latest` | `https://api.mistral.ai`                    | 32k            | 131,000 tokens    |
-| `mistral-large-latest`  | `https://api.mistral.ai`                    | 32k            | 131,000 tokens    |
-| `codestral-latest`      | `https://codestral.mistral.ai`              | 32k            | 256,000 tokens    |
+*   `codestral-latest`
+*	  `mistral-large-latest`
+*   `mistral-8b-latest`
+*   `mistral-3b-latest`
+*   `mistral-small-latest`
+*   `pixtral-large-latest`
 
-**Note:**  Model availability and specifications may change.  Refer to the [Mistral AI documentation](https://docs.mistral.ai/api/) for the latest information. The `codestral-latest` model is available on a separate endpoint that needs to be specified.
+**Note:**  Model availability and specifications may change.  Refer to the [Mistral AI documentation](https://docs.mistral.ai/api/) for the latest information.
 
 ## Configuration in Roo Code
 
