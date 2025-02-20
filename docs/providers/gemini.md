@@ -33,10 +33,9 @@ Refer to the [Gemini documentation](https://ai.google.dev/models/gemini) for mor
 
 1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
 2.  **Select Provider:** Choose "Google Gemini" from the "API Provider" dropdown.
-3.  **Enter API Key:** Paste your Gemini API key into the "API Key" field.
-4.  **Select Model:** Choose your desired Gemini model from the "Model ID" dropdown.
+3.  **Enter API Key:** Paste your Gemini API key into the "Gemini API Key" field.
+4.  **Select Model:** Choose your desired Gemini model from the "Model" dropdown.
 
 ## Tips and Notes
 
 *   **Pricing:**  Gemini API usage is priced based on input and output tokens. Refer to the [Gemini pricing page](https://ai.google.dev/pricing) for detailed information.
-*   **Free Tier:** As of the last update, Gemini models can be used by default up to certain request limits, after which pricing is based on prompt size.
