@@ -12,23 +12,19 @@ OpenRouter is an AI platform that provides access to a wide variety of language 
 
 ## Supported Models
 
-OpenRouter supports a large and growing number of models.  Roo Code automatically fetches the list of available models. Some popular models available through OpenRouter include:
-
-*   **Anthropic:** Claude 3.5 Sonnet, Claude 3 Haiku, Claude 3 Opus
-* **Google:** Gemini 2.0 Flash
-* **Mistral:** Mixtral 8x22B
-*   **Meta:** Llama 3 8B Instruct, Llama 3 70B Instruct
-* **DeepSeek**: DeepSeek-R1
-
-Refer to the [OpenRouter Models page](https://openrouter.ai/models) for the complete and up-to-date list.
+OpenRouter supports a large and growing number of models.  Roo Code automatically fetches the list of available models. Refer to the [OpenRouter Models page](https://openrouter.ai/models) for the complete and up-to-date list.
 
 ## Configuration in Roo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (⚙️) in the Roo Code panel.
+1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
 2.  **Select Provider:** Choose "OpenRouter" from the "API Provider" dropdown.
-3.  **Enter API Key:** Paste your OpenRouter API key into the "API Key" field.
-4.  **Select Model:** Choose your desired model from the "Model ID" dropdown.
+3.  **Enter API Key:** Paste your OpenRouter API key into the "OpenRouter API Key" field.
+4.  **Select Model:** Choose your desired model from the "Model" dropdown.
 5.  **(Optional) Custom Base URL:** If you need to use a custom base URL for the OpenRouter API, check "Use custom base URL" and enter the URL. Leave this blank for most users.
+
+## Supported Transforms
+
+OpenRouter provides an [optional "middle-out" message transform](https://openrouter.ai/docs/features/message-transforms) to help with prompts that exceed the maximum context size of a model. You can enable it by checking the "Compress prompts and message chains to the context size" box.
 
 ## Tips and Notes
 
