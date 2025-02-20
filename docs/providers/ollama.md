@@ -1,6 +1,8 @@
 # Ollama
 
-Roo Code supports running models locally using [Ollama](https://ollama.com/). This provides privacy, offline access, and potentially lower costs, but requires more setup and a powerful computer.
+Roo Code supports running models locally using Ollama. This provides privacy, offline access, and potentially lower costs, but requires more setup and a powerful computer.
+
+**Website:** [https://ollama.com/](https://ollama.com/)
 
 ## Setting up Ollama
 
