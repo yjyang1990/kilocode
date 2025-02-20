@@ -15,7 +15,7 @@ Roo Code supports accessing models through the Mistral AI API, including both st
 Roo Code supports the following Mistral models:
 
 *   `codestral-latest`
-*	  `mistral-large-latest`
+*   `mistral-large-latest`
 *   `mistral-8b-latest`
 *   `mistral-3b-latest`
 *   `mistral-small-latest`
