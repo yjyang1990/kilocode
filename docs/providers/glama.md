@@ -18,7 +18,7 @@ Roo Code will automatically try to fetch a list of available models from the Gla
 *  **OpenAI models:** (e.g., `openai/o3-mini-high`)
 *  **Other providers and open-source models**
     
-Refer to the [Glama documentation](https://glama.ai/models) for the most up-to-date list of supported models and their IDs. Use the complete model ID in the form of `{provider}/{model-name}`.
+Refer to the [Glama documentation](https://glama.ai/models) for the most up-to-date list of supported models.
 
 ## Configuration in Roo Code
 
