@@ -16,19 +16,18 @@ Roo Code will automatically try to fetch a list of available models from the Gla
 
 *  **Anthropic Claude models:**  (e.g., `anthropic/claude-3-5-sonnet`)  These are generally recommended for best performance with Roo Code.
 *  **OpenAI models:** (e.g., `openai/o3-mini-high`)
-*   **Other providers and open-source models**
+*  **Other providers and open-source models**
     
 Refer to the [Glama documentation](https://glama.ai/models) for the most up-to-date list of supported models and their IDs. Use the complete model ID in the form of `{provider}/{model-name}`.
 
 ## Configuration in Roo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (⚙️) in the Roo Code panel.
+1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
 2.  **Select Provider:** Choose "Glama" from the "API Provider" dropdown.
-3.  **Enter API Key:** Paste your Glama API key into the "API Key" field.
+3.  **Enter API Key:** Paste your Glama API key into the "Glama API Key" field.
 4.  **Select Model:** Choose your desired model from the "Model" dropdown.
 
 ## Tips and Notes
 
 * **Pricing:** Glama operates on a pay-per-use basis.  Pricing varies depending on the model you choose.
 * **Prompt Caching:** Glama supports prompt caching, which can significantly reduce costs and improve performance for repeated prompts.
-* **Model Specific Information**: Some models, like Claude 3 models, may support additional features like prompt caching. This information will appear below the model selector when using the Glama provider.
