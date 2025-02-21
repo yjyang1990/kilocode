@@ -40,7 +40,7 @@ Roo Code includes *experimental* support for the [VS Code Language Model API](ht
 *   **No Models Appear:**
     *   Ensure you have VS Code installed.
     *   Ensure you have a language model provider extension installed and enabled (e.g., GitHub Copilot, GitHub Copilot Chat).
-    *   If using Copilot, make sure that you have sent a chat message using the model you would like to use.
+    *   If using Copilot, make sure that you have sent a Copilot Chat message using the model you would like to use.
 *   **Unexpected Behavior:**  If you encounter unexpected behavior, it's likely an issue with the underlying Language Model API or the provider extension.  Consider reporting the issue to the provider extension's developers.
 
 ## Feedback
