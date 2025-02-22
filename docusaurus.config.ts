@@ -101,6 +101,10 @@ const config: Config = {
               label: 'Reddit',
               href: 'https://www.reddit.com/r/RooCode/',
             },
+            {
+              label: 'Twitter',
+              href: 'https://x.com/roo_code',
+            },
           ],
         },
         {
