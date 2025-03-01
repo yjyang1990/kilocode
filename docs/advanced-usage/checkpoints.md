@@ -2,8 +2,6 @@
 
 Checkpoints allow you to save the state of your project at a specific point in time during a task. This enables you to easily revert to a previous state if needed, providing a safety net for complex or potentially risky operations.
 
-**Important:** Checkpoints are an experimental feature.  Enable them in the Roo Code settings.
-
 ## How Checkpoints Work
 
 When checkpoints are enabled, Roo Code automatically creates a new checkpoint whenever:
@@ -34,4 +32,4 @@ This will revert all files in your project to their state at that checkpoint.
 
 ## Enabling/Disabling Checkpoints
 
-You can enable or disable checkpoints in the Roo Code settings.  Look for the "Checkpoints Enabled" checkbox.
+You can enable or disable checkpoints in the Roo Code settings.  Look for the "Enable automatic checkpoints" checkbox under Advanced Settings.
