@@ -318,4 +318,4 @@ If you've followed these steps and are still experiencing problems, please:
 1. Check the [Roo Code GitHub Issues](https://github.com/RooVetGit/Roo-Code/issues) to see if others have reported similar problems
 2. If not, create a new issue with details about your operating system, VSCode/Cursor version, and the steps you've tried
 
-For additional help, join our [Discord](https://discord.com/channels/1332146336664915968/1332212137568899162).
+For additional help, join our [Discord](https://discord.gg/roocode).
