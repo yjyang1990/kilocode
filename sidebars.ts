@@ -65,6 +65,13 @@ const sidebars: SidebarsConfig = {
       ]
     },
     'faq',
+    {
+      type: 'category',
+      label: 'Troubleshooting',
+      items: [
+        'troubleshooting/shell-integration',
+      ],
+    },
     'tutorial-videos',
     'community',
   ],
