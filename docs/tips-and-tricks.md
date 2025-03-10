@@ -3,6 +3,7 @@
 A collection of quick tips to help you get the most out of Roo Code.
 
 - Drag Roo Code to the [Secondary Sidebar](https://code.visualstudio.com/api/ux-guidelines/sidebars#secondary-sidebar) so you can see the Explorer, Search, Source Control, etc.
+- Once you have Roo Code in a separate sidebar from the file explorer, you can drag files from the explorer into the chat window (and even multiple at once). Just make sure to hold down the shift key after you start dragging the files.
 - If you're not using [MCP](/advanced-usage/mcp), turn it off in the <Codicon name="notebook" /> Prompts tab to significantly cut down the size of the system prompt.
 - To keep your [custom modes](/advanced-usage/custom-modes) on track, limit the types of files that they're allowed to edit.
 - If you hit the dreaded `input length and max tokens exceed context limit` error, you can recover by deleting a message, rolling back to a previous checkpoint, or switching over to a model with a long context window like Gemini for a message.
