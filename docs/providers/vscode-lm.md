@@ -42,7 +42,3 @@ Roo Code includes *experimental* support for the [VS Code Language Model API](ht
     *   Ensure you have a language model provider extension installed and enabled (e.g., GitHub Copilot, GitHub Copilot Chat).
     *   If using Copilot, make sure that you have sent a Copilot Chat message using the model you would like to use.
 *   **Unexpected Behavior:**  If you encounter unexpected behavior, it's likely an issue with the underlying Language Model API or the provider extension.  Consider reporting the issue to the provider extension's developers.
-
-## Feedback
-
-Because this feature is experimental, your feedback is extremely valuable!  Please report any issues or suggestions on the [Roo Code GitHub Issues page](https://github.com/RooVetGit/Roo-Code/issues).
