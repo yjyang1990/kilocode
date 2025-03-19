@@ -58,6 +58,11 @@ The file uses a JSON format:
       "command": "node",
       "args": ["/path/to/server.js"],
       "timeout": 90
+    },
+    "server3": {
+      "url": "https://url-of-a-sse-endpoint.com/",
+      "alwaysAllow": ["tool3"],
+      "disabled": false
     }
   }
 }
