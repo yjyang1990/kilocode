@@ -85,7 +85,7 @@ Open the Roo Code panel (<Codicon name="rocket" />) and type your task in the ch
 
 ### What are modes in Roo Code?
 
-[Modes](/basic-usage/modes) are different personas that Roo Code can adopt, each with a specific focus and set of capabilities. The built-in modes are:
+[Modes](/basic-usage/using-modes) are different personas that Roo Code can adopt, each with a specific focus and set of capabilities. The built-in modes are:
 
 *   **Code:** For general-purpose coding tasks.
 *   **Architect:** For planning and technical leadership.
@@ -100,7 +100,7 @@ Use the dropdown menu in the chat input area to select a different mode, or use 
 
 ### What are tools and how do I use them?
 
-[Tools](/basic-usage/using-tools) are how Roo Code interacts with your system.  Roo Code automatically selects and uses the appropriate tools to complete your tasks. You don't need to call tools directly. You will be prompted to approve or reject each tool use.
+[Tools](/basic-usage/how-tools-work) are how Roo Code interacts with your system.  Roo Code automatically selects and uses the appropriate tools to complete your tasks. You don't need to call tools directly. You will be prompted to approve or reject each tool use.
 
 ### What are context mentions?
 
