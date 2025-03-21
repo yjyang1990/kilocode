@@ -11,10 +11,10 @@ The Model Context Protocol (MCP) is a standard for extending Roo Code's capabili
 
 This documentation is organized into several sections:
 
-* [**Using MCP in Roo Code**](./using-mcp-in-roo) - Comprehensive guide to configuring, enabling, and managing MCP servers with Roo Code. Includes server settings, tool approval, and troubleshooting.
+* [**Using MCP in Roo Code**](/mcp/using-mcp-in-roo) - Comprehensive guide to configuring, enabling, and managing MCP servers with Roo Code. Includes server settings, tool approval, and troubleshooting.
 
-* [**What is MCP?**](./what-is-mcp) - Clear explanation of the Model Context Protocol, its client-server architecture, and how it enables AI systems to interact with external tools.
+* [**What is MCP?**](/mcp/what-is-mcp) - Clear explanation of the Model Context Protocol, its client-server architecture, and how it enables AI systems to interact with external tools.
 
-* [**STDIO & SSE Transports**](./server-transports) - Detailed comparison of local (STDIO) and remote (SSE) transport mechanisms with deployment considerations for each approach.
+* [**STDIO & SSE Transports**](/mcp/server-transports) - Detailed comparison of local (STDIO) and remote (SSE) transport mechanisms with deployment considerations for each approach.
 
-* [**MCP vs API**](./mcp-vs-api) - Analysis of the fundamental distinction between MCP and REST APIs, explaining how they operate at different layers of abstraction for AI systems.
+* [**MCP vs API**](/mcp/mcp-vs-api) - Analysis of the fundamental distinction between MCP and REST APIs, explaining how they operate at different layers of abstraction for AI systems.
