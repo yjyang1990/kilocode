@@ -15,7 +15,7 @@ export const TWITTER_URL = 'https://x.com/Kilo_Code';
 // GitHub links
 export const GITHUB_MAIN_REPO_URL = 'https://github.com/Kilo-Org/kilocode';
 export const GITHUB_ISSUES_MAIN_URL = `${GITHUB_MAIN_REPO_URL}/issues`;
-export const GITHUB_FEATURES_URL = `${GITHUB_MAIN_REPO_URL}/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop`;
+export const GITHUB_FEATURES_URL = `${GITHUB_MAIN_REPO_URL}/discussions/categories/ideas`;
 
 // Download links
 export const VSCODE_MARKETPLACE_URL = 'https://marketplace.visualstudio.com/items?itemName=kilocode.kilo-code';

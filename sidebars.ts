@@ -8,6 +8,7 @@ const sidebars: SidebarsConfig = {
       label: 'Getting Started',
       items: [
         'getting-started/installing',
+        'getting-started/free-tokens',
         'getting-started/connecting-api-provider',
         'getting-started/your-first-task',
         'basic-usage/the-chat-interface',
