@@ -4,7 +4,7 @@ Custom Instructions allow you to personalize how Roo behaves, providing specific
 
 ## What Are Custom Instructions?
 
-Custom Instructions define specific behaviors, preferences, and constraints beyond Roo's basic role definition. Examples include coding style, documentation standards, testing requirements, and workflow guidelines.
+Custom Instructions define specific behaviors, preferences, and constraints beyond Kiol's basic role definition. Examples include coding style, documentation standards, testing requirements, and workflow guidelines.
 :::info Rules Files
 Custom Instructions are simply .rules files. They use the common convention of `.clinerules`, `.cursorrules`, and `.windsurfrules` files, which can be placed in your workspace root for version control or configured through the UI.
  :::
@@ -17,15 +17,15 @@ These instructions apply across all workspaces and maintain your preferences reg
 
 **How to set them:**
 
-<img src="/img/custom-instructions/custom-instructions.png" alt="Roo Code Prompts tab showing global custom instructions interface" width="600" />
-1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+<img src="/img/custom-instructions/custom-instructions.png" alt="Kilo Code Prompts tab showing global custom instructions interface" width="600" />
+1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar
 2.  **Find Section:** Find the "Custom Instructions for All Modes" section
 3.  **Enter Instructions:** Enter your instructions in the text area
 4.  **Save Changes:** Click "Done" to save your changes
 
 ### Workspace-Level Instructions
 
-These instructions only apply within your current workspace, allowing you to customize Roo Code's behavior for specific projects.
+These instructions only apply within your current workspace, allowing you to customize Kilo Code's behavior for specific projects.
 
 #### Workspace-Wide Instructions
 
@@ -37,8 +37,8 @@ Mode-specific instructions can be set in two independent ways that can be used s
 
 1.  **Using the Prompts Tab:**
 
-    <img src="/img/custom-instructions/custom-instructions-2.png" alt="Roo Code Prompts tab showing mode-specific custom instructions interface" width="600" />
-    * **Open Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+    <img src="/img/custom-instructions/custom-instructions-2.png" alt="Kilo Code Prompts tab showing mode-specific custom instructions interface" width="600" />
+    * **Open Tab:** Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar
     * **Select Mode:** Under the Modes heading, click the button for the mode you want to customize
     * **Enter Instructions:** Enter your instructions in the text area under "Mode-specific Custom Instructions (optional)"
     * **Save Changes:** Click "Done" to save your changes
@@ -88,7 +88,7 @@ Rules:
 * "When adding new features to websites, ensure they are responsive and accessible"
 
 :::tip Pro Tip: File-Based Team Standards
-When working in team environments, placing `.clinerules` files under version control allows you to standardize Roo's behavior across your entire development team. This ensures consistent code style, documentation practices, and development workflows for everyone on the project.
+When working in team environments, placing `.clinerules` files under version control allows you to standardize Kilo's behavior across your entire development team. This ensures consistent code style, documentation practices, and development workflows for everyone on the project.
 :::
 
 ## Combining with Custom Modes

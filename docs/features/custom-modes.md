@@ -1,6 +1,6 @@
 # Custom Modes
 
-Roo Code allows you to create **custom modes** to tailor Roo's behavior to specific tasks or workflows. Custom modes can be either **global** (available across all projects) or **project-specific** (defined within a single project).
+Kilo Code allows you to create **custom modes** to tailor Kilo's behavior to specific tasks or workflows. Custom modes can be either **global** (available across all projects) or **project-specific** (defined within a single project).
 
 ## Why Use Custom Modes?
 
@@ -10,16 +10,16 @@ Roo Code allows you to create **custom modes** to tailor Roo's behavior to speci
 *   **Team Collaboration:** Share custom modes with your team to standardize workflows
 
     <img src="/img/custom-modes/custom-modes.png" alt="Overview of custom modes interface" width="400" />
-    *Roo Code's interface for creating and managing custom modes.*
+    *Kilo Code's interface for creating and managing custom modes.*
 
 ## What's Included in a Custom Mode?
 
 Custom modes allow you to define:
 
 *   **A unique name and slug:** For easy identification
-*   **A role definition:** Placed at the beginning of the system prompt, this defines Roo's core expertise and personality for the mode. This placement is crucial as it shapes Roo's fundamental understanding and approach to tasks
-*   **Custom instructions:** Added at the end of the system prompt, these provide specific guidelines that modify or refine Roo's behavior. Unlike `.clinerules` files (which only add rules at the end), this structured placement of role and instructions allows for more nuanced control over Roo's responses
-*   **Allowed tools:** Which Roo Code tools the mode can use (e.g., read files, write files, execute commands)
+*   **A role definition:** Placed at the beginning of the system prompt, this defines Kilo's core expertise and personality for the mode. This placement is crucial as it shapes Kilo's fundamental understanding and approach to tasks
+*   **Custom instructions:** Added at the end of the system prompt, these provide specific guidelines that modify or refine Kilo's behavior. Unlike `.clinerules` files (which only add rules at the end), this structured placement of role and instructions allows for more nuanced control over Kilo's responses
+*   **Allowed tools:** Which Kilo Code tools the mode can use (e.g., read files, write files, execute commands)
 *   **File restrictions:** (Optional) Limit file access to specific file types or patterns (e.g., only allow editing `.md` files)
 
 ## Custom Mode Configuration (JSON Format)
@@ -55,7 +55,7 @@ Both global and project-specific configurations use the same JSON format. Each c
 
 #### `roleDefinition`
 * Detailed description of the mode's role and capabilities
-* Defines Roo's expertise and personality for this mode
+* Defines Kilo's expertise and personality for this mode
 * Example: `"You are a technical writer specializing in clear documentation"`
 
 #### `groups`
@@ -104,7 +104,7 @@ In addition to the `customInstructions` property in JSON, you can use a dedicate
 1. Create a file named `.clinerules-{mode-slug}` in your workspace root
    * Replace `{mode-slug}` with your mode's slug (e.g., `.clinerules-docs-writer`)
 2. Add your custom instructions to this file
-3. Roo Code will automatically apply these instructions to the specified mode
+3. Kilo Code will automatically apply these instructions to the specified mode
 
 This approach is particularly useful for:
 * Keeping lengthy instructions separate from your mode configuration
@@ -117,7 +117,7 @@ Note: If both `.clinerules-{mode-slug}` and the `customInstructions` property ex
 
 Mode configurations are applied in this order:
 
-1. Project-level mode configurations (from `.roomodes`)
+1. Project-level mode configurations (from `.kilocodemodes`)
 2. Global mode configurations (from `custom_modes.json`)
 3. Default mode configurations
 
@@ -127,23 +127,23 @@ This means that project-specific configurations will override global configurati
 
 You have three options for creating custom modes:
 
-### 1. Ask Roo! (Recommended)
+### 1. Ask Kilo! (Recommended)
 
-You can quickly create a basic custom mode by asking Roo Code to do it for you. For example:
+You can quickly create a basic custom mode by asking Kilo Code to do it for you. For example:
 ```
 Create a new mode called "Documentation Writer". It should only be able to read files and write Markdown files.
 ```
-Roo Code will guide you through the process. However, for fine-tuning modes or making specific adjustments, you'll want to use the Prompts tab or manual configuration methods described below.
+Kilo Code will guide you through the process. However, for fine-tuning modes or making specific adjustments, you'll want to use the Prompts tab or manual configuration methods described below.
 :::info
 #### Custom Mode Creation Settings
-When enabled, Roo allows you to create custom modes using prompts like 'Make me a custom mode that...'. Disabling this reduces your system prompt by about 700 tokens when this feature isn't needed. When disabled you can still manually create custom modes using the + button above or by editing the related config JSON. 
+When enabled, Kilo allows you to create custom modes using prompts like 'Make me a custom mode that...'. Disabling this reduces your system prompt by about 700 tokens when this feature isn't needed. When disabled you can still manually create custom modes using the + button above or by editing the related config JSON. 
 <img src="/img/custom-modes/custom-modes-1.png" alt="Enable Custom Mode Creation Through Prompts setting" width="600" />
-You can find this setting within the prompt settings by clicking the <Codicon name="notebook" /> icon in the Roo Code top menu bar.
+You can find this setting within the prompt settings by clicking the <Codicon name="notebook" /> icon in the Kilo Code top menu bar.
 :::
 
 ### 2. Using the Prompts Tab
 
-1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar
 2.  **Create New Mode:** Click the <Codicon name="add" /> button to the right of the Modes heading
 3.  **Fill in Fields:**
 
@@ -152,8 +152,8 @@ You can find this setting within the prompt settings by clicking the <Codicon na
 
     * **Name:** Enter a display name for the mode
     * **Slug:** Enter a lowercase identifier (letters, numbers, and hyphens only)
-    * **Save Location:** Choose Global (via `custom_modes.json`, available across all workspaces) or Project-specific (via `.roomodes` file in project root)
-    * **Role Definition:** Define Roo's expertise and personality for this mode (appears at the start of the system prompt)
+    * **Save Location:** Choose Global (via `custom_modes.json`, available across all workspaces) or Project-specific (via `.kilocodemodes` file in project root)
+    * **Role Definition:** Define Kilo's expertise and personality for this mode (appears at the start of the system prompt)
     * **Available Tools:** Select which tools this mode can use
     * **Custom Instructions:** (Optional) Add behavioral guidelines specific to this mode (appears at the end of the system prompt)
 4.  **Create Mode:** Click the "Create Mode" button to save your new mode
@@ -166,13 +166,13 @@ You can configure custom modes by editing JSON files through the Prompts tab:
 
 Both global and project-specific configurations can be edited through the Prompts tab:
 
-1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Roo Code top menu bar
+1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar
 2.  **Access Settings Menu:** Click the <Codicon name="bracket" /> button to the right of the Modes heading
 3.  **Choose Configuration:**
     * Select "Edit Global Modes" to edit `custom_modes.json` (available across all workspaces)
-    * Select "Edit Project Modes" to edit `.roomodes` file (in project root)
+    * Select "Edit Project Modes" to edit `.kilocodemodes` file (in project root)
 4.  **Edit Configuration:** Modify the JSON file that opens
-5.  **Save Changes:** Roo Code will automatically detect the changes
+5.  **Save Changes:** Kilo Code will automatically detect the changes
 
 ## Example Configurations
 
@@ -224,11 +224,11 @@ Each example shows different aspects of mode configuration:
   }]
 }
 ```
-By following these instructions, you can create and manage custom modes to enhance your workflow with Roo-Code.
+By following these instructions, you can create and manage custom modes to enhance your workflow with Kilo Code.
 
 ## Understanding Regex in Custom Modes
 
-Regex patterns in custom modes let you precisely control which files Roo can edit:
+Regex patterns in custom modes let you precisely control which files Kilo can edit:
 
 ### Basic Syntax
 
@@ -273,12 +273,12 @@ Before applying a regex pattern to a custom mode:
 
 
 :::tip
-### Let Roo Build Your Regex Patterns
-Instead of writing complex regex patterns manually, you can ask Roo to create them for you! Simply describe which files you want to include or exclude:
+### Let Kilo Build Your Regex Patterns
+Instead of writing complex regex patterns manually, you can ask Kilo to create them for you! Simply describe which files you want to include or exclude:
 ```
 Create a regex pattern that matches JavaScript files but excludes test files
 ```
-Roo will generate the appropriate pattern with proper escaping for JSON configuration.
+Kilo will generate the appropriate pattern with proper escaping for JSON configuration.
 :::
 
 ## Community Gallery

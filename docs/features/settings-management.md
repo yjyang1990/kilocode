@@ -1,21 +1,21 @@
 ---
 title: Import, Export, and Reset Settings
 sidebar_label: Import/Export/Reset Settings
-description: Manage your Roo Code settings by exporting, importing, or resetting them to defaults.
+description: Manage your Kilo Code settings by exporting, importing, or resetting them to defaults.
 ---
 
 # Import, Export, and Reset Settings
 
-Roo Code allows you to manage your configuration settings effectively through export, import, and reset options. These features are useful for backing up your setup, sharing configurations with others, or restoring default settings if needed.
+Kilo Code allows you to manage your configuration settings effectively through export, import, and reset options. These features are useful for backing up your setup, sharing configurations with others, or restoring default settings if needed.
 
-You can find these options at the bottom of the Roo Code settings page, accessible via the gear icon (<i class="codicon codicon-gear"></i>) in the Roo Code chat view.
+You can find these options at the bottom of the Kilo Code settings page, accessible via the gear icon (<i class="codicon codicon-gear"></i>) in the Kilo Code chat view.
 
-<img src="/img/settings-management/settings-management.png" alt="Export, Import, and Reset buttons in Roo Code settings" width="400" />
+<img src="/img/settings-management/settings-management.png" alt="Export, Import, and Reset buttons in Kilo Code settings" width="400" />
 *Image: Export, Import, and Reset buttons.*
 
 ## Export Settings
 
-Clicking the **Export** button saves your current Roo Code settings to a JSON file.
+Clicking the **Export** button saves your current Kilo Code settings to a JSON file.
 
 *   **What's Exported:** The file includes your configured API Provider Profiles and Global Settings (UI preferences, mode configurations, context settings, etc.).
 *   **Security Warning:** The exported JSON file contains **all** your configured API Provider Profiles and Global Settings. Crucially, this includes **API keys in plaintext**. Treat this file as highly sensitive. Do not share it publicly or with untrusted individuals, as it grants access to your API accounts.

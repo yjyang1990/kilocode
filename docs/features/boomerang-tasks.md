@@ -4,7 +4,7 @@ sidebar_label: 'Boomerang Tasks'
 
 # Boomerang Tasks: Orchestrate Complex Workflows
 
-Boomerang Tasks (also known as subtasks or task orchestration) allow you to break down complex projects into smaller, manageable pieces. Think of it like delegating parts of your work to specialized assistants. Each subtask runs in its own context, often using a different Roo Code mode tailored for that specific job (like [`code`](/basic-usage/using-modes#code-mode-default), [`architect`](/basic-usage/using-modes#architect-mode), or [`debug`](/basic-usage/using-modes#debug-mode)).
+Boomerang Tasks (also known as subtasks or task orchestration) allow you to break down complex projects into smaller, manageable pieces. Think of it like delegating parts of your work to specialized assistants. Each subtask runs in its own context, often using a different Kilo Code mode tailored for that specific job (like [`code`](/basic-usage/using-modes#code-mode-default), [`architect`](/basic-usage/using-modes#architect-mode), or [`debug`](/basic-usage/using-modes#debug-mode)).
 
 <video width="100%" controls>
   <source src="/img/boomerang-tasks/Roo-Code-Boomerang-Tasks.mp4#t=0.001" type="video/mp4"></source>
@@ -40,7 +40,7 @@ Learn more about [Built-in Modes](/basic-usage/using-modes#built-in-modes) or th
     *   **Up:** Via the final summary provided when the subtask finishes. Be mindful that only this summary returns to the parent.
 -   **Navigation:** Roo's interface helps you see the hierarchy of tasks (which task is the parent, which are children). You can typically navigate between active and paused tasks.
 
-Boomerang Tasks provide a powerful way to manage complex development workflows directly within Roo Code, leveraging specialized modes for maximum efficiency.
+Boomerang Tasks provide a powerful way to manage complex development workflows directly within Kilo Code, leveraging specialized modes for maximum efficiency.
 
 :::tip Keep Tasks Focused
 

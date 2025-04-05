@@ -1,6 +1,6 @@
 # Browser Use
 
-Roo Code provides sophisticated browser automation capabilities that let you interact with websites directly from VS Code. This feature enables testing web applications, automating browser tasks, and capturing screenshots without leaving your development environment.
+Kilo Code provides sophisticated browser automation capabilities that let you interact with websites directly from VS Code. This feature enables testing web applications, automating browser tasks, and capturing screenshots without leaving your development environment.
 
 <video width="100%" controls>
   <source src="/img/browser-use/Roo-Code-Browser-Use.mp4#t=0.001" type="video/mp4"></source>
@@ -8,15 +8,15 @@ Roo Code provides sophisticated browser automation capabilities that let you int
 </video>
 
 :::info Model Support Required
-Browser Use within Roo Code requires the use of Claude Sonnet 3.5 or 3.7
+Browser Use within Kilo Code requires the use of Claude Sonnet 3.5 or 3.7
 :::
 
 ## How Browser Use Works
 
-By default, Roo Code uses a built-in browser that:
-- Launches automatically when you ask Roo to visit a website
+By default, Kilo Code uses a built-in browser that:
+- Launches automatically when you ask Kilo to visit a website
 - Captures screenshots of web pages
-- Allows Roo to interact with web elements
+- Allows Kilo to interact with web elements
 - Runs invisibly in the background
 
 All of this happens directly within VS Code, with no setup required.
@@ -25,10 +25,10 @@ All of this happens directly within VS Code, with no setup required.
 
 A typical browser interaction follows this pattern:
 
-1. Ask Roo to visit a website
-2. Roo launches the browser and shows you a screenshot
+1. Ask Kilo to visit a website
+2. Kilo launches the browser and shows you a screenshot
 3. Request additional actions (clicking, typing, scrolling)
-4. Roo closes the browser when finished
+4. Kilo closes the browser when finished
 
 For example:
 
@@ -37,7 +37,7 @@ Open the browser and view our site.
 ```
 
 ```
-Can you check if my website at https://roocode.com is displaying correctly?
+Can you check if my website at https://kilocode.ai is displaying correctly?
 ```
 
 ```
@@ -78,7 +78,7 @@ Key characteristics:
 
 ### Accessing Settings
 
-To change Browser / Computer Use settings in Roo:
+To change Browser / Computer Use settings in Kilo:
 
 1. Open Settings by clicking the gear icon <Codicon name="gear" /> → Browser / Computer Use
 
@@ -86,7 +86,7 @@ To change Browser / Computer Use settings in Roo:
 
 ### Enable/Disable Browser Use
 
-**Purpose**: Master toggle that enables Roo to interact with websites using a Puppeteer-controlled browser.
+**Purpose**: Master toggle that enables Kilo to interact with websites using a Puppeteer-controlled browser.
 
 To change this setting:
 1. Check or uncheck the "Enable browser tool" checkbox within your Browser / Computer Use settings
@@ -95,7 +95,7 @@ To change this setting:
 
 ### Viewport Size
 
-**Purpose**: Determines the resolution of the browser session Roo Code uses.
+**Purpose**: Determines the resolution of the browser session Kilo Code uses.
 
 **Tradeoff**: Higher values provide a larger viewport but increase token usage.
 
@@ -128,7 +128,7 @@ To change this setting:
 
 ### Remote Browser Connection
 
-**Purpose**: Connect Roo to an existing Chrome browser instead of using the built-in browser.
+**Purpose**: Connect Kilo to an existing Chrome browser instead of using the built-in browser.
 
 **Benefits**:
 - Works in containerized environments and remote development workflows
@@ -152,7 +152,7 @@ To enable this feature:
 
 #### Connecting to a Visible Chrome Window
 
-Connect to a visible Chrome window to observe Roo's interactions in real-time:
+Connect to a visible Chrome window to observe Kilo's interactions in real-time:
 
 **macOS**
 ```bash
