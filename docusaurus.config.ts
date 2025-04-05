@@ -20,8 +20,8 @@ import {
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Roo Code Docs',
-  tagline: 'Roo Code Documentation',
+  title: 'Kilo Code Docs',
+  tagline: 'Kilo Code Documentation',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -158,12 +158,12 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/roo-code-logo-white-stacked.png',
+    image: 'img/kilo-v1.svg',
     navbar: {
       logo: {
-        alt: 'Roo Code Logo',
-        src: 'img/roo-code-logo-white.png',
-        srcDark: 'img/roo-code-logo-dark.png',
+        alt: 'Kilo Code Logo',
+        src: 'img/kilo-v1.svg',
+        srcDark: 'img/kilo-v1-white.svg',
       },
       items: [
         {

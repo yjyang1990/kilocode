@@ -2,7 +2,13 @@
 sidebar_label: Welcome
 ---
 
-# Roo Code Docs
+# Kilo Code Docs
+
+:::warning
+
+We are currently working on this fork of the documentation from Roo Code, so there may be some out of date items. We are working to get this updated shortly
+
+:::
 
 Roo Code (formerly Roo Cline) is an AI-powered autonomous coding agent that lives in your editor. It helps you code faster and smarter, whether you're starting a new project, maintaining existing code, or learning new technologies.
 
