@@ -160,6 +160,7 @@ const config: Config = {
   themeConfig: {
     image: 'img/kilo-v1.svg',
     navbar: {
+      title: 'Kilo Code',
       logo: {
         alt: 'Kilo Code Logo',
         src: 'img/kilo-v1.svg',

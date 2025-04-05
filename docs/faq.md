@@ -1,27 +1,27 @@
 # Frequently Asked Questions
 
-This page answers some common questions about Roo Code.
+This page answers some common questions about Kilo Code.
 
 ## General
 
-### What is Roo Code?
+### What is Kilo Code?
 
-Roo Code is an AI-powered autonomous coding agent that lives in your editor.
+Kilo Code is an open-source AI agent extension for Visual Studio Code. It helps you write code more efficiently by generating code, automating tasks, and providing suggestions.
 
-### How does Roo Code work?
+### How does Kilo Code work?
 
-Roo Code uses large language models (LLMs) to understand your requests and translate them into actions.  It can:
+Kilo Code uses large language models (LLMs) to understand your requests and translate them into actions.  It can:
 
 *   Read and write files in your project.
 *   Execute commands in your VS Code terminal.
 *   Perform web browsing (if enabled).
 *   Use external tools via the Model Context Protocol (MCP).
 
-You interact with Roo Code through a chat interface, where you provide instructions and review/approve its proposed actions.
+You interact with Kilo Code through a chat interface, where you provide instructions and review/approve its proposed actions.
 
-### What can Roo Code do?
+### What can Kilo Code do?
 
-Roo Code can help with a variety of coding tasks, including:
+Kilo Code can help with a variety of coding tasks, including:
 
 *   Generating code from natural language descriptions.
 *   Refactoring existing code.
@@ -32,27 +32,32 @@ Roo Code can help with a variety of coding tasks, including:
 *   Automating repetitive tasks.
 *   Creating new files and projects.
 
-### Is Roo Code free to use?
+### Is Kilo Code free to use?
 
-The Roo Code extension itself is free and open-source. However, Roo Code relies on external API providers (like [Anthropic](providers/anthropic), [OpenAI](providers/openai), [OpenRouter](providers/openrouter), [Requesty](providers/requesty), etc.) for its AI capabilities.  These providers typically charge for API usage based on the number of tokens processed.  You will need to create an account and obtain an API key from your chosen provider.  See [Setting Up Your First AI Provider](getting-started/connecting-api-provider) for details.
+The Kilo Code extension itself is free and open-source. In addition, Kilo Code has a free tier with $15 worth of Claude 3.7 Sonnet tokens. We'll give out more free tokens if you leave useful feedback.
 
-### What are the risks of using Roo Code?
+After that, you can add a credit card to buy more tokens (securely processed through Stripe. Our pricing matches Anthropic's API rates exactly. We don't take any cut, either per token or per top-up. In the future we'll add more LLM providers.
 
-Roo Code is a powerful tool, and it's important to use it responsibly.  Here are some things to keep in mind:
+Alternatively, you can "Bring Your Own API" (like [Anthropic](providers/anthropic), [OpenAI](providers/openai), [OpenRouter](providers/openrouter), [Requesty](providers/requesty), etc.) for its AI capabilities.  These providers typically charge for API usage based on the number of tokens processed.  You will need to create an account and obtain an API key from your chosen provider.  See [Setting Up Your First AI Provider](getting-started/connecting-api-provider) for details.
 
-*   **Roo Code can make mistakes.**  Always review Roo Code's proposed changes carefully before approving them.
-*   **Roo Code can execute commands.**  Be very cautious about allowing Roo Code to run commands, especially if you're using auto-approval.
-*   **Roo Code can access the internet.** If you're using a provider that supports web browsing, be aware that Roo Code could potentially access sensitive information.
+### What are the risks of using Kilo Code?
+
+Kilo Code is a powerful tool, and it's important to use it responsibly.  Here are some things to keep in mind:
+
+*   **Kilo Code can make mistakes.**  Always review Kilo Code's proposed changes carefully before approving them.
+*   **Kilo Code can execute commands.**  Be very cautious about allowing Kilo Code to run commands, especially if you're using auto-approval.
+*   **Kilo Code can access the internet.** If you're using a provider that supports web browsing, be aware that Kilo Code could potentially access sensitive information.
 
 ## Setup & Installation
 
-### How do I install Roo Code?
+### How do I install Kilo Code?
 
 See the [Installation Guide](/getting-started/installing) for detailed instructions.
 
 ### Which API providers are supported?
 
-Roo Code supports a wide range of API providers, including:
+Kilo Code supports a wide range of API providers, including:
+*   [Anthropic (Claude)](/providers/kilocode)
 *   [Anthropic (Claude)](/providers/anthropic)
 *   [OpenAI](/providers/openai)
 *   [OpenRouter](/providers/openrouter)

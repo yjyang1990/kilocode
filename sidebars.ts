@@ -97,6 +97,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Model Providers',
       items: [
+        'providers/kilocode',
         'providers/anthropic',
         'providers/bedrock',
         'providers/deepseek',
