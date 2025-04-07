@@ -76,16 +76,16 @@ Kilo Code supports a wide range of API providers, including:
 ### How do I get an API key?
 Each API provider has its own process for obtaining an API key.  See the [Setting Up Your First AI Provider](/getting-started/connecting-api-provider) for links to the relevant documentation for each provider.
 
-### Can I use Roo Code with local models?
-Yes, Roo Code supports running models locally using [Ollama](/providers/ollama) and [LM Studio](/providers/lmstudio).  See [Using Local Models](/advanced-usage/local-models) for instructions.
+### Can I use Kilo Code with local models?
+Yes, Kilo Code supports running models locally using [Ollama](/providers/ollama) and [LM Studio](/providers/lmstudio).  See [Using Local Models](/advanced-usage/local-models) for instructions.
 
 ## Usage
 
 ### How do I start a new task?
-Open the Roo Code panel (<Codicon name="rocket" />) and type your task in the chat box. Be clear and specific about what you want Roo Code to do. See [Typing Your Requests](/basic-usage/typing-your-requests) for best practices.
+Open the Kilo Code panel (<Codicon name="rocket" />) and type your task in the chat box. Be clear and specific about what you want Kilo Code to do. See [Typing Your Requests](/basic-usage/typing-your-requests) for best practices.
 
-### What are modes in Roo Code?
-[Modes](/basic-usage/using-modes) are different personas that Roo Code can adopt, each with a specific focus and set of capabilities. The built-in modes are:
+### What are modes in Kilo Code?
+[Modes](/basic-usage/using-modes) are different personas that Kilo Code can adopt, each with a specific focus and set of capabilities. The built-in modes are:
 
 *   **Code:** For general-purpose coding tasks.
 *   **Architect:** For planning and technical leadership.
@@ -98,34 +98,34 @@ You can also create [Custom Modes](/features/custom-modes).
 Use the dropdown menu in the chat input area to select a different mode, or use the `/` command to switch to a specific mode.
 
 ### What are tools and how do I use them?
-[Tools](/basic-usage/how-tools-work) are how Roo Code interacts with your system.  Roo Code automatically selects and uses the appropriate tools to complete your tasks. You don't need to call tools directly. You will be prompted to approve or reject each tool use.
+[Tools](/basic-usage/how-tools-work) are how Kilo Code interacts with your system.  Kilo Code automatically selects and uses the appropriate tools to complete your tasks. You don't need to call tools directly. You will be prompted to approve or reject each tool use.
 
 ### What are context mentions?
-[Context mentions](/basic-usage/context-mentions) are a way to provide Roo Code with specific information about your project, such as files, folders, or problems. Use the "@" symbol followed by the item you want to mention (e.g., `@/src/file.ts`, `@problems`).
+[Context mentions](/basic-usage/context-mentions) are a way to provide Kilo Code with specific information about your project, such as files, folders, or problems. Use the "@" symbol followed by the item you want to mention (e.g., `@/src/file.ts`, `@problems`).
 
-### Can Roo Code access the internet?
+### Can Kilo Code access the internet?
 
 Yes, if you are using a provider with a model that support web browsing. Be mindful of the security implications of allowing this.
 
-### Can Roo Code run commands in my terminal?
+### Can Kilo Code run commands in my terminal?
 
-Yes, Roo Code can execute commands in your VS Code terminal.  You will be prompted to approve each command before it's executed, unless you've enabled auto-approval for commands. Be extremely cautious about auto-approving commands. If you're experiencing issues with terminal commands, see the [Shell Integration Guide](/troubleshooting/shell-integration) for troubleshooting.
+Yes, Kilo Code can execute commands in your VS Code terminal.  You will be prompted to approve each command before it's executed, unless you've enabled auto-approval for commands. Be extremely cautious about auto-approving commands. If you're experiencing issues with terminal commands, see the [Shell Integration Guide](/troubleshooting/shell-integration) for troubleshooting.
 
-### How do I provide feedback to Roo Code?
+### How do I provide feedback to Kilo Code?
 
-You can provide feedback by approving or rejecting Roo Code's proposed actions. You can provide additional feedback by using the feedback field.
+You can provide feedback by approving or rejecting Kilo Code's proposed actions. You can provide additional feedback by using the feedback field.
 
-### Can I customize Roo Code's behavior?
+### Can I customize Kilo Code's behavior?
 
-Yes, you can customize Roo Code in several ways:
+Yes, you can customize Kilo Code in several ways:
 
 *   **Custom Instructions:** Provide general instructions that apply to all modes, or mode-specific instructions.
 *   **Custom Modes:** Create your own modes with tailored prompts and tool permissions.
 *   **`.clinerules` Files:** Create `.clinerules` files in your project to provide additional guidelines.
 *   **Settings:** Adjust various settings, such as auto-approval, diff editing, and more.
 
-### Does Roo Code have any auto approval settings?
-Yes, Roo Code has a few settings that when enabled will automatically approve actions. Find out more [here](/features/auto-approving-actions).
+### Does Kilo Code have any auto approval settings?
+Yes, Kilo Code has a few settings that when enabled will automatically approve actions. Find out more [here](/features/auto-approving-actions).
 
 ## Advanced Features
 
@@ -133,30 +133,30 @@ Yes, Roo Code has a few settings that when enabled will automatically approve ac
 Yes, if you use a [local model](/advanced-usage/local-models).
 
 ### What is MCP (Model Context Protocol)?
-[MCP](/features/mcp/overview) is a protocol that allows Roo Code to communicate with external servers, extending its capabilities with custom tools and resources.
+[MCP](/features/mcp/overview) is a protocol that allows Kilo Code to communicate with external servers, extending its capabilities with custom tools and resources.
 
 ### Can I create my own MCP servers?
-
-Yes, you can create your own MCP servers to add custom functionality to Roo Code. See the [MCP documentation](https://github.com/modelcontextprotocol) for details.
+Yes, you can create your own MCP servers to add custom functionality to Kilo Code. See the [MCP documentation](https://github.com/modelcontextprotocol) for details.
+Yes, you can create your own MCP servers to add custom functionality to Kilo Code. See the [MCP documentation](https://github.com/modelcontextprotocol) for details.
 
 ## Troubleshooting
 
-### Roo Code isn't responding. What should I do?
+### Kilo Code isn't responding. What should I do?
 
 *   Make sure your API key is correct and hasn't expired.
 *   Check your internet connection.
 *   Check the status of your chosen API provider.
 *   Try restarting VS Code.
-*   If the problem persists, report the issue on [GitHub](https://github.com/RooVetGit/Roo-Code/issues) or [Discord](https://discord.gg/roocode).
+*   If the problem persists, report the issue on [GitHub](https://github.com/Kilo-Org/kilocode/issues) or [Discord](https://kilocode.ai/discord).
 
 ### I'm seeing an error message. What does it mean?
 
 The error message should provide some information about the problem. If you're unsure how to resolve it, seek help in the community forums.
 
-### Roo Code made changes I didn't want. How do I undo them?
+### Kilo Code made changes I didn't want. How do I undo them?
 
-Roo Code uses VS Code's built-in file editing capabilities.  You can use the standard "Undo" command (Ctrl/Cmd + Z) to revert changes. Also, if experimental checkpoints are enabled, Roo can revert changes made to a file.
+Kilo Code uses VS Code's built-in file editing capabilities.  You can use the standard "Undo" command (Ctrl/Cmd + Z) to revert changes. Also, if experimental checkpoints are enabled, Kilo can revert changes made to a file.
 
 ### How do I report a bug or suggest a feature?
 
-Please report bugs or suggest features on the Roo Code [Issues page](https://github.com/RooVetGit/Roo-Code/issues) and [Feature Requests page](https://github.com/RooVetGit/Roo-Code/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop).
+Please report bugs or suggest features on the Roo Code [Issues page](https://github.com/Kilo-Org/kilocode/issues) and [Feature Requests page](https://github.com/Kilo-Org/kilocode/discussions/categories/ideas).

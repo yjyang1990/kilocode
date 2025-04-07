@@ -2,11 +2,11 @@
 
 ## What is Shell Integration?
 
-Shell integration is a [new feature in VSCode 1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api) that allows extensions like Roo Code to run commands in your terminal and read their output. Command output allows Roo Code to react to the result of the command on its own, without you having to handhold by copy-pasting the output in yourself. It's also quite powerful when running development servers as it allows Roo Code to fix errors as the server logs them.
+Shell integration is a [new feature in VSCode 1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api) that allows extensions like Kilo Code to run commands in your terminal and read their output. Command output allows Kilo Code to react to the result of the command on its own, without you having to handhold by copy-pasting the output in yourself. It's also quite powerful when running development servers as it allows Kilo Code to fix errors as the server logs them.
 
 ## Getting Started with Shell Integration
 
-If you're seeing "Shell Integration Unavailable" messages or Roo Code can't see command output, follow these quick steps:
+If you're seeing "Shell Integration Unavailable" messages or Kilo Code can't see command output, follow these quick steps:
 
 ### For All Users
 
@@ -88,7 +88,7 @@ These hooks emit OSC (Operating System Command) sequences that VSCode recognizes
    - Exit codes
    - Output streams (stdout/stderr)
 
-This allows VSCode and extensions like Roo Code to:
+This allows VSCode and extensions like Kilo Code to:
 - Know exactly when commands start and finish
 - Capture command output reliably
 - Track command success/failure
@@ -124,7 +124,7 @@ After making these changes:
 
 1. Quit VSCode completely
 2. Reopen VSCode
-3. Start a new Roo Code session (you can resume your previous task and try to run the command again, this time with Roo Code being able to see the output)
+3. Start a new Kilo Code session (you can resume your previous task and try to run the command again, this time with Kilo Code being able to see the output)
 
 ## Additional Troubleshooting for Windows Users
 
@@ -317,10 +317,10 @@ Visual indicators of active shell integration:
 
 If commands that previously worked suddenly stop working:
 1. Close the current terminal
-2. Let Roo Code open a new terminal for you
+2. Let Kilo Code open a new terminal for you
 3. Try your command again
 
-This often resolves temporary shell integration issues. However, if you experience persistent terminal execution failures and can reliably reproduce the problem, please [open a ticket](https://github.com/RooVetGit/Roo-Code/issues/new) with:
+This often resolves temporary shell integration issues. However, if you experience persistent terminal execution failures and can reliably reproduce the problem, please [open a ticket](https://github.com/Kilo-Org/kilocode/issues) with:
 - A step-by-step reproduction of the problem
 - Your operating system and VSCode/Cursor version
 - The shell you're using (Bash, Zsh, PowerShell, Fish)
@@ -352,7 +352,7 @@ a
 
 The second `echo a` command produces no output in shell integration (only `\x1B]633;C\x07` is received) even though the terminal shows the output.
 
-**Work-around to avoid this issue:** Always ensure your terminal prompt is clean (no partial commands or text) before letting Roo run commands. This prevents shell integration from thinking it needs to send a Ctrl+C.
+**Work-around to avoid this issue:** Always ensure your terminal prompt is clean (no partial commands or text) before letting Kilo run commands. This prevents shell integration from thinking it needs to send a Ctrl+C.
 
 
 ### Multi-line Command Output Issues
@@ -396,7 +396,7 @@ echo b # because this one will not provide output.
 
 ### Incomplete Terminal Output
 
-There is an ongoing issue in VSCode where terminal command output may not be completely captured by extensions like Roo Code. This can result in:
+There is an ongoing issue in VSCode where terminal command output may not be completely captured by extensions like Kilo Code. This can result in:
 - Missing portions of command output
 - Incomplete error messages
 - Delayed or missing command completion signals
@@ -404,7 +404,7 @@ There is an ongoing issue in VSCode where terminal command output may not be com
 If you experience this issue, try:
 1. Closing and reopening the terminal
 2. Running the command again
-3. If the problem persists, you may need to manually copy-paste relevant output to Roo Code
+3. If the problem persists, you may need to manually copy-paste relevant output to Kilo Code
 
 ### Memory Leak Leading to VSCode Crashes
 
@@ -418,13 +418,9 @@ PowerShell in Windows environments has two critical command execution issues:
 1. Output buffering: PowerShell may emit the ]633;D completion marker before command output is fully processed by VSCE, resulting in missing or truncated output
 2. Duplicate command bug: PowerShell fails to execute identical subsequent commands, treating them as duplicates even when they should run independently
 
-These issues affect command execution reliability in Windows environments using PowerShell.
+These issues affect command execution reliability in Windows environments using PowerShell. Kilo Code works around these issues via specific PowerShell command handling.
 
-**Work-around:** Roo Code automatically handles both issues when [PR #1585](https://github.com/RooVetGit/Roo-Code/pull/1585) is merged by:
-- Adding a 150ms delay after command execution to ensure output capture
-- Appending a unique counter to each command to prevent duplicate command issues
-
-See [#1585](https://github.com/RooVetGit/Roo-Code/pull/1585) for implementation details.
+If you experience further issues, please [open an issue](https://github.com/Kilo-Org/kilocode/issues) for our team with the relevant details.
 
 ## Troubleshooting Resources
 
@@ -437,7 +433,7 @@ See [#1585](https://github.com/RooVetGit/Roo-Code/pull/1585) for implementation 
 
 If you've followed these steps and are still experiencing problems, please:
 
-1. Check the [Roo Code GitHub Issues](https://github.com/RooVetGit/Roo-Code/issues) to see if others have reported similar problems
+1. Check the [Kilo Code GitHub Issues](https://github.com/Kilo-Org/kilocode/issues) to see if others have reported similar problems
 2. If not, create a new issue with details about your operating system, VSCode/Cursor version, and the steps you've tried
 
-For additional help, join our [Discord](https://discord.gg/roocode).
+For additional help, join our [Discord](https://kilocode.ai/discord).

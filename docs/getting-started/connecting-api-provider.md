@@ -4,7 +4,7 @@ sidebar_label: Connecting To A Provider
 
 # Connecting Your First AI Provider
 
-Roo Code requires an API key from an AI model provider to function. We recommend these options for accessing the powerful **Claude 3.7 Sonnet** model:
+Kilo Code requires an API key from an AI model provider to function. We recommend these options for accessing the powerful **Claude 3.7 Sonnet** model:
 
 - **OpenRouter (Recommended):** Provides access to multiple AI models through a single API key. Ideal for getting started quickly with minimal setup. [View pricing](https://openrouter.ai/models?order=pricing-low-to-high).
 - **Anthropic:** Direct access to Claude models. Requires API access approval and may have [rate limits depending on your tier](https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier). See [Anthropic's pricing page](https://www.anthropic.com/pricing#anthropic-api) for details.
@@ -20,7 +20,7 @@ LLM routers let you access multiple AI models with one API key, simplifying cost
 1. Go to [openrouter.ai](https://openrouter.ai/)
 2. Sign in with your Google or GitHub account
 3. Navigate to the [API keys page](https://openrouter.ai/keys) and create a new key
-4. Copy your API key - you'll need this for Roo Code setup
+4. Copy your API key - you'll need this for Kilo Code setup
 
 <img src="/img/connecting-api-provider/connecting-api-provider-4.png" alt="OpenRouter API keys page" width="600" />
 
@@ -63,14 +63,14 @@ For direct access to specific models from their original providers, with full ac
 
 *OpenAI platform with "Create new secret key" button. Name your key and copy it immediately after creation.*
 
-## Configuring Roo Code in VS Code
+## Configuring Kilo Code in VS Code
 
 Once you have your API key:
 
-1. Open the Roo Code sidebar by clicking the Roo Code icon (<Codicon name="rocket" />) in the VS Code Activity Bar
+1. Open the Kilo Code sidebar by clicking the Kilo Code icon (<Codicon name="rocket" />) in the VS Code Activity Bar
 2. In the welcome screen, select your API provider from the dropdown
 3. Paste your API key into the appropriate field
 4. Select your model:
    - For **OpenRouter**: select `anthropic/claude-3.7-sonnet` ([model details](https://openrouter.ai/anthropic/claude-3.7-sonnet))
    - For **Anthropic**: select `claude-3-7-sonnet-20250219` ([model details](https://www.anthropic.com/pricing#anthropic-api))
-5. Click "Let's go!" to save your settings and start using Roo Code
+5. Click "Let's go!" to save your settings and start using Kilo Code

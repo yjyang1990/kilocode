@@ -8,7 +8,7 @@ export const GITHUB_ISSUES_URL = `${GITHUB_REPO_URL}/issues`;
 export const GITHUB_NEW_ISSUE_URL = `${GITHUB_ISSUES_URL}/new`;
 
 // Community links
-export const DISCORD_URL = 'https://discord.gg/Ja6BkfyTzJ';
+export const DISCORD_URL = 'https://kilocode.ai/discord';
 export const REDDIT_URL = 'https://www.reddit.com/r/kilocode/';
 export const TWITTER_URL = 'https://x.com/Kilo_Code';
 

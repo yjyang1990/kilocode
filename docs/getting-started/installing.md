@@ -1,10 +1,10 @@
 ---
-sidebar_label: Installing Roo Code
+sidebar_label: Installing Kilo Code
 ---
 
-# Installing Roo Code
+# Installing Kilo Code
 
-Roo Code is a VS Code extension that brings AI-powered coding assistance directly to your editor. Install using one of these methods:
+Kilo Code is a VS Code extension that brings AI-powered coding assistance directly to your editor. Install using one of these methods:
 1. **VS Code Marketplace (Recommended)** - fastest method for standard VS Code and Cursor users
 2. **Open VSX Registry** - for VS Code-compatible editors like VSCodium
 
@@ -12,14 +12,14 @@ Roo Code is a VS Code extension that brings AI-powered coding assistance directl
 
 1. Open VS Code
 2. Access Extensions: Click the Extensions icon in the Activity Bar or press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (macOS)
-3. Search for "Roo Code"
-4. Select "Roo Code" by RooVeterinaryInc and click **Install**
+3. Search for "Kilo Code"
+4. Select "Kilo Code" by Kilo Code and click **Install**
 5. Reload VS Code if prompted
 
-After installation, find the Roo Code icon (<Codicon name="rocket" />) in the Activity Bar to open the Roo Code panel.
+After installation, find the Kilo Code icon (<Codicon name="rocket" />) in the Activity Bar to open the Kilo Code panel.
 
-<img src="/img/installing/installing.png" alt="VS Code marketplace with Roo Code extension ready to install" width="400" />
-*VS Code marketplace with Roo Code extension ready to install*
+<img src="/img/installing/installing.png" alt="VS Code marketplace with Kilo Code extension ready to install" width="400" />
+*VS Code marketplace with Kilo Code extension ready to install*
 
 ## Open VSX Registry
 
@@ -27,18 +27,18 @@ For VS Code-compatible editors without Marketplace access (like VSCodium and Win
 
 1. Open your editor
 2. Access the Extensions view
-3. Search for "Roo Code"
-4. Select "Roo Code" by RooVeterinaryInc and click **Install**
+3. Search for "Kilo Code"
+4. Select "Kilo Code" by KiloCodeInc and click **Install**
 5. Reload if prompted
 
-<img src="/img/installing/installing-1.png" alt="Open VSX Registry with Roo Code extension ready to install" width="400" />
-*Open VSX Registry with Roo Code extension ready to install*
+<img src="/img/installing/installing-1.png" alt="Open VSX Registry with Kilo Code extension ready to install" width="400" />
+*Open VSX Registry with Kilo Code extension ready to install*
 ## Manual Installation from VSIX
 
 If you prefer to download and install the VSIX file directly:
 
 1. **Download the VSIX file:**
-   * Find official releases on the [Roo Code GitHub Releases page](https://github.com/RooVetGit/Roo-Code/releases)
+   * Find official releases on the [Kilo Code GitHub Releases page](https://github.com/KiloCodeInc/Kilo-Code/releases)
    * Download the `.vsix` file from the latest release
 
 2. **Install in VS Code:**
@@ -49,15 +49,15 @@ If you prefer to download and install the VSIX file directly:
    * Browse to and select your downloaded `.vsix` file
 
 <img src="/img/installing/installing-2.png" alt="VS Code's Install from VSIX dialog" width="400" />
-*Installing Roo Code using VS Code's "Install from VSIX" dialog*
+*Installing Kilo Code using VS Code's "Install from VSIX" dialog*
 
 ## Development Builds
 
 :::note Developer Information Only
-This section is intended only for developers contributing to Roo Code.
+This section is intended only for developers contributing to Kilo Code.
 :::
 
-If you're building Roo Code from source:
+If you're building Kilo Code from source:
 
 1. Run `npm run build` in the project directory
 2. Find the generated VSIX file in the `bin/` directory
@@ -69,14 +69,14 @@ If you're building Roo Code from source:
 
 ## Troubleshooting
 
-<img src="/img/installing/installing-4.png" alt="VS Code Output panel showing Roo Code logs for troubleshooting" width="100%" />
-*VS Code Output panel showing Roo Code logs for troubleshooting*
+<img src="/img/installing/installing-4.png" alt="VS Code Output panel showing Kilo Code logs for troubleshooting" width="100%" />
+*VS Code Output panel showing Kilo Code logs for troubleshooting*
 
 **Extension Not Visible**
 * Restart VS Code
-* Verify Roo Code is listed and enabled in Extensions
+* Verify Kilo Code is listed and enabled in Extensions
 * Try disabling and re-enabling
-* Check Output panel for errors (View → Output, select "Roo Code")
+* Check Output panel for errors (View → Output, select "Kilo Code")
 
 **Installation Problems**
 * Ensure stable internet connection
@@ -87,6 +87,6 @@ If you're building Roo Code from source:
 
 If you encounter issues not covered here:
 
-* Join our [Discord community](https://discord.gg/roocode) for real-time support
-* Submit issues on [GitHub](https://github.com/RooVetGit/Roo-Code/issues)
-* Visit our [Reddit community](https://www.reddit.com/r/RooCode)
+* Join our [Discord community](https://kilocode.ai/discord) for real-time support
+* Submit issues on [GitHub](https://github.com/Kilo-Org/kilocode/issues)
+* Visit our [Reddit community](https://www.reddit.com/r/KiloCode)

@@ -123,14 +123,6 @@ const sidebars: SidebarsConfig = {
         'faq',
       ],
     },
-    'tutorial-videos',
-    {
-      type: 'category',
-      label: 'Community',
-      items: [
-        'community',
-      ],
-    },
     {
       type: 'category',
       label: 'Troubleshooting',

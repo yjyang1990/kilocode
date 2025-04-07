@@ -26,10 +26,10 @@ Learn more about [Built-in Modes](/basic-usage/using-modes#built-in-modes) or th
 
 ## How It Works
 
-1.  Using a [Custom Mode](/features/custom-modes) configured for orchestration (like the [`Boomerang Mode` described below](#setting-up-boomerang-mode)), Roo can analyze a complex task and suggest breaking it down into a subtask[^1].
+1.  Using a [Custom Mode](/features/custom-modes) configured for orchestration (like the [`Boomerang Mode` described below](#setting-up-boomerang-mode)), Kilo can analyze a complex task and suggest breaking it down into a subtask[^1].
 
 2.  The parent task pauses, and the new subtask begins in a different mode[^2].
-3.  When the subtask's goal is achieved, Roo signals completion.
+3.  When the subtask's goal is achieved, Kilo signals completion.
 4.  The parent task resumes with only the summary[^3] of the subtask. The parent uses this summary to continue the main workflow.
 
 ## Key Considerations
@@ -38,7 +38,7 @@ Learn more about [Built-in Modes](/basic-usage/using-modes#built-in-modes) or th
 -   **Context Isolation and Transfer:** Each subtask operates in complete isolation with its own conversation history. It does not automatically inherit the parent's context. Information must be explicitly passed:
     *   **Down:** Via the initial instructions provided when the subtask is created.
     *   **Up:** Via the final summary provided when the subtask finishes. Be mindful that only this summary returns to the parent.
--   **Navigation:** Roo's interface helps you see the hierarchy of tasks (which task is the parent, which are children). You can typically navigate between active and paused tasks.
+-   **Navigation:** Kilo's interface helps you see the hierarchy of tasks (which task is the parent, which are children). You can typically navigate between active and paused tasks.
 
 Boomerang Tasks provide a powerful way to manage complex development workflows directly within Kilo Code, leveraging specialized modes for maximum efficiency.
 
@@ -48,7 +48,7 @@ Boomerang Tasks provide a powerful way to manage complex development workflows d
 
 ### Download Configuration
 
-You can download the Boomerang Mode configuration file here: [Download boomerang-mode.roomodes](/downloads/boomerang-tasks/roomodes.json). Rename to `.roomodes` and place in the root directory of your project.
+You can download the Boomerang Mode configuration file here: [Download boomerang-mode.kilocodemodes](/downloads/boomerang-tasks/kilocodemodes.json). Rename to `.kilocodemodes` and place in the root directory of your project.
 
 ### Manual Configuration
 
@@ -58,7 +58,7 @@ You can also create your own Boomerang Mode. Follow the steps in the [Custom Mod
 
 **Role Definition:**
 ```text title="Copy this for the 'Role Definition' field"
-You are Roo, a strategic workflow orchestrator who coordinates complex tasks by delegating them to appropriate specialized modes. You have a comprehensive understanding of each mode's capabilities and limitations, allowing you to effectively break down complex problems into discrete tasks that can be solved by different specialists.
+You are Kilo, a strategic workflow orchestrator who coordinates complex tasks by delegating them to appropriate specialized modes. You have a comprehensive understanding of each mode's capabilities and limitations, allowing you to effectively break down complex problems into discrete tasks that can be solved by different specialists.
 ```
 
 **Mode-specific Custom Instructions:**
