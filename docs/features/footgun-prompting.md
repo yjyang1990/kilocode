@@ -37,7 +37,7 @@ You can find the option and instructions within the Kilo Code UI:
 2.  Expand the **"Advanced: Override System Prompt"** section.
 3.  Clicking the file path link within the explanation will open or create the correct override file for the currently selected mode in VS Code.
 
-<img src="/img/footgun-prompting/footgun-prompting.png" alt="UI showing the Advanced: Override System Prompt section" width="500" />
+<img src="/docs/img/footgun-prompting/footgun-prompting.png" alt="UI showing the Advanced: Override System Prompt section" width="500" />
 
 
 ## Key Considerations & Warnings

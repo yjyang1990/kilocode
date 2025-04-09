@@ -10,7 +10,7 @@ Now that you've [got your free tokens](/getting-started/free-tokens), you're rea
 
 Click the Kilo Code icon (<Codicon name="rocket" />) in the VS Code Activity Bar (vertical bar on the side of the window) to open the chat interface. If you don't see the icon, verify the extension is installed and enabled.
 
-<img src="/img/your-first-task/your-first-task.png" alt="Kilo Code icon in VS Code Activity Bar" width="800" />
+<img src="/docs/img/your-first-task/your-first-task.png" alt="Kilo Code icon in VS Code Activity Bar" width="800" />
 
 *The Kilo Code icon in the Activity Bar opens the chat interface.*
 
@@ -24,7 +24,7 @@ Type a clear, concise description of what you want Kilo Code to do in the chat b
 
 No special commands or syntax needed—just use plain English.
 
-<img src="/img/your-first-task/your-first-task-6.png" alt="Typing a task in the Kilo Code chat interface" width="500" />
+<img src="/docs/img/your-first-task/your-first-task-6.png" alt="Typing a task in the Kilo Code chat interface" width="500" />
 *Enter your task in natural language - no special syntax required.*
 
 ## Step 3: Send Your Task
@@ -41,7 +41,7 @@ Kilo Code analyzes your request and proposes specific actions. These may include
 * **Using the Browser:** Outlines browser actions (click, type, etc.)
 * **Asking questions:** Requests clarification when needed to proceed
 
-<img src="/img/your-first-task/your-first-task-7.png" alt="Reviewing a proposed file creation action" width="800" />
+<img src="/docs/img/your-first-task/your-first-task-7.png" alt="Reviewing a proposed file creation action" width="800" />
 *Kilo Code shows exactly what action it wants to perform and waits for your approval.*
 
 **Each action requires your explicit approval** (unless auto-approval is enabled):
@@ -53,7 +53,7 @@ Kilo Code analyzes your request and proposes specific actions. These may include
 
 Kilo Code works iteratively. After each action, it waits for your feedback before proposing the next step. Continue this review-approve cycle until your task is complete.
 
-<img src="/img/your-first-task/your-first-task-8.png" alt="Final result of a completed task showing the iteration process" width="500" />
+<img src="/docs/img/your-first-task/your-first-task-8.png" alt="Final result of a completed task showing the iteration process" width="500" />
 *After completing the task, Kilo Code shows the final result and awaits your next instruction.*
 
 ## Conclusion

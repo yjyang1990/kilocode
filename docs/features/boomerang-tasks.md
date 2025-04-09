@@ -7,7 +7,7 @@ sidebar_label: 'Boomerang Tasks'
 Boomerang Tasks (also known as subtasks or task orchestration) allow you to break down complex projects into smaller, manageable pieces. Think of it like delegating parts of your work to specialized assistants. Each subtask runs in its own context, often using a different Kilo Code mode tailored for that specific job (like [`code`](/basic-usage/using-modes#code-mode-default), [`architect`](/basic-usage/using-modes#architect-mode), or [`debug`](/basic-usage/using-modes#debug-mode)).
 
 <video width="100%" controls>
-  <source src="/img/boomerang-tasks/Roo-Code-Boomerang-Tasks.mp4#t=0.001" type="video/mp4"></source>
+  <source src="/docs/img/boomerang-tasks/Roo-Code-Boomerang-Tasks.mp4#t=0.001" type="video/mp4"></source>
   Your browser does not support the video tag.
 </video>
 

@@ -20,7 +20,7 @@ The chat interface consists of the following main elements:
 
 7. **Mode Selector:** The mode selector is a dropdown located to the left of the chat input field. It is used for selecting which mode Kilo should use for your tasks.
 
-<img src="/img/the-chat-interface/the-chat-interface-1.png" alt="Chat interface components labeled with numbered callouts" width="900" />
+<img src="/docs/img/the-chat-interface/the-chat-interface-1.png" alt="Chat interface components labeled with numbered callouts" width="900" />
 
 *Numbered interface elements showing the key components of the Kilo Code chat interface.*
 

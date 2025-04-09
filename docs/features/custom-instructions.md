@@ -17,7 +17,7 @@ These instructions apply across all workspaces and maintain your preferences reg
 
 **How to set them:**
 
-<img src="/img/custom-instructions/custom-instructions.png" alt="Kilo Code Prompts tab showing global custom instructions interface" width="600" />
+<img src="/docs/img/custom-instructions/custom-instructions.png" alt="Kilo Code Prompts tab showing global custom instructions interface" width="600" />
 1.  **Open Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar
 2.  **Find Section:** Find the "Custom Instructions for All Modes" section
 3.  **Enter Instructions:** Enter your instructions in the text area
@@ -37,7 +37,7 @@ Mode-specific instructions can be set in two independent ways that can be used s
 
 1.  **Using the Prompts Tab:**
 
-    <img src="/img/custom-instructions/custom-instructions-2.png" alt="Kilo Code Prompts tab showing mode-specific custom instructions interface" width="600" />
+    <img src="/docs/img/custom-instructions/custom-instructions-2.png" alt="Kilo Code Prompts tab showing mode-specific custom instructions interface" width="600" />
     * **Open Tab:** Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar
     * **Select Mode:** Under the Modes heading, click the button for the mode you want to customize
     * **Enter Instructions:** Enter your instructions in the text area under "Mode-specific Custom Instructions (optional)"

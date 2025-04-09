@@ -10,7 +10,7 @@ Kilo Code allows you to manage your configuration settings effectively through e
 
 You can find these options at the bottom of the Kilo Code settings page, accessible via the gear icon (<i class="codicon codicon-gear"></i>) in the Kilo Code chat view.
 
-<img src="/img/settings-management/settings-management.png" alt="Export, Import, and Reset buttons in Kilo Code settings" width="400" />
+<img src="/docs/img/settings-management/settings-management.png" alt="Export, Import, and Reset buttons in Kilo Code settings" width="400" />
 *Image: Export, Import, and Reset buttons.*
 
 ## Export Settings

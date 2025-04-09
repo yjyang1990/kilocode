@@ -9,7 +9,7 @@ Kilo Code allows you to create **custom modes** to tailor Kilo's behavior to spe
 *   **Experimentation:** Safely experiment with different prompts and configurations without affecting other modes
 *   **Team Collaboration:** Share custom modes with your team to standardize workflows
 
-    <img src="/img/custom-modes/custom-modes.png" alt="Overview of custom modes interface" width="400" />
+    <img src="/docs/img/custom-modes/custom-modes.png" alt="Overview of custom modes interface" width="400" />
     *Kilo Code's interface for creating and managing custom modes.*
 
 ## What's Included in a Custom Mode?
@@ -137,7 +137,7 @@ Kilo Code will guide you through the process. However, for fine-tuning modes or 
 :::info
 #### Custom Mode Creation Settings
 When enabled, Kilo allows you to create custom modes using prompts like 'Make me a custom mode that...'. Disabling this reduces your system prompt by about 700 tokens when this feature isn't needed. When disabled you can still manually create custom modes using the + button above or by editing the related config JSON. 
-<img src="/img/custom-modes/custom-modes-1.png" alt="Enable Custom Mode Creation Through Prompts setting" width="600" />
+<img src="/docs/img/custom-modes/custom-modes-1.png" alt="Enable Custom Mode Creation Through Prompts setting" width="600" />
 You can find this setting within the prompt settings by clicking the <Codicon name="notebook" /> icon in the Kilo Code top menu bar.
 :::
 
@@ -147,7 +147,7 @@ You can find this setting within the prompt settings by clicking the <Codicon na
 2.  **Create New Mode:** Click the <Codicon name="add" /> button to the right of the Modes heading
 3.  **Fill in Fields:**
 
-        <img src="/img/custom-modes/custom-modes-2.png" alt="Custom mode creation interface in the Prompts tab" width="600" />
+        <img src="/docs/img/custom-modes/custom-modes-2.png" alt="Custom mode creation interface in the Prompts tab" width="600" />
         *The custom mode creation interface showing fields for name, slug, save location, role definition, available tools, and custom instructions.*
 
     * **Name:** Enter a display name for the mode

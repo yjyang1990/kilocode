@@ -2,7 +2,7 @@
 
 Kilo Code is designed to understand natural language.  You don't need to use any special commands or syntax to communicate with it.  Just type your request in plain English, as if you were talking to a human developer.
 
-<img src="/img/typing-your-requests/typing-your-requests.png" alt="Example of typing a request in Kilo Code" width="600" />
+<img src="/docs/img/typing-your-requests/typing-your-requests.png" alt="Example of typing a request in Kilo Code" width="600" />
 
 ## Effective Request Strategies
 

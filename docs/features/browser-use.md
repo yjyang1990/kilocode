@@ -3,7 +3,7 @@
 Kilo Code provides sophisticated browser automation capabilities that let you interact with websites directly from VS Code. This feature enables testing web applications, automating browser tasks, and capturing screenshots without leaving your development environment.
 
 <video width="100%" controls>
-  <source src="/img/browser-use/Roo-Code-Browser-Use.mp4#t=0.001" type="video/mp4"></source>
+  <source src="/docs/img/browser-use/Roo-Code-Browser-Use.mp4#t=0.001" type="video/mp4"></source>
   Your browser does not support the video tag.
 </video>
 
@@ -44,7 +44,7 @@ Can you check if my website at https://kilocode.ai is displaying correctly?
 Browse http://localhost:3000, scroll down to the bottom of the page and check if the footer information is displaying correctly.
 ```
 
-<img src="/img/browser-use/browser-use-1.png" alt="Browser use example" width="300" />
+<img src="/docs/img/browser-use/browser-use-1.png" alt="Browser use example" width="300" />
 
 ## How Browser Actions Work
 
@@ -82,7 +82,7 @@ To change Browser / Computer Use settings in Kilo:
 
 1. Open Settings by clicking the gear icon <Codicon name="gear" /> → Browser / Computer Use
 
-   <img src="/img/browser-use/browser-use.png" alt="Browser settings menu" width="600" />
+   <img src="/docs/img/browser-use/browser-use.png" alt="Browser settings menu" width="600" />
 
 ### Enable/Disable Browser Use
 
@@ -91,7 +91,7 @@ To change Browser / Computer Use settings in Kilo:
 To change this setting:
 1. Check or uncheck the "Enable browser tool" checkbox within your Browser / Computer Use settings
 
-   <img src="/img/browser-use/browser-use-2.png" alt="Enable browser tool setting" width="300" />
+   <img src="/docs/img/browser-use/browser-use-2.png" alt="Enable browser tool setting" width="300" />
 
 ### Viewport Size
 
@@ -108,7 +108,7 @@ To change this setting:
    - Mobile (360x640)
 2. Select your desired resolution.
 
-   <img src="/img/browser-use/browser-use-3.png" alt="Viewport size setting" width="600" />
+   <img src="/docs/img/browser-use/browser-use-3.png" alt="Viewport size setting" width="600" />
 
 ### Screenshot Quality
 
@@ -124,7 +124,7 @@ To change this setting:
    - 60-70%: Balanced for most general browsing
    - 80%+: Use when fine visual details are critical
 
-   <img src="/img/browser-use/browser-use-4.png" alt="Screenshot quality setting" width="600" />
+   <img src="/docs/img/browser-use/browser-use-4.png" alt="Screenshot quality setting" width="600" />
 
 ### Remote Browser Connection
 
@@ -142,7 +142,7 @@ To enable this feature:
 1. Check the "Use remote browser connection" box in Browser / Computer Use settings
 2. Click "Test Connection" to verify
 
-   <img src="/img/browser-use/browser-use-5.png" alt="Remote browser connection setting" width="600" />
+   <img src="/docs/img/browser-use/browser-use-5.png" alt="Remote browser connection setting" width="600" />
 
 #### Common Use Cases
 

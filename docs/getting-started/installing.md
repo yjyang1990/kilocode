@@ -18,7 +18,7 @@ Kilo Code is a VS Code extension that brings AI-powered coding assistance direct
 
 After installation, find the Kilo Code icon (<Codicon name="rocket" />) in the Activity Bar to open the Kilo Code panel.
 
-<img src="/img/installing/installing.png" alt="VS Code marketplace with Kilo Code extension ready to install" width="400" />
+<img src="/docs/img/installing/installing.png" alt="VS Code marketplace with Kilo Code extension ready to install" width="400" />
 *VS Code marketplace with Kilo Code extension ready to install*
 
 ## Open VSX Registry
@@ -31,7 +31,7 @@ For VS Code-compatible editors without Marketplace access (like VSCodium and Win
 4. Select "Kilo Code" by KiloCodeInc and click **Install**
 5. Reload if prompted
 
-<img src="/img/installing/installing-1.png" alt="Open VSX Registry with Kilo Code extension ready to install" width="400" />
+<img src="/docs/img/installing/installing-1.png" alt="Open VSX Registry with Kilo Code extension ready to install" width="400" />
 *Open VSX Registry with Kilo Code extension ready to install*
 ## Manual Installation from VSIX
 
@@ -48,7 +48,7 @@ If you prefer to download and install the VSIX file directly:
    * Select "Install from VSIX..."
    * Browse to and select your downloaded `.vsix` file
 
-<img src="/img/installing/installing-2.png" alt="VS Code's Install from VSIX dialog" width="400" />
+<img src="/docs/img/installing/installing-2.png" alt="VS Code's Install from VSIX dialog" width="400" />
 *Installing Kilo Code using VS Code's "Install from VSIX" dialog*
 
 ## Development Builds
@@ -64,12 +64,12 @@ If you're building Kilo Code from source:
 3. In VS Code, open Extensions view and select "Install from VSIX..." from the "..." menu
 4. Browse to and select your generated `.vsix` file
 
-<img src="/img/installing/installing-2.png" alt="VS Code's Install from VSIX dialog" width="400" />
+<img src="/docs/img/installing/installing-2.png" alt="VS Code's Install from VSIX dialog" width="400" />
 *Installing a development build using VS Code's "Install from VSIX" dialog*
 
 ## Troubleshooting
 
-<img src="/img/installing/installing-4.png" alt="VS Code Output panel showing Kilo Code logs for troubleshooting" width="100%" />
+<img src="/docs/img/installing/installing-4.png" alt="VS Code Output panel showing Kilo Code logs for troubleshooting" width="100%" />
 *VS Code Output panel showing Kilo Code logs for troubleshooting*
 
 **Extension Not Visible**

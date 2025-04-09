@@ -2,7 +2,7 @@
 
 Temperature controls the randomness of AI model outputs. Adjusting this setting optimizes results for different tasks - from precise code generation to creative brainstorming. Temperature is one of the most powerful parameters for controlling AI behavior. A well-tuned temperature setting can dramatically improve the quality and appropriateness of responses for specific tasks.
 
-<img src="/img/model-temperature/model-temperature.gif" alt="Animation showing temperature slider adjustment" width="100%" />
+<img src="/docs/img/model-temperature/model-temperature.gif" alt="Animation showing temperature slider adjustment" width="100%" />
 
 ## What is Temperature?
 
@@ -46,7 +46,7 @@ These are starting points – it's important to [experiment with different setti
 4.  **Enable Custom Temperature:** Check the "Use custom temperature" box
 5.  **Set Your Value:** Adjust the slider to your preferred value
 
-    <img src="/img/model-temperature/model-temperature.png" alt="Temperature setting in Kilo Code settings panel" width="550" />
+    <img src="/docs/img/model-temperature/model-temperature.png" alt="Temperature setting in Kilo Code settings panel" width="550" />
     *Temperature slider in Kilo Code settings panel*
 
 ## Using API Configuration Profiles for Temperature

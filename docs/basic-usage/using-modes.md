@@ -15,11 +15,11 @@ Four ways to switch modes:
 
 1. **Dropdown menu:** Click the selector to the left of the chat input
    
-   <img src="/img/modes/modes.png" alt="Using the dropdown menu to switch modes" width="400" />
+   <img src="/docs/img/modes/modes.png" alt="Using the dropdown menu to switch modes" width="400" />
 
 2. **Slash command:** Type `/architect`, `/ask`, `/debug`, or `/code` in the chat input
    
-   <img src="/img/modes/modes-1.png" alt="Using slash commands to switch modes" width="400" />
+   <img src="/docs/img/modes/modes-1.png" alt="Using slash commands to switch modes" width="400" />
 
 3. **Toggle command/Keyboard shortcut:** Use the keyboard shortcut below, applicable to your operating system. Each press cycles through the available modes in sequence, wrapping back to the first mode after reaching the end.
        
@@ -31,7 +31,7 @@ Four ways to switch modes:
 
 4. **Accept suggestions:** Click on mode switch suggestions that Roo offers when appropriate
    
-    <img src="/img/modes/modes-2.png" alt="Accepting a mode switch suggestion from Roo" width="400" />
+    <img src="/docs/img/modes/modes-2.png" alt="Accepting a mode switch suggestion from Roo" width="400" />
 
 ## Built-in Modes
 

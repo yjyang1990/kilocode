@@ -22,14 +22,14 @@ You can edit both global and project-level MCP configuration files directly from
 
 1. Click the <Codicon name="server" /> icon in the top navigation of the Roo Code pane.
 
-  <img src="/img/using-mcp-in-roo/using-mcp-in-roo-10.png" alt="MCP Servers interface in Roo Code" width="400" />
+  <img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-10.png" alt="MCP Servers interface in Roo Code" width="400" />
 
 2. Scroll to the bottom of the MCP settings view.
 3. Click the appropriate button:
     *   **`Edit Global MCP`**: Opens the global `mcp_settings.json` file.
     *   **`Edit Project MCP`**: Opens the project-specific `.roo/mcp.json` file. If this file doesn't exist, Roo Code will create it for you.
 
-  <img src="/img/using-mcp-in-roo/using-mcp-in-roo-9.png" alt="Edit Global MCP and Edit Project MCP buttons" width="600" />
+  <img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-9.png" alt="Edit Global MCP and Edit Project MCP buttons" width="600" />
 
 Both files use a JSON format with a `mcpServers` object containing named server configurations:
 
@@ -119,7 +119,7 @@ Disabling your MCP Servers here will remove all MCP related logic and definition
 1. Click the <Codicon name="server" /> icon in the top navigation of the Roo Code pane
 2. Check/Uncheck `Enable MCP Servers` 
 
-  <img src="/img/using-mcp-in-roo/using-mcp-in-roo-2.png" alt="Enable MCP Servers toggle" width="400" />
+  <img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-2.png" alt="Enable MCP Servers toggle" width="400" />
 
 ## Enabling or Disabling MCP Server Creation
 
@@ -128,24 +128,24 @@ Disabling your MCP Server Creation here will just remove the instructions from y
 1. Click the <Codicon name="server" /> icon in the top navigation of the Roo Code pane
 2. Check/Uncheck `Enable MCP Server Creation` 
 
-  <img src="/img/using-mcp-in-roo/using-mcp-in-roo-3.png" alt="Enable MCP Server Creation toggle" width="400" />
+  <img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-3.png" alt="Enable MCP Server Creation toggle" width="400" />
 
 ## Managing Individual MCP Servers
 
-   <img src="/img/using-mcp-in-roo/using-mcp-in-roo-8.png" alt="Example of a configuration pane for a MCP Server" width="400" />
+   <img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-8.png" alt="Example of a configuration pane for a MCP Server" width="400" />
 
 Each MCP server has its own configuration panel where you can modify settings, manage tools, and control its operation. To access these settings:
 
 1. Click the <Codicon name="server" /> icon in the top navigation of the Roo Code pane
 2. Locate the MCP server you want to manage in the list
-   <img src="/img/using-mcp-in-roo/using-mcp-in-roo-4.png" alt="List of MCP Servers" width="400" />
+   <img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-4.png" alt="List of MCP Servers" width="400" />
 
 ### Deleting a Server
 
 1. Press the <Codicon name="trash" /> next to the MCP server you would like to delete
 2. Press the `Delete` button on the confirmation box
 
-  <img src="/img/using-mcp-in-roo/using-mcp-in-roo-5.png" alt="Delete confirmation box" width="400" />
+  <img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-5.png" alt="Delete confirmation box" width="400" />
 
 ### Restarting a Server
 
@@ -161,7 +161,7 @@ To set the maximum time to wait for a response after a tool call to the MCP serv
 
 1. Click the `Network Timeout` pulldown at the bottom of the individual MCP server's config box and change the time. Default is 1 minute but it can be set between 30 seconds and 5 minutes.
 
-<img src="/img/using-mcp-in-roo/using-mcp-in-roo-6.png" alt="Network Timeout pulldown" width="400" />
+<img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-6.png" alt="Network Timeout pulldown" width="400" />
 
 ### Auto Approve Tools
 
@@ -171,7 +171,7 @@ MCP tool auto-approval works on a per-tool basis and is disabled by default. To 
 2. In the MCP server settings, locate the specific tool you want to auto-approve
 3. Check the `Always allow` checkbox next to the tool name
 
-<img src="/img/using-mcp-in-roo/using-mcp-in-roo-7.png" alt="Always allow checkbox for MCP tools" width="120" />
+<img src="/docs/img/using-mcp-in-roo/using-mcp-in-roo-7.png" alt="Always allow checkbox for MCP tools" width="120" />
 
 When enabled, Roo Code will automatically approve this specific tool without prompting. Note that the global "Use MCP servers" setting takes precedence - if it's disabled, no MCP tools will be auto-approved.
 
