@@ -34,7 +34,7 @@ Kilo Code can help with a variety of coding tasks, including:
 
 ### Is Kilo Code free to use?
 
-The Kilo Code extension itself is free and open-source. In addition, Kilo Code has a free tier with $15 worth of Claude 3.7 Sonnet tokens. We'll give out more free tokens if you leave useful feedback.
+The Kilo Code extension itself is free and open-source. In addition, Kilo Code has a free tier with $20 worth of Claude 3.7 Sonnet tokens. We'll give out more free tokens if you leave useful feedback.
 
 After that, you can add a credit card to buy more tokens (securely processed through Stripe. Our pricing matches Anthropic's API rates exactly. We don't take any cut, either per token or per top-up. In the future we'll add more LLM providers.
 
