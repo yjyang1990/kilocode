@@ -1,6 +1,6 @@
 # Custom Instructions
 
-Custom Instructions allow you to personalize how Roo behaves, providing specific guidance that shapes responses, coding style, and decision-making processes.
+Custom Instructions allow you to personalize how Kilo Code behaves, providing specific guidance that shapes responses, coding style, and decision-making processes.
 
 ## What Are Custom Instructions?
 

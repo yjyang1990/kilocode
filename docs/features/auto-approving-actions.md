@@ -1,13 +1,13 @@
 # Auto-Approving Actions
 
-> ⚠️ **SECURITY WARNING:** Auto-approve settings bypass confirmation prompts, giving Roo direct access to your system. This can result in **data loss, file corruption, or worse**. Command line access is particularly dangerous, as it can potentially execute harmful operations that could damage your system or compromise security. Only enable auto-approval for actions you fully trust.
+> ⚠️ **SECURITY WARNING:** Auto-approve settings bypass confirmation prompts, giving Kilo Code direct access to your system. This can result in **data loss, file corruption, or worse**. Command line access is particularly dangerous, as it can potentially execute harmful operations that could damage your system or compromise security. Only enable auto-approval for actions you fully trust.
 
 Auto-approve settings speed up your workflow by eliminating repetitive confirmation prompts, but they significantly increase security risks.
 
 ## Quick Start Guide
 
 1. Click the Auto-Approve Toolbar above the chat input
-2. Select which actions Roo can perform without asking permission
+2. Select which actions Kilo Code can perform without asking permission
 3. Use the master toggle (leftmost checkbox) to quickly enable/disable all permissions
 
 ## Auto-Approve Toolbar
@@ -26,12 +26,12 @@ Click the toolbar to expand it and configure individual permissions:
 
 | Permission | What it does | Risk level |
 |------------|--------------|------------|
-| **Read files and directories** | Lets Roo access files without asking | Medium |
-| **Edit files** | Lets Roo modify files without asking | **High** |
+| **Read files and directories** | Lets Kilo Code access files without asking | Medium |
+| **Edit files** | Lets Kilo Code modify files without asking | **High** |
 | **Execute approved commands** | Runs whitelisted terminal commands automatically | **High** |
 | **Use the browser** | Allows headless browser interaction | Medium |
-| **Use MCP servers** | Lets Roo use configured MCP services | Medium-High |
-| **Switch modes** | Changes between Roo modes automatically | Low |
+| **Use MCP servers** | Lets Kilo Code use configured MCP services | Medium-High |
+| **Switch modes** | Changes between Kilo Code modes automatically | Low |
 | **Create & complete subtasks** | Manages subtasks without confirmation | Low |
 | **Retry failed requests** | Automatically retries failed API requests | Low |
 
@@ -52,7 +52,7 @@ Use the master toggle when:
 
 The settings panel provides detailed control with important security context:
 
-> **Allow Roo to automatically perform operations without requiring approval. Enable these settings only if you fully trust the AI and understand the associated security risks.**
+> **Allow Kilo Code to automatically perform operations without requiring approval. Enable these settings only if you fully trust the AI and understand the associated security risks.**
 
 To access these settings:
 
@@ -70,11 +70,11 @@ To access these settings:
 
 **Setting:** "Always approve read-only operations"
 
-**Description:** "When enabled, Roo will automatically view directory contents and read files without requiring you to click the Approve button."
+**Description:** "When enabled, Kilo Code will automatically view directory contents and read files without requiring you to click the Approve button."
 
 **Risk level:** Medium
 
-While this setting only allows reading files (not modifying them), it could potentially expose sensitive data. Still recommended as a starting point for most users, but be mindful of what files Roo can access.
+While this setting only allows reading files (not modifying them), it could potentially expose sensitive data. Still recommended as a starting point for most users, but be mindful of what files Kilo Code can access.
 :::
 
 ### Write Operations
@@ -90,7 +90,7 @@ While this setting only allows reading files (not modifying them), it could pote
 
 **Risk level:** High
 
-This setting allows Roo to modify your files without confirmation. The delay timer is crucial:
+This setting allows Kilo Code to modify your files without confirmation. The delay timer is crucial:
 - Higher values (2000ms+): Recommended for complex projects where diagnostics take longer
 - Default (1000ms): Suitable for most projects
 - Lower values: Use only when speed is critical and you're in a controlled environment
@@ -100,14 +100,14 @@ This setting allows Roo to modify your files without confirmation. The delay tim
 
 <img src="/docs/img/auto-approving-actions/auto-approving-actions-5.png" alt="VSCode Problems pane showing diagnostic information" width="600" />
 
-*VSCode Problems pane that Roo checks during the write delay*
+*VSCode Problems pane that Kilo Code checks during the write delay*
 
 When you enable auto-approval for writing files, the delay timer works with VSCode's Problems pane:
 
-1. Roo makes a change to your file
+1. Kilo Code makes a change to your file
 2. VSCode's diagnostic tools analyze the change
 3. The Problems pane updates with any errors or warnings
-4. Roo notices these issues before continuing
+4. Kilo Code notices these issues before continuing
 
 This works like a human developer pausing to check for errors after changing code. You can adjust the delay time based on:
 
@@ -129,7 +129,7 @@ This works like a human developer pausing to check for errors after changing cod
 
 **Risk level:** Medium
 
-Allows Roo to control a headless browser without confirmation. This can include:
+Allows Kilo Code to control a headless browser without confirmation. This can include:
 - Opening websites
 - Navigating pages
 - Interacting with web elements
@@ -150,7 +150,7 @@ Consider the security implications of allowing automated browser access.
 
 **Risk level:** Low
 
-This setting automatically retries API calls when they fail. The delay controls how long Roo waits before trying again:
+This setting automatically retries API calls when they fail. The delay controls how long Kilo Code waits before trying again:
 - Longer delays are gentler on API rate limits
 - Shorter delays give faster recovery from transient errors
 :::
@@ -180,7 +180,7 @@ This setting works in conjunction with individual tool permissions in the MCP Se
 
 **Risk level:** Low
 
-Allows Roo to change between different modes (Code, Architect, etc.) without asking for permission. This primarily affects the AI's behavior rather than system access.
+Allows Kilo Code to change between different modes (Code, Architect, etc.) without asking for permission. This primarily affects the AI's behavior rather than system access.
 :::
 
 ### Subtasks
@@ -194,7 +194,7 @@ Allows Roo to change between different modes (Code, Architect, etc.) without ask
 
 **Risk level:** Low
 
-Enables Roo to create and complete subtasks automatically. This relates to workflow organization rather than system access.
+Enables Kilo Code to create and complete subtasks automatically. This relates to workflow organization rather than system access.
 :::
 
 ### Command Execution

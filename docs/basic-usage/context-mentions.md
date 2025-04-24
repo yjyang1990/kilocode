@@ -62,7 +62,7 @@ Context mentions are a powerful way to provide Kilo Code with specific informati
 | **Best for** | Fixing errors without manual copying |
 
 ### Terminal Mention
-<img src="/docs/img/context-mentions/context-mentions-4.png" alt="Terminal mention example showing terminal output being included in Roo's context" width="600" />
+<img src="/docs/img/context-mentions/context-mentions-4.png" alt="Terminal mention example showing terminal output being included in Kilo Code's context" width="600" />
 
 *Terminal mentions capture recent command output for debugging and analysis.*
 
@@ -76,7 +76,7 @@ Context mentions are a powerful way to provide Kilo Code with specific informati
 
 ### Git Mentions
 
-<img src="/docs/img/context-mentions/context-mentions-5.png" alt="Git commit mention example showing commit details being analyzed by Roo" width="600" />
+<img src="/docs/img/context-mentions/context-mentions-5.png" alt="Git commit mention example showing commit details being analyzed by Kilo Code" width="600" />
 
 *Git mentions provide commit details and diffs for context-aware version analysis.*
 | Type | Format | Provides | Limitations |

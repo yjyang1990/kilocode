@@ -2,9 +2,9 @@
 sidebar_label: Requesty
 ---
 
-# Using Requesty With Roo Code
+# Using Requesty With Kilo Code
 
-Roo Code supports accessing models through the [Requesty](https://www.requesty.ai/) AI platform. Requesty provides an easy and optimized API for interacting with 150+ large language models (LLMs).
+Kilo Code supports accessing models through the [Requesty](https://www.requesty.ai/) AI platform. Requesty provides an easy and optimized API for interacting with 150+ large language models (LLMs).
 
 **Website:** [https://www.requesty.ai/](https://www.requesty.ai/)
 
@@ -15,11 +15,11 @@ Roo Code supports accessing models through the [Requesty](https://www.requesty.a
 
 ## Supported Models
 
-Requesty provides access to a wide range of models.  Roo Code will automatically fetch the latest list of available models. You can see the full list of available models on the [Model List](https://app.requesty.ai/router/list) page.
+Requesty provides access to a wide range of models.  Kilo Code will automatically fetch the latest list of available models. You can see the full list of available models on the [Model List](https://app.requesty.ai/router/list) page.
 
-## Configuration in Roo Code
+## Configuration in Kilo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open Kilo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Kilo Code panel.
 2.  **Select Provider:** Choose "Requesty" from the "API Provider" dropdown.
 3.  **Enter API Key:** Paste your Requesty API key into the "Requesty API Key" field.
 4.  **Select Model:** Choose your desired model from the "Model" dropdown.

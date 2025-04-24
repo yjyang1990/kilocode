@@ -29,7 +29,7 @@ Certain tools are accessible regardless of the current mode:
 ## Available Tools
 
 ### Read Tools
-These tools help Roo understand your code and project:
+These tools help Kilo Code understand your code and project:
 
 - [read_file](/features/tools/read-file) - Examines the contents of files
 - [search_files](/features/tools/search-files) - Finds patterns across multiple files
@@ -37,23 +37,23 @@ These tools help Roo understand your code and project:
 - [list_code_definition_names](/features/tools/list-code-definition-names) - Creates a structural map of your code
 
 ### Edit Tools
-These tools help Roo make changes to your code:
+These tools help Kilo Code make changes to your code:
 
 - [apply_diff](/features/tools/apply-diff) - Makes precise, surgical changes to your code
 - [write_to_file](/features/tools/write-to-file) - Creates new files or completely rewrites existing ones
 
 ### Browser Tools
-These tools help Roo interact with web applications:
+These tools help Kilo Code interact with web applications:
 
 - [browser_action](/features/tools/browser-action) - Automates browser interactions
 
 ### Command Tools
-These tools help Roo execute commands:
+These tools help Kilo Code execute commands:
 
 - [execute_command](/features/tools/execute-command) - Runs system commands and programs
 
 ### MCP Tools
-These tools help Roo connect with external services:
+These tools help Kilo Code connect with external services:
 
 - [use_mcp_tool](/features/tools/use-mcp-tool) - Uses specialized external tools
 - [access_mcp_resource](/features/tools/access-mcp-resource) - Accesses external data sources

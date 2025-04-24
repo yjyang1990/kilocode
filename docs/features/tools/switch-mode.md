@@ -1,6 +1,6 @@
 # switch_mode
 
-The `switch_mode` tool enables Roo to change between different operational modes, each with specialized capabilities for specific types of tasks. This allows seamless transitions between modes like Code, Architect, Ask, or Debug when the current task requires different expertise.
+The `switch_mode` tool enables Kilo Code to change between different operational modes, each with specialized capabilities for specific types of tasks. This allows seamless transitions between modes like Code, Architect, Ask, or Debug when the current task requires different expertise.
 
 ## Parameters
 
@@ -112,9 +112,9 @@ Different modes may have specific file type restrictions:
 
 ## Examples When Used
 
-- When discussing a new feature, Roo switches from Ask mode to Architect mode to help design the system structure.
-- After completing architecture planning in Architect mode, Roo switches to Code mode to implement the designed features.
-- When encountering bugs during development, Roo switches from Code mode to Debug mode for systematic troubleshooting.
+- When discussing a new feature, Kilo Code switches from Ask mode to Architect mode to help design the system structure.
+- After completing architecture planning in Architect mode, Kilo Code switches to Code mode to implement the designed features.
+- When encountering bugs during development, Kilo Code switches from Code mode to Debug mode for systematic troubleshooting.
 
 ## Usage Examples
 

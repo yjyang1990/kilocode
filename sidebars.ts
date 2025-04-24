@@ -92,9 +92,15 @@ const sidebars: SidebarsConfig = {
         },
         'advanced-usage/local-models',
         {
-          type: 'doc',
-          id: 'features/mcp/overview',
-          label: 'MCP',
+          type: 'category',
+          label: 'Model Context Protocol (MCP)',
+          items: [
+            'features/mcp/overview',
+            'features/mcp/using-mcp-in-kilo-code',
+            'features/mcp/what-is-mcp',
+            'features/mcp/server-transports',
+            'features/mcp/mcp-vs-api'
+          ]
         },
         'troubleshooting/shell-integration',
         'extending/contributing-to-kilo',

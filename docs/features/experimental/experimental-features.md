@@ -28,10 +28,10 @@ Adds a new tool for inserting content at any position in a file.
 
 ### Power Steering
 
-When enabled, Roo will remind the model about the details of its current mode definition more frequently. This will lead to stronger adherence to role definitions and custom instructions, but will use more tokens per message.
+When enabled, Kilo Code will remind the model about the details of its current mode definition more frequently. This will lead to stronger adherence to role definitions and custom instructions, but will use more tokens per message.
 
 ## Providing Feedback
 
-If you encounter any issues with experimental features, or if you have suggestions for improvements, please report them on the [Roo Code GitHub Issues page](https://github.com/RooVetGit/Roo-Code/issues).
+If you encounter any issues with experimental features, or if you have suggestions for improvements, please report them on the [Kilo Code Code GitHub Issues page](https://github.com/Kilo-Org/kilocode).
 
-Your feedback is valuable and helps us improve Roo Code!
+Your feedback is valuable and helps us improve Kilo Code!

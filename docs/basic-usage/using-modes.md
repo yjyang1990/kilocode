@@ -29,9 +29,9 @@ Four ways to switch modes:
     | Windows | Ctrl + . |
     | Linux | Ctrl + . |
 
-4. **Accept suggestions:** Click on mode switch suggestions that Roo offers when appropriate
+4. **Accept suggestions:** Click on mode switch suggestions that Kilo Code offers when appropriate
    
-    <img src="/docs/img/modes/modes-2.png" alt="Accepting a mode switch suggestion from Roo" width="400" />
+    <img src="/docs/img/modes/modes-2.png" alt="Accepting a mode switch suggestion from Kilo Code" width="400" />
 
 ## Built-in Modes
 

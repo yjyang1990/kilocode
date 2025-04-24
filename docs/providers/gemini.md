@@ -2,9 +2,9 @@
 sidebar_label: Google Gemini
 ---
 
-# Using Google Gemini With Roo Code
+# Using Google Gemini With Kilo Code
 
-Roo Code supports Google's Gemini family of models through the Google AI Gemini API.
+Kilo Code supports Google's Gemini family of models through the Google AI Gemini API.
 
 **Website:** [https://ai.google.dev/](https://ai.google.dev/)
 
@@ -17,7 +17,7 @@ Roo Code supports Google's Gemini family of models through the Google AI Gemini 
 
 ## Supported Models
 
-Roo Code supports the following Gemini models:
+Kilo Code supports the following Gemini models:
 
 * `gemini-2.5-pro-exp-03-25`
 * `gemini-2.0-flash-001`
@@ -35,9 +35,9 @@ Roo Code supports the following Gemini models:
 
 Refer to the [Gemini documentation](https://ai.google.dev/models/gemini) for more details on each model.
 
-## Configuration in Roo Code
+## Configuration in Kilo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open Kilo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Kilo Code panel.
 2.  **Select Provider:** Choose "Google Gemini" from the "API Provider" dropdown.
 3.  **Enter API Key:** Paste your Gemini API key into the "Gemini API Key" field.
 4.  **Select Model:** Choose your desired Gemini model from the "Model" dropdown.

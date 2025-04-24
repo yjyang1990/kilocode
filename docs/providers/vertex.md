@@ -2,9 +2,9 @@
 sidebar_label: GCP Vertex AI
 ---
 
-# Using GCP Vertex AI With Roo Code
+# Using GCP Vertex AI With Kilo Code
 
-Roo Code supports accessing models through Google Cloud Platform's Vertex AI, a managed machine learning platform that provides access to various foundation models, including Anthropic's Claude family.
+Kilo Code supports accessing models through Google Cloud Platform's Vertex AI, a managed machine learning platform that provides access to various foundation models, including Anthropic's Claude family.
 
 **Website:** [https://cloud.google.com/vertex-ai](https://cloud.google.com/vertex-ai)
 
@@ -13,13 +13,13 @@ Roo Code supports accessing models through Google Cloud Platform's Vertex AI, a 
 *   **Google Cloud Account:** You need an active Google Cloud Platform (GCP) account.
 *   **Project:** You need a GCP project with the Vertex AI API enabled.
 *   **Model Access:** You must request and be granted access to the specific Claude models on Vertex AI you want to use. See the [Google Cloud documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude#before_you_begin) for instructions.
-*   **Application Default Credentials (ADC):**  Roo Code uses Application Default Credentials to authenticate with Vertex AI. The easiest way to set this up is to:
+*   **Application Default Credentials (ADC):**  Kilo Code uses Application Default Credentials to authenticate with Vertex AI. The easiest way to set this up is to:
     1.  Install the Google Cloud CLI: [https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)
     2.  Authenticate using: `gcloud auth application-default login`
 
 ## Supported Models
 
-Roo Code supports the following models through Vertex AI (based on source code):
+Kilo Code supports the following models through Vertex AI (based on source code):
 
 *   **Google Gemini Models:**
     *   `gemini-2.0-flash-001`
@@ -40,9 +40,9 @@ Roo Code supports the following models through Vertex AI (based on source code):
 
 Refer to the [Google Cloud documentation on Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models) for the most up-to-date list of available models and their IDs.
 
-## Configuration in Roo Code
+## Configuration in Kilo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open Kilo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Kilo Code panel.
 2.  **Select Provider:** Choose "GCP Vertex AI" from the "API Provider" dropdown.
 3.  **Enter Project ID:** Enter your Google Cloud Project ID.
 4.  **Select Region:** Choose the region where your Vertex AI resources are located (e.g., `us-east5`).

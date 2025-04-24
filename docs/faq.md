@@ -139,7 +139,7 @@ Yes, Kilo Code has a few settings that when enabled will automatically approve a
 
 ## Advanced Features
 
-### Can I use Roo offline?
+### Can I use Kilo Code offline?
 Yes, if you use a [local model](/advanced-usage/local-models).
 
 ### What is MCP (Model Context Protocol)?
@@ -169,4 +169,4 @@ Kilo Code uses VS Code's built-in file editing capabilities.  You can use the st
 
 ### How do I report a bug or suggest a feature?
 
-Please report bugs or suggest features on the Roo Code [Issues page](https://github.com/Kilo-Org/kilocode/issues) and [Feature Requests page](https://github.com/Kilo-Org/kilocode/discussions/categories/ideas).
+Please report bugs or suggest features on the Kilo Code [Issues page](https://github.com/Kilo-Org/kilocode/issues) and [Feature Requests page](https://github.com/Kilo-Org/kilocode/discussions/categories/ideas).

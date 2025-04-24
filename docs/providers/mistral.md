@@ -2,9 +2,9 @@
 sidebar_label: Mistral AI
 ---
 
-# Using Mistral AI With Roo Code
+# Using Mistral AI With Kilo Code
 
-Roo Code supports accessing models through the Mistral AI API, including both standard Mistral models and the code-specialized Codestral model.
+Kilo Code supports accessing models through the Mistral AI API, including both standard Mistral models and the code-specialized Codestral model.
 
 **Website:** [https://mistral.ai/](https://mistral.ai/)
 
@@ -17,7 +17,7 @@ Roo Code supports accessing models through the Mistral AI API, including both st
 
 ## Supported Models
 
-Roo Code supports the following Mistral models:
+Kilo Code supports the following Mistral models:
 
 | Model ID               | Model Default Temperature | Function Calling | Vision / Image support |
 |------------------------|-------------------------|------------------|--------|
@@ -27,14 +27,14 @@ Roo Code supports the following Mistral models:
 | ministral-3b-latest   | 0.3                     | ✅               | ❌      |
 | mistral-small-latest  | 0.3                     | ✅               | ❌      |
 | pixtral-large-latest  | 0.7                     | ✅               | ✅      |
-The default model temperature in Roo Code is 0.0, so you should consider experimenting with [temperature adjustments](/features/model-temperature)!
+The default model temperature in Kilo Code is 0.0, so you should consider experimenting with [temperature adjustments](/features/model-temperature)!
 
 **Note:**  Model availability and specifications may change.
 Refer to the [Mistral AI documentation](https://docs.mistral.ai/api/) and [Mistral Model Overview](https://docs.mistral.ai/getting-started/models/models_overview/) for the latest information.
 
-## Configuration in Roo Code
+## Configuration in Kilo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open Kilo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Kilo Code panel.
 2.  **Select Provider:** Choose "Mistral" from the "API Provider" dropdown.
 3.  **Enter API Key:** Paste your Mistral API key into the "Mistral API Key" field if you're using a `mistral` model.  If you intend to use `codestral-latest`, see the "Codestral" section below.
 4.  **Select Model:** Choose your desired model from the "Model" dropdown. 

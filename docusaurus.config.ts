@@ -141,8 +141,8 @@ const config: Config = {
             from: ['/advanced-usage/mcp', '/mcp/overview'],
           },
           {
-            to: '/features/mcp/using-mcp-in-roo',
-            from: ['/mcp/using-mcp-in-roo'],
+            to: '/features/mcp/using-mcp-in-kilo-code',
+            from: ['/mcp/using-mcp-in-kilo-code'],
           },
           {
             to: '/features/mcp/what-is-mcp',

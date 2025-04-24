@@ -19,7 +19,7 @@ Anthropic is an AI safety and research company that builds reliable, interpretab
 
 1.  **Sign Up/Sign In:** Go to the [Anthropic Console](https://console.anthropic.com/). Create an account or sign in.
 2.  **Navigate to API Keys:**  Go to the [API keys](https://console.anthropic.com/settings/keys) section.
-3.  **Create a Key:** Click "Create Key". Give your key a descriptive name (e.g., "Roo Code").
+3.  **Create a Key:** Click "Create Key". Give your key a descriptive name (e.g., "Kilo Code").
 4.  **Copy the Key:**  **Important:** Copy the API key *immediately*.  You will not be able to see it again.  Store it securely.
 
 ## Supported Models
@@ -30,9 +30,9 @@ Kilo Code supports the following Anthropic Claude models:
 
 See [Anthropic's Model Documentation](https://docs.anthropic.com/en/docs/about-claude/models) for more details on each model's capabilities.
 
-## Configuration in Roo Code
+## Configuration in Kilo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open Kilo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Kilo Code panel.
 2.  **Select Provider:** Choose "Anthropic" from the "API Provider" dropdown.
 3.  **Enter API Key:** Paste your Anthropic API key into the "Anthropic API Key" field.
 4.  **Select Model:** Choose your desired Claude model from the "Model" dropdown.

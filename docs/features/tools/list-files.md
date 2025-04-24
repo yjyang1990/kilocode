@@ -1,6 +1,6 @@
 # list_files
 
-The `list_files` tool displays the files and directories within a specified location. It helps Roo understand your project structure and navigate your codebase effectively.
+The `list_files` tool displays the files and directories within a specified location. It helps Kilo Code understand your project structure and navigate your codebase effectively.
 
 ## Parameters
 
@@ -15,11 +15,11 @@ This tool lists all files and directories in a specified location, providing a c
 
 ## When is it used?
 
-- When Roo needs to understand your project structure
-- When Roo explores what files are available before reading specific ones
-- When Roo maps a codebase to better understand its organization
+- When Kilo Code needs to understand your project structure
+- When Kilo Code explores what files are available before reading specific ones
+- When Kilo Code maps a codebase to better understand its organization
 - Before using more targeted tools like `read_file` or `search_files`
-- When Roo needs to check for specific file types (like configuration files) across a project
+- When Kilo Code needs to check for specific file types (like configuration files) across a project
 
 ## Key Features
 
@@ -27,7 +27,7 @@ This tool lists all files and directories in a specified location, providing a c
 - Offers both recursive and non-recursive listing modes
 - Intelligently ignores common large directories like `node_modules` and `.git` in recursive mode
 - Respects `.gitignore` rules when in recursive mode
-- Marks files ignored by `.rooignore` with a lock symbol (🔒) when `showRooIgnoredFiles` is enabled
+- Marks files ignored by `.kilocodeignore` with a lock symbol (🔒) when `showRooIgnoredFiles` is enabled
 - Optimizes performance with level-by-level directory traversal
 - Sorts results to show directories before their contents, maintaining a logical hierarchy
 - Presents results in a clean, organized format
@@ -56,7 +56,7 @@ When the `list_files` tool is invoked, it follows this process:
 5. **Result Filtering**:
    - In recursive mode, skips common large directories like `node_modules`, `.git`, etc.
    - Respects `.gitignore` rules when in recursive mode
-   - Handles `.rooignore` patterns, either hiding files or marking them with a lock symbol
+   - Handles `.kilocodeignore` patterns, either hiding files or marking them with a lock symbol
 6. **Formatting**:
    - Marks directories with a trailing slash (`/`)
    - Sorts results to show directories before their contents for logical hierarchy
@@ -70,7 +70,7 @@ The file listing results include:
 
 - Each file path is displayed on its own line
 - Directories are marked with a trailing slash (`/`)
-- Files ignored by `.rooignore` are marked with a lock symbol (🔒) when `showRooIgnoredFiles` is enabled
+- Files ignored by `.kilocodeignore` are marked with a lock symbol (🔒) when `showRooIgnoredFiles` is enabled
 - Results are sorted logically with directories appearing before their contents
 - When the file limit is reached, a message appears suggesting to use `list_files` on specific subdirectories
 
@@ -87,7 +87,7 @@ src/index.ts
 File listing truncated (showing 200 of 543 files). Use list_files on specific subdirectories for more details.
 ```
 
-When `.rooignore` files are used and `showRooIgnoredFiles` is enabled:
+When `.kilocodeignore` files are used and `showRooIgnoredFiles` is enabled:
 ```
 src/
 src/components/
@@ -101,10 +101,10 @@ src/index.ts
 
 ## Examples When Used
 
-- When starting a new task, Roo may list the project files to understand its structure before diving into specific code.
-- When asked to find specific types of files (like all JavaScript files), Roo first lists directories to know where to look.
-- When providing recommendations for code organization, Roo examines the current project structure first.
-- When setting up a new feature, Roo lists related directories to understand the project conventions.
+- When starting a new task, Kilo Code may list the project files to understand its structure before diving into specific code.
+- When asked to find specific types of files (like all JavaScript files), Kilo Code first lists directories to know where to look.
+- When providing recommendations for code organization, Kilo Code examines the current project structure first.
+- When setting up a new feature, Kilo Code lists related directories to understand the project conventions.
 
 ## Usage Examples
 

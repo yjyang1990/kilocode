@@ -2,9 +2,9 @@
 sidebar_label: LM Studio
 ---
 
-# Using LM Studio With Roo Code
+# Using LM Studio With Kilo Code
 
-Roo Code supports running models locally using LM Studio.  LM Studio provides a user-friendly interface for downloading, configuring, and running local language models.  It also includes a built-in local inference server that emulates the OpenAI API, making it easy to integrate with Roo Code.
+Kilo Code supports running models locally using LM Studio.  LM Studio provides a user-friendly interface for downloading, configuring, and running local language models.  It also includes a built-in local inference server that emulates the OpenAI API, making it easy to integrate with Kilo Code.
 
 **Website:** [https://lmstudio.ai/](https://lmstudio.ai/)
 
@@ -24,17 +24,17 @@ Roo Code supports running models locally using LM Studio.  LM Studio provides a 
     *   Select the model you downloaded.
     *   Click **"Start Server"**.
 
-## Configuration in Roo Code
+## Configuration in Kilo Code
 
-1.  **Open Roo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Roo Code panel.
+1.  **Open Kilo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Kilo Code panel.
 2.  **Select Provider:** Choose "LM Studio" from the "API Provider" dropdown.
 3.  **Enter Model ID:** Enter the *file name* of the model you loaded in LM Studio (e.g., `codellama-7b.Q4_0.gguf`).  You can find this in the LM Studio "Local Server" tab.
-4.  **(Optional) Base URL:**  By default, Roo Code will connect to LM Studio at `http://localhost:1234`.  If you've configured LM Studio to use a different address or port, enter the full URL here.
+4.  **(Optional) Base URL:**  By default, Kilo Code will connect to LM Studio at `http://localhost:1234`.  If you've configured LM Studio to use a different address or port, enter the full URL here.
 
 ## Tips and Notes
 
 *   **Resource Requirements:** Running large language models locally can be resource-intensive. Make sure your computer meets the minimum requirements for the model you choose.
 *   **Model Selection:**  LM Studio provides a wide range of models.  Experiment to find the one that best suits your needs.
-*   **Local Server:**  The LM Studio local server must be running for Roo Code to connect to it.
+*   **Local Server:**  The LM Studio local server must be running for Kilo Code to connect to it.
 *   **LM Studio Documentation:** Refer to the [LM Studio documentation](https://lmstudio.ai/docs) for more information.
 *   **Troubleshooting:** If you see a "Please check the LM Studio developer logs to debug what went wrong" error, you may need to adjust the context length settings in LM Studio.
