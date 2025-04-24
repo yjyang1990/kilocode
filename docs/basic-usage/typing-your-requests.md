@@ -2,7 +2,9 @@
 
 Kilo Code is designed to understand natural language.  You don't need to use any special commands or syntax to communicate with it.  Just type your request in plain English, as if you were talking to a human developer.
 
-<img src="/docs/img/typing-your-requests/typing-your-requests.png" alt="Example of typing a request in Kilo Code" width="600" />
+<center>
+    <img src="/docs/img/typing-your-requests/typing-your-requests.png" alt="Example of typing a request in Kilo Code" width="600" />
+</center>
 
 ## Effective Request Strategies
 
@@ -11,9 +13,9 @@ Clearly state what you want Kilo Code to do.  Avoid vague or ambiguous language.
 | Strategy | Implementation |
 |----------|----------------|
 | **Be specific** | "Fix the bug in `calculateTotal` that returns incorrect results" instead of "Fix the code" |
-| **Provide context** | Use @ [Context Mentions](/basic-usage/context-mentions) for file and code references |
+| **Provide context** | Use `@` [Context Mentions](/basic-usage/context-mentions) for file and code references |
 | **Break down tasks** | Submit complex tasks in smaller manageable steps |
-| **Include examples** | Provide sample code when you need specific formatting or style |
+| **Include examples** | Provide sample code (or reference exisiting code with `@`) when you need specific formatting or style |
 
 ## Example Requests
 

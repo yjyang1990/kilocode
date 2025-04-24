@@ -92,7 +92,7 @@ Yes, Kilo Code supports running models locally using [Ollama](/providers/ollama)
 ## Usage
 
 ### How do I start a new task?
-Open the Kilo Code panel (<Codicon name="rocket" />) and type your task in the chat box. Be clear and specific about what you want Kilo Code to do. See [Typing Your Requests](/basic-usage/typing-your-requests) for best practices.
+Open the Kilo Code panel (<img src="/docs/img/kilo-v1.svg" width="12" />) and type your task in the chat box. Be clear and specific about what you want Kilo Code to do. See [Typing Your Requests](/basic-usage/typing-your-requests) for best practices.
 
 ### What are modes in Kilo Code?
 [Modes](/basic-usage/using-modes) are different personas that Kilo Code can adopt, each with a specific focus and set of capabilities. The built-in modes are:

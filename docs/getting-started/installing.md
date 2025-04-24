@@ -22,12 +22,12 @@ If you already have VS Code installed:
 alternatively, you can:
 
 1. Open VS Code
-2. Access Extensions: Click the Extensions icon in the Activity Bar or press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (macOS)
+2. Access Extensions: Click the Extensions icon in the Side Bar or press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (macOS)
 3. Search for "Kilo Code"
 4. Select "Kilo Code" by Kilo Code and click **Install**
 5. Reload VS Code if prompted
 
-After installation, find the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the Activity Bar to open the Kilo Code panel.
+After installation, find the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the Side Bar to open the Kilo Code panel.
 
 <img src="/docs/img/installing/installing.png" alt="VS Code marketplace with Kilo Code extension ready to install" width="400" />
 *VS Code marketplace with Kilo Code extension ready to install*

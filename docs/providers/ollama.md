@@ -58,8 +58,8 @@ Roo Code supports running models locally using Ollama. This provides privacy, of
     /save your_model_name
     ```
 
-4.  **Configure Roo Code:**
-    *   Open the Roo Code sidebar (<Codicon name="rocket" /> icon).
+4.  **Configure Kilo Code:**
+    *   Open the Kilo Code sidebar (<img src="/docs/img/kilo-v1.svg" width="12" /> icon).
     *   Click the settings gear icon (<Codicon name="gear" />).
     *   Select "ollama" as the API Provider.
     *   Enter the Model name from the previous step (e.g., `your_model_name`).
