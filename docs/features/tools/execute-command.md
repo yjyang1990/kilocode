@@ -37,12 +37,12 @@ This tool executes terminal commands directly on the user's system, enabling a w
 - Shows terminals during execution for transparency
 - Validates commands for security using shell-quote parsing
 - Blocks potentially dangerous subshell execution patterns
-- Integrates with RooIgnore system for file access control
+- Integrates with KiloCodeIgnore system for file access control
 - Handles terminal escape sequences for clean output
 
 ## Limitations
 
-- Command access may be restricted by RooIgnore rules and security validations
+- Command access may be restricted by KiloCodeIgnore rules and security validations
 - Commands with elevated permission requirements may need user configuration
 - Behavior may vary across operating systems for certain commands
 - Very long-running commands may require specific handling
@@ -56,7 +56,7 @@ When the `execute_command` tool is invoked, it follows this process:
 1. **Command Validation and Security Checks**:
    - Parses the command using shell-quote to identify components
    - Validates against security restrictions (subshell usage, restricted files)
-   - Checks against RooIgnore rules for file access permissions
+   - Checks against KiloCodeIgnore rules for file access permissions
    - Ensures the command meets system security requirements
 
 2. **Terminal Management**:
@@ -90,7 +90,7 @@ The tool uses a sophisticated terminal management system:
 2. **Second Priority: Security Validation**
    - Commands are parsed using shell-quote for component analysis
    - Dangerous patterns like `$(...)` and backticks are blocked
-   - Commands are checked against RooIgnore rules for file access control
+   - Commands are checked against KiloCodeIgnore rules for file access control
    - A prefix-based allowlist system validates command patterns
 
 3. **Performance Optimizations**

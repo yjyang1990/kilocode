@@ -11,7 +11,7 @@ The tool accepts these parameters:
 
 ## What It Does
 
-This tool requests a mode change when the current task would be better handled by another mode's capabilities. It maintains context while shifting Roo's focus and available toolsets to match the requirements of the new task phase.
+This tool requests a mode change when the current task would be better handled by another mode's capabilities. It maintains context while shifting Kilo Code's focus and available toolsets to match the requirements of the new task phase.
 
 ## When is it used?
 

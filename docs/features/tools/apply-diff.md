@@ -47,7 +47,7 @@ This tool applies targeted changes to existing files using sophisticated strateg
 When the `apply_diff` tool is invoked, it follows this process:
 
 1.  **Parameter Validation**: Validates required `path` and `diff` parameters.
-2.  **RooIgnore Check**: Validates if the target file path is allowed by `.kilocodeignore` rules.
+2.  **KiloCodeIgnore Check**: Validates if the target file path is allowed by `.kilocodeignore` rules.
 3.  **File Analysis**: Loads the target file content.
 4.  **Match Finding**: Uses the selected strategy's algorithms (exact, fuzzy, overlapping windows) to locate the target content, considering confidence thresholds and context (`BUFFER_LINES`).
 5.  **Change Preparation**: Generates the proposed changes, preserving indentation.
