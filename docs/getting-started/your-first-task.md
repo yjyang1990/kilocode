@@ -4,15 +4,15 @@ sidebar_label: Your First Task
 
 # Starting Your First Task with Kilo Code
 
-Now that you've [got your free tokens](/getting-started/free-tokens), you're ready to start using Kilo Code! This guide walks you through your first interaction.
+Now that you've [set up Kilo Code](/getting-started/setting-up), you're ready to start using Kilo Code! This guide walks you through your first interaction.
 
 ## Step 1: Open the Kilo Code Panel
 
-Click the Kilo Code icon (<Codicon name="rocket" />) in the VS Code Activity Bar (vertical bar on the side of the window) to open the chat interface. If you don't see the icon, verify the extension is installed and enabled.
+Click the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the VS Code Primary Side Bar (vertical bar on the side of the window) to open the chat interface. If you don't see the icon, verify the extension is [installed](/getting-started/installing) and enabled.
 
-<img src="/docs/img/your-first-task/your-first-task.png" alt="Kilo Code icon in VS Code Activity Bar" width="800" />
+<img src="/docs/img/your-first-task/your-first-task.png" alt="Kilo Code icon in VS Code Primary Side Bar" width="800" />
 
-*The Kilo Code icon in the Activity Bar opens the chat interface.*
+*The Kilo Code icon in the Primary Side Bar opens the chat interface.*
 
 ## Step 2: Type Your Task
 
@@ -41,13 +41,19 @@ Kilo Code analyzes your request and proposes specific actions. These may include
 * **Using the Browser:** Outlines browser actions (click, type, etc.)
 * **Asking questions:** Requests clarification when needed to proceed
 
-<img src="/docs/img/your-first-task/your-first-task-7.png" alt="Reviewing a proposed file creation action" width="800" />
+<img src="/docs/img/your-first-task/your-first-task-7.png" alt="Reviewing a proposed file creation action" width="400" />
 *Kilo Code shows exactly what action it wants to perform and waits for your approval.*
 
-**Each action requires your explicit approval** (unless auto-approval is enabled):
+* In **Code** mode, many capabilities required to write code are enabled by default. 
+* In **Architect** and **Ask** modes, the agent will not write any code. 
 
-* **Approve:** Click the "Approve" button to execute the proposed action
-* **Reject:** Click the "Reject" button and provide feedback if needed
+:::tip
+
+The level of autonomy is configurable, allowing you to make the agent more or less autonomous. 
+
+You can learn more about [using modes](/basic-usage/using-modes) and [auto-approving actions](/features/auto-approving-actions).
+
+:::
 
 ## Step 5: Iterate
 

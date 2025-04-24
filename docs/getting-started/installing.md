@@ -6,9 +6,20 @@ sidebar_label: Installing Kilo Code
 
 Kilo Code is a VS Code extension that brings AI-powered coding assistance directly to your editor. Install using one of these methods:
 1. **VS Code Marketplace (Recommended)** - fastest method for standard VS Code and Cursor users
-2. **Open VSX Registry** - for VS Code-compatible editors like VSCodium
+1. **Open VSX Registry** - for VS Code-compatible editors like VSCodium
+1. **Manually install the .vsix file** - direct installation from the GitHub Release
 
 ## VS Code Marketplace
+
+:::tip
+
+If you already have VS Code installed:
+
+[Click here to install Kilo Code](vscode:extension/kilocode.Kilo-Code)
+
+:::
+
+alternatively, you can:
 
 1. Open VS Code
 2. Access Extensions: Click the Extensions icon in the Activity Bar or press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (macOS)
@@ -49,31 +60,12 @@ If you prefer to download and install the VSIX file directly:
 <img src="/docs/img/installing/installing-2.png" alt="VS Code's Install from VSIX dialog" width="400" />
 *Installing Kilo Code using VS Code's "Install from VSIX" dialog*
 
-## Development Builds
-
-:::note Developer Information Only
-This section is intended only for developers contributing to Kilo Code.
-:::
-
-If you're building Kilo Code from source:
-
-1. Run `npm run build` in the project directory
-2. Find the generated VSIX file in the `bin/` directory
-3. In VS Code, open Extensions view and select "Install from VSIX..." from the "..." menu
-4. Browse to and select your generated `.vsix` file
-
-<img src="/docs/img/installing/installing-2.png" alt="VS Code's Install from VSIX dialog" width="400" />
-*Installing a development build using VS Code's "Install from VSIX" dialog*
-
 ## Troubleshooting
-
-<img src="/docs/img/installing/installing-4.png" alt="VS Code Output panel showing Kilo Code logs for troubleshooting" width="100%" />
-*VS Code Output panel showing Kilo Code logs for troubleshooting*
 
 **Extension Not Visible**
 * Restart VS Code
 * Verify Kilo Code is listed and enabled in Extensions
-* Try disabling and re-enabling
+* Try disabling and re-enabling the extension in Extensions
 * Check Output panel for errors (View → Output, select "Kilo Code")
 
 **Installation Problems**

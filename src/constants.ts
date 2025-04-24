@@ -11,6 +11,7 @@ export const GITHUB_NEW_ISSUE_URL = `${GITHUB_ISSUES_URL}/new`;
 export const DISCORD_URL = 'https://kilocode.ai/discord';
 export const REDDIT_URL = 'https://www.reddit.com/r/kilocode/';
 export const TWITTER_URL = 'https://x.com/Kilo_Code';
+export const YOUTUBE_URL= 'https://www.youtube.com/@Kilo-Code';
 
 // GitHub links
 export const GITHUB_MAIN_REPO_URL = 'https://github.com/Kilo-Org/kilocode';

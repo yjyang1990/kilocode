@@ -10,7 +10,7 @@ const sidebars: SidebarsConfig = {
         'getting-started/installing',
         {
           type: 'doc',
-          id: 'getting-started/free-tokens',
+          id: 'getting-started/setting-up',
           label: 'Setup',
         },
         'getting-started/your-first-task',
@@ -26,6 +26,7 @@ const sidebars: SidebarsConfig = {
         'basic-usage/how-tools-work',
         'basic-usage/context-mentions',
         'features/enhance-prompt',
+        'basic-usage/adding-tokens'
       ],
     },
     {
@@ -97,6 +98,7 @@ const sidebars: SidebarsConfig = {
           label: 'MCP',
         },
         'troubleshooting/shell-integration',
+        'extending/contributing-to-kilo',
       ],
     },
     {

@@ -1,24 +1,6 @@
----
-sidebar_label: Free Tokens
----
-
 import { DISCORD_URL } from '@site/src/constants.ts'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
-export const FreeTierAmount = () => {
-  const {siteConfig} = useDocusaurusContext();
-  return siteConfig.customFields.freeTierAmount;
-};
-
-# Free Tokens for New Users
-
-When you sign up for Kilo Code, you'll receive **<FreeTierAmount /> worth of tokens for free** to help you get started. To claim your free tokens:
-
-1. Complete the registration process
-2. You should recieve $5 or $20 in free tokens to use immediately 
-3. To recieve the full $20 for free, you may need to enter your credit card (used for identity verification purposes)
-
-## Payment Methods
+# Adding More Tokens
 
 Once you've used your initial free tokens, you can easily add more:
 
@@ -39,7 +21,7 @@ At Kilo Code, we believe in complete pricing transparency:
 We're continuously working to improve Kilo Code and expand our offerings:
 
 - Additional LLM providers will be added in the future
-- More payment options and subscription plans are under development
+- More payment options and other plans are under development
 
 :::tip Need Help?
 If you have any questions about pricing or tokens, please reach out to our [support team](mailto:hi@kilocode.ai) or ask in our <a href={DISCORD_URL} target='_blank'>Discord community</a>.
