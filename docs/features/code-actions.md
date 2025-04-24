@@ -1,3 +1,5 @@
+import Image from '@site/src/components/Image';
+
 # Code Actions
 
 Code Actions are a powerful feature of VS Code that provide quick fixes, refactorings, and other code-related suggestions directly within the editor. Kilo Code integrates with this system to offer AI-powered assistance for common coding tasks.
@@ -11,6 +13,8 @@ Code Actions appear as a lightbulb icon (💡) in the editor gutter (the area to
 *   You invoke them via command.
 
 Clicking the lightbulb, right-clicking and selecting "Kilo Code", or using the keyboard shortcut (`Ctrl+.` or `Cmd+.` on macOS, by default), displays a menu of available actions.
+
+<Image src="/docs/img/code-actions/code-actions-1.png" alt="VS Code code actions in line with code" width="500" />
 
 ## Kilo Code's Code Actions
 

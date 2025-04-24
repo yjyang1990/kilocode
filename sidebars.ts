@@ -23,9 +23,8 @@ const sidebars: SidebarsConfig = {
         'basic-usage/the-chat-interface',
         'basic-usage/typing-your-requests',
         'basic-usage/using-modes',
-        'basic-usage/how-tools-work',
         'basic-usage/context-mentions',
-        'features/enhance-prompt',
+        'features/code-actions',
         'basic-usage/adding-tokens'
       ],
     },
@@ -35,9 +34,9 @@ const sidebars: SidebarsConfig = {
       items: [
         'features/auto-approving-actions',
         'features/suggested-responses',
-        'features/code-actions',
+        'basic-usage/how-tools-work',
+        'features/enhance-prompt',
         'features/checkpoints',
-        'features/tools/tool-use-overview',
         'tips-and-tricks',
       ],
     },
@@ -105,6 +104,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Tools Reference',
       items: [
+        'features/tools/tool-use-overview',
         'features/tools/access-mcp-resource',
         'features/tools/apply-diff',
         'features/tools/ask-followup-question',

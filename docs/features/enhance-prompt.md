@@ -27,15 +27,6 @@ The "Enhance Prompt" feature uses a customizable prompt template.  You can modif
 
 The default prompt template includes the placeholder `${userInput}`, which will be replaced with your original prompt. You can modify this to fit the model's prompt format, and instruct it how to enhance your request.
 
-## API Configuration
-
-The API configuration used for Enhance Prompt is, by default, the same one that is selected for Kilo Code tasks,
-but it can be changed:
-
-1.  **Open the Prompts Tab:** Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar.
-2.  **Select "ENHANCE" Tab:** You should see an "API Configuration" dropdown
-3.  **Select an API Configuration:** Choose an existing configuration, and future Enhance Prompt requests will be sent to that configured provider/model.
-
 ## Limitations and Best Practices
 
 *   **Experimental Feature:**  Prompt enhancement is an experimental feature. The quality of the enhanced prompt may vary depending on the complexity of your request and the capabilities of the underlying model.
