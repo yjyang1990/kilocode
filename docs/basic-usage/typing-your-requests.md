@@ -1,10 +1,10 @@
+import Image from '@site/src/components/Image';
+
 # Typing Your Requests
 
 Kilo Code is designed to understand natural language.  You don't need to use any special commands or syntax to communicate with it.  Just type your request in plain English, as if you were talking to a human developer.
 
-<center>
-    <img src="/docs/img/typing-your-requests/typing-your-requests.png" alt="Example of typing a request in Kilo Code" width="600" />
-</center>
+<Image src="/docs/img/typing-your-requests/typing-your-requests.png" alt="Example of typing a request in Kilo Code" width="600" />
 
 ## Effective Request Strategies
 

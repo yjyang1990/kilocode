@@ -1,3 +1,5 @@
+import Image from '@site/src/components/Image';
+
 # The Chat Interface
 
 The Kilo Code chat interface is your primary way of interacting with it. It's located in the Kilo Code panel, which you can open by clicking the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the VS Code Side Bar.
@@ -20,10 +22,8 @@ The chat interface consists of the following main elements:
 
 7. **Mode Selector:** The mode selector is a dropdown located to the left of the chat input field. It is used for selecting which mode Kilo should use for your tasks.
 
-<center>
-    <img src="/docs/img/the-chat-interface/the-chat-interface-1.png" alt="Chat interface components labeled with callouts" width="750" />
-    *The key components of the Kilo Code chat interface.*
-</center>
+<Image src="/docs/img/the-chat-interface/the-chat-interface-1.png" alt="Chat interface components labeled with callouts" width="750" />
+*The key components of the Kilo Code chat interface.*
 
 ## Interacting with Messages
 
