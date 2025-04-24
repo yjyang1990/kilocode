@@ -19,7 +19,7 @@ export const GITHUB_FEATURES_URL = `${GITHUB_MAIN_REPO_URL}/discussions/categori
 
 // Download links
 export const VSCODE_MARKETPLACE_URL = 'https://marketplace.visualstudio.com/items?itemName=kilocode.kilo-code';
-export const OPEN_VSX_URL = 'https://kilocode.ai';
+export const OPEN_VSX_URL = 'https://open-vsx.org/extension/kilocode/kilo-code';
 
 // Company links
 export const CONTACT_EMAIL = 'mailto:hi@kilocode.ai';

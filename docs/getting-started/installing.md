@@ -16,7 +16,7 @@ Kilo Code is a VS Code extension that brings AI-powered coding assistance direct
 4. Select "Kilo Code" by Kilo Code and click **Install**
 5. Reload VS Code if prompted
 
-After installation, find the Kilo Code icon (<Codicon name="rocket" />) in the Activity Bar to open the Kilo Code panel.
+After installation, find the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the Activity Bar to open the Kilo Code panel.
 
 <img src="/docs/img/installing/installing.png" alt="VS Code marketplace with Kilo Code extension ready to install" width="400" />
 *VS Code marketplace with Kilo Code extension ready to install*
@@ -31,8 +31,6 @@ For VS Code-compatible editors without Marketplace access (like VSCodium and Win
 4. Select "Kilo Code" by KiloCodeInc and click **Install**
 5. Reload if prompted
 
-<img src="/docs/img/installing/installing-1.png" alt="Open VSX Registry with Kilo Code extension ready to install" width="400" />
-*Open VSX Registry with Kilo Code extension ready to install*
 ## Manual Installation from VSIX
 
 If you prefer to download and install the VSIX file directly:
