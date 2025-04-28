@@ -102,7 +102,7 @@ const sidebars: SidebarsConfig = {
             'features/mcp/mcp-vs-api'
           ]
         },
-        'troubleshooting/shell-integration',
+        'features/shell-integration',
         'extending/contributing-to-kilo',
       ],
     },
