@@ -107,7 +107,7 @@ Custom modes are a powerful way to extend Kilo Code's capabilities. To create an
 
 2. Test your mode thoroughly
 
-3. Share your mode with the community by submitting a PR to add it to the [Community page](/community)
+3. Share your mode with the community by submitting a [GitHub Discussion](https://github.com/Kilo-Org/kilocode/discussions)
 
 ## Documentation Contributions
 
