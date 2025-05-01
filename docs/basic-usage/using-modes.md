@@ -71,6 +71,15 @@ Four ways to switch modes:
 | **Ideal For** | Tracking down bugs, diagnosing errors, and resolving complex issues |
 | **Special Features** | Uses a methodical approach of analyzing, narrowing possibilities, and fixing issues |
 
+### Orchestrator Mode
+
+| Aspect | Details |
+|--------|---------|
+| **Description** | A strategic workflow orchestrator who coordinates complex tasks by delegating them to appropriate specialized modes |
+| **Tool Access** | Limited access to create new tasks and coordinate workflows |
+| **Ideal For** | Breaking down complex projects into manageable subtasks assigned to specialized modes |
+| **Special Features** | Uses the new_task tool to delegate work to other modes |
+
 ## Custom Modes
 
 Create your own specialized assistants by defining tool access, file permissions, and behavior instructions. Custom modes help enforce team standards or create purpose-specific assistants. See [Custom Modes documentation](/features/custom-modes) for setup instructions.

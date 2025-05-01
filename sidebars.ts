@@ -23,6 +23,7 @@ const sidebars: SidebarsConfig = {
         'basic-usage/the-chat-interface',
         'basic-usage/typing-your-requests',
         'basic-usage/using-modes',
+        'basic-usage/orchestrator-mode',
         'basic-usage/context-mentions',
         'features/code-actions',
         'basic-usage/adding-tokens'
@@ -46,7 +47,6 @@ const sidebars: SidebarsConfig = {
       items: [
         'advanced-usage/prompt-engineering',
         'advanced-usage/large-projects',
-        'features/boomerang-tasks',
         'features/fast-edits',
         'features/model-temperature',
         'advanced-usage/rate-limits-costs',
