@@ -7,6 +7,11 @@ sidebar_label: Using MCP in Kilo Code
 
 Model Context Protocol (MCP) extends Kilo Code's capabilities by connecting to external tools and services. This guide covers everything you need to know about using MCP with Kilo Code.
 
+<YouTubeEmbed
+  url="https://youtu.be/6O9RQoQRX8A"
+  caption="Demostrating MCP installation in Kilo Code"
+/>
+
 ## Configuring MCP Servers
 
 MCP server configurations can be managed at two levels:

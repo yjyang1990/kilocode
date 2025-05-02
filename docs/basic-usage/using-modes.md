@@ -9,6 +9,11 @@ Modes in Kilo Code are specialized personas that tailor the assistant's behavior
 - **Focused interactions:** Receive responses optimized for your current activity
 - **Workflow optimization:** Seamlessly transition between planning, implementing, debugging, and learning
 
+<YouTubeEmbed
+  url="https://youtu.be/cS4vQfX528w"
+  caption="Explaining the different modes in Kilo Code"
+/>
+
 ## Switching Between Modes
 
 Four ways to switch modes:
