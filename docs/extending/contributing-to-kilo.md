@@ -13,40 +13,9 @@ There are many ways to contribute to Kilo Code:
 5. **Feature Requests**: Suggest new features or improvements
 6. **Community Support**: Help other users in the community
 
-## Getting Started
+## Setting Up the Development Environment
 
-### Prerequisites
-
-- Node.js (v16 or later)
-- npm (v7 or later)
-- Git
-- VS Code
-
-### Setting Up the Development Environment
-
-1. **Fork the Repository**:
-   - Visit the [Kilo Code GitHub repository](https://github.com/Kilo-Org/kilocode)
-   - Click the "Fork" button in the top-right corner
-
-2. **Clone Your Fork**:
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/kilocode.git
-   cd kilocode
-   ```
-
-3. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-4. **Build the Extension**:
-   ```bash
-   npm run build
-   ```
-
-5. **Run the Extension in Development Mode**:
-   - Press F5 in VS Code to launch a new window with your extension loaded
-   - Changes to the extension will be automatically reloaded
+Please refer to the [DEVELOPMENT.md](https://github.com/Kilo-Org/kilocode/blob/main/DEVELOPMENT.md) guide in the main repository for detailed instructions on setting up the development environment.
 
 ## Development Workflow
 
