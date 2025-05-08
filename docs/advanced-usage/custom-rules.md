@@ -6,6 +6,10 @@ Custom rules provide a powerful way to define project-specific behaviors and con
 
 Custom rules allow you to create text-based instructions that all AI models will follow when interacting with your project. These rules act as guardrails and conventions that are consistently respected across all interactions with your codebase.
 
+:::info Custom Rules vs Instructions
+Custom Rules are project specific and allow you to setup workspace-based ruleset. For IDE-wide configuration, [Custom Instructions](/advanced-usage/custom-instructions.md) will be a better fit as they maintain your preferences regardless of which project you're working on.
+:::
+
 ## Rule Format
 
 Custom rules can be written in plain text, but Markdown format is recommended for better structure and comprehension by the AI models. The structured nature of Markdown helps the models parse and understand your rules more effectively.
@@ -38,7 +42,7 @@ To create a custom rule:
 3. Write your rule using Markdown formatting
 4. Save the file
 
-The rule will be automatically applied to all future Kilo Code interactions within your project.
+The rule will be automatically applied to all future Kilo Code interactions within your project. Any new changes will be applied immediately.
 
 ## Example Rules
 
@@ -63,6 +67,8 @@ Files in the list contain sensitive data, they MUST NOT be read
 
 This rule prevents the AI from reading or accessing sensitive files, even if explicitly requested to do so.
 
+<img src="/docs/img/custom-rules/custom-rules.png" alt="Kilo Code ignores request to read sensitive file" width="600" />
+
 ## Use Cases
 
 Custom rules can be applied to a wide variety of scenarios:
@@ -75,6 +81,17 @@ Custom rules can be applied to a wide variety of scenarios:
 - **API Usage**: Specify how APIs should be used and documented
 - **Error Handling**: Define error handling conventions
 
+## Examples of Custom Rules
+
+* "Strictly follow code style guide [your project-specific code style guide]"
+* "Always use spaces for indentation, with a width of 4 spaces"
+* "Use camelCase for variable names"
+* "Write unit tests for all new functions"
+* "Explain your reasoning before providing code"
+* "Focus on code readability and maintainability"
+* "Prioritize using the most common library in the community"
+* "When adding new features to websites, ensure they are responsive and accessible"
+
 ## Best Practices
 
 - **Be Specific**: Clearly define the scope and intent of each rule
@@ -83,6 +100,10 @@ Custom rules can be applied to a wide variety of scenarios:
 - **Use Examples**: Include examples to illustrate the expected behavior
 - **Keep It Simple**: Rules should be concise and easy to understand
 - **Update Regularly**: Review and update rules as project requirements change
+
+:::tip Pro Tip: File-Based Team Standards
+When working in team environments, placing `.kilocode/rules/codestyle.md` files under version control allows you to standardize Kilo's behavior across your entire development team. This ensures consistent code style, documentation practices, and development workflows for everyone on the project.
+:::
 
 ## Limitations
 
@@ -102,5 +123,6 @@ If your custom rules aren't being properly followed:
 ## Related Features
 
 - [Custom Modes](/docs/features/custom-modes)
+- [Custom Instructions](/advanced-usage/custom-instructions)
 - [Settings Management](/docs/features/settings-management)
 - [Auto-Approval Settings](/docs/features/auto-approving-actions)
