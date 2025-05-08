@@ -89,5 +89,5 @@ Remember that different models may respond differently to the same temperature v
 ## Related Features
 
 - Works with all [API providers](/providers/openai) supported by Kilo Code
-- Complements [custom instructions](/features/custom-instructions) for fine-tuning responses
+- Complements [custom instructions](/advanced-usage/custom-instructions) for fine-tuning responses
 - Works alongside [custom modes](/features/custom-modes) you create

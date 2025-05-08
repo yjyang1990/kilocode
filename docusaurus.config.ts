@@ -107,8 +107,8 @@ const config: Config = {
             from: ['/advanced-usage/code-actions'],
           },
           {
-            to: '/features/custom-instructions',
-            from: ['/advanced-usage/custom-instructions'],
+            to: '/advanced-usage/custom-instructions',
+            from: ['/features/custom-instructions'],
           },
           {
             to: '/features/custom-modes',
