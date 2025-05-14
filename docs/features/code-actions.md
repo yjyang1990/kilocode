@@ -31,6 +31,8 @@ The **Add to Context** action is listed first in the Code Actions menu so you ca
 
 This helps Kilo understand the exact context of your code within the project, allowing it to provide more relevant and accurate assistance.
 
+<Image src="/docs/img/code-actions/add-to-context.gif" alt="code actions - add to context gif" width="80%" />
+
 **Example Chat Input:**
 
 ```
