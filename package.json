@@ -12,7 +12,8 @@
     "serve": "docusaurus serve --host 0.0.0.0",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "prepare": "husky"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
@@ -32,6 +33,7 @@
     "@docusaurus/tsconfig": "3.7.0",
     "@docusaurus/types": "3.7.0",
     "dotenv": "^16.4.7",
+    "husky": "^9.1.7",
     "typescript": "~5.6.2"
   },
   "browserslist": {
