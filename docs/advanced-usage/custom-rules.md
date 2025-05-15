@@ -20,7 +20,9 @@ Custom rules can be written in plain text, but Markdown format is recommended fo
 
 ## Rule Location
 
-Custom rules are stored in the `.kilocode/rules/` directory within your project. Each rule is typically placed in its own Markdown file with a descriptive name:
+Custom rules can be loaded from multiple locations in your project:
+
+1. **`.kilocode/rules/` directory** (recommended): Each rule is typically placed in its own Markdown file with a descriptive name:
 
 ```
 project/
@@ -32,6 +34,15 @@ project/
 ├── src/
 └── ...
 ```
+
+2. **Root-level rule files**: For backward compatibility, rules are also loaded from these files in your project root:
+   - `.kilocoderules` (deprecated)
+   - `.roorules`
+   - `.clinerules`
+
+:::note
+While the legacy file-based approach is still supported, we recommend using the `.kilocode/rules/` folder structure as it provides better organization and is the preferred approach for future versions. The `.kilocoderules` file is deprecated, and `.roorules` and `.clinerules` are maintained for backward compatibility but may be subject to change in future releases.
+:::
 
 ## Creating Custom Rules
 
@@ -116,7 +127,9 @@ When working in team environments, placing `.kilocode/rules/codestyle.md` files 
 If your custom rules aren't being properly followed:
 
 1. Check that your rules are properly formatted with clear Markdown structure
-2. Ensure that your rules are located in the correct `.kilocode/rules/` directory
+2. Ensure that your rules are located in one of the supported locations:
+   - The recommended `.kilocode/rules/` directory
+   - Root-level rule files (`.kilocoderules`, `.roorules`, or `.clinerules`)
 3. Verify that the rules are specific and unambiguous
 4. Restart VS Code to ensure the rules are properly loaded
 
