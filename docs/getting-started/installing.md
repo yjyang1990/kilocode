@@ -5,17 +5,16 @@ sidebar_label: Installing Kilo Code
 # Installing Kilo Code
 
 Kilo Code is a VS Code extension that brings AI-powered coding assistance directly to your editor. Install using one of these methods:
-1. **VS Code Marketplace (Recommended)** - fastest method for standard VS Code and Cursor users
-1. **Open VSX Registry** - for VS Code-compatible editors like VSCodium
-1. **Manually install the .vsix file** - direct installation from the GitHub Release
+- [**VS Code Marketplace (Recommended)**](#vs-code-marketplace) - fastest method for standard VS Code users
+- [**Cursor Marketplace**](#cursor-marketplace) - recommended way for Cursor users
+- [**Open VSX Registry**](#open-vsx-registry) - for VS Code-compatible editors like VSCodium or Windsurf
+- [**Manually install the .vsix file**](#manual-installation-from-vsix) - direct installation from the GitHub Release
 
 ## VS Code Marketplace
 
 :::tip
 
-If you already have VS Code installed:
-
-[Click here to install Kilo Code](vscode:extension/kilocode.Kilo-Code)
+If you already have VS Code installed: [Click here to install Kilo Code](vscode:extension/kilocode.Kilo-Code)
 
 :::
 
@@ -32,15 +31,42 @@ After installation, find the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" wi
 <img src="/docs/img/installing/installing.png" alt="VS Code marketplace with Kilo Code extension ready to install" width="400" />
 *VS Code marketplace with Kilo Code extension ready to install*
 
+## Cursor Marketplace
+
+:::tip
+
+If you already have Cursor installed: [Click here to install Kilo Code](cursor:extension/kilocode.Kilo-Code)
+
+:::
+
+alternatively, you can:
+
+1. Open Cursor
+2. Access Extensions: Click the Extensions icon in the Side Bar or press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (macOS)
+3. Search for "Kilo Code"
+4. Select "Kilo Code" by Kilo Code and click **Install**
+5. Reload Cursor if prompted
+
+After installation, find the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the Side Bar to open the Kilo Code panel.
+
+
+
 ## Open VSX Registry
 
-For VS Code-compatible editors without Marketplace access (like VSCodium and Windsurf):
+[Open VSX Registry](https://open-vsx.org/) is an open-source alternative to the VS Code Marketplace for VS Code-compatible editors that cannot access the official marketplace due to licensing restrictions.
+
+For VS Code-compatible editors like VSCodium, Gitpod, Eclipse Theia, and Windsurf, you can browse and install directly from the [Kilo Code page on Open VSX Registry](https://open-vsx.org/extension/kilocode/Kilo-Code).
 
 1. Open your editor
-2. Access the Extensions view
-3. Search for "Kilo Code"
-4. Select "Kilo Code" by KiloCodeInc and click **Install**
-5. Reload if prompted
+2. Access the Extensions view (Side Bar icon or `Ctrl+Shift+X` / `Cmd+Shift+X`)
+3. Your editor should be pre-configured to use Open VSX Registry
+4. Search for "Kilo Code"
+5. Select "Kilo Code" by KiloCodeInc and click **Install**
+6. Reload the editor if prompted
+
+:::note
+If your editor isn't automatically configured for Open VSX Registry, you may need to set it as your extension marketplace in settings. Consult your specific editor's documentation for instructions.
+:::
 
 ## Manual Installation from VSIX
 
