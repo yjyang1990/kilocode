@@ -40,7 +40,7 @@ Speed up prompt enhancement by switching to a more lightweight LLM model provide
 
 Create a dedicated profile for Enhance Prompt by following the [API configuration profiles guide](/features/api-configuration-profiles).
 
-<img src="/img/enhance-prompt/custom-enhance-profile.png" alt="Custom profile configuration for Enhance Prompt feature" width="600" />
+<img src="/docs/img/enhance-prompt/custom-enhance-profile.png" alt="Custom profile configuration for Enhance Prompt feature" width="600" />
 
 For a detailed walkthrough: https://youtu.be/R1nDnCK-xzw
 
