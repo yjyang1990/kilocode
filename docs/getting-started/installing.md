@@ -61,7 +61,7 @@ For VS Code-compatible editors like VSCodium, Gitpod, Eclipse Theia, and Windsur
 2. Access the Extensions view (Side Bar icon or `Ctrl+Shift+X` / `Cmd+Shift+X`)
 3. Your editor should be pre-configured to use Open VSX Registry
 4. Search for "Kilo Code"
-5. Select "Kilo Code" by KiloCodeInc and click **Install**
+5. Select "Kilo Code" and click **Install**
 6. Reload the editor if prompted
 
 :::note
@@ -73,8 +73,8 @@ If your editor isn't automatically configured for Open VSX Registry, you may nee
 If you prefer to download and install the VSIX file directly:
 
 1. **Download the VSIX file:**
-   * Find official releases on the [Kilo Code GitHub Releases page](https://github.com/KiloCodeInc/Kilo-Code/releases)
-   * Download the `.vsix` file from the latest release
+   * Find official releases on the [Kilo Code GitHub Releases page](https://github.com/Kilo-Org/kilocode/releases)
+   * Download the `.vsix` file from the [latest release](https://github.com/Kilo-Org/kilocode/releases/latest)
 
 2. **Install in VS Code:**
    * Open VS Code
