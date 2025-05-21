@@ -106,6 +106,7 @@ const sidebars: SidebarsConfig = {
         },
         'features/shell-integration',
         'extending/contributing-to-kilo',
+        'extending/development-environment'
       ],
     },
     {

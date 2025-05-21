@@ -15,7 +15,7 @@ There are many ways to contribute to Kilo Code:
 
 ## Setting Up the Development Environment
 
-Please refer to the [DEVELOPMENT.md](https://github.com/Kilo-Org/kilocode/blob/main/DEVELOPMENT.md) guide in the main repository for detailed instructions on setting up the development environment.
+Setting Up the Development Environment is described in details on [this page](/docs/extending/development-environment.md)
 
 ## Development Workflow
 
