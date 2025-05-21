@@ -169,7 +169,8 @@ const config: Config = {
         alt: 'Kilo Code Logo',
         src: 'img/kilo-v1.svg',
         srcDark: 'img/kilo-v1-white.svg',
-        href: '/../',
+        href: 'https://kilocode.ai',
+        target: '_self'
       },
       items: [
         {
