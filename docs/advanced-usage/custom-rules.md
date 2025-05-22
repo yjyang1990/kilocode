@@ -20,9 +20,7 @@ Custom rules can be written in plain text, but Markdown format is recommended fo
 
 ## Rule Location
 
-Custom rules can be loaded from multiple locations in your project:
-
-1. **`.kilocode/rules/` directory** (recommended): Each rule is typically placed in its own Markdown file with a descriptive name:
+Custom rules are primarily loaded from the **`.kilocode/rules/` directory**. This is the recommended approach for organizing your project-specific rules. Each rule is typically placed in its own Markdown file with a descriptive name:
 
 ```
 project/
@@ -35,14 +33,34 @@ project/
 └── ...
 ```
 
-2. **Root-level rule files**: For backward compatibility, rules are also loaded from these files in your project root:
-   - `.kilocoderules` (deprecated)
+## Rule Loading Order
+
+### General Rules (Any Mode)
+
+For backward compatibility, the agent will check additional locations if no rules folder is found.
+
+The loading order is as follows:
+
+1. First, it tries to load from the `.kilocode/rules/` directory
+2. If that doesn't exist or is empty, it falls back to checking these files in order:
    - `.roorules`
    - `.clinerules`
+   - `.kilocoderules` (deprecated)
+
+The agent uses the first source it finds that contains content. For example, if `.roorules` is found with content, it will not read `.clinerules`.
 
 :::note
-While the legacy file-based approach is still supported, we recommend using the `.kilocode/rules/` folder structure as it provides better organization and is the preferred approach for future versions. The `.kilocoderules` file is deprecated, and `.roorules` and `.clinerules` are maintained for backward compatibility but may be subject to change in future releases.
+We strongly recommend keeping your rules in the `.kilocode/rules/` folder as it provides better organization and is the preferred approach for future versions. The folder-based structure allows for more granular rule organization and clearer separation of concerns. The legacy file-based approach is maintained for backward compatibility but may be subject to change in future releases.
 :::
+
+### Mode-Specific Rules
+
+Additionally, the system supports mode-specific rules, which are loaded separately and have their own priority order:
+
+1. First, it checks for `.kilocode/rules-${mode}/` directory
+2. If that doesn't exist or is empty, it falls back to `.kilocoderules-${mode}` file (deprecated)
+
+When both generic rules and mode-specific rules exist, the mode-specific rules are given priority in the final output.
 
 ## Creating Custom Rules
 
