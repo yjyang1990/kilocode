@@ -135,9 +135,10 @@ Example task entry:
 
 ### Regular Task Execution
 
-In the beginning of EVERY task I MUST read ALL memory bank files - this is not optional. The memory bank files are located in `.kilocode/rules/memory-bank` folder. If the folder doesn't exist or is empty, I will warn user about potential issues with the memory bank.
+In the beginning of EVERY task I MUST read ALL memory bank files - this is not optional. 
 
-After reading the memory bank, I should briefly summarize my understanding of the project to confirm alignment with the user's expectations, like:
+The memory bank files are located in `.kilocode/rules/memory-bank` folder. If the folder doesn't exist or is empty, I will warn user about potential issues with the memory bank. I will include `[Memory Bank: Active]` at the beginning of my response if I successfully read the memory bank files, or `[Memory Bank: Missing]` if the folder doesn't exist or is empty. If memory bank is missing, I will warn the user about potential issues and suggest initialization. I should briefly summarize my understanding of the project to confirm alignment with the user's expectations, like:
+
 "[Memory Bank: Active] I understand we're building a React inventory system with barcode scanning. Currently implementing the scanner component that needs to work with the backend API."
 
 When starting a task that matches a documented task in `tasks.md`, I should mention this and follow the documented workflow to ensure no steps are missed.
