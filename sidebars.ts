@@ -48,6 +48,7 @@ const sidebars: SidebarsConfig = {
         'advanced-usage/prompt-engineering',
         'advanced-usage/custom-rules',
         'advanced-usage/custom-instructions',
+        'advanced-usage/memory-bank',
         'advanced-usage/large-projects',
         'features/fast-edits',
         'features/model-temperature',
