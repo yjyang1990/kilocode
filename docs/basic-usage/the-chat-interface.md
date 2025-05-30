@@ -2,7 +2,9 @@ import Image from '@site/src/components/Image';
 
 # The Chat Interface
 
-The Kilo Code chat interface is your primary way of interacting with it. It's located in the Kilo Code panel, which you can open by clicking the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the VS Code Side Bar.
+The Kilo Code chat interface is your primary way of interacting with it. It's located in the Kilo Code panel, which you can open by clicking the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the VS Code Primary Side Bar.
+
+The Kilo Code panel can also be moved to the VS Code Secondary Panel. If you ever accidentally close the Kilo Code Panel, you can get it back using View > Open View... and searching for "Kilo Code".
 
 ## Components of the Chat Interface
 
