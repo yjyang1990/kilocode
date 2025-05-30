@@ -148,7 +148,9 @@ The initialization step is critically important as it establishes the foundation
 3. Provide a detailed summary of what it has understood about your project
 4. Ask you to verify the accuracy of the generated files
 
-**Important**: Take time to carefully review and correct the generated files after initialization. Any misunderstandings or missing information at this stage will affect all future interactions. A thorough initialization dramatically improves Kilo Code's effectiveness, while a rushed or incomplete initialization will permanently limit its ability to assist you effectively.
+:::warning Important
+Take time to carefully review and correct the generated files after initialization. Any misunderstandings or missing information at this stage will affect all future interactions. A thorough initialization dramatically improves Kilo Code's effectiveness, while a rushed or incomplete initialization will permanently limit its ability to assist you effectively.
+:::
 
 #### Memory Bank Updates
 
