@@ -65,7 +65,7 @@ The project is organized into several key directories:
 To build the extension:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 This will:
