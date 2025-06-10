@@ -90,6 +90,7 @@ const sidebars: SidebarsConfig = {
             'providers/openrouter',
             'providers/requesty',
             'providers/unbound',
+            'providers/v0',
             'providers/vscode-lm',
           ]
         },
