@@ -54,6 +54,7 @@ const sidebars: SidebarsConfig = {
         'features/model-temperature',
         'advanced-usage/rate-limits-costs',
         'features/footgun-prompting',
+        'features/slash-commands/workflows',
       ],
     },
     {
