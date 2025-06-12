@@ -27,6 +27,38 @@ The real power comes from how you structure your workflow files. You can:
 
 ## Real-world Example
 
+Let's walk through creating a workflow for submitting a pull request. This workflow handles the entire process from code review to deployment notification.
+
+Create a file called `submit-pr.md` in your `.kilocode/workflows` directory:
+
+```markdown
+# Submit PR Workflow
+
+You are helping submit a pull request. Follow these steps:
+
+1. First, use `search_files` to check for any TODO comments or console.log statements that shouldn't be committed
+2. Run tests using `execute_command` with `npm test` or the appropriate test command
+3. If tests pass, stage and commit changes with a descriptive commit message
+4. Push the branch and create a pull request using `gh pr create`
+5. Use `ask_followup_question` to get the PR title and description from the user
+6. After creating the PR, use the Slack MCP tool to notify the team channel
+7. Finally, use `new_task` in architect mode to plan any follow-up deployment steps
+
+Parameters needed:
+- Branch name (ask if not provided)
+- Target branch (default to 'main')
+- Reviewers to assign
+```
+
+Now you can trigger this workflow by typing `/submit-pr` in the chat. Kilo Code will:
+
+- Scan your code for common issues before committing
+- Run your test suite to catch problems early
+- Handle the Git operations and PR creation
+- Notify your team automatically
+- Set up follow-up tasks for deployment
+
+This saves you from manually running the same 7-step process every time you want to submit code for review.
 
 
 ## Building Your Own Workflows
