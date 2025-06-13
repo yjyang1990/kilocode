@@ -6,10 +6,6 @@ Custom rules provide a powerful way to define project-specific and global behavi
 
 Custom rules allow you to create text-based instructions that all AI models will follow when interacting with your project. These rules act as guardrails and conventions that are consistently respected across all interactions with your codebase. Rules can be managed through both the file system and the built-in UI interface.
 
-:::info Custom Rules vs Instructions
-Custom Rules are project specific and allow you to setup workspace-based ruleset. For IDE-wide configuration, [Custom Instructions](/advanced-usage/custom-instructions.md) will be a better fit as they maintain your preferences regardless of which project you're working on.
-:::
-
 ## Rule Format
 
 Custom rules can be written in plain text, but Markdown format is recommended for better structure and comprehension by the AI models. The structured nature of Markdown helps the models parse and understand your rules more effectively.
