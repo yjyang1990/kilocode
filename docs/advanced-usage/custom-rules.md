@@ -196,13 +196,13 @@ When working in team environments, placing `.kilocode/rules/codestyle.md` files 
 If your custom rules aren't being properly followed:
 
 1. **Check rule status in the UI**: Use the rules management interface to verify that your rules are active and properly loaded
-2. **Verify rule formatting**: Ensure that your rules are properly formatted with clear Markdown structure
-3. **Check rule locations**: Ensure that your rules are located in supported locations:
+1. **Verify rule formatting**: Ensure that your rules are properly formatted with clear Markdown structure
+1. **Check rule locations**: Ensure that your rules are located in supported locations:
    - Global rules: `~/.kilocode/rules/` directory
    - Project rules: `.kilocode/rules/` directory
    - Legacy files: `.kilocoderules`, `.roorules`, or `.clinerules`
-5. **Rule specificity**: Verify that the rules are specific and unambiguous
-6. **Restart VS Code**: Restart VS Code to ensure the rules are properly loaded
+1. **Rule specificity**: Verify that the rules are specific and unambiguous
+1. **Restart VS Code**: Restart VS Code to ensure the rules are properly loaded
 
 ## Related Features
 
