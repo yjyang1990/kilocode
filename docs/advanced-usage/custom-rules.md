@@ -98,6 +98,8 @@ When both generic rules and mode-specific rules exist, the mode-specific rules a
 
 ### Using the UI Interface
 
+<img src="/docs/img/custom-rules/rules-ui.png" alt="Rules tab in Kilo Code" width="400" />
+
 The easiest way to create and manage rules is through the built-in UI:
 
 1. Access the rules management interface from the Kilo Code panel
