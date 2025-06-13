@@ -182,15 +182,9 @@ Custom rules can be applied to a wide variety of scenarios:
 - **Use Examples**: Include examples to illustrate the expected behavior
 - **Keep It Simple**: Rules should be concise and easy to understand
 - **Update Regularly**: Review and update rules as project requirements change
-- **Choose the Right Scope**: Use global rules for universal standards and project rules for specific requirements
-- **Leverage the UI**: Use the built-in interface for easier rule management and organization
 
 :::tip Pro Tip: File-Based Team Standards
 When working in team environments, placing `.kilocode/rules/codestyle.md` files under version control allows you to standardize Kilo's behavior across your entire development team. This ensures consistent code style, documentation practices, and development workflows for everyone on the project.
-:::
-
-:::tip Global vs Project Rules
-Use global rules for coding standards that apply across all your projects (formatting, security practices, documentation style). Use project rules for specific requirements unique to that codebase (API conventions, project structure, domain-specific constraints).
 :::
 
 ## Limitations
@@ -198,8 +192,7 @@ Use global rules for coding standards that apply across all your projects (forma
 - Rules are applied on a best-effort basis by the AI models
 - Complex rules may require multiple examples for clear understanding
 - Project rules apply only to the project in which they are defined
-- Global rules apply across all projects but may be overridden by project-specific rules
-- UI management is available for general rules only; mode-specific rules must be managed through the file system
+- Global rules apply across all projects
 
 ## Troubleshooting
 
@@ -211,7 +204,6 @@ If your custom rules aren't being properly followed:
    - Global rules: `~/.kilocode/rules/` directory
    - Project rules: `.kilocode/rules/` directory
    - Legacy files: `.kilocoderules`, `.roorules`, or `.clinerules`
-4. **Rule conflicts**: Check for conflicting rules between global and project rules - project rules take precedence
 5. **Rule specificity**: Verify that the rules are specific and unambiguous
 6. **Restart VS Code**: Restart VS Code to ensure the rules are properly loaded
 
