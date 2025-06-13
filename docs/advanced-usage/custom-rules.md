@@ -1,10 +1,10 @@
 # Custom Rules
 
-Custom rules provide a powerful way to define project-specific behaviors and constraints for the Kilo Code AI agent. With custom rules, you can ensure consistent formatting, restrict access to sensitive files, enforce coding standards, and customize the AI's behavior for your specific project needs.
+Custom rules provide a powerful way to define project-specific and global behaviors and constraints for the Kilo Code AI agent. With custom rules, you can ensure consistent formatting, restrict access to sensitive files, enforce coding standards, and customize the AI's behavior for your specific project needs or across all projects.
 
 ## Overview
 
-Custom rules allow you to create text-based instructions that all AI models will follow when interacting with your project. These rules act as guardrails and conventions that are consistently respected across all interactions with your codebase.
+Custom rules allow you to create text-based instructions that all AI models will follow when interacting with your project. These rules act as guardrails and conventions that are consistently respected across all interactions with your codebase. Rules can be managed through both the file system and the built-in UI interface.
 
 :::info Custom Rules vs Instructions
 Custom Rules are project specific and allow you to setup workspace-based ruleset. For IDE-wide configuration, [Custom Instructions](/advanced-usage/custom-instructions.md) will be a better fit as they maintain your preferences regardless of which project you're working on.
@@ -18,7 +18,20 @@ Custom rules can be written in plain text, but Markdown format is recommended fo
 - Use lists (`-`, `*`) to enumerate specific items or constraints
 - Use code blocks (``` ```) to include code examples when needed
 
+## Rule Types
+
+Kilo Code supports two types of custom rules:
+
+- **Project Rules**: Apply only to the current project workspace
+- **Global Rules**: Apply across all projects and workspaces
+
+:::note UI Support
+The built-in rules management UI is available for general rules only. Mode-specific rules must be managed through the file system.
+:::
+
 ## Rule Location
+
+### Project Rules
 
 Custom rules are primarily loaded from the **`.kilocode/rules/` directory**. This is the recommended approach for organizing your project-specific rules. Each rule is typically placed in its own Markdown file with a descriptive name:
 
@@ -33,21 +46,43 @@ project/
 └── ...
 ```
 
+### Global Rules
+
+Global rules are stored in your home directory and apply to all projects:
+
+```
+~/.kilocode/
+├── rules/
+│   ├── coding_standards.md
+│   ├── security_guidelines.md
+│   └── documentation_style.md
+```
+
+## Managing Rules Through the UI
+
+Kilo Code provides a built-in interface for managing your custom rules. You can access the rules management UI to:
+
+- View all active rules (both project and global)
+- Toggle rules on/off without deleting them
+- Create and edit rules directly in the interface
+- Organize rules by category and priority
+
+The UI provides an intuitive way to manage your rules without manually editing files in the `.kilocode/rules/` directories.
+
 ## Rule Loading Order
 
 ### General Rules (Any Mode)
 
-For backward compatibility, the agent will check additional locations if no rules folder is found.
+Rules are loaded in the following priority order:
 
-The loading order is as follows:
-
-1. First, it tries to load from the `.kilocode/rules/` directory
-2. If that doesn't exist or is empty, it falls back to checking these files in order:
+1. **Global rules** from `~/.kilocode/rules/` directory
+2. **Project rules** from `.kilocode/rules/` directory
+3. **Legacy fallback files** (for backward compatibility):
    - `.roorules`
    - `.clinerules`
    - `.kilocoderules` (deprecated)
 
-The agent uses the first source it finds that contains content. For example, if `.roorules` is found with content, it will not read `.clinerules`.
+When both global and project rules exist, they are combined with project rules taking precedence over global rules for conflicting directives.
 
 :::note
 We strongly recommend keeping your rules in the `.kilocode/rules/` folder as it provides better organization and is the preferred approach for future versions. The folder-based structure allows for more granular rule organization and clearer separation of concerns. The legacy file-based approach is maintained for backward compatibility but may be subject to change in future releases.
@@ -64,14 +99,32 @@ When both generic rules and mode-specific rules exist, the mode-specific rules a
 
 ## Creating Custom Rules
 
-To create a custom rule:
+### Using the UI Interface
 
+The easiest way to create and manage rules is through the built-in UI:
+
+1. Access the rules management interface from the Kilo Code panel
+2. Choose between creating project-specific or global rules
+3. Use the interface to create, edit, or toggle rules
+4. Rules are automatically saved and applied immediately
+
+### Using the File System
+
+To create rules manually:
+
+**For Project Rules:**
 1. Create the `.kilocode/rules/` directory if it doesn't already exist
 2. Create a new Markdown file with a descriptive name in this directory
 3. Write your rule using Markdown formatting
 4. Save the file
 
-The rule will be automatically applied to all future Kilo Code interactions within your project. Any new changes will be applied immediately.
+**For Global Rules:**
+1. Create the `~/.kilocode/rules/` directory if it doesn't already exist
+2. Create a new Markdown file with a descriptive name in this directory
+3. Write your rule using Markdown formatting
+4. Save the file
+
+Rules will be automatically applied to all future Kilo Code interactions. Any new changes will be applied immediately.
 
 ## Example Rules
 
@@ -129,27 +182,38 @@ Custom rules can be applied to a wide variety of scenarios:
 - **Use Examples**: Include examples to illustrate the expected behavior
 - **Keep It Simple**: Rules should be concise and easy to understand
 - **Update Regularly**: Review and update rules as project requirements change
+- **Choose the Right Scope**: Use global rules for universal standards and project rules for specific requirements
+- **Leverage the UI**: Use the built-in interface for easier rule management and organization
 
 :::tip Pro Tip: File-Based Team Standards
 When working in team environments, placing `.kilocode/rules/codestyle.md` files under version control allows you to standardize Kilo's behavior across your entire development team. This ensures consistent code style, documentation practices, and development workflows for everyone on the project.
+:::
+
+:::tip Global vs Project Rules
+Use global rules for coding standards that apply across all your projects (formatting, security practices, documentation style). Use project rules for specific requirements unique to that codebase (API conventions, project structure, domain-specific constraints).
 :::
 
 ## Limitations
 
 - Rules are applied on a best-effort basis by the AI models
 - Complex rules may require multiple examples for clear understanding
-- Rules apply only to the project in which they are defined
+- Project rules apply only to the project in which they are defined
+- Global rules apply across all projects but may be overridden by project-specific rules
+- UI management is available for general rules only; mode-specific rules must be managed through the file system
 
 ## Troubleshooting
 
 If your custom rules aren't being properly followed:
 
-1. Check that your rules are properly formatted with clear Markdown structure
-2. Ensure that your rules are located in one of the supported locations:
-   - The recommended `.kilocode/rules/` directory
-   - Root-level rule files (`.kilocoderules`, `.roorules`, or `.clinerules`)
-3. Verify that the rules are specific and unambiguous
-4. Restart VS Code to ensure the rules are properly loaded
+1. **Check rule status in the UI**: Use the rules management interface to verify that your rules are active and properly loaded
+2. **Verify rule formatting**: Ensure that your rules are properly formatted with clear Markdown structure
+3. **Check rule locations**: Ensure that your rules are located in supported locations:
+   - Global rules: `~/.kilocode/rules/` directory
+   - Project rules: `.kilocode/rules/` directory
+   - Legacy files: `.kilocoderules`, `.roorules`, or `.clinerules`
+4. **Rule conflicts**: Check for conflicting rules between global and project rules - project rules take precedence
+5. **Rule specificity**: Verify that the rules are specific and unambiguous
+6. **Restart VS Code**: Restart VS Code to ensure the rules are properly loaded
 
 ## Related Features
 
