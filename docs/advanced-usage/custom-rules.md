@@ -91,6 +91,7 @@ Additionally, the system supports mode-specific rules, which are loaded separate
 1. First, it checks for `.kilocode/rules-${mode}/` directory
 2. If that doesn't exist or is empty, it falls back to `.kilocoderules-${mode}` file (deprecated)
 
+Currently, mode-specific rules are only supported at the project level.
 When both generic rules and mode-specific rules exist, the mode-specific rules are given priority in the final output.
 
 ## Creating Custom Rules
