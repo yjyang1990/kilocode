@@ -56,14 +56,14 @@ Global rules are stored in your home directory and apply to all projects:
 
 ## Managing Rules Through the UI
 
-Kilo Code provides a built-in interface for managing your custom rules. You can access the rules management UI to:
+Kilo Code provides a built-in interface for managing your custom rules without manually editing files in the `.kilocode/rules/` directories. To access the UI, click on the <Codicon name="law" /> icon in the **bottom right corner** of the Kilo Code window.
+
+You can access the rules management UI to:
 
 - View all active rules (both project and global)
 - Toggle rules on/off without deleting them
 - Create and edit rules directly in the interface
 - Organize rules by category and priority
-
-The UI provides an intuitive way to manage your rules without manually editing files in the `.kilocode/rules/` directories.
 
 ## Rule Loading Order
 
