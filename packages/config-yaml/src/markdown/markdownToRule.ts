@@ -1,12 +1,16 @@
-import { basename } from "path";
 import * as YAML from "yaml";
-import { RuleWithSource } from "../..";
+import {
+  PackageIdentifier,
+  packageIdentifierToDisplayName,
+} from "../browser.js";
+import { RuleObject } from "../schemas/index.js";
 
 export interface RuleFrontmatter {
-  globs?: RuleWithSource["globs"];
-  name?: RuleWithSource["name"];
-  description?: RuleWithSource["description"];
-  alwaysApply?: RuleWithSource["alwaysApply"];
+  globs?: RuleObject["globs"];
+  regex?: RuleObject["regex"];
+  name?: RuleObject["name"];
+  description?: RuleObject["description"];
+  alwaysApply?: RuleObject["alwaysApply"];
 }
 
 /**
@@ -43,35 +47,40 @@ export function parseMarkdownRule(content: string): {
   return { frontmatter: {}, markdown: normalizedContent };
 }
 
-/**
- * Converts a markdown file with YAML frontmatter to a RuleWithSource object
- */
-export function convertMarkdownRuleToContinueRule(
-  path: string,
-  content: string,
-): RuleWithSource {
-  const { frontmatter, markdown } = parseMarkdownRule(content);
-
-  // Try to extract title from first heading if no name in frontmatter
-  let name = frontmatter.name;
-  if (!name) {
-    // Look for a heading in the markdown
-    const headingMatch = markdown.match(/^#\s+(.+)$/m);
-    if (headingMatch) {
-      name = headingMatch[1].trim();
-    } else {
-      // Fall back to filename
-      name = basename(path).replace(/\.md$/, "");
-    }
+export function getRuleName(
+  frontmatter: RuleFrontmatter,
+  id: PackageIdentifier,
+): string {
+  if (frontmatter.name) {
+    return frontmatter.name;
   }
 
+  const displayName = packageIdentifierToDisplayName(id);
+
+  // If it's a file identifier, extract the last two parts of the file path
+  if (id.uriType === "file") {
+    // Handle both forward slashes and backslashes, get the last two segments
+    const segments = displayName.split(/[/\\]/);
+    const lastTwoParts = segments.slice(-2);
+    return lastTwoParts.join("/");
+  }
+
+  // Otherwise return the display name as-is (for slug identifiers)
+  return displayName;
+}
+
+export function markdownToRule(
+  rule: string,
+  id: PackageIdentifier,
+): RuleObject {
+  const { frontmatter, markdown } = parseMarkdownRule(rule);
+
   return {
-    name,
+    name: getRuleName(frontmatter, id),
     rule: markdown,
     globs: frontmatter.globs,
+    regex: frontmatter.regex,
     description: frontmatter.description,
     alwaysApply: frontmatter.alwaysApply,
-    source: "rules-block",
-    ruleFile: path,
   };
 }
