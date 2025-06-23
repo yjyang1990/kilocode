@@ -32,7 +32,7 @@ MacBooks with a sufficient amount of unified memory can use GPU-acceleration, bu
 
 Ollama supports many different models.
 You can find a list of available models on the [Ollama website](https://ollama.com/library).
-Selecting a models that suits your use case, runs on your hardware configuration and achieves the desired speed requires some trial and error.
+Selecting a model that suits your use case, runs on your hardware configuration and achieves the desired speed requires some trial and error.
 The following rules and heuristics can be used to find a model:
 
 * Must have at least a 32k context window (this is a requirement for Kilo Code).
