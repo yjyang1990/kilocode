@@ -79,6 +79,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'providers/kilocode',
             'providers/anthropic',
+            'providers/claude-code',
             'providers/bedrock',
             'providers/deepseek',
             'providers/vertex',
