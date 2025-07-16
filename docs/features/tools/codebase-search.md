@@ -1,10 +1,12 @@
 # codebase_search
 
-:::warning Experimental Feature
-The `codebase_search` tool is part of the experimental [Codebase Indexing](/features/codebase-indexing) feature. This feature is under active development and may change significantly in future releases. It requires additional setup including an embedding provider and vector database.
+:::info Setup Required
+The `codebase_search` tool is part of the [Codebase Indexing](/features/codebase-indexing) feature. It requires additional setup including an embedding provider and vector database.
 :::
 
 The `codebase_search` tool performs semantic searches across your entire codebase using AI embeddings. Unlike traditional text-based search, it understands the meaning of your queries and finds relevant code even when exact keywords don't match.
+
+---
 
 ## Parameters
 
@@ -13,9 +15,13 @@ The tool accepts these parameters:
 - `query` (required): Natural language search query describing what you're looking for
 - `path` (optional): Directory path to limit search scope to a specific part of your codebase
 
+---
+
 ## What It Does
 
 This tool searches through your indexed codebase using semantic similarity rather than exact text matching. It finds code blocks that are conceptually related to your query, even if they don't contain the exact words you searched for. Results include relevant code snippets with file paths, line numbers, and similarity scores.
+
+---
 
 ## When is it used?
 
@@ -24,6 +30,8 @@ This tool searches through your indexed codebase using semantic similarity rathe
 - When searching for error handling, authentication, or other conceptual code patterns
 - When exploring unfamiliar codebases to understand how features are implemented
 - When finding related code that might be affected by changes or refactoring
+
+---
 
 ## Key Features
 
@@ -36,57 +44,57 @@ This tool searches through your indexed codebase using semantic similarity rathe
 - **UI Integration**: Results displayed with syntax highlighting and navigation links
 - **Performance Optimized**: Fast vector-based search with configurable result limits
 
+---
+
 ## Requirements
 
-This tool is only available when the experimental Codebase Indexing feature is properly configured:
+This tool is only available when the Codebase Indexing feature is properly configured:
 
-- **Feature Enabled**: Codebase Indexing must be enabled in experimental settings
+- **Feature Configured**: Codebase Indexing must be configured in settings
 - **Embedding Provider**: OpenAI API key or Ollama configuration required
 - **Vector Database**: Qdrant instance running and accessible
 - **Index Status**: Codebase must be indexed (status: "Indexed" or "Indexing")
 
+---
+
 ## Limitations
 
-- **Experimental Feature**: Part of the experimental codebase indexing system
 - **Requires Configuration**: Depends on external services (embedding provider + Qdrant)
 - **Index Dependency**: Only searches through indexed code blocks
 - **Result Limits**: Maximum of 50 results per search to maintain performance
-- **Similarity Threshold**: Only returns results above 0.4 similarity score
+- **Similarity Threshold**: Only returns results above similarity threshold (default: 0.4, configurable)
 - **File Size Limits**: Limited to files under 1MB that were successfully indexed
 - **Language Support**: Effectiveness depends on Tree-sitter language support
+
+---
 
 ## How It Works
 
 When the `codebase_search` tool is invoked, it follows this process:
 
 1. **Availability Validation**:
-
    - Verifies that the CodeIndexManager is available and initialized
    - Confirms codebase indexing is enabled in settings
    - Checks that indexing is properly configured (API keys, Qdrant URL)
    - Validates the current index state allows searching
 
 2. **Query Processing**:
-
    - Takes your natural language query and generates an embedding vector
    - Uses the same embedding provider configured for indexing (OpenAI or Ollama)
    - Converts the semantic meaning of your query into a mathematical representation
 
 3. **Vector Search Execution**:
-
    - Searches the Qdrant vector database for similar code embeddings
    - Uses cosine similarity to find the most relevant code blocks
-   - Applies the minimum similarity threshold (0.4) to filter results
+   - Applies the minimum similarity threshold (default: 0.4, configurable) to filter results
    - Limits results to 50 matches for optimal performance
 
 4. **Path Filtering** (if specified):
-
    - Filters results to only include files within the specified directory path
    - Uses normalized path comparison for accurate filtering
    - Maintains relevance ranking within the filtered scope
 
 5. **Result Processing and Formatting**:
-
    - Converts absolute file paths to workspace-relative paths
    - Structures results with file paths, line ranges, similarity scores, and code content
    - Formats for both AI consumption and UI display with syntax highlighting
@@ -95,12 +103,13 @@ When the `codebase_search` tool is invoked, it follows this process:
    - **AI Output**: Structured text format with query, file paths, scores, and code chunks
    - **UI Output**: JSON format with syntax highlighting and navigation capabilities
 
+---
+
 ## Search Query Best Practices
 
 ### Effective Query Patterns
 
 **Good: Conceptual and specific**
-
 ```xml
 <codebase_search>
 <query>user authentication and password validation</query>
@@ -108,7 +117,6 @@ When the `codebase_search` tool is invoked, it follows this process:
 ```
 
 **Good: Feature-focused**
-
 ```xml
 <codebase_search>
 <query>database connection pool setup</query>
@@ -116,7 +124,6 @@ When the `codebase_search` tool is invoked, it follows this process:
 ```
 
 **Good: Problem-oriented**
-
 ```xml
 <codebase_search>
 <query>error handling for API requests</query>
@@ -124,7 +131,6 @@ When the `codebase_search` tool is invoked, it follows this process:
 ```
 
 **Less effective: Too generic**
-
 ```xml
 <codebase_search>
 <query>function</query>
@@ -138,12 +144,13 @@ When the `codebase_search` tool is invoked, it follows this process:
 - **Domain Concepts**: "user profile management", "payment processing workflow"
 - **Architecture Components**: "middleware configuration", "database migration scripts"
 
+---
+
 ## Directory Scoping
 
 Use the optional `path` parameter to focus searches on specific parts of your codebase:
 
 **Search within API modules:**
-
 ```xml
 <codebase_search>
 <query>endpoint validation middleware</query>
@@ -152,7 +159,6 @@ Use the optional `path` parameter to focus searches on specific parts of your co
 ```
 
 **Search in test files:**
-
 ```xml
 <codebase_search>
 <query>mock data setup patterns</query>
@@ -161,13 +167,14 @@ Use the optional `path` parameter to focus searches on specific parts of your co
 ```
 
 **Search specific feature directories:**
-
 ```xml
 <codebase_search>
 <query>component state management</query>
 <path>src/components/auth</path>
 </codebase_search>
 ```
+
+---
 
 ## Result Interpretation
 
@@ -181,11 +188,12 @@ Use the optional `path` parameter to focus searches on specific parts of your co
 ### Result Structure
 
 Each search result includes:
-
 - **File Path**: Workspace-relative path to the file containing the match
 - **Score**: Similarity score indicating relevance (0.4-1.0)
 - **Line Range**: Start and end line numbers for the code block
 - **Code Chunk**: The actual code content that matched your query
+
+---
 
 ## Examples When Used
 
@@ -194,10 +202,11 @@ Each search result includes:
 - When refactoring code, Kilo Code searches for "database transaction patterns" to ensure consistency across all database operations.
 - When onboarding to a new codebase, Kilo Code searches for "configuration loading" to understand how the application bootstraps.
 
+---
+
 ## Usage Examples
 
 Searching for authentication-related code across the entire project:
-
 ```xml
 <codebase_search>
 <query>user login and authentication logic</query>
@@ -205,7 +214,6 @@ Searching for authentication-related code across the entire project:
 ```
 
 Finding database-related code in a specific directory:
-
 ```xml
 <codebase_search>
 <query>database connection and query execution</query>
@@ -214,7 +222,6 @@ Finding database-related code in a specific directory:
 ```
 
 Looking for error handling patterns in API code:
-
 ```xml
 <codebase_search>
 <query>HTTP error responses and exception handling</query>
@@ -223,7 +230,6 @@ Looking for error handling patterns in API code:
 ```
 
 Searching for testing utilities and mock setups:
-
 ```xml
 <codebase_search>
 <query>test setup and mock data creation</query>
@@ -232,9 +238,7 @@ Searching for testing utilities and mock setups:
 ```
 
 Finding configuration and environment setup code:
-
 ```xml
 <codebase_search>
 <query>environment variables and application configuration</query>
 </codebase_search>
-```
