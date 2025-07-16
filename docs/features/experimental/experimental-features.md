@@ -18,13 +18,11 @@ To enable or disable experimental features:
 
 The following experimental features are currently available:
 
-### Search and Replace
+## Autocomplete
+When enabled, Kilo Code will provide inline code suggestions as you type. Currently this requires the Kilo Code API Provider in order to use it.
 
-Adds a new tool for searching and replacing text in a file.
-
-### Insert Content
-
-Adds a new tool for inserting content at any position in a file.
+## Concurrent file edits
+When enabled, Kilo Code can edit multiple files in a single request. When disabled, Kilo Code must edit one file at a time. Disabling this can help when working with less capable models or when you want more control over file modifications.
 
 ### Power Steering
 
@@ -32,6 +30,6 @@ When enabled, Kilo Code will remind the model about the details of its current m
 
 ## Providing Feedback
 
-If you encounter any issues with experimental features, or if you have suggestions for improvements, please report them on the [Kilo Code Code GitHub Issues page](https://github.com/Kilo-Org/kilocode).
+If you encounter any issues with experimental features, or if you have suggestions for improvements, please report them on the [Kilo Code Code GitHub Issues page](https://github.com/Kilo-Org/kilocode) or join our [Discord server](https://kilo.love/discord) where we have channels dedciated to many experimental features.
 
 Your feedback is valuable and helps us improve Kilo Code!
