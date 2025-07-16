@@ -21,12 +21,19 @@ const sidebars: SidebarsConfig = {
       label: 'Using Kilo Code',
       items: [
         'basic-usage/the-chat-interface',
-        'basic-usage/typing-your-requests',
         'basic-usage/using-modes',
-        'basic-usage/orchestrator-mode',
         'basic-usage/context-mentions',
-        'basic-usage/git-commit-generation',
-        'features/code-actions',
+        {
+          type: 'category',
+          label: 'Basic Features',
+          items: [
+            'basic-usage/orchestrator-mode',
+            'basic-usage/git-commit-generation',
+            'features/browser-use',
+            'features/code-actions',
+            'features/more-features'
+          ]
+        },
         'basic-usage/adding-tokens',
       ],
     },
@@ -48,15 +55,35 @@ const sidebars: SidebarsConfig = {
       label: 'Advanced Usage',
       items: [
         'advanced-usage/prompt-engineering',
-        'advanced-usage/custom-rules',
-        'advanced-usage/custom-instructions',
-        'advanced-usage/memory-bank',
-        'advanced-usage/large-projects',
-        'features/fast-edits',
-        'features/model-temperature',
-        'advanced-usage/rate-limits-costs',
-        'features/footgun-prompting',
-        'features/slash-commands/workflows',
+        {
+          type: 'category',
+          label: 'Customizing Kilo Code',
+          items: [
+            'advanced-usage/custom-rules',
+            'advanced-usage/custom-instructions',
+            'features/slash-commands/workflows',
+          ]
+        },
+        {
+          type: 'category',
+          label: 'Advanced Context Features',
+          items: [
+            'advanced-usage/memory-bank',
+            'features/codebase-indexing',
+            'advanced-usage/large-projects',
+          ]
+        },
+        {
+          type: 'category',
+          label: 'Advanced AI Features',
+          items: [
+            'features/fast-edits',
+            'features/model-temperature',
+            'advanced-usage/rate-limits-costs',
+            'features/footgun-prompting',
+          ]
+        },
+        'features/experimental/experimental-features',
       ],
     },
     {
