@@ -1,8 +1,6 @@
 # Roo Code Changelog
 
-## 3.23.14
-
-### Patch Changes
+## [3.23.14] - 2025-07-17
 
 - Log api-initiated tasks to a tmp directory
 
