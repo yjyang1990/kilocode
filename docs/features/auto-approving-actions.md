@@ -34,6 +34,8 @@ Click the toolbar to expand it and configure individual permissions:
 | **Switch modes** | Changes between Kilo Code modes automatically | Low |
 | **Create & complete subtasks** | Manages subtasks without confirmation | Low |
 | **Retry failed requests** | Automatically retries failed API requests | Low |
+| **Answer follow-up questions** | Selects default answer for follow-up questions| Low |
+| **Update todo list** | Automatically updates task progress | Low |
 
 ## Master Toggle for Quick Control
 
@@ -221,4 +223,61 @@ This setting allows terminal command execution with controls. While risky, the w
 - Text field to enter command prefixes (e.g., 'git')
 - "Add" button to add new prefixes
 - Clickable command buttons with X to remove them
+:::
+
+### Follow-Up Questions
+
+:::info Follow-Up Questions (Risk: Low)
+
+**Setting:** `Always default answer for follow-up questions`
+
+**Description:** Automatically selects the first AI-suggested answer for a follow-up question after a configurable timeout. This speeds up your workflow by letting Roo proceed without manual intervention.
+
+**Visual countdown:** When enabled, a countdown timer appears on the first suggestion button, showing the remaining time before auto-selection. The timer is displayed as a circular progress indicator that depletes as time passes.
+
+**Timeout slider:** Use the slider to set the wait time from 1 to 300 seconds (Default: 60s).
+
+**Override options:** You can cancel the auto-selection at any time by:
+- Clicking a different suggestion
+- Editing any suggestion
+- Typing your own response
+- Clicking the timer to pause it
+
+**Risk level:** Low
+
+**Use cases:**
+- Overnight runs where you want Roo to continue working
+- Repetitive tasks where the default suggestions are usually correct
+- Testing workflows where interaction isn't critical
+:::
+
+### Update Todo List
+
+:::info Update Todo List (Risk: Low)
+
+**Setting:** "Always approve todo list updates"
+
+**Description:** "Automatically update the to-do list without requiring approval"
+
+**Risk level:** Low
+
+This setting allows Roo to automatically update task progress and todo lists during work sessions. This includes:
+- Marking tasks as completed
+- Adding new discovered tasks
+- Updating task status (pending, in progress, completed)
+- Reorganizing task priorities
+
+**Benefits:**
+- Maintains real-time task progress visibility
+- Reduces interruptions during multi-step workflows
+- Keeps project status accurately reflected
+- Helps track complex task dependencies
+
+**Use cases:**
+- Long-running development sessions
+- Multi-step refactoring projects
+- Complex debugging workflows
+- Feature implementation with many subtasks
+
+This is particularly useful when combined with the Subtasks permission, as it allows Roo to maintain a complete picture of project progress without constant approval requests.
 :::
