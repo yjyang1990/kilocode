@@ -107,12 +107,13 @@ const sidebars: SidebarsConfig = {
           items: [
             'providers/kilocode',
             'providers/anthropic',
-            'providers/claude-code',
             'providers/bedrock',
+            'providers/chutes-ai',
+            'providers/claude-code',
             'providers/deepseek',
             'providers/vertex',
-            'providers/gemini',
             'providers/glama',
+            'providers/gemini',
             'providers/groq',
             'providers/human-relay',
             'providers/lmstudio',
@@ -125,6 +126,7 @@ const sidebars: SidebarsConfig = {
             'providers/unbound',
             'providers/v0',
             'providers/vscode-lm',
+            'providers/xai',
           ]
         },
         'advanced-usage/local-models',
