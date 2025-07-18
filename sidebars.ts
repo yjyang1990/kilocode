@@ -113,6 +113,7 @@ const sidebars: SidebarsConfig = {
             'providers/vertex',
             'providers/gemini',
             'providers/glama',
+            'providers/groq',
             'providers/human-relay',
             'providers/lmstudio',
             'providers/mistral',
