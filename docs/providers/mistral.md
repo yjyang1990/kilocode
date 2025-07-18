@@ -22,6 +22,7 @@ Kilo Code supports the following Mistral models:
 | Model ID               | Model Default Temperature | Function Calling | Vision / Image support |
 |------------------------|-------------------------|------------------|--------|
 | codestral-latest      | 0.3                     | ✅               | ❌      |
+| devstral              | 0.3                     | ✅               | ❌      |
 | mistral-large-latest  | 0.7                     | ✅               | ❌      |
 | ministral-8b-latest   | 0.3                     | ✅               | ❌      |
 | ministral-3b-latest   | 0.3                     | ✅               | ❌      |

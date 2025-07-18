@@ -39,6 +39,13 @@ Choose one of these options for generating embeddings:
 - Default: `text-embedding-3-small`
 - Processes up to 100,000 tokens per batch
 
+**Gemini**
+
+- Requires Google AI API key
+- Supports Gemini embedding models including `gemini-embedding-001`
+- Cost-effective alternative to OpenAI
+- High-quality embeddings for code understanding
+
 **Ollama (Local)**
 
 - Requires local Ollama installation
@@ -90,13 +97,25 @@ For team or production use:
 ## Configuration
 
 1. Open Kilo Code settings (<Codicon name="gear" /> icon)
-2. Navigate to **Experimental** section
-3. Enable **"Enable Codebase Indexing"**
+2. Navigate to **Codebase Indexing** section
+3. Enable **"Enable Codebase Indexing"** using the toggle switch
 4. Configure your embedding provider:
    - **OpenAI**: Enter API key and select model
+   - **Gemini**: Enter Google AI API key and select embedding model
    - **Ollama**: Enter base URL and select model
 5. Set Qdrant URL and optional API key
-6. Click **Save** to start initial indexing
+6. Configure **Max Search Results** (default: 20, range: 1-100)
+7. Click **Save** to start initial indexing
+
+### Enable/Disable Toggle
+
+The codebase indexing feature includes a convenient toggle switch that allows you to:
+
+- **Enable**: Start indexing your codebase and make the search tool available
+- **Disable**: Stop indexing, pause file watching, and disable the search functionality
+- **Preserve Settings**: Your configuration remains saved when toggling off
+
+This toggle is useful for temporarily disabling indexing during intensive development work or when working with sensitive codebases.
 
 ## Understanding Index Status
 
@@ -113,6 +132,7 @@ The interface shows real-time status with color indicators:
 
 - **Tree-sitter Integration**: Uses AST parsing to identify semantic code blocks
 - **Language Support**: All languages supported by Tree-sitter
+- **Markdown Support**: Full support for markdown files and documentation
 - **Fallback**: Line-based chunking for unsupported file types
 - **Block Sizing**:
   - Minimum: 100 characters
@@ -162,10 +182,9 @@ The indexer automatically excludes:
 ## Current Limitations
 
 - **File Size**: 1MB maximum per file
-- **Markdown**: Not currently supported due to parsing complexity
 - **Single Workspace**: One workspace at a time
 - **Dependencies**: Requires external services (embedding provider + Qdrant)
-- **Language Coverage**: Limited to Tree-sitter supported languages
+- **Language Coverage**: Limited to Tree-sitter supported languages for optimal parsing
 
 ## Using the Search Feature
 
@@ -180,10 +199,19 @@ Once indexed, Kilo Code can use the [`codebase_search`](/advanced-usage/availabl
 
 The tool provides Kilo Code with:
 
-- Relevant code snippets
+- Relevant code snippets (up to your configured max results limit)
 - File paths and line numbers
 - Similarity scores
 - Contextual information
+
+### Search Results Configuration
+
+You can control the number of search results returned by adjusting the **Max Search Results** setting:
+
+- **Default**: 20 results
+- **Range**: 1-100 results
+- **Performance**: Lower values improve response speed
+- **Comprehensiveness**: Higher values provide more context but may slow responses
 
 ## Privacy & Security
 
@@ -198,7 +226,6 @@ The tool provides Kilo Code with:
 Planned improvements:
 
 - Additional embedding providers
-- Improved markdown and documentation support
 - Multi-workspace indexing
 - Enhanced filtering and configuration options
 - Team sharing capabilities
