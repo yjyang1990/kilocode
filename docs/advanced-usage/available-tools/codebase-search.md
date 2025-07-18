@@ -1,7 +1,7 @@
 # codebase_search
 
 :::warning Experimental Feature
-The `codebase_search` tool is part of the experimental [Codebase Indexing](/features/codebase-indexing) feature. This feature is under active development and may change significantly in future releases. It requires additional setup including an embedding provider and vector database.
+The `codebase_search` tool is that requires additional setup including an embedding provider and vector database.
 :::
 
 The `codebase_search` tool performs semantic searches across your entire codebase using AI embeddings. Unlike traditional text-based search, it understands the meaning of your queries and finds relevant code even when exact keywords don't match.
