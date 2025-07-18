@@ -50,7 +50,7 @@
 	},
 	"save": {
 		"title": "Kaydet",
-		"tooltip": "Dosya değişikliklerini kaydet"
+		"tooltip": "Mesaj değişikliklerini kaydet"
 	},
 	"reject": {
 		"title": "Reddet",
@@ -130,6 +130,7 @@
 	"separator": "Ayırıcı",
 	"edit": "Düzenle...",
 	"forNextMode": "sonraki mod için",
+	"forPreviousMode": "önceki mod için",
 	"error": "Hata",
 	"diffError": {
 		"title": "Düzenleme Başarısız"
@@ -229,7 +230,10 @@
 	"autoApprove": {
 		"title": "Otomatik-onay:",
 		"none": "Hiçbiri",
-		"description": "Otomatik onay, Kilo Code'un izin istemeden işlemler gerçekleştirmesine olanak tanır. Yalnızca tamamen güvendiğiniz eylemler için etkinleştirin. Daha detaylı yapılandırma <settingsLink>Ayarlar</settingsLink>'da mevcuttur."
+		"description": "Otomatik onay, Roo Code'un izin istemeden işlemler gerçekleştirmesine olanak tanır. Yalnızca tamamen güvendiğiniz eylemler için etkinleştirin. Daha detaylı yapılandırma <settingsLink>Ayarlar</settingsLink>'da mevcuttur.",
+		"selectOptionsFirst": "Otomatik onayı etkinleştirmek için aşağıdan en az bir seçenek belirleyin",
+		"toggleAriaLabel": "Otomatik onayı değiştir",
+		"disabledAriaLabel": "Otomatik onay devre dışı - önce seçenekleri belirleyin"
 	},
 	"reasoning": {
 		"thinking": "Düşünüyor",
@@ -288,7 +292,7 @@
 		}
 	},
 	"systemPromptWarning": "UYARI: Özel sistem komut geçersiz kılma aktif. Bu işlevselliği ciddi şekilde bozabilir ve öngörülemeyen davranışlara neden olabilir.",
-	"profileViolationWarning": "Geçerli profil kuruluşunuzun ayarlarını ihlal ediyor",
+	"profileViolationWarning": "Geçerli profil kuruluşunuzun ayarlarıyla uyumlu değil",
 	"shellIntegration": {
 		"title": "Komut Çalıştırma Uyarısı",
 		"description": "Komutunuz VSCode terminal kabuk entegrasyonu olmadan çalıştırılıyor. Bu uyarıyı gizlemek için <settingsLink>Kilo Code ayarları</settingsLink>'nın <strong>Terminal</strong> bölümünden kabuk entegrasyonunu devre dışı bırakabilir veya aşağıdaki bağlantıyı kullanarak VSCode terminal entegrasyonu sorunlarını giderebilirsiniz.",
@@ -302,9 +306,10 @@
 		}
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Kilo Code kod tabanında <code>{{query}}</code> aramak istiyor:",
-		"wantsToSearchWithPath": "Kilo Code <code>{{path}}</code> içinde kod tabanında <code>{{query}}</code> aramak istiyor:",
-		"didSearch": "<code>{{query}}</code> için {{count}} sonuç bulundu:",
+		"wantsToSearch": "Roo kod tabanında <code>{{query}}</code> aramak istiyor:",
+		"wantsToSearchWithPath": "Roo <code>{{path}}</code> içinde kod tabanında <code>{{query}}</code> aramak istiyor:",
+		"didSearch_one": "1 sonuç bulundu",
+		"didSearch_other": "{{count}} sonuç bulundu",
 		"resultTooltip": "Benzerlik puanı: {{score}} (dosyayı açmak için tıklayın)"
 	},
 	"read-batch": {
@@ -324,5 +329,8 @@
 	},
 	"versionIndicator": {
 		"ariaLabel": "Sürüm {{version}} - Sürüm notlarını görüntülemek için tıklayın"
+	},
+	"editMessage": {
+		"placeholder": "Mesajını düzenle..."
 	}
 }
