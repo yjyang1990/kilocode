@@ -19,6 +19,8 @@ Kilo Code supports Google's Gemini family of models through the Google AI Gemini
 
 Kilo Code supports the following Gemini models:
 
+### Chat Models
+
 * `gemini-2.5-pro-exp-03-25`
 * `gemini-2.0-flash-001`
 * `gemini-2.0-flash-lite-preview-02-05`
@@ -33,6 +35,10 @@ Kilo Code supports the following Gemini models:
 * `gemini-1.5-pro-exp-0827`
 * `gemini-exp-1206`
 
+### Embedding Models
+
+* `gemini-embedding-001` - Optimized for codebase indexing and semantic search
+
 Refer to the [Gemini documentation](https://ai.google.dev/models/gemini) for more details on each model.
 
 ## Configuration in Kilo Code
@@ -45,3 +51,4 @@ Refer to the [Gemini documentation](https://ai.google.dev/models/gemini) for mor
 ## Tips and Notes
 
 *   **Pricing:**  Gemini API usage is priced based on input and output tokens. Refer to the [Gemini pricing page](https://ai.google.dev/pricing) for detailed information.
+*   **Codebase Indexing:** The `gemini-embedding-001` model is specifically supported for [codebase indexing](/features/codebase-indexing), providing high-quality embeddings for semantic code search.
