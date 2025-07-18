@@ -252,10 +252,10 @@
 		"description": "Specializované persony které přizpůsobují chování Kilo Code."
 	},
 	"announcement": {
-		"title": "🎉 Vydán Roo Code {{version}}",
-		"description": "Roo Code {{version}} přináší hlavní nové funkce a vylepšení na základě tvé zpětné vazby.",
+		"title": "🎉 Vydán Kilo Code {{version}}",
+		"description": "Kilo Code {{version}} přináší hlavní nové funkce a vylepšení na základě tvé zpětné vazby.",
 		"whatsNew": "Co je nového",
-		"feature1": "<bold>Spuštění Roo Marketplace</bold>: Tržiště je nyní živé! Objevuj a instaluj režimy a MCP snadněji než kdy dříve.",
+		"feature1": "<bold>Spuštění Kilo Code Marketplace</bold>: Tržiště je nyní živé! Objevuj a instaluj režimy a MCP snadněji než kdy dříve.",
 		"feature2": "<bold>Modely Gemini 2.5</bold>: Přidána podpora pro nové modely Gemini 2.5 Pro, Flash a Flash Lite.",
 		"feature3": "<bold>Podpora souborů Excel a další</bold>: Přidána podpora souborů Excel (.xlsx) a mnoho oprav chyb a vylepšení!",
 		"hideButton": "Skrýt oznámení",
