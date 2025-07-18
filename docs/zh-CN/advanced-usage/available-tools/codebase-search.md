@@ -1,7 +1,7 @@
 # codebase_search
 
 :::warning 实验性功能
-`codebase_search` 工具是实验性功能 [代码库索引](/features/experimental/codebase-indexing) 的一部分。该功能正在积极开发中，可能在未来的版本中有重大变化。它需要额外的设置，包括嵌入提供程序和向量数据库。
+`codebase_search` 工具是实验性功能 [代码库索引](/features/codebase-indexing) 的一部分。该功能正在积极开发中，可能在未来的版本中有重大变化。它需要额外的设置，包括嵌入提供程序和向量数据库。
 :::
 
 `codebase_search` 工具使用 AI 嵌入在整个代码库中执行语义搜索。与传统的基于文本的搜索不同，它能理解查询的含义，即使没有完全匹配的关键字，也能找到相关的代码。

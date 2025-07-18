@@ -12,7 +12,7 @@ Kilo Code 面板也可以移动到 VS Code 的次侧边栏。如果你不小心�
 
 1. **聊天/任务历史记录：** 该区域显示你与 Kilo Code 之间的对话历史记录，或者如果你没有当前任务，则显示你创建的所有任务的历史记录。它显示你的请求、Kilo Code 的响应以及任何已执行的操作（如文件编辑或命令执行）。
 
-2. **输入框：** 这是你输入任务和问题的地方。你可以使用 [纯英文](/basic-usage/typing-your-requests) 来传达你希望 Kilo Code 执行的操作。
+2. **输入框：** 这是你输入任务和问题的地方。你可以使用 [纯英文](/zh-CN/basic-usage/typing-your-requests) 来传达你希望 Kilo Code 执行的操作。
 
 3. **操作按钮：** 这些按钮出现在输入框下方，允许你批准或拒绝 Kilo Code 提出的操作。根据上下文和你的 [自动批准设置](/features/auto-approving-actions)，可用的按钮会有所不同。
 
