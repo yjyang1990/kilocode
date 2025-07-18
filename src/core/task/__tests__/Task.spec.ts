@@ -328,6 +328,7 @@ describe("Cline", () => {
 				apiConfiguration: mockApiConfig,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			expect(cline.consecutiveMistakeLimit).toBe(3)
@@ -340,6 +341,7 @@ describe("Cline", () => {
 				consecutiveMistakeLimit: 5,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			expect(cline.consecutiveMistakeLimit).toBe(5)
@@ -352,6 +354,7 @@ describe("Cline", () => {
 				consecutiveMistakeLimit: 0,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			expect(cline.consecutiveMistakeLimit).toBe(0)
@@ -364,6 +367,7 @@ describe("Cline", () => {
 				consecutiveMistakeLimit: 0,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			// The toolRepetitionDetector should be initialized with 0 for unlimited mode
@@ -379,6 +383,7 @@ describe("Cline", () => {
 				consecutiveMistakeLimit: 5,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			// The toolRepetitionDetector should be initialized with the same limit
