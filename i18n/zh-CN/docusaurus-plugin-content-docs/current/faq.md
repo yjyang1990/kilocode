@@ -95,7 +95,7 @@ Kilo Code支持多种API提供商，包括：
 
 ### 如何开始新任务？
 
-打开Kilo Code面板（<img src="/docs/img/kilo-v1.svg" width="12" />）并在聊天框中输入你的任务。请清晰具体地描述你希望Kilo Code完成的工作。请参阅[输入你的请求](/zh-CN/basic-usage/typing-your-requests)获取最佳实践。
+打开Kilo Code面板（<img src="/docs/img/kilo-v1.svg" width="12" />）并在聊天框中输入你的任务。请清晰具体地描述你希望Kilo Code完成的工作。请参阅[输入你的请求](/)获取最佳实践。
 
 ### Kilo Code有哪些模式？
 

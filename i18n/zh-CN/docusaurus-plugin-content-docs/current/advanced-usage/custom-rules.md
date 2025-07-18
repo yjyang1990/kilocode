@@ -153,7 +153,7 @@ project/
 
 ## 相关功能
 
-- [自定义模式](/docs/features/custom-modes)
+- [自定义模式](/features/custom-modes)
 - [自定义指令](/advanced-usage/custom-instructions)
-- [设置管理](/docs/features/settings-management)
-- [自动批准设置](/docs/features/auto-approving-actions)
+- [设置管理](/features/settings-management)
+- [自动批准设置](/features/auto-approving-actions)
