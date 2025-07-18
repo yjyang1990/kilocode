@@ -28,6 +28,7 @@ const sidebars: SidebarsConfig = {
           label: 'Basic Features',
           items: [
             'basic-usage/orchestrator-mode',
+            'basic-usage/task-todo-list',
             'basic-usage/git-commit-generation',
             'features/browser-use',
             'features/code-actions',
@@ -159,6 +160,7 @@ const sidebars: SidebarsConfig = {
         'features/tools/read-file',
         'features/tools/search-files',
         'features/tools/switch-mode',
+        'features/tools/update-todo-list',
         'features/tools/use-mcp-tool',
         'features/tools/write-to-file',
       ],
