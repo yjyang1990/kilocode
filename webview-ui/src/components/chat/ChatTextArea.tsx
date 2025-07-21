@@ -24,7 +24,6 @@ import {
 } from "@src/utils/context-mentions"
 import { convertToMentionPath } from "@/utils/path-mentions"
 import { SelectDropdown, DropdownOptionType, Button, StandardTooltip } from "@/components/ui"
-// import { normalizeApiConfiguration } from "@/utils/normalizeApiConfiguration" // kilocode_change
 
 import Thumbnails from "../common/Thumbnails"
 import ModeSelector from "./ModeSelector"
