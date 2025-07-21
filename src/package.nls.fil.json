@@ -28,6 +28,8 @@
 	"command.profile.title": "Profile",
 	"configuration.title": "Kilo Code",
 	"commands.allowedCommands.description": "Mga command na maaaring awtomatikong i-execute kapag naka-enable ang 'Always approve execute operations'",
+	"commands.deniedCommands.description": "Mga prefix ng command na awtomatikong tatanggihan nang hindi humihingi ng approval. Kapag may conflict sa mga allowed commands, ang pinakamahabang matching prefix ang may priority. Magdagdag ng * para tanggihan ang lahat ng commands.",
+	"commands.commandExecutionTimeout.description": "Maximum na oras sa mga segundo na maghihintay para sa pagkakumpleto ng command execution bago mag-timeout (0 = walang timeout, 1-600s, default: 0s)",
 	"settings.vsCodeLmModelSelector.description": "Mga setting para sa VSCode Language Model API",
 	"settings.vsCodeLmModelSelector.vendor.description": "Ang vendor ng language model (hal. copilot)",
 	"settings.vsCodeLmModelSelector.family.description": "Ang family ng language model (hal. gpt-4)",

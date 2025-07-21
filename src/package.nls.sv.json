@@ -28,6 +28,8 @@
 	"command.profile.title": "Profil",
 	"configuration.title": "Kilo Code",
 	"commands.allowedCommands.description": "Kommandon som kan köras automatiskt när 'Always approve execute operations' är aktiverat",
+	"commands.deniedCommands.description": "Kommandoprefix som automatiskt kommer att nekas utan att be om godkännande. Vid konflikter med tillåtna kommandon har den längsta matchande prefixen företräde. Lägg till * för att neka alla kommandon.",
+	"commands.commandExecutionTimeout.description": "Maximal tid i sekunder att vänta på att kommandokörning ska slutföras innan timeout (0 = ingen timeout, 1-600s, standard: 0s)",
 	"settings.vsCodeLmModelSelector.description": "Inställningar för VSCode Language Model API",
 	"settings.vsCodeLmModelSelector.vendor.description": "Leverantören av språkmodellen (t.ex. copilot)",
 	"settings.vsCodeLmModelSelector.family.description": "Familjen av språkmodellen (t.ex. gpt-4)",
