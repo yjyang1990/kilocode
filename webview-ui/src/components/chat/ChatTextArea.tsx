@@ -1507,6 +1507,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						"z-[2]",
 						"scrollbar-none",
 						"scrollbar-hide",
+						"pb-16", // kilocode_change: Increased padding to prevent overlap with control bar
 					)}
 					onScroll={() => updateHighlights()}
 				/>
