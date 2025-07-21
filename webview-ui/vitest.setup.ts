@@ -1,11 +1,10 @@
 import "@testing-library/jest-dom"
 import "@testing-library/jest-dom/vitest"
 
-// Force React into development mode for tests
-// This is needed to enable act(...) function in React Testing Library
+// Set up test environment
 globalThis.process = globalThis.process || {}
 globalThis.process.env = globalThis.process.env || {}
-globalThis.process.env.NODE_ENV = "development"
+globalThis.process.env.NODE_ENV = "test"
 
 class MockResizeObserver {
 	observe() {}
