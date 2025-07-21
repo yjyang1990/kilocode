@@ -5,11 +5,6 @@ vi.mock("os", () => ({
 	platform: vi.fn(() => "darwin"), // Default to non-Windows
 }))
 
-// kilocode_change start
-import os from "os"
-const isWindows = os.platform() === "win32"
-// kilocode_change end
-
 // Mock vscode workspace
 vi.mock("vscode", () => ({
 	workspace: {
