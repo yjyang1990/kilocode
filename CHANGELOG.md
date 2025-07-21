@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.61.0
-
-### Minor Changes
+## [v4.61.0]
 
 - [#1431](https://github.com/Kilo-Org/kilocode/pull/1431) [`97a9b97`](https://github.com/Kilo-Org/kilocode/commit/97a9b97de865e3f2d12a956ceaceda12c13505e3) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - The Task view now shows per-request cost when using the Kilo Code provider
 
