@@ -1243,7 +1243,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		)
 
 		// Helper function to render the text area section
-		const _renderTextAreaSection = () => (
+		const renderTextAreaSection = () => (
 			<div
 				className={cn(
 					"relative",
@@ -1304,7 +1304,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 						onHeightChange?.(height)
 					}}
-					placeholder={placeholderText}
+					// kilocode_change: combine placeholderText and placeholderBottomText here
+					placeholder={`${placeholderText}\n${placeholderBottomText}`}
 					minRows={3}
 					maxRows={15}
 					autoFocus={true}
@@ -1340,8 +1341,26 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					)}
 					onScroll={() => updateHighlights()}
 				/>
+				{/* kilocode_change {Transparent overlay at bottom of textArea to avoid text overlap } */}
+				<div
+					className="absolute bottom-[1px] left-2 right-2 h-16 bg-gradient-to-t from-[var(--vscode-input-background)] via-[var(--vscode-input-background)] to-transparent pointer-events-none z-[2]"
+					aria-hidden="true"
+				/>
 
-				<div className="absolute top-1 right-1 z-30">
+				{isTtsPlaying && (
+					<StandardTooltip content={t("chat:stopTts")}>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="absolute top-0 right-0 opacity-25 hover:opacity-100 z-10"
+							onClick={() => vscode.postMessage({ type: "stopTts" })}>
+							<VolumeX className="size-4" />
+						</Button>
+					</StandardTooltip>
+				)}
+
+				{/* kilocode_change: position tweaked */}
+				<div className="absolute top-2 right-2 z-30">
 					<StandardTooltip content={t("chat:enhancePrompt")}>
 						<button
 							aria-label={t("chat:enhancePrompt")}
@@ -1365,33 +1384,68 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					</StandardTooltip>
 				</div>
 
-				{!isEditMode && (
-					<div className="absolute bottom-1 right-1 z-30">
-						<StandardTooltip content={t("chat:sendMessage")}>
-							<button
-								aria-label={t("chat:sendMessage")}
-								disabled={sendingDisabled}
-								onClick={!sendingDisabled ? onSend : undefined}
-								className={cn(
-									"relative inline-flex items-center justify-center",
-									"bg-transparent border-none p-1.5",
-									"rounded-md min-w-[28px] min-h-[28px]",
-									"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
-									"transition-all duration-150",
-									"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
-									"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
-									"active:bg-[rgba(255,255,255,0.1)]",
-									!sendingDisabled && "cursor-pointer",
-									sendingDisabled &&
-										"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
-								)}>
-								<SendHorizontal className="w-4 h-4" />
-							</button>
-						</StandardTooltip>
-					</div>
-				)}
+				{/* kilocode_change: position tweaked, rtl support */}
+				<div className="absolute bottom-2 end-2 z-30">
+					{/* kilocode_change start */}
+					<IndexingStatusBadge className={cn({ hidden: containerWidth < 235 })} />
+					<StandardTooltip content="Add Context (@)">
+						<button
+							aria-label="Add Context (@)"
+							disabled={showContextMenu}
+							onClick={() => {
+								if (showContextMenu || !textAreaRef.current) return
 
-				{!inputValue && !isEditMode && (
+								textAreaRef.current.focus()
+
+								setInputValue(`${inputValue} @`)
+								setShowContextMenu(true)
+								// Empty search query explicitly to show all options
+								// and set to "File" option by default
+								setSearchQuery("")
+								setSelectedMenuIndex(4)
+							}}
+							className={cn(
+								"relative inline-flex items-center justify-center",
+								"bg-transparent border-none p-1.5",
+								"rounded-md min-w-[28px] min-h-[28px]",
+								"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
+								"transition-all duration-150",
+								"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
+								"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
+								"active:bg-[rgba(255,255,255,0.1)]",
+								!showContextMenu && "cursor-pointer",
+								showContextMenu &&
+									"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
+							)}>
+							<Paperclip className={cn("w-4", "h-4", { hidden: containerWidth < 235 })} />
+						</button>
+					</StandardTooltip>
+					{/* kilocode_change end */}
+					<StandardTooltip content={t("chat:sendMessage")}>
+						<button
+							aria-label={t("chat:sendMessage")}
+							disabled={sendingDisabled}
+							onClick={!sendingDisabled ? onSend : undefined}
+							className={cn(
+								"relative inline-flex items-center justify-center",
+								"bg-transparent border-none p-1.5",
+								"rounded-md min-w-[28px] min-h-[28px]",
+								"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
+								"transition-all duration-150",
+								"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
+								"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
+								"active:bg-[rgba(255,255,255,0.1)]",
+								!sendingDisabled && "cursor-pointer",
+								sendingDisabled &&
+									"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
+							)}>
+							{/* kilocode_change: rtl */}
+							<SendHorizontal className="w-4 h-4 rtl:-scale-x-100" />
+						</button>
+					</StandardTooltip>
+				</div>
+
+				{!inputValue && (
 					<div
 						className="absolute left-2 z-30 pr-9 flex items-center h-8"
 						style={{
@@ -1400,7 +1454,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							userSelect: "none",
 							pointerEvents: "none",
 						}}>
-						{placeholderBottomText}
+						{/* kilocode_change {placeholderBottomText} */}
 					</div>
 				)}
 			</div>
@@ -1494,221 +1548,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								/>
 							</div>
 						)}
-						<div
-							className={cn(
-								"relative",
-								"flex-1",
-								"flex",
-								"flex-col-reverse",
-								"min-h-0",
-								"overflow-hidden",
-								"rounded",
-							)}>
-							<div
-								ref={highlightLayerRef}
-								className={cn(
-									"absolute",
-									"inset-0",
-									"pointer-events-none",
-									"whitespace-pre-wrap",
-									"break-words",
-									"text-transparent",
-									"overflow-hidden",
-									"font-vscode-font-family",
-									"text-vscode-editor-font-size",
-									"leading-vscode-editor-line-height",
-									"py-2",
-									"px-[9px]",
-									"z-10",
-									"forced-color-adjust-none",
-								)}
-								style={{
-									color: "transparent",
-								}}
-							/>
-							<DynamicTextArea
-								ref={(el) => {
-									if (typeof ref === "function") {
-										ref(el)
-									} else if (ref) {
-										ref.current = el
-									}
-									textAreaRef.current = el
-								}}
-								value={inputValue}
-								onChange={(e) => {
-									handleInputChange(e)
-									updateHighlights()
-								}}
-								onFocus={() => setIsFocused(true)}
-								onKeyDown={handleKeyDown}
-								onKeyUp={handleKeyUp}
-								onBlur={handleBlur}
-								onPaste={handlePaste}
-								onSelect={updateCursorPosition}
-								onMouseUp={updateCursorPosition}
-								onHeightChange={(height) => {
-									if (textAreaBaseHeight === undefined || height < textAreaBaseHeight) {
-										setTextAreaBaseHeight(height)
-									}
 
-									onHeightChange?.(height)
-								}}
-								// kilocode_change: combine placeholderText and placeholderBottomText here
-								placeholder={`${placeholderText}\n${placeholderBottomText}`}
-								minRows={3}
-								maxRows={15}
-								autoFocus={true}
-								className={cn(
-									"w-full",
-									"text-vscode-input-foreground",
-									"font-vscode-font-family",
-									"text-vscode-editor-font-size",
-									"leading-vscode-editor-line-height",
-									"cursor-text",
-									"py-1.5 px-2",
-									isFocused
-										? "border border-vscode-focusBorder outline outline-vscode-focusBorder"
-										: isDraggingOver
-											? "border-2 border-dashed border-vscode-focusBorder"
-											: "border border-transparent",
-									isDraggingOver
-										? "bg-[color-mix(in_srgb,var(--vscode-input-background)_95%,var(--vscode-focusBorder))]"
-										: "bg-vscode-input-background",
-									"transition-background-color duration-150 ease-in-out",
-									"will-change-background-color",
-									"min-h-[90px]",
-									"box-border",
-									"rounded",
-									"resize-none",
-									"overflow-x-hidden",
-									"overflow-y-auto",
-									"pr-9",
-									"flex-none flex-grow",
-									"z-[2]",
-									"scrollbar-none",
-									"pb-16", // Increased padding to prevent overlap with control bar
-									"scroll-pb-16", // Increased padding to prevent overlap with control bar
-								)}
-								onScroll={() => updateHighlights()}
-							/>
-							{/* kilocode_change {Transparent overlay at bottom of textArea to avoid text overlap } */}
-							<div
-								className="absolute bottom-[1px] left-2 right-2 h-16 bg-gradient-to-t from-[var(--vscode-input-background)] via-[var(--vscode-input-background)] to-transparent pointer-events-none z-[2]"
-								aria-hidden="true"
-							/>
-
-							{isTtsPlaying && (
-								<StandardTooltip content={t("chat:stopTts")}>
-									<Button
-										variant="ghost"
-										size="icon"
-										className="absolute top-0 right-0 opacity-25 hover:opacity-100 z-10"
-										onClick={() => vscode.postMessage({ type: "stopTts" })}>
-										<VolumeX className="size-4" />
-									</Button>
-								</StandardTooltip>
-							)}
-
-							{/* kilocode_change: position tweaked */}
-							<div className="absolute top-2 right-2 z-30">
-								<StandardTooltip content={t("chat:enhancePrompt")}>
-									<button
-										aria-label={t("chat:enhancePrompt")}
-										disabled={sendingDisabled}
-										onClick={!sendingDisabled ? handleEnhancePrompt : undefined}
-										className={cn(
-											"relative inline-flex items-center justify-center",
-											"bg-transparent border-none p-1.5",
-											"rounded-md min-w-[28px] min-h-[28px]",
-											"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
-											"transition-all duration-150",
-											"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
-											"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
-											"active:bg-[rgba(255,255,255,0.1)]",
-											!sendingDisabled && "cursor-pointer",
-											sendingDisabled &&
-												"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
-										)}>
-										<WandSparkles className={cn("w-4 h-4", isEnhancingPrompt && "animate-spin")} />
-									</button>
-								</StandardTooltip>
-							</div>
-
-							{/* kilocode_change: position tweaked, rtl support */}
-							<div className="absolute bottom-2 end-2 z-30">
-								{/* kilocode_change start */}
-								<IndexingStatusBadge className={cn({ hidden: containerWidth < 235 })} />
-								<StandardTooltip content="Add Context (@)">
-									<button
-										aria-label="Add Context (@)"
-										disabled={showContextMenu}
-										onClick={() => {
-											if (showContextMenu || !textAreaRef.current) return
-
-											textAreaRef.current.focus()
-
-											setInputValue(`${inputValue} @`)
-											setShowContextMenu(true)
-											// Empty search query explicitly to show all options
-											// and set to "File" option by default
-											setSearchQuery("")
-											setSelectedMenuIndex(4)
-										}}
-										className={cn(
-											"relative inline-flex items-center justify-center",
-											"bg-transparent border-none p-1.5",
-											"rounded-md min-w-[28px] min-h-[28px]",
-											"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
-											"transition-all duration-150",
-											"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
-											"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
-											"active:bg-[rgba(255,255,255,0.1)]",
-											!showContextMenu && "cursor-pointer",
-											showContextMenu &&
-												"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
-										)}>
-										<Paperclip className={cn("w-4", "h-4", { hidden: containerWidth < 235 })} />
-									</button>
-								</StandardTooltip>
-								{/* kilocode_change end */}
-								<StandardTooltip content={t("chat:sendMessage")}>
-									<button
-										aria-label={t("chat:sendMessage")}
-										disabled={sendingDisabled}
-										onClick={!sendingDisabled ? onSend : undefined}
-										className={cn(
-											"relative inline-flex items-center justify-center",
-											"bg-transparent border-none p-1.5",
-											"rounded-md min-w-[28px] min-h-[28px]",
-											"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
-											"transition-all duration-150",
-											"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
-											"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
-											"active:bg-[rgba(255,255,255,0.1)]",
-											!sendingDisabled && "cursor-pointer",
-											sendingDisabled &&
-												"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
-										)}>
-										{/* kilocode_change: rtl */}
-										<SendHorizontal className="w-4 h-4 rtl:-scale-x-100" />
-									</button>
-								</StandardTooltip>
-							</div>
-
-							{!inputValue && (
-								<div
-									className="absolute left-2 z-30 pr-9 flex items-center h-8"
-									style={{
-										bottom: "0.25rem",
-										color: "var(--vscode-tab-inactiveForeground)",
-										userSelect: "none",
-										pointerEvents: "none",
-									}}>
-									{/* kilocode_change {placeholderBottomText} */}
-								</div>
-							)}
-						</div>
+						{renderTextAreaSection()}
 					</div>
 
 					{isEditMode && (
