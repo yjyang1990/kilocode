@@ -1590,29 +1590,31 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							<Paperclip className={cn("w-4", "h-4", { hidden: containerWidth < 235 })} />
 						</button>
 					</StandardTooltip>
+					{!isEditMode && (
+						<StandardTooltip content={t("chat:sendMessage")}>
+							<button
+								aria-label={t("chat:sendMessage")}
+								disabled={sendingDisabled}
+								onClick={!sendingDisabled ? onSend : undefined}
+								className={cn(
+									"relative inline-flex items-center justify-center",
+									"bg-transparent border-none p-1.5",
+									"rounded-md min-w-[28px] min-h-[28px]",
+									"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
+									"transition-all duration-150",
+									"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
+									"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
+									"active:bg-[rgba(255,255,255,0.1)]",
+									!sendingDisabled && "cursor-pointer",
+									sendingDisabled &&
+										"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
+								)}>
+								{/* kilocode_change: rtl */}
+								<SendHorizontal className="w-4 h-4 rtl:-scale-x-100" />
+							</button>
+						</StandardTooltip>
+					)}
 					{/* kilocode_change end */}
-					<StandardTooltip content={t("chat:sendMessage")}>
-						<button
-							aria-label={t("chat:sendMessage")}
-							disabled={sendingDisabled}
-							onClick={!sendingDisabled ? onSend : undefined}
-							className={cn(
-								"relative inline-flex items-center justify-center",
-								"bg-transparent border-none p-1.5",
-								"rounded-md min-w-[28px] min-h-[28px]",
-								"opacity-60 hover:opacity-100 text-vscode-descriptionForeground hover:text-vscode-foreground",
-								"transition-all duration-150",
-								"hover:bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)]",
-								"focus:outline-none focus-visible:ring-1 focus-visible:ring-vscode-focusBorder",
-								"active:bg-[rgba(255,255,255,0.1)]",
-								!sendingDisabled && "cursor-pointer",
-								sendingDisabled &&
-									"opacity-40 cursor-not-allowed grayscale-[30%] hover:bg-transparent hover:border-[rgba(255,255,255,0.08)] active:bg-transparent",
-							)}>
-							{/* kilocode_change: rtl */}
-							<SendHorizontal className="w-4 h-4 rtl:-scale-x-100" />
-						</button>
-					</StandardTooltip>
 				</div>
 
 				{!inputValue && (
