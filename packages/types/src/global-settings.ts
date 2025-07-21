@@ -14,6 +14,7 @@ import { telemetrySettingsSchema } from "./telemetry.js"
 import { modeConfigSchema } from "./mode.js"
 import { customModePromptsSchema, customSupportPromptsSchema } from "./mode.js"
 import { languagesSchema } from "./vscode.js"
+import { ghostServiceSettingsSchema } from "./kilocode.js" // kilocode_change
 
 /**
  * GlobalSettings
@@ -45,6 +46,9 @@ export const globalSettingsSchema = z.object({
 	alwaysAllowModeSwitch: z.boolean().optional(),
 	alwaysAllowSubtasks: z.boolean().optional(),
 	alwaysAllowExecute: z.boolean().optional(),
+	alwaysAllowFollowupQuestions: z.boolean().optional(),
+	followupAutoApproveTimeoutMs: z.number().optional(),
+	alwaysAllowUpdateTodoList: z.boolean().optional(),
 	allowedCommands: z.array(z.string()).optional(),
 	allowedMaxRequests: z.number().nullish(),
 	autoCondenseContext: z.boolean().optional(),
@@ -111,10 +115,14 @@ export const globalSettingsSchema = z.object({
 	customModePrompts: customModePromptsSchema.optional(),
 	customSupportPrompts: customSupportPromptsSchema.optional(),
 	enhancementApiConfigId: z.string().optional(),
+	autocompleteApiConfigId: z.string().optional(), // kilocode_change
 	commitMessageApiConfigId: z.string().optional(), // kilocode_change
+	ghostServiceSettings: ghostServiceSettingsSchema, // kilocode_change
 	historyPreviewCollapsed: z.boolean().optional(),
 	profileThresholds: z.record(z.string(), z.number()).optional(),
 	hasOpenedModeSelector: z.boolean().optional(),
+	lastModeExportPath: z.string().optional(),
+	lastModeImportPath: z.string().optional(),
 })
 
 export type GlobalSettings = z.infer<typeof globalSettingsSchema>
@@ -154,6 +162,7 @@ export const SECRET_STATE_KEYS = [
 	"codeIndexQdrantApiKey",
 	"kilocodeToken", // kilocode_change
 	"codebaseIndexOpenAiCompatibleApiKey",
+	"codebaseIndexGeminiApiKey",
 ] as const satisfies readonly (keyof ProviderSettings)[]
 export type SecretState = Pick<ProviderSettings, (typeof SECRET_STATE_KEYS)[number]>
 
@@ -200,6 +209,9 @@ export const EVALS_SETTINGS: RooCodeSettings = {
 	alwaysAllowModeSwitch: true,
 	alwaysAllowSubtasks: true,
 	alwaysAllowExecute: true,
+	alwaysAllowFollowupQuestions: true,
+	alwaysAllowUpdateTodoList: true,
+	followupAutoApproveTimeoutMs: 0,
 	allowedCommands: ["*"],
 
 	browserToolEnabled: false,
@@ -212,6 +224,7 @@ export const EVALS_SETTINGS: RooCodeSettings = {
 	soundEnabled: false,
 	soundVolume: 0.5,
 	systemNotificationsEnabled: true, // kilocode_change
+	ghostServiceSettings: {}, // kilocode_change
 
 	terminalOutputLineLimit: 500,
 	terminalShellIntegrationTimeout: 30000,

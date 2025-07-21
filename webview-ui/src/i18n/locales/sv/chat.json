@@ -127,6 +127,7 @@
 	},
 	"addImages": "Lägg till bilder i meddelandet",
 	"sendMessage": "Skicka meddelande",
+	"stopTts": "Stoppa text-till-tal",
 	"typeMessage": "Skriv ett meddelande...",
 	"typeTask": "Bygg, hitta, fråga något",
 	"addContext": "@ för att lägga till kontext, / för att byta lägen",
@@ -208,7 +209,8 @@
 	"codebaseSearch": {
 		"wantsToSearch": "Kilo Code vill söka i kodbasen efter <code>{{query}}</code>:",
 		"wantsToSearchWithPath": "Kilo Code vill söka i kodbasen efter <code>{{query}}</code> i <code>{{path}}</code>:",
-		"didSearch": "Hittade {{count}} resultat för <code>{{query}}</code>:"
+		"didSearch": "Hittade {{count}} resultat för <code>{{query}}</code>:",
+		"resultTooltip": "Likhetspoäng: {{score}} (klicka för att öppna fil)"
 	},
 	"commandOutput": "Kommandoutdata",
 	"response": "Svar",
@@ -264,7 +266,9 @@
 		"seconds": "{{count}}s"
 	},
 	"followUpSuggest": {
-		"copyToInput": "Kopiera till inmatning (samma som shift + klick)"
+		"copyToInput": "Kopiera till inmatning (samma som shift + klick)",
+		"autoSelectCountdown": "Väljer automatiskt om {{count}}s",
+		"countdownDisplay": "{{count}}s"
 	},
 	"browser": {
 		"rooWantsToUse": "Kilo Code vill använda webbläsaren:",
@@ -317,5 +321,8 @@
 		"indexed": "Indexerat",
 		"error": "Indexfel",
 		"status": "Indexstatus"
+	},
+	"versionIndicator": {
+		"ariaLabel": "Version {{version}} - Klicka för att visa versionsanteckningar"
 	}
 }

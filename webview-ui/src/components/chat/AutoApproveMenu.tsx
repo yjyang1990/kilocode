@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from "react"
 import { Trans } from "react-i18next"
-import { VSCodeCheckbox, VSCodeLink, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeCheckbox, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 
 import { vscode } from "@src/utils/vscode"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { AutoApproveToggle, AutoApproveSetting, autoApproveSettingsConfig } from "../settings/AutoApproveToggle"
+import { MaxRequestsInput } from "../settings/MaxRequestsInput"
 
 interface AutoApproveMenuProps {
 	style?: React.CSSProperties
@@ -25,6 +26,8 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		alwaysAllowModeSwitch,
 		alwaysAllowSubtasks,
 		alwaysApproveResubmit,
+		alwaysAllowFollowupQuestions,
+		alwaysAllowUpdateTodoList,
 		allowedMaxRequests,
 		setAlwaysAllowReadOnly,
 		setAlwaysAllowWrite,
@@ -34,6 +37,8 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		setAlwaysAllowModeSwitch,
 		setAlwaysAllowSubtasks,
 		setAlwaysApproveResubmit,
+		setAlwaysAllowFollowupQuestions,
+		setAlwaysAllowUpdateTodoList,
 		setAllowedMaxRequests,
 	} = useExtensionState()
 
@@ -68,6 +73,12 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 				case "alwaysApproveResubmit":
 					setAlwaysApproveResubmit(value)
 					break
+				case "alwaysAllowFollowupQuestions":
+					setAlwaysAllowFollowupQuestions(value)
+					break
+				case "alwaysAllowUpdateTodoList":
+					setAlwaysAllowUpdateTodoList(value)
+					break
 			}
 		},
 		[
@@ -79,6 +90,8 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 			setAlwaysAllowModeSwitch,
 			setAlwaysAllowSubtasks,
 			setAlwaysApproveResubmit,
+			setAlwaysAllowFollowupQuestions,
+			setAlwaysAllowUpdateTodoList,
 		],
 	)
 
@@ -94,6 +107,8 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 			alwaysAllowModeSwitch: alwaysAllowModeSwitch,
 			alwaysAllowSubtasks: alwaysAllowSubtasks,
 			alwaysApproveResubmit: alwaysApproveResubmit,
+			alwaysAllowFollowupQuestions: alwaysAllowFollowupQuestions,
+			alwaysAllowUpdateTodoList: alwaysAllowUpdateTodoList,
 		}),
 		[
 			alwaysAllowReadOnly,
@@ -104,6 +119,8 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 			alwaysAllowModeSwitch,
 			alwaysAllowSubtasks,
 			alwaysApproveResubmit,
+			alwaysAllowFollowupQuestions,
+			alwaysAllowUpdateTodoList,
 		],
 	)
 
@@ -134,7 +151,7 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 					display: "flex",
 					alignItems: "center",
 					gap: "8px",
-					padding: isExpanded ? "8px 0" : "8px 0 0 0",
+					padding: isExpanded ? "8px 0" : "2px 0 0 0",
 					cursor: "pointer",
 				}}
 				onClick={toggleExpanded}>
@@ -201,42 +218,12 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 
 					<AutoApproveToggle {...toggles} onToggle={onAutoApproveToggle} />
 
-					{/* Auto-approve API request count limit input row inspired by Cline */}
-					<div
-						style={{
-							display: "flex",
-							alignItems: "center",
-							gap: "8px",
-							marginTop: "10px",
-							marginBottom: "8px",
-							color: "var(--vscode-descriptionForeground)",
-						}}>
-						<span style={{ flexShrink: 1, minWidth: 0 }}>
-							<Trans i18nKey="settings:autoApprove.apiRequestLimit.title" />:
-						</span>
-						<VSCodeTextField
-							placeholder={t("settings:autoApprove.apiRequestLimit.unlimited")}
-							value={(allowedMaxRequests ?? Infinity) === Infinity ? "" : allowedMaxRequests?.toString()}
-							onInput={(e) => {
-								const input = e.target as HTMLInputElement
-								// Remove any non-numeric characters
-								input.value = input.value.replace(/[^0-9]/g, "")
-								const value = parseInt(input.value)
-								const parsedValue = !isNaN(value) && value > 0 ? value : undefined
-								setAllowedMaxRequests(parsedValue)
-								vscode.postMessage({ type: "allowedMaxRequests", value: parsedValue })
-							}}
-							style={{ flex: 1 }}
-						/>
-					</div>
-					<div
-						style={{
-							color: "var(--vscode-descriptionForeground)",
-							fontSize: "12px",
-							marginBottom: "10px",
-						}}>
-						<Trans i18nKey="settings:autoApprove.apiRequestLimit.description" />
-					</div>
+					{/* kilocode_change start */}
+					<MaxRequestsInput
+						allowedMaxRequests={allowedMaxRequests ?? undefined}
+						onValueChange={(value) => setAllowedMaxRequests(value)}
+					/>
+					{/* kilocode_change end */}
 				</div>
 			)}
 		</div>

@@ -3,7 +3,7 @@ import { useAppTranslation } from "@/i18n/TranslationContext"
 import { Trans } from "react-i18next"
 import { Info, Download, Upload, TriangleAlert } from "lucide-react"
 
-import { VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeCheckbox, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 
 import { Package } from "@roo/package"
 import { TelemetrySetting } from "@roo/TelemetrySetting"
@@ -39,6 +39,25 @@ export const About = ({ telemetrySetting, setTelemetrySetting, className, ...pro
 
 			<Section>
 				<div>
+					<VSCodeCheckbox
+						checked={telemetrySetting === "enabled"}
+						onChange={(e: any) => {
+							const checked = e.target.checked === true
+							setTelemetrySetting(checked ? "enabled" : "disabled")
+						}}>
+						{t("settings:footer.telemetry.label")}
+					</VSCodeCheckbox>
+					<p className="text-vscode-descriptionForeground text-sm mt-0">
+						<Trans
+							i18nKey="settings:footer.telemetry.description"
+							components={{
+								privacyLink: <VSCodeLink href="https://kilocode.ai/privacy" />,
+							}}
+						/>
+					</p>
+				</div>
+
+				<div>
 					<Trans
 						i18nKey="settings:footer.feedback"
 						components={{
@@ -49,14 +68,16 @@ export const About = ({ telemetrySetting, setTelemetrySetting, className, ...pro
 					/>
 				</div>
 
+				{/* kilocode_change start */}
 				<div>
 					<Trans
 						i18nKey="settings:footer.support"
 						components={{
-							supportLink: <VSCodeLink href="mailto:hi@kilocode.ai" />,
+							supportLink: <VSCodeLink href="https://kilocode.ai/support" />,
 						}}
 					/>
 				</div>
+				{/* kilocode_change end */}
 
 				<div className="flex flex-wrap items-center gap-2 mt-2">
 					<Button onClick={() => vscode.postMessage({ type: "exportSettings" })} className="w-28">

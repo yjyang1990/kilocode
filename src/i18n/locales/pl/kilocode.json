@@ -2,11 +2,16 @@
 	"info": {
 		"settings_imported": "Ustawienia zostały pomyślnie zaimportowane."
 	},
+	"userFeedback": {
+		"message_update_failed": "Nie udało się zaktualizować wiadomości",
+		"no_checkpoint_found": "Nie znaleziono punktu kontrolnego przed tą wiadomością",
+		"message_updated": "Wiadomość pomyślnie zaktualizowana"
+	},
 	"lowCreditWarning": {
 		"title": "Ostrzeżenie o Niskim Kredycie!",
 		"message": "Sprawdź, czy możesz doładować darmowymi kredytami lub kupić więcej!"
 	},
-	"notLoggedInError": "Nie można ukończyć żądania, upewnij się, że jesteś połączony i zalogowany u wybranego dostawcy.",
+	"notLoggedInError": "Nie można ukończyć żądania, upewnij się, że jesteś połączony i zalogowany u wybranego dostawcy.\n\n{{error}}",
 	"rules": {
 		"actions": {
 			"delete": "Usuń",
@@ -35,22 +40,68 @@
 		}
 	},
 	"commitMessage": {
-		"activated": "Generator wiadomości do zatwierdzeń kodu Kilo aktywowany",
-		"gitNotFound": "⚠️ Nie znaleziono repozytorium Git lub Git jest niedostępny",
+		"activated": "Generator komunikatów dla commitów Kilo Code aktywowany",
+		"gitNotFound": "⚠️ Repozytorium Git nie zostało znalezione lub git jest niedostępny",
 		"gitInitError": "⚠️ Błąd inicjalizacji Git: {{error}}",
-		"generating": "Kilo: Generowanie treści commita...",
-		"analyzingChanges": "Kilo: Analizowanie przygotowanych zmian...",
-		"noStagedChangesRepo": "Kilo: Nie znaleziono przygotowanych zmian w repozytorium git",
-		"noStagedChanges": "Kilo: Nie znaleziono przygotowanych zmian do analizy",
-		"generated": "Kilo: Wygenerowano wiadomość commita!",
-		"generationFailed": "Kilo: Nie udało się wygenerować treści commitu: {{errorMessage}}",
-		"tokenRequired": "Token Kilo Code jest wymagany do generowania wiadomości commit",
-		"activationFailed": "Kilo: Nie udało się aktywować dostawcy treści commita: {{error}}",
-		"providerRegistered": "Kilo: Zarejestrowano dostawcę wiadomości commit"
+		"generating": "Kilo: Generowanie komunikatu zatwierdzenia...",
+		"noChanges": "Kilo: Nie znaleziono żadnych zmian do przeanalizowania",
+		"generated": "Kilo: Wiadomość commitu wygenerowana!",
+		"generationFailed": "Kilo: Nie udało się wygenerować komunikatu zatwierdzenia: {{errorMessage}}",
+		"generatingFromUnstaged": "Kilo: Generowanie wiadomości na podstawie niezatwierdzonych zmian",
+		"activationFailed": "Kilo: Nie udało się aktywować generatora wiadomości: {{error}}",
+		"providerRegistered": "Kilo: Zarejestrowano dostawcę komunikatów commit"
 	},
-	"userFeedback": {
-		"message_update_failed": "Nie udało się zaktualizować wiadomości",
-		"no_checkpoint_found": "Nie znaleziono punktu kontrolnego przed tą wiadomością",
-		"message_updated": "Wiadomość pomyślnie zaktualizowana"
+	"autocomplete": {
+		"statusBar": {
+			"disabled": "$(circle-slash) Kilo Autouzupełnianie",
+			"enabled": "$(sparkle) Kilo Autouzupełnianie",
+			"tooltip": {
+				"lastCompletion": "Ostatnie zakończenie:",
+				"disabled": "Kilo Code automatyczne uzupełnianie (wyłączone)",
+				"basic": "Kilo Code Autouzupełnianie",
+				"tokenError": "Aby korzystać z autouzupełniania, należy ustawić prawidłowy token",
+				"sessionTotal": "Całkowity koszt sesji:",
+				"model": "Model:"
+			},
+			"warning": "$(warning) Kilo Autouzupełnianie",
+			"cost": {
+				"lessThanCent": "<0,01 zł",
+				"zero": "0,00 zł"
+			}
+		},
+		"toggleMessage": "Kilo Autouzupełnianie {{status}}"
+	},
+	"ghost": {
+		"progress": {
+			"analyzing": "Analizowanie twojego kodu...",
+			"processing": "Przetwarzanie sugerowanych zmian...",
+			"generating": "Generowanie sugerowanych zmian...",
+			"showing": "Wyświetlanie sugerowanych poprawek...",
+			"title": "Kilo Code"
+		},
+		"input": {
+			"title": "Kilo Code: Szybkie Zadanie",
+			"placeholder": "np. „zrefaktoruj tę funkcję, aby była bardziej wydajna\""
+		},
+		"commands": {
+			"displaySuggestions": "Wyświetl sugerowane poprawki",
+			"cancelSuggestions": "Anuluj sugerowane zmiany",
+			"applyCurrentSuggestion": "Zastosuj bieżącą sugerowaną edycję",
+			"applyAllSuggestions": "Zastosuj wszystkie sugerowane poprawki",
+			"generateSuggestions": "Kilo Code: Generowanie Sugerowanych Poprawek",
+			"promptCodeSuggestion": "Szybkie zadanie",
+			"category": "Kilo Code"
+		},
+		"codeAction": {
+			"title": "Kilo Code: Sugerowane edycje"
+		},
+		"chatParticipant": {
+			"name": "Agent",
+			"fullName": "Agent Kilo Code",
+			"description": "Mogę pomóc Ci w szybkich zadaniach i zasugerować poprawki."
+		},
+		"messages": {
+			"provideCodeSuggestions": "Generowanie sugestii kodu..."
+		}
 	}
 }

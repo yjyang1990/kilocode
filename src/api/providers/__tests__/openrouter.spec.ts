@@ -8,6 +8,7 @@ import OpenAI from "openai"
 
 import { OpenRouterHandler } from "../openrouter"
 import { ApiHandlerOptions } from "../../../shared/api"
+import { Package } from "../../../shared/package"
 
 // Mock dependencies
 vitest.mock("openai")
@@ -62,7 +63,8 @@ describe("OpenRouterHandler", () => {
 			defaultHeaders: {
 				"HTTP-Referer": "https://kilocode.ai",
 				"X-Title": "Kilo Code",
-				"X-KiloCode-Version": expect.any(String), // kilocode_change
+				"X-KiloCode-Version": Package.version,
+				"User-Agent": `Kilo-Code/${Package.version}`,
 			},
 		})
 	})
@@ -179,6 +181,7 @@ describe("OpenRouterHandler", () => {
 					top_p: undefined,
 					transforms: ["middle-out"],
 				}),
+				undefined, // kilocode_change
 			)
 		})
 
@@ -203,7 +206,10 @@ describe("OpenRouterHandler", () => {
 
 			await handler.createMessage("test", []).next()
 
-			expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ transforms: ["middle-out"] }))
+			expect(mockCreate).toHaveBeenCalledWith(
+				expect.objectContaining({ transforms: ["middle-out"] }),
+				undefined, // kilocode_change
+			)
 		})
 
 		it("adds cache control for supported models", async () => {
@@ -245,6 +251,7 @@ describe("OpenRouterHandler", () => {
 						}),
 					]),
 				}),
+				undefined, // kilocode_change
 			)
 		})
 

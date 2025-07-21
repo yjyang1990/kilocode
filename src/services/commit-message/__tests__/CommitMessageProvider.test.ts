@@ -1,7 +1,7 @@
+// kilocode_change - new file
 import * as vscode from "vscode"
 import { CommitMessageProvider } from "../CommitMessageProvider"
 import { GitExtensionService, GitChange } from "../GitExtensionService"
-import { ContextProxy } from "../../../core/config/ContextProxy"
 import { singleCompletionHandler } from "../../../utils/single-completion-handler"
 import type { Mock } from "vitest"
 
@@ -36,6 +36,18 @@ vi.mock("../../../core/config/ContextProxy", () => {
 vi.mock("../../../utils/single-completion-handler")
 vi.mock("../GitExtensionService")
 vi.mock("child_process")
+vi.mock("../../../core/prompts/sections/custom-instructions", () => ({
+	addCustomInstructions: vi.fn().mockResolvedValue(""),
+}))
+vi.mock("../../../utils/path", () => ({
+	getWorkspacePath: vi.fn().mockReturnValue("/mock/workspace"),
+}))
+vi.mock("../../../shared/support-prompt", () => ({
+	supportPrompt: {
+		get: vi.fn().mockReturnValue("Mock commit message template with ${gitContext} and ${customInstructions}"),
+		create: vi.fn().mockReturnValue("Mock generated prompt"),
+	},
+}))
 vi.mock("vscode", () => ({
 	window: {
 		showInformationMessage: vi.fn(),
@@ -47,6 +59,9 @@ vi.mock("vscode", () => ({
 	},
 	commands: {
 		registerCommand: vi.fn(),
+	},
+	env: {
+		language: "en",
 	},
 	ExtensionContext: vi.fn(),
 	OutputChannel: vi.fn(),
@@ -65,7 +80,10 @@ describe("CommitMessageProvider", () => {
 	let mockExecSync: Mock<any>
 
 	beforeEach(async () => {
-		mockContext = {} as vscode.ExtensionContext
+		mockContext = {
+			workspaceState: { get: vi.fn().mockReturnValue(undefined) },
+			globalState: { get: vi.fn().mockReturnValue(undefined) },
+		} as unknown as vscode.ExtensionContext
 		mockOutputChannel = {
 			appendLine: vi.fn(),
 		} as unknown as vscode.OutputChannel
@@ -77,10 +95,10 @@ describe("CommitMessageProvider", () => {
 
 		// Setup GitExtensionService mock
 		mockGitService = new GitExtensionService()
-		mockGitService.initialize = vi.fn().mockResolvedValue(true)
-		mockGitService.gatherStagedChanges = vi.fn()
+		mockGitService.gatherChanges = vi.fn()
 		mockGitService.setCommitMessage = vi.fn()
 		mockGitService.spawnGitWithArgs = vi.fn().mockReturnValue("")
+		mockGitService.configureRepositoryContext = vi.fn()
 		mockGitService.getCommitContext = vi.fn().mockReturnValue("Modified file1.ts, Added file2.ts")
 
 		// Setup singleCompletionHandler mock
@@ -103,21 +121,23 @@ describe("CommitMessageProvider", () => {
 				{ filePath: "file1.ts", status: "Modified" },
 				{ filePath: "file2.ts", status: "Added" },
 			]
-			vi.mocked(mockGitService.gatherStagedChanges).mockResolvedValue(mockChanges)
+			vi.mocked(mockGitService.gatherChanges).mockResolvedValue(mockChanges)
 
 			// Call the method
 			await commitMessageProvider.generateCommitMessage()
 
-			// Verify basic flow
-			expect(vi.mocked(mockGitService.getCommitContext)).toHaveBeenCalledWith(mockChanges)
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledWith({ staged: true })
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledTimes(1)
+			expect(vi.mocked(mockGitService.getCommitContext)).toHaveBeenCalledWith(
+				mockChanges,
+				expect.objectContaining({ staged: true }),
+			)
 			expect(singleCompletionHandler).toHaveBeenCalled()
 			expect(vi.mocked(mockGitService.setCommitMessage)).toHaveBeenCalled()
 		})
 
 		it("should handle code blocks and formatting in AI responses", async () => {
-			vi.mocked(mockGitService.gatherStagedChanges).mockResolvedValue([
-				{ filePath: "file.ts", status: "Modified" },
-			])
+			vi.mocked(mockGitService.gatherChanges).mockResolvedValue([{ filePath: "file.ts", status: "Modified" }])
 
 			// Mock AI response with code blocks
 			vi.mocked(singleCompletionHandler).mockResolvedValue("```\nfeat(core): add feature\n```")
@@ -130,9 +150,7 @@ describe("CommitMessageProvider", () => {
 		})
 
 		it("should show error message when generation fails", async () => {
-			vi.mocked(mockGitService.gatherStagedChanges).mockResolvedValue([
-				{ filePath: "file.ts", status: "Modified" },
-			])
+			vi.mocked(mockGitService.gatherChanges).mockResolvedValue([{ filePath: "file.ts", status: "Modified" }])
 			vi.mocked(singleCompletionHandler).mockRejectedValue(new Error("API error"))
 
 			// Call the method
@@ -143,8 +161,10 @@ describe("CommitMessageProvider", () => {
 		})
 
 		it("should show information message when there are no staged changes", async () => {
-			// Mock no staged changes
-			vi.mocked(mockGitService.gatherStagedChanges).mockResolvedValue(null)
+			// Mock no staged changes - both calls return empty arrays
+			vi.mocked(mockGitService.gatherChanges)
+				.mockResolvedValueOnce([]) // First call for staged changes returns empty
+				.mockResolvedValueOnce([]) // Second call for unstaged changes returns empty
 
 			// Call the method
 			await commitMessageProvider.generateCommitMessage()
@@ -156,15 +176,57 @@ describe("CommitMessageProvider", () => {
 			expect(vi.mocked(mockGitService.setCommitMessage)).not.toHaveBeenCalled()
 		})
 
-		it("should show information message when staged changes array is empty", async () => {
-			// Mock empty staged changes array
-			vi.mocked(mockGitService.gatherStagedChanges).mockResolvedValue([])
+		it("should generate commit message based on unstaged changes when no staged changes exist", async () => {
+			const mockUnstagedChanges: GitChange[] = [
+				{ filePath: "file1.ts", status: "Modified" },
+				{ filePath: "file2.ts", status: "Added" },
+			]
+			vi.mocked(mockGitService.gatherChanges).mockResolvedValueOnce([]).mockResolvedValueOnce(mockUnstagedChanges)
+
+			await commitMessageProvider.generateCommitMessage()
+
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledWith({ staged: true })
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledWith({ staged: false })
+			expect(vi.mocked(mockGitService.getCommitContext)).toHaveBeenCalledWith(
+				mockUnstagedChanges,
+				expect.objectContaining({
+					staged: false,
+				}),
+			)
+			expect(singleCompletionHandler).toHaveBeenCalled()
+			expect(vi.mocked(mockGitService.setCommitMessage)).toHaveBeenCalled()
+			expect(vscode.window.showInformationMessage).toHaveBeenCalledWith("commitMessage.generatingFromUnstaged")
+		})
+
+		it("should show information message when both staged and unstaged changes are empty", async () => {
+			// Mock empty staged and unstaged changes arrays
+			vi.mocked(mockGitService.gatherChanges)
+				.mockResolvedValueOnce([]) // First call for staged changes returns empty
+				.mockResolvedValueOnce([]) // Second call for unstaged changes returns empty
 
 			// Call the method
 			await commitMessageProvider.generateCommitMessage()
 
 			// Verify that it shows the appropriate message and doesn't proceed
-			expect(vscode.window.showInformationMessage).toHaveBeenCalled()
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledWith({ staged: true })
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledWith({ staged: false })
+			expect(vi.mocked(mockGitService.getCommitContext)).not.toHaveBeenCalled()
+			expect(singleCompletionHandler).not.toHaveBeenCalled()
+			expect(vi.mocked(mockGitService.setCommitMessage)).not.toHaveBeenCalled()
+		})
+
+		it("should show information message when both staged and unstaged changes are empty", async () => {
+			// Mock empty staged and unstaged changes
+			vi.mocked(mockGitService.gatherChanges)
+				.mockResolvedValueOnce([]) // First call for staged changes returns empty
+				.mockResolvedValueOnce([]) // Second call for unstaged changes returns empty
+
+			// Call the method
+			await commitMessageProvider.generateCommitMessage()
+
+			// Verify that it shows the appropriate message and doesn't proceed
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledWith({ staged: true })
+			expect(vi.mocked(mockGitService.gatherChanges)).toHaveBeenCalledWith({ staged: false })
 			expect(vi.mocked(mockGitService.getCommitContext)).not.toHaveBeenCalled()
 			expect(singleCompletionHandler).not.toHaveBeenCalled()
 			expect(vi.mocked(mockGitService.setCommitMessage)).not.toHaveBeenCalled()
@@ -172,7 +234,7 @@ describe("CommitMessageProvider", () => {
 
 		it("should use custom API config when commitMessageApiConfigId is set", async () => {
 			const mockChanges: GitChange[] = [{ filePath: "file.ts", status: "Modified" }]
-			vi.mocked(mockGitService.gatherStagedChanges).mockResolvedValue(mockChanges)
+			vi.mocked(mockGitService.gatherChanges).mockResolvedValue(mockChanges)
 
 			// Mock custom API config
 			const customApiConfig = { apiProvider: "openai", apiKey: "custom-key" }
@@ -208,7 +270,7 @@ describe("CommitMessageProvider", () => {
 
 		it("should fall back to default config when custom API config fails to load", async () => {
 			const mockChanges: GitChange[] = [{ filePath: "file.ts", status: "Modified" }]
-			vi.mocked(mockGitService.gatherStagedChanges).mockResolvedValue(mockChanges)
+			vi.mocked(mockGitService.gatherChanges).mockResolvedValue(mockChanges)
 
 			// Mock provider settings manager to throw error
 			const mockProviderSettingsManager = {

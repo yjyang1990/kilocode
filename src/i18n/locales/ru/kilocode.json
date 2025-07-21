@@ -11,7 +11,7 @@
 		"title": "Предупреждение о низком балансе!",
 		"message": "Проверьте, можете ли вы пополнить счет бесплатными кредитами или приобрести дополнительные!"
 	},
-	"notLoggedInError": "Не удается выполнить запрос, убедитесь, что вы подключены и вошли в систему с выбранным провайдером.",
+	"notLoggedInError": "Не удается выполнить запрос, убедитесь, что вы подключены и вошли в систему с выбранным провайдером.\n\n{{error}}",
 	"rules": {
 		"actions": {
 			"delete": "Удалить",
@@ -41,16 +41,67 @@
 	},
 	"commitMessage": {
 		"activated": "Генератор сообщений о коммитах Kilo Code активирован",
-		"gitNotFound": "⚠️ Git-репозиторий не найден или git недоступен",
+		"gitNotFound": "⚠️ Git репозиторий не найден или git недоступен",
 		"gitInitError": "⚠️ Ошибка инициализации Git: {{error}}",
-		"generating": "Kilo: Создание сообщения коммита...",
-		"analyzingChanges": "Kilo: Анализ промежуточных изменений...",
-		"noStagedChangesRepo": "Kilo: Подготовленные изменения не найдены в git-репозитории",
-		"noStagedChanges": "Kilo: Не найдено изменений для анализа",
+		"generating": "Kilo: Генерируется сообщение коммита...",
+		"noChanges": "Kilo: Не найдено изменений для анализа",
 		"generated": "Kilo: Сообщение коммита сгенерировано!",
-		"generationFailed": "Kilo: Не удалось сгенерировать сообщение коммита: {{errorMessage}}",
-		"tokenRequired": "Для генерации сообщения коммита требуется токен Kilo Code",
-		"activationFailed": "Kilo: Не удалось активировать поставщик сообщений фиксации: {{error}}",
-		"providerRegistered": "Kilo: Поставщик сообщений коммита зарегистрирован"
+		"generationFailed": "Kilo: Не удалось создать сообщение коммита: {{errorMessage}}",
+		"generatingFromUnstaged": "Kilo: Генерация сообщения с использованием неподготовленных изменений",
+		"activationFailed": "Kilo: Не удалось активировать генератор сообщений: {{error}}",
+		"providerRegistered": "Kilo: Поставщик сообщения коммита зарегистрирован"
+	},
+	"autocomplete": {
+		"statusBar": {
+			"enabled": "$(sparkle) Kilo Автодополнение",
+			"warning": "$(warning) Kilo Автодополнение",
+			"disabled": "$(circle-slash) Kilo Автодополнение",
+			"tooltip": {
+				"sessionTotal": "Общая стоимость сессии:",
+				"disabled": "Автодополнение Kilo Code (отключено)",
+				"model": "Модель:",
+				"tokenError": "Для использования автозаполнения должен быть установлен действительный токен",
+				"lastCompletion": "Последнее завершение:",
+				"basic": "Автодополнение Kilo Code"
+			},
+			"cost": {
+				"lessThanCent": "<$0,01",
+				"zero": "0,00 ₽"
+			}
+		},
+		"toggleMessage": "Kilo Автодополнение {{status}}"
+	},
+	"ghost": {
+		"progress": {
+			"analyzing": "Анализирую ваш код...",
+			"generating": "Создание предлагаемых правок...",
+			"processing": "Обработка предлагаемых правок...",
+			"showing": "Отображение предложенных правок...",
+			"title": "Kilo Code"
+		},
+		"input": {
+			"title": "Kilo Code: Быстрая Задача",
+			"placeholder": "напр., 'переработать эту функцию, чтобы сделать её более эффективной'"
+		},
+		"commands": {
+			"displaySuggestions": "Показать предлагаемые правки",
+			"generateSuggestions": "Kilo Code: Создать Предлагаемые Изменения",
+			"cancelSuggestions": "Отменить предложенные правки",
+			"applyCurrentSuggestion": "Применить текущее предложенное изменение",
+			"category": "Kilo Code",
+			"applyAllSuggestions": "Применить все предложенные правки",
+			"promptCodeSuggestion": "Быстрое задание"
+		},
+		"codeAction": {
+			"title": "Kilo Code: Предлагаемые правки"
+		},
+		"chatParticipant": {
+			"description": "Я могу помочь вам с быстрыми задачами и предложенными изменениями.",
+			"fullName": "Kilo Code Агент",
+			"name": "Агент"
+		},
+		"messages": {
+			"provideCodeSuggestions": "Предлагаю код..."
+		}
 	}
 }

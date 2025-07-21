@@ -1,3 +1,4 @@
+// kilocode_change - new file
 import * as vscode from "vscode"
 import * as path from "path"
 import { spawnSync } from "child_process"
@@ -9,46 +10,78 @@ export interface GitChange {
 	status: string
 }
 
+export interface GitOptions {
+	staged: boolean
+}
+
+export interface GitProgressOptions extends GitOptions {
+	onProgress?: (percentage: number) => void
+}
+
+export interface GitRepository {
+	inputBox: { value: string }
+	rootUri?: vscode.Uri
+}
+
 /**
  * Utility class for Git operations using direct shell commands
  */
 export class GitExtensionService {
-	private workspaceRoot: string
-	private ignoreController: RooIgnoreController
-
-	constructor() {
-		this.workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd()
-
-		this.ignoreController = new RooIgnoreController(this.workspaceRoot)
-		this.ignoreController.initialize()
-	}
+	private ignoreController: RooIgnoreController | null = null
+	private targetRepository: GitRepository | null = null
 
 	/**
-	 * Initialize the service by checking if git is available
+	 * Configures the repository context for multi-workspace scenarios
 	 */
-	public async initialize(): Promise<boolean> {
+	public configureRepositoryContext(resourceUri?: vscode.Uri): void {
+		const newTargetRepository = this.determineTargetRepository(resourceUri)
+		if (newTargetRepository && newTargetRepository !== this.targetRepository) {
+			this.targetRepository = newTargetRepository
+
+			// Create new ignore controller with the updated workspace root
+			const newWorkspaceRoot = this.targetRepository?.rootUri?.fsPath
+			if (newWorkspaceRoot) {
+				this.ignoreController?.dispose()
+				this.ignoreController = new RooIgnoreController(newWorkspaceRoot)
+				this.ignoreController.initialize()
+			}
+		}
+	}
+
+	private determineTargetRepository(resourceUri?: vscode.Uri): GitRepository | null {
 		try {
-			// Check if git is available and we're in a git repository
-			this.spawnGitWithArgs(["rev-parse", "--is-inside-work-tree"])
-			return true
+			const gitExtension = vscode.extensions.getExtension("vscode.git")
+			if (!gitExtension || !gitExtension.isActive) {
+				return null
+			}
+
+			const gitApi = gitExtension?.exports.getAPI(1)
+			for (const repo of gitApi?.repositories ?? []) {
+				if (repo.rootUri && resourceUri?.fsPath.startsWith(repo.rootUri.fsPath)) {
+					return repo
+				}
+			}
+
+			return gitApi.repositories[0] // Fallback to first repository
 		} catch (error) {
-			console.error("Git initialization failed:", error)
-			return false
+			console.error("Error determining target repository:", error)
+			return null
 		}
 	}
 
 	/**
-	 * Gathers information about staged changes using git diff --cached
+	 * Gathers information about changes (staged or unstaged)
 	 */
-	public async gatherStagedChanges(): Promise<GitChange[] | null> {
+	public async gatherChanges(options: GitProgressOptions): Promise<GitChange[]> {
 		try {
-			const statusOutput = await this.getStagedStatus()
+			const statusOutput = this.getStatus(options)
 			if (!statusOutput.trim()) {
-				return null
+				return []
 			}
 
 			const changes: GitChange[] = []
 			const lines = statusOutput.split("\n").filter((line: string) => line.trim())
+			const workspaceRoot = this.targetRepository?.rootUri?.fsPath || process.cwd()
 
 			for (const line of lines) {
 				if (line.length < 2) continue
@@ -57,15 +90,16 @@ export class GitExtensionService {
 				const filePath = line.substring(1).trim()
 
 				changes.push({
-					filePath: path.join(this.workspaceRoot, filePath),
+					filePath: path.join(workspaceRoot, filePath),
 					status: this.getChangeStatusFromCode(statusCode),
 				})
 			}
 
-			return changes.length > 0 ? changes : null
+			return changes
 		} catch (error) {
-			console.error("Error gathering staged changes:", error)
-			return null
+			const changeType = options.staged ? "staged" : "unstaged"
+			console.error(`Error gathering ${changeType} changes:`, error)
+			return []
 		}
 	}
 
@@ -73,24 +107,13 @@ export class GitExtensionService {
 	 * Sets the commit message in the Git input box
 	 */
 	public setCommitMessage(message: string): void {
-		try {
-			// Try to use the VS Code Git Extension API to set the commit message directly
-			const gitExtension = vscode.extensions.getExtension("vscode.git")
-			if (gitExtension && gitExtension.isActive) {
-				const gitApi = gitExtension.exports.getAPI(1)
-				if (gitApi?.repositories?.length > 0) {
-					const repo = gitApi.repositories[0]
-					repo.inputBox.value = message
-					return
-				}
-			}
-
-			// Fallback to clipboard if VS Code Git Extension API is not available
-			this.copyToClipboardFallback(message)
-		} catch (error) {
-			console.error("Error setting commit message:", error)
-			this.copyToClipboardFallback(message)
+		if (this.targetRepository) {
+			this.targetRepository.inputBox.value = message
+			return
 		}
+
+		// Fallback to clipboard if VS Code Git Extension API is not available
+		this.copyToClipboardFallback(message)
 	}
 
 	/**
@@ -100,8 +123,9 @@ export class GitExtensionService {
 	 */
 	public spawnGitWithArgs(args: string[]): string {
 		try {
+			const workspaceRoot = this.targetRepository?.rootUri?.fsPath || process.cwd()
 			const result = spawnSync("git", args, {
-				cwd: this.workspaceRoot,
+				cwd: workspaceRoot,
 				encoding: "utf8",
 				stdio: ["ignore", "pipe", "pipe"],
 			})
@@ -121,45 +145,54 @@ export class GitExtensionService {
 		}
 	}
 
-	/**
-	 * Gets the diff of staged changes, automatically excluding files based on shouldExcludeFromGitDiff
-	 */
-	private getStagedDiff(): string {
+	private async getDiffForChanges(options: GitProgressOptions): Promise<string> {
+		const { staged, onProgress } = options
 		try {
 			const diffs: string[] = []
-			const stagedFiles = this.getStagedFilesList()
+			const args = staged ? ["diff", "--name-only", "--cached"] : ["diff", "--name-only"]
+			const files = this.spawnGitWithArgs(args)
+				.split("\n")
+				.map((line) => line.trim())
+				.filter((line) => line.length > 0)
 
-			for (const filePath of stagedFiles) {
-				if (this.ignoreController.validateAccess(filePath) && !shouldExcludeLockFile(filePath)) {
-					const diff = this.getStagedDiffForFile(filePath).trim()
+			let processedFiles = 0
+			for (const filePath of files) {
+				if (this.ignoreController?.validateAccess(filePath) && !shouldExcludeLockFile(filePath)) {
+					const diff = this.getGitDiff(filePath, { staged }).trim()
 					diffs.push(diff)
+				}
+
+				processedFiles++
+				if (onProgress && files.length > 0) {
+					const percentage = (processedFiles / files.length) * 100
+					onProgress(percentage)
 				}
 			}
 
 			return diffs.join("\n")
 		} catch (error) {
-			console.error("Error generating staged diff:", error)
+			const changeType = staged ? "staged" : "unstaged"
+			console.error(`Error generating ${changeType} diff:`, error)
 			return ""
 		}
 	}
 
-	private getStagedFilesList(): string[] {
-		return this.spawnGitWithArgs(["diff", "--name-only", "--cached"])
-			.split("\n")
-			.map((line) => line.trim())
-			.filter((line) => line.length > 0)
+	private getStatus(options: GitOptions): string {
+		const { staged } = options
+		const args = staged ? ["diff", "--name-status", "--cached"] : ["diff", "--name-status"]
+		return this.spawnGitWithArgs(args)
 	}
 
-	private getStagedDiffForFile(filePath: string): string {
-		return this.spawnGitWithArgs(["diff", "--cached", "--", filePath])
+	private getSummary(options: GitOptions): string {
+		const { staged } = options
+		const args = staged ? ["diff", "--cached", "--stat"] : ["diff", "--stat"]
+		return this.spawnGitWithArgs(args)
 	}
 
-	private getStagedStatus(): string {
-		return this.spawnGitWithArgs(["diff", "--name-status", "--cached"])
-	}
-
-	private getStagedSummary(): string {
-		return this.spawnGitWithArgs(["diff", "--cached", "--stat"])
+	private getGitDiff(filePath: string, options: GitOptions): string {
+		const { staged } = options
+		const args = staged ? ["diff", "--cached", "--", filePath] : ["diff", "--", filePath]
+		return this.spawnGitWithArgs(args)
 	}
 
 	private getCurrentBranch(): string {
@@ -173,23 +206,26 @@ export class GitExtensionService {
 	/**
 	 * Gets all context needed for commit message generation
 	 */
-	public getCommitContext(changes: GitChange[]): string {
+	public async getCommitContext(changes: GitChange[], options: GitProgressOptions): Promise<string> {
+		const { staged } = options
 		try {
 			// Start building the context with the required sections
 			let context = "## Git Context for Commit Message Generation\n\n"
 
 			// Add full diff - essential for understanding what changed
 			try {
-				const stagedDiff = this.getStagedDiff()
-				context += "### Full Diff of Staged Changes\n```diff\n" + stagedDiff + "\n```\n\n"
+				const diff = await this.getDiffForChanges(options)
+				const changeType = staged ? "Staged" : "Unstaged"
+				context += `### Full Diff of ${changeType} Changes\n\`\`\`diff\n` + diff + "\n```\n\n"
 			} catch (error) {
-				context += "### Full Diff of Staged Changes\n```diff\n(No diff available)\n```\n\n"
+				const changeType = staged ? "Staged" : "Unstaged"
+				context += `### Full Diff of ${changeType} Changes\n\`\`\`diff\n(No diff available)\n\`\`\`\n\n`
 			}
 
 			// Add statistical summary - helpful for quick overview
 			try {
-				const stagedSummary = this.getStagedSummary()
-				context += "### Statistical Summary\n```\n" + stagedSummary + "\n```\n\n"
+				const summary = this.getSummary(options)
+				context += "### Statistical Summary\n```\n" + summary + "\n```\n\n"
 			} catch (error) {
 				context += "### Statistical Summary\n```\n(No summary available)\n```\n\n"
 			}
@@ -225,8 +261,7 @@ export class GitExtensionService {
 	}
 
 	/**
-	 * Fallback method to copy commit message to clipboard
-	 * @private Helper method for setCommitMessage
+	 * Fallback method to copy commit message to clipboard when Git extension API is unavailable
 	 */
 	private copyToClipboardFallback(message: string): void {
 		try {
@@ -265,6 +300,6 @@ export class GitExtensionService {
 	}
 
 	public dispose() {
-		this.ignoreController.dispose()
+		this.ignoreController?.dispose()
 	}
 }

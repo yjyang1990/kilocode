@@ -112,6 +112,7 @@
 	"enhancePrompt": "使用額外內容增強提示",
 	"addImages": "新增圖片到訊息中",
 	"sendMessage": "傳送訊息",
+	"stopTts": "停止文字轉語音",
 	"typeMessage": "輸入訊息...",
 	"typeTask": "構建、查找、詢問",
 	"addContext": "輸入 @ 新增內容，輸入 / 切換模式",
@@ -241,15 +242,17 @@
 		"tokens": "tokens"
 	},
 	"followUpSuggest": {
-		"copyToInput": "複製到輸入框（或按住 Shift 並點選）"
+		"copyToInput": "複製到輸入框（或按住 Shift 並點選）",
+		"autoSelectCountdown": "{{count}}秒後自動選擇",
+		"countdownDisplay": "{{count}}秒"
 	},
 	"announcement": {
 		"title": "🎉 Roo Code {{version}} 已發布",
-		"description": "Roo Code {{version}} 帶來基於您意見回饋的重要新功能與改進。",
+		"description": "Roo Code {{version}} 帶來強大的新功能和重大改進，提升您的開發工作流程。",
 		"whatsNew": "新功能",
-		"feature1": "<bold>Roo 市場正式上線</bold>: 市場現已上線！比以往更輕鬆地探索並安裝模式和 MCP。",
-		"feature2": "<bold>Gemini 2.5 模型</bold>: 新增對新版 Gemini 2.5 Pro、Flash 和 Flash Lite 模型的支援。",
-		"feature3": "<bold>Excel 檔案支援及更多</bold>: 新增 Excel (.xlsx) 檔案支援以及大量錯誤修復和改進！",
+		"feature1": "<bold>程式碼庫索引從實驗階段正式發布</bold>：完整的程式碼庫索引現已穩定，可用於正式環境，具備改進的搜尋和內容理解功能。",
+		"feature2": "<bold>新增待辦事項清單功能</bold>：透過整合的待辦事項管理保持工作進度，幫助您保持條理並專注於開發目標。",
+		"feature3": "<bold>改進的 Architect 到 Code 轉換</bold>：從 Architect 模式的規劃到 Code 模式的實作，轉換更加順暢。",
 		"hideButton": "隱藏公告",
 		"detailsDiscussLinks": "在 <discordLink>Discord</discordLink> 和 <redditLink>Reddit</redditLink> 取得更多詳細資訊並參與討論 🚀"
 	},
@@ -301,7 +304,8 @@
 	"codebaseSearch": {
 		"wantsToSearch": "Kilo Code 想要搜尋程式碼庫：<code>{{query}}</code>",
 		"wantsToSearchWithPath": "Kilo Code 想要在 <code>{{path}}</code> 中搜尋：<code>{{query}}</code>",
-		"didSearch": "找到 {{count}} 個結果：<code>{{query}}</code>"
+		"didSearch": "找到 {{count}} 個結果：<code>{{query}}</code>",
+		"resultTooltip": "相似度評分：{{score}} (點擊開啟檔案)"
 	},
 	"read-batch": {
 		"approve": {
@@ -317,5 +321,8 @@
 		"indexed": "已索引",
 		"error": "索引錯誤",
 		"status": "索引狀態"
+	},
+	"versionIndicator": {
+		"ariaLabel": "版本 {{version}} - 點擊查看發布說明"
 	}
 }

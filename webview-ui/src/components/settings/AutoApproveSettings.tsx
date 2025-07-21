@@ -10,6 +10,7 @@ import { SetCachedStateField } from "./types"
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
 import { AutoApproveToggle } from "./AutoApproveToggle"
+import { MaxRequestsInput } from "./MaxRequestsInput" // kilocode_change
 
 type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	alwaysAllowReadOnly?: boolean
@@ -25,7 +26,11 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	alwaysAllowModeSwitch?: boolean
 	alwaysAllowSubtasks?: boolean
 	alwaysAllowExecute?: boolean
+	alwaysAllowFollowupQuestions?: boolean
+	alwaysAllowUpdateTodoList?: boolean
+	followupAutoApproveTimeoutMs?: number
 	allowedCommands?: string[]
+	allowedMaxRequests?: number | undefined // kilocode_change
 	showAutoApproveMenu?: boolean // kilocode_change
 	setCachedStateField: SetCachedStateField<
 		| "alwaysAllowReadOnly"
@@ -41,8 +46,12 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "alwaysAllowModeSwitch"
 		| "alwaysAllowSubtasks"
 		| "alwaysAllowExecute"
+		| "alwaysAllowFollowupQuestions"
+		| "followupAutoApproveTimeoutMs"
 		| "allowedCommands"
+		| "allowedMaxRequests" // kilocode_change
 		| "showAutoApproveMenu" // kilocode_change
+		| "alwaysAllowUpdateTodoList"
 	>
 }
 
@@ -60,7 +69,11 @@ export const AutoApproveSettings = ({
 	alwaysAllowModeSwitch,
 	alwaysAllowSubtasks,
 	alwaysAllowExecute,
+	alwaysAllowFollowupQuestions,
+	followupAutoApproveTimeoutMs = 60000,
+	alwaysAllowUpdateTodoList,
 	allowedCommands,
+	allowedMaxRequests, // kilocode_change
 	showAutoApproveMenu, // kilocode_change
 	setCachedStateField,
 	...props
@@ -114,8 +127,16 @@ export const AutoApproveSettings = ({
 					alwaysAllowModeSwitch={alwaysAllowModeSwitch}
 					alwaysAllowSubtasks={alwaysAllowSubtasks}
 					alwaysAllowExecute={alwaysAllowExecute}
+					alwaysAllowFollowupQuestions={alwaysAllowFollowupQuestions}
+					alwaysAllowUpdateTodoList={alwaysAllowUpdateTodoList}
 					onToggle={(key, value) => setCachedStateField(key, value)}
 				/>
+				{/* kilocode_change start */}
+				<MaxRequestsInput
+					allowedMaxRequests={allowedMaxRequests}
+					onValueChange={(value) => setCachedStateField("allowedMaxRequests", value)}
+				/>
+				{/* kilocode_change end */}
 
 				{/* ADDITIONAL SETTINGS */}
 
@@ -216,6 +237,33 @@ export const AutoApproveSettings = ({
 							</div>
 							<div className="text-vscode-descriptionForeground text-sm mt-1">
 								{t("settings:autoApprove.retry.delayLabel")}
+							</div>
+						</div>
+					</div>
+				)}
+
+				{alwaysAllowFollowupQuestions && (
+					<div className="flex flex-col gap-3 pl-3 border-l-2 border-vscode-button-background">
+						<div className="flex items-center gap-4 font-bold">
+							<span className="codicon codicon-question" />
+							<div>{t("settings:autoApprove.followupQuestions.label")}</div>
+						</div>
+						<div>
+							<div className="flex items-center gap-2">
+								<Slider
+									min={1000}
+									max={300000}
+									step={1000}
+									value={[followupAutoApproveTimeoutMs]}
+									onValueChange={([value]) =>
+										setCachedStateField("followupAutoApproveTimeoutMs", value)
+									}
+									data-testid="followup-timeout-slider"
+								/>
+								<span className="w-20">{followupAutoApproveTimeoutMs / 1000}s</span>
+							</div>
+							<div className="text-vscode-descriptionForeground text-sm mt-1">
+								{t("settings:autoApprove.followupQuestions.timeoutLabel")}
 							</div>
 						</div>
 					</div>

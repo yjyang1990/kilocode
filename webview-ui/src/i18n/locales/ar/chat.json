@@ -127,6 +127,7 @@
 	"enhancePromptDescription": "زر «حسّن الموجه» يطوّر موجهك بإضافة سياق أو توضيح أو إعادة صياغة. جرّب اكتب موجه هنا ثم اضغط الزر مرة ثانية وشوف النتيجة.",
 	"addImages": "أضف صور للرسالة",
 	"sendMessage": "أرسل الرسالة",
+	"stopTts": "أوقف النطق الآلي",
 	"typeMessage": "اكتب رسالة...",
 	"typeTask": "ابنِ، ابحث، اسأل عن شي",
 	"addContext": "@ لإضافة سياق، / للتبديل بين الأنماط",
@@ -208,7 +209,8 @@
 	"codebaseSearch": {
 		"wantsToSearch": "Kilo Code يريد البحث في الكود عن <code>{{query}}</code>:",
 		"wantsToSearchWithPath": "Kilo Code يريد البحث في الكود عن <code>{{query}}</code> في <code>{{path}}</code>:",
-		"didSearch": "تم العثور على {{count}} نتيجة لـ <code>{{query}}</code>:"
+		"didSearch": "تم العثور على {{count}} نتيجة لـ <code>{{query}}</code>:",
+		"resultTooltip": "درجة التشابه: {{score}} (انقر لفتح الملف)"
 	},
 	"commandOutput": "مخرجات الأمر",
 	"response": "الاستجابة",
@@ -264,7 +266,9 @@
 		"seconds": "{{count}}ث"
 	},
 	"followUpSuggest": {
-		"copyToInput": "انسخ إلى الإدخال (Shift + انقر)"
+		"copyToInput": "انسخ إلى الإدخال (Shift + انقر)",
+		"autoSelectCountdown": "سيتم الاختيار تلقائياً خلال {{count}}ث",
+		"countdownDisplay": "{{count}}ث"
 	},
 	"browser": {
 		"rooWantsToUse": "Kilo Code يريد استخدام المتصفح:",
@@ -317,5 +321,8 @@
 		"indexed": "تمت الفهرسة",
 		"error": "خطأ في الفهرسة",
 		"status": "حالة الفهرسة"
+	},
+	"versionIndicator": {
+		"ariaLabel": "الإصدار {{version}} - انقر لعرض ملاحظات الإصدار"
 	}
 }

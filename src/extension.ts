@@ -31,6 +31,7 @@ import { registerCommitMessageProvider } from "./services/commit-message"
 import { MdmService } from "./services/mdm/MdmService"
 import { migrateSettings } from "./utils/migrateSettings"
 import { checkAndRunAutoLaunchingTask as checkAndRunAutoLaunchingTask } from "./utils/autoLaunchingTask"
+import { autoImportSettings } from "./utils/autoImportSettings"
 import { API } from "./extension/api"
 
 import {
@@ -41,6 +42,7 @@ import {
 	CodeActionProvider,
 } from "./activate"
 import { initializeI18n } from "./i18n"
+import { registerGhostProvider } from "./services/ghost" // kilocode_change
 
 /**
  * Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -99,6 +101,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		context.globalState.update("allowedCommands", defaultCommands)
 	}
 
+	// kilocode_change start
+	if (!context.globalState.get("firstInstallCompleted")) {
+		context.globalState.update("telemetrySetting", "enabled")
+	}
+	// kilocode_change end
+
 	const contextProxy = await ContextProxy.getInstance(context)
 	const codeIndexManager = CodeIndexManager.getInstance(context)
 
@@ -111,7 +119,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	const provider = new ClineProvider(context, outputChannel, "sidebar", contextProxy, codeIndexManager, mdmService)
-	TelemetryService.instance.setProvider(provider) // kilocode_change no telemetry
+	TelemetryService.instance.setProvider(provider)
 
 	if (codeIndexManager) {
 		context.subscriptions.push(codeIndexManager)
@@ -123,22 +131,40 @@ export async function activate(context: vscode.ExtensionContext) {
 		}),
 	)
 
+	// kilocode_change start
 	if (!context.globalState.get("firstInstallCompleted")) {
 		outputChannel.appendLine("First installation detected, opening Kilo Code sidebar!")
 		try {
 			await vscode.commands.executeCommand("kilo-code.SidebarProvider.focus")
 
 			outputChannel.appendLine("Opening Kilo Code walkthrough")
+
+			// this can crash, see:
+			// https://discord.com/channels/1349288496988160052/1395865796026040470
 			await vscode.commands.executeCommand(
 				"workbench.action.openWalkthrough",
 				"kilocode.kilo-code#kiloCodeWalkthrough",
 				false,
 			)
-
-			context.globalState.update("firstInstallCompleted", true)
 		} catch (error) {
 			outputChannel.appendLine(`Error during first-time setup: ${error.message}`)
+		} finally {
+			context.globalState.update("firstInstallCompleted", true)
 		}
+	}
+	// kilocode_change end
+
+	// Auto-import configuration if specified in settings
+	try {
+		await autoImportSettings(outputChannel, {
+			providerSettingsManager: provider.providerSettingsManager,
+			contextProxy: provider.contextProxy,
+			customModesManager: provider.customModesManager,
+		})
+	} catch (error) {
+		outputChannel.appendLine(
+			`[AutoImport] Error during auto-import: ${error instanceof Error ? error.message : String(error)}`,
+		)
 	}
 
 	registerCommands({ context, outputChannel, provider })
@@ -179,6 +205,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	)
 
 	registerAutocomplete(context) // kilocode_change
+	registerGhostProvider(context) // kilocode_change
 	registerCommitMessageProvider(context, outputChannel) // kilocode_change
 	registerCodeActions(context)
 	registerTerminalActions(context)
@@ -226,5 +253,6 @@ export async function activate(context: vscode.ExtensionContext) {
 export async function deactivate() {
 	outputChannel.appendLine(`${Package.name} extension deactivated`)
 	await McpServerManager.cleanup(extensionContext)
+	TelemetryService.instance.shutdown()
 	TerminalRegistry.cleanup()
 }

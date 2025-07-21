@@ -11,7 +11,7 @@
 		"title": "¡Advertencia de Crédito Bajo!",
 		"message": "¡Comprueba si puedes recargar con créditos gratuitos o comprar más!"
 	},
-	"notLoggedInError": "No se puede completar la solicitud, asegúrate de que estás conectado y has iniciado sesión con el proveedor seleccionado.",
+	"notLoggedInError": "No se puede completar la solicitud, asegúrate de que estás conectado y has iniciado sesión con el proveedor seleccionado.\n\n{{error}}",
 	"rules": {
 		"actions": {
 			"delete": "Eliminar",
@@ -40,17 +40,68 @@
 		}
 	},
 	"commitMessage": {
-		"activated": "Generador de mensajes de commit Kilo Code activado",
+		"activated": "Generador de mensajes de commit de Kilo Code activado",
 		"gitNotFound": "⚠️ Repositorio Git no encontrado o git no disponible",
 		"gitInitError": "⚠️ Error de inicialización de Git: {{error}}",
-		"generating": "Kilo: Generando mensaje de commit...",
-		"analyzingChanges": "Kilo: Analizando cambios preparados...",
-		"noStagedChangesRepo": "Kilo: No se encontraron cambios preparados en el repositorio git",
-		"noStagedChanges": "Kilo: No se encontraron cambios preparados para analizar",
+		"generating": "Kilo: Generando mensaje de confirmación...",
+		"noChanges": "Kilo: No se encontraron cambios para analizar",
 		"generated": "Kilo: ¡Mensaje de commit generado!",
-		"generationFailed": "Kilo: Error al generar el mensaje del commit: {{errorMessage}}",
-		"tokenRequired": "Se requiere el token de Kilo Code para la generación de mensajes de commit",
-		"activationFailed": "Kilo: Error al activar el proveedor de mensajes de commit: {{error}}",
-		"providerRegistered": "Kilo: Proveedor de mensajes de confirmación registrado"
+		"generationFailed": "Kilo: Error al generar mensaje de confirmación: {{errorMessage}}",
+		"generatingFromUnstaged": "Kilo: Generando mensaje usando cambios no preparados",
+		"providerRegistered": "Kilo: Proveedor de mensajes de confirmación registrado",
+		"activationFailed": "Kilo: Error al activar el generador de mensajes: {{error}}"
+	},
+	"autocomplete": {
+		"statusBar": {
+			"enabled": "$(sparkle) Kilo Autocompletado",
+			"disabled": "$(circle-slash) Kilo Autocompletado",
+			"warning": "$(warning) Kilo Autocompletado",
+			"tooltip": {
+				"disabled": "Kilo Code Autocompletado (desactivado)",
+				"basic": "Kilo Code Autocompletado",
+				"sessionTotal": "Costo total de la sesión:",
+				"lastCompletion": "Última finalización:",
+				"tokenError": "Se debe establecer un token válido para usar el autocompletado",
+				"model": "Modelo:"
+			},
+			"cost": {
+				"zero": "$0,00",
+				"lessThanCent": "<$0.01"
+			}
+		},
+		"toggleMessage": "Kilo Autocompletado {{status}}"
+	},
+	"ghost": {
+		"progress": {
+			"analyzing": "Analizando su código...",
+			"processing": "Procesando ediciones sugeridas...",
+			"generating": "Generando sugerencias de edición...",
+			"showing": "Mostrando ediciones sugeridas...",
+			"title": "Kilo Code"
+		},
+		"input": {
+			"title": "Kilo Code: Tarea Rápida",
+			"placeholder": "p. ej., 'refactorizar esta función para que sea más eficiente'"
+		},
+		"commands": {
+			"displaySuggestions": "Mostrar Ediciones Sugeridas",
+			"cancelSuggestions": "Cancelar Ediciones Sugeridas",
+			"generateSuggestions": "Kilo Code: Generar Ediciones Sugeridas",
+			"applyCurrentSuggestion": "Aplicar edición sugerida actual",
+			"promptCodeSuggestion": "Tarea Rápida de Prompt",
+			"category": "Kilo Code",
+			"applyAllSuggestions": "Aplicar todas las ediciones sugeridas"
+		},
+		"chatParticipant": {
+			"fullName": "Kilo Code Agente",
+			"description": "Puedo ayudarte con tareas rápidas y ediciones sugeridas.",
+			"name": "Agente"
+		},
+		"codeAction": {
+			"title": "Kilo Code: Ediciones sugeridas"
+		},
+		"messages": {
+			"provideCodeSuggestions": "Proporcionando sugerencias de código..."
+		}
 	}
 }
