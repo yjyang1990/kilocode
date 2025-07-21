@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.61.1
-
-### Patch Changes
+## [v4.61.1]
 
 - [#1435](https://github.com/Kilo-Org/kilocode/pull/1435) [`05b5bf4`](https://github.com/Kilo-Org/kilocode/commit/05b5bf400fd195109aa8b2bada01b843acc58318) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Revert "Show per-request cost for Kilo Code provider"
 
