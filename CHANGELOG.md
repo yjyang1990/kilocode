@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.63.0
-
-### Minor Changes
+## [v4.63.0]
 
 - [#1451](https://github.com/Kilo-Org/kilocode/pull/1451) [`66b5892`](https://github.com/Kilo-Org/kilocode/commit/66b5892fbc56d88372ba2ad87118f8696ccbd366) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Add toggles that disable Inline Assist features to the Settings panel
 
