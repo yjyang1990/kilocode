@@ -1,5 +1,9 @@
 # kilo-code
 
+## [v4.63.1]
+
+- [#1460](https://github.com/Kilo-Org/kilocode/pull/1460) [`415ea90`](https://github.com/Kilo-Org/kilocode/commit/415ea904e8b9ddd35ce1e4a894411f3679c94922) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Improve label of todo list toggle
+
 ## [v4.63.0]
 
 - [#1451](https://github.com/Kilo-Org/kilocode/pull/1451) [`66b5892`](https://github.com/Kilo-Org/kilocode/commit/66b5892fbc56d88372ba2ad87118f8696ccbd366) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Add toggles that disable Inline Assist features to the Settings panel
