@@ -1722,6 +1722,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						)}
 
 						{renderTextAreaSection()}
+						{/* kilocode_change: renderNonEditModeControls moved */}
+						{!isEditMode && renderNonEditModeControls()}
 					</div>
 
 					{isEditMode && (
@@ -1753,7 +1755,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					/>
 				)}
 
-				{!isEditMode && renderNonEditModeControls()}
+				{/* kilocode_change: renderNonEditModeControls moved */}
 			</div>
 		)
 	},
