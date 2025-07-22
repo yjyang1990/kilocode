@@ -130,5 +130,16 @@
 			"idea6": "Generiere Karten, die beim Hovern schön dynamischen Inhalt offenbaren",
 			"idea7": "Erstelle ein beruhigendes interaktives Sternfeld, das sich mit Mausgesten bewegt"
 		}
+	},
+	"ghost": {
+		"title": "Inline-Unterstützung",
+		"settings": {
+			"provider": "Anbieter",
+			"apiConfigId": {
+				"label": "API-Konfiguration",
+				"current": "Aktuell ausgewählte API-Konfiguration verwenden",
+				"description": "Wähle eine API-Konfiguration für Inline-Assist-Prompts aus oder verwende einfach die aktuell ausgewählte"
+			}
+		}
 	}
 }

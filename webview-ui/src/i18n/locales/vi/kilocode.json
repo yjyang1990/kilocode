@@ -130,5 +130,16 @@
 			"idea6": "Tạo các thẻ tiết lộ nội dung động một cách đẹp mắt khi di chuột qua",
 			"idea7": "Tạo một trường sao tương tác êm dịu di chuyển theo cử chỉ chuột"
 		}
+	},
+	"ghost": {
+		"title": "Hỗ trợ nội tuyến",
+		"settings": {
+			"provider": "Nhà cung cấp",
+			"apiConfigId": {
+				"label": "Cấu hình API",
+				"current": "Sử dụng cấu hình API hiện đang được chọn",
+				"description": "Chọn một cấu hình API để sử dụng cho các lời nhắc Hỗ trợ nội tuyến hoặc chỉ sử dụng bất cứ thứ gì được chọn hiện tại"
+			}
+		}
 	}
 }

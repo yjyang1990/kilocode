@@ -130,5 +130,16 @@
 			"idea6": "Générez des cartes qui révèlent magnifiquement du contenu dynamique au survol",
 			"idea7": "Créez un champ d'étoiles interactif apaisant qui se déplace avec les gestes de la souris"
 		}
+	},
+	"ghost": {
+		"title": "Assistance en ligne",
+		"settings": {
+			"provider": "Fournisseur",
+			"apiConfigId": {
+				"label": "Configuration API",
+				"current": "Utiliser la configuration API actuellement sélectionnée",
+				"description": "Sélectionnez une configuration d'API à utiliser pour les invites d'assistance en ligne, ou utilisez simplement celle qui est actuellement sélectionnée"
+			}
+		}
 	}
 }
