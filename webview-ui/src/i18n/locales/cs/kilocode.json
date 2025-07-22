@@ -138,12 +138,22 @@
 	"ghost": {
 		"title": "Inline asistence",
 		"settings": {
+			"enableQuickInlineTaskKeybinding": {
+				"label": "Rychlý inline úkol",
+				"description": "Potřebujete jen rychlou změnu? Vyberte nějaký kód (nebo ne!) a stiskněte Cmd+I. Popište svůj cíl běžnou češtinou (\"vytvořit React komponentu s těmito props\", \"přidat ošetření chyb do této funkce\") a získejte několik připravených návrhů přímo ve svém editoru. <DocsLink>Zobrazit zkratku</DocsLink>"
+			},
+			"enableAutoInlineTaskKeybinding": {
+				"label": "Automatický inline úkol",
+				"description": "Potřebujete rychlou opravu, doplnění nebo refaktoring? Kilo využije okolní kontext a nabídne okamžitá vylepšení, abyste neztratili tempo. <DocsLink>Zobrazit klávesovou zkratku</DocsLink>"
+			},
 			"provider": "Poskytovatel",
 			"apiConfigId": {
 				"label": "Konfigurace API",
 				"current": "Použít aktuálně vybranou konfiguraci API",
 				"description": "Vyberte konfiguraci API, kterou chcete použít pro výzvy Inline Assist, nebo prostě použijte tu, která je aktuálně vybrána"
-			}
+			},
+			"triggers": "Spouštěče",
+			"keybindingDescription": "Funkce Inline Assist jsou spouštěny příkazy. <DocsLink>Klávesové zkratky si můžete nakonfigurovat zde</DocsLink>."
 		}
 	}
 }
