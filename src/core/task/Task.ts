@@ -1493,10 +1493,27 @@ export class Task extends EventEmitter<ClineEvents> {
 						}
 					}
 					if (usageFound) {
-						console.debug(`${prefix} Stream done, updating request message`)
+						console.debug(`${prefix} Stream done, updating request message with usage info`)
 						updateApiReqMsg()
 					} else {
-						console.debug(`${prefix} Stream done, no usage info found`)
+						console.debug(`${prefix} Stream done, no trailing usage info found`)
+					}
+					if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
+						TelemetryService.instance.captureLlmCompletion(this.taskId, {
+							inputTokens,
+							outputTokens,
+							cacheWriteTokens,
+							cacheReadTokens,
+							cost:
+								totalCost ??
+								calculateApiCostAnthropic(
+									this.api.getModel().info,
+									inputTokens,
+									outputTokens,
+									cacheWriteTokens,
+									cacheReadTokens,
+								),
+						})
 					}
 				}
 				drainStreamInBackground() // no await
@@ -1532,6 +1549,7 @@ export class Task extends EventEmitter<ClineEvents> {
 				this.isStreaming = false
 			}
 
+			/* kilocode_change: this was moved to the drainStreamInBackground() function above
 			if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
 				TelemetryService.instance.captureLlmCompletion(this.taskId, {
 					inputTokens,
@@ -1549,6 +1567,7 @@ export class Task extends EventEmitter<ClineEvents> {
 						),
 				})
 			}
+			*/
 
 			// Need to call here in case the stream was aborted.
 			if (this.abort || this.abandoned) {
