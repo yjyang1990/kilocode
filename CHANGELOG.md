@@ -1,5 +1,60 @@
 # kilo-code
 
+## [v4.62.0]
+
+- [#1386](https://github.com/Kilo-Org/kilocode/pull/1386) [`48fb539`](https://github.com/Kilo-Org/kilocode/commit/48fb5392a962279463d8db225559db42f32d4ad8) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Include changes from Roo Code v3.23.14
+
+    - Fix Mermaid syntax warning (thanks @MuriloFP!)
+    - Expand Vertex AI region config to include all available regions in GCP Vertex AI (thanks @shubhamgupta731!)
+    - Handle Qdrant vector dimension mismatch when switching embedding models (thanks @daniel-lxs!)
+    - Fix typos in comment & document (thanks @noritaka1166!)
+    - Improve the display of codebase search results
+    - Correct translation fallback logic for embedding errors (thanks @daniel-lxs!)
+    - Clean up MCP tool disabling
+    - Link to marketplace from modes and MCP tab
+    - Fix TTS button display (thanks @sensei-woo!)
+    - Add Devstral Medium model support
+    - Add comprehensive error telemetry to code-index service (thanks @daniel-lxs!)
+    - Exclude cache tokens from context window calculation (thanks @daniel-lxs!)
+    - Enable dynamic tool selection in architect mode for context discovery
+    - Add configurable max output tokens setting for claude-code
+    - Add enable/disable toggle for code indexing (thanks @daniel-lxs!)
+    - Add a command auto-deny list to auto-approve settings
+    - Add navigation link to history tab in HistoryPreview
+    - Enable Claude Code provider to run natively on Windows (thanks @SannidhyaSah!)
+    - Add gemini-embedding-001 model to code-index service (thanks @daniel-lxs!)
+    - Resolve vector dimension mismatch error when switching embedding models
+    - Return the cwd in the exec tool's response so that the model is not lost after subsequent calls (thanks @chris-garrett!)
+    - Add configurable timeout for command execution in VS Code settings
+    - Prioritize built-in model dimensions over custom dimensions (thanks @daniel-lxs!)
+    - Add padding to the index model options
+    - Add Kimi K2 model to Groq along with fixes to context condensing math
+    - Add Cmd+Shift+. keyboard shortcut for previous mode switching
+    - Update the max-token calculation in model-params to better support Kimi K2 and others
+    - Add the ability to "undo" enhance prompt changes
+    - Fix a bug where the path component of the baseURL for the LiteLLM provider contains path in it (thanks @ChuKhaLi)
+    - Add support for Vertex AI model name formatting when using Claude Code with Vertex AI (thanks @janaki-sasidhar)
+    - The list-files tool must include at least the first-level directory contents (thanks @qdaxb)
+    - Add a configurable limit that controls both consecutive errors and tool repetitions (thanks @MuriloFP)
+    - Add `.terraform/` and `.terragrunt-cache/` directories to the checkpoint exclusion patterns (thanks @MuriloFP)
+    - Increase Ollama API timeout values (thanks @daniel-lxs)
+    - Fix an issue where you need to "discard changes" before saving even though there are no settings changes
+    - Fix `DirectoryScanner` memory leak and improve file limit handling (thanks @daniel-lxs)
+    - Fix time formatting in environment (thanks @chrarnoldus)
+    - Prevent empty mode names from being saved (thanks @daniel-lxs)
+    - Improve auto-approve checkbox UX
+    - Improve the chat message edit / delete functionality (thanks @liwilliam2021)
+    - Add `commandExecutionTimeout` to `GlobalSettings`
+    - Log api-initiated tasks to a tmp directory
+
+### Patch Changes
+
+- [#1154](https://github.com/Kilo-Org/kilocode/pull/1154) [`d871e5e`](https://github.com/Kilo-Org/kilocode/commit/d871e5efb88050d2b4795e8b463e336342dbe550) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Update the Kilo code icon to adapt to light/dark themes
+
+- [#1396](https://github.com/Kilo-Org/kilocode/pull/1396) [`2c46e91`](https://github.com/Kilo-Org/kilocode/commit/2c46e913bba7699eb3bc1425dbe898217f7ee9fe) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Adds new Settings page for Inline Assist
+
+    You can now select the provider you'd like to use for `Inline Assist` commands
+
 ## [v4.61.1]
 
 - [#1435](https://github.com/Kilo-Org/kilocode/pull/1435) [`05b5bf4`](https://github.com/Kilo-Org/kilocode/commit/05b5bf400fd195109aa8b2bada01b843acc58318) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Revert "Show per-request cost for Kilo Code provider"
