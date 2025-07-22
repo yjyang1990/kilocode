@@ -138,12 +138,22 @@
 	"ghost": {
 		"title": "Assistència en línia",
 		"settings": {
+			"enableQuickInlineTaskKeybinding": {
+				"label": "Tasca ràpida en línia",
+				"description": "Només necessites un canvi ràpid? Selecciona codi (o no!) i prem Cmd+I. Descriu el teu objectiu en llenguatge natural (\"crea un component de React amb aquestes props\", \"afegeix gestió d'errors a aquesta funció\"), i obtén múltiples suggeriments llestos per utilitzar directament al teu editor. <DocsLink>Veure drecera</DocsLink>"
+			},
+			"enableAutoInlineTaskKeybinding": {
+				"label": "Tasca automàtica en línia",
+				"description": "Necessites una solució ràpida, completar alguna cosa o refactoritzar? Kilo utilitzarà el context del voltant per oferir millores immediates, mantenint el teu flux de treball. <DocsLink>Veure drecera</DocsLink>"
+			},
 			"provider": "Proveïdor",
 			"apiConfigId": {
 				"label": "Configuració de l'API",
 				"current": "Utilitza la configuració de l'API seleccionada actualment",
 				"description": "Selecciona una configuració de l'API per utilitzar en els prompts d'assistència en línia, o simplement utilitza la que estigui seleccionada actualment"
-			}
+			},
+			"triggers": "Activadors",
+			"keybindingDescription": "Les funcions d'Assistència en línia es desencadenen mitjançant ordres. Podeu configurar les <DocsLink>dreceres de teclat aquí</DocsLink>."
 		}
 	}
 }
