@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.63.1
-
-### Patch Changes
+## [v4.63.1]
 
 - [#1460](https://github.com/Kilo-Org/kilocode/pull/1460) [`415ea90`](https://github.com/Kilo-Org/kilocode/commit/415ea904e8b9ddd35ce1e4a894411f3679c94922) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Improve label of todo list toggle
 
