@@ -237,6 +237,7 @@ const litellmSchema = baseProviderSettingsSchema.extend({
 const kilocodeSchema = baseProviderSettingsSchema.extend({
 	kilocodeToken: z.string().optional(),
 	kilocodeModel: z.string().optional(),
+	openRouterSpecificProvider: z.string().optional(),
 })
 
 const fireworksSchema = baseProviderSettingsSchema.extend({
