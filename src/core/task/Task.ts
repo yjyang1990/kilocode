@@ -1481,15 +1481,13 @@ export class Task extends EventEmitter<ClineEvents> {
 					while (!item.done) {
 						const chunk = item.value
 						item = await iterator.next()
-						if (chunk.type == "usage") {
+						if (chunk && chunk.type === "usage") {
 							usageFound = true
 							inputTokens += chunk.inputTokens
 							outputTokens += chunk.outputTokens
 							cacheWriteTokens += chunk.cacheWriteTokens ?? 0
 							cacheReadTokens += chunk.cacheReadTokens ?? 0
 							totalCost = chunk.totalCost
-						} else {
-							console.debug(`${prefix} Discarding chunk of type ${chunk.type}`)
 						}
 					}
 					if (usageFound) {
@@ -1514,6 +1512,8 @@ export class Task extends EventEmitter<ClineEvents> {
 									cacheReadTokens,
 								),
 						})
+					} else {
+						console.warn(`${prefix} No usage data after the stream completed`)
 					}
 				}
 				drainStreamInBackground() // no await so it runs in the background
