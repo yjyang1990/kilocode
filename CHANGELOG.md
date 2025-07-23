@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.64.1
-
-### Patch Changes
+## [v4.64.1]
 
 - [#1474](https://github.com/Kilo-Org/kilocode/pull/1474) [`7efe383`](https://github.com/Kilo-Org/kilocode/commit/7efe383628f91b7977c0cffcdfc0a7a226ab1f01) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Inline Assist Telemetry
 
