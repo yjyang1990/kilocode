@@ -1487,8 +1487,6 @@ export class Task extends EventEmitter<ClineEvents> {
 					if (usageFound) {
 						console.debug(`${prefix} Stream done, updating request message with usage info`)
 						updateApiReqMsg()
-					} else {
-						console.debug(`${prefix} Stream done, no trailing usage info found`)
 					}
 					if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
 						TelemetryService.instance.captureLlmCompletion(this.taskId, {
@@ -1508,7 +1506,7 @@ export class Task extends EventEmitter<ClineEvents> {
 						})
 					}
 				}
-				drainStreamInBackground() // no await
+				drainStreamInBackground() // no await so it runs in the background
 				// kilocode_change end
 			} catch (error) {
 				// Abandoned happens when extension is no longer waiting for the
