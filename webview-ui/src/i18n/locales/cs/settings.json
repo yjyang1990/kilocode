@@ -703,7 +703,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "Rozšíření automaticky načítá nejnovější seznam modelů dostupných na <serviceLink>{{serviceName}}</serviceLink>. Pokud si nejste jisti, který model vybrat, Kilo Code funguje nejlépe s <defaultModelLink>{{defaultModelId}}</defaultModelLink>. Můžete také zkusit vyhledat \"free\" pro aktuálně dostupné bezplatné možnosti.",
+		"automaticFetch": "Rozšíření automaticky načítá nejnovější seznam modelů dostupných na <serviceLink>{{serviceName}}</serviceLink>. Pokud si nejste jisti, který model vybrat, Kilo Code funguje nejlépe s <defaultModelLink>{{defaultModelId}}</defaultModelLink>.",
 		"label": "Model",
 		"searchPlaceholder": "Hledat",
 		"noMatchFound": "Nebyla nalezena žádná shoda",

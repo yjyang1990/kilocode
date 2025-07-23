@@ -676,7 +676,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "ส่วนขยายจะดึงรายการโมเดลล่าสุดที่มีให้บริการบน <serviceLink>{{serviceName}}</serviceLink> โดยอัตโนมัติ หากคุณไม่แน่ใจว่าจะเลือกโมเดลใด Kilo Code ทำงานได้ดีที่สุดกับ <defaultModelLink>{{defaultModelId}}</defaultModelLink> คุณยังสามารถลองค้นหา \"free\" สำหรับตัวเลือกที่ไม่มีค่าใช้จ่ายที่มีให้บริการในปัจจุบัน",
+		"automaticFetch": "ส่วนขยายจะดึงรายการโมเดลล่าสุดที่มีให้บริการบน <serviceLink>{{serviceName}}</serviceLink> โดยอัตโนมัติ หากคุณไม่แน่ใจว่าจะเลือกโมเดลใด Kilo Code ทำงานได้ดีที่สุดกับ <defaultModelLink>{{defaultModelId}}</defaultModelLink>",
 		"label": "โมเดล",
 		"searchPlaceholder": "ค้นหา",
 		"noMatchFound": "ไม่พบรายการที่ตรงกัน",
