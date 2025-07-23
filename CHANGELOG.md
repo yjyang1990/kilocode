@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.23.19
+
+### Patch Changes
+
+-   - Add Roo Code Cloud Waitlist CTAs (thanks @brunobergher!)
+
 ## [3.23.18] - 2025-07-23
 
 - Fix: Resolve 'Bad substitution' error in command parsing (#5978 by @KJ7LNW, PR by @daniel-lxs)
