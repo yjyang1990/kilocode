@@ -1487,6 +1487,8 @@ export class Task extends EventEmitter<ClineEvents> {
 					if (usageFound) {
 						console.debug(`${prefix} Stream done, updating request message with usage info`)
 						updateApiReqMsg()
+					} else {
+						console.debug(`${prefix} Stream done`)
 					}
 					if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
 						TelemetryService.instance.captureLlmCompletion(this.taskId, {
