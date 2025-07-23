@@ -1,10 +1,10 @@
 # Roo Code Changelog
 
-## 3.23.19
+## [3.23.19] - 2025-07-23
 
-### Patch Changes
-
--   - Add Roo Code Cloud Waitlist CTAs (thanks @brunobergher!)
+- Add Roo Code Cloud Waitlist CTAs (thanks @brunobergher!)
+- Split commands on newlines when evaluating auto-approve
+- Smarter auto-deny of commands
 
 ## [3.23.18] - 2025-07-23
 
