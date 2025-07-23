@@ -1541,25 +1541,24 @@ export class Task extends EventEmitter<ClineEvents> {
 				this.isStreaming = false
 			}
 
-			/* kilocode_change: this was moved to the drainStreamInBackground() function above
-			if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
-				TelemetryService.instance.captureLlmCompletion(this.taskId, {
-					inputTokens,
-					outputTokens,
-					cacheWriteTokens,
-					cacheReadTokens,
-					cost:
-						totalCost ??
-						calculateApiCostAnthropic(
-							this.api.getModel().info,
-							inputTokens,
-							outputTokens,
-							cacheWriteTokens,
-							cacheReadTokens,
-						),
-				})
-			}
-			*/
+			// kilocode_change: this was moved to the drainStreamInBackground() function above
+			//if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
+			//	TelemetryService.instance.captureLlmCompletion(this.taskId, {
+			//		inputTokens,
+			//		outputTokens,
+			//		cacheWriteTokens,
+			//		cacheReadTokens,
+			//		cost:
+			//			totalCost ??
+			//			calculateApiCostAnthropic(
+			//				this.api.getModel().info,
+			//				inputTokens,
+			//				outputTokens,
+			//				cacheWriteTokens,
+			//				cacheReadTokens,
+			//			),
+			//	})
+			//}
 
 			// Need to call here in case the stream was aborted.
 			if (this.abort || this.abandoned) {
