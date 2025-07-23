@@ -596,7 +596,7 @@
 		},
 		"todoList": {
 			"label": "Abilita strumento lista di cose da fare",
-			"description": "Quando abilitato, Roo può creare e gestire liste di cose da fare per tracciare il progresso delle attività. Questo aiuta a organizzare attività complesse in passaggi gestibili."
+			"description": "Quando abilitato, Kilo Code può creare e gestire liste di cose da fare per tracciare il progresso delle attività. Questo aiuta a organizzare attività complesse in passaggi gestibili."
 		}
 	},
 	"experimental": {

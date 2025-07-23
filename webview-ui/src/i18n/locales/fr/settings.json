@@ -596,7 +596,7 @@
 		},
 		"todoList": {
 			"label": "Activer l'outil de liste de tâches",
-			"description": "Lorsqu'activé, Roo peut créer et gérer des listes de tâches pour suivre la progression. Cela aide à organiser les tâches complexes en étapes gérables."
+			"description": "Lorsqu'activé, Kilo Code peut créer et gérer des listes de tâches pour suivre la progression. Cela aide à organiser les tâches complexes en étapes gérables."
 		}
 	},
 	"experimental": {
