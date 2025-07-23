@@ -1393,13 +1393,7 @@ export class Task extends EventEmitter<ClineEvents> {
 			this.isStreaming = true
 
 			try {
-				// kilocode change: use manual iterator instead of for ... of
-				const iterator = stream[Symbol.asyncIterator]()
-				let item = await iterator.next()
-				while (!item.done) {
-					const chunk = item.value
-					item = await iterator.next()
-
+				for await (const chunk of stream) {
 					if (!chunk) {
 						// Sometimes chunk is undefined, no idea that can cause
 						// it, but this workaround seems to fix it.
@@ -1478,9 +1472,7 @@ export class Task extends EventEmitter<ClineEvents> {
 					const prefix = `[Request ${lastApiReqIndex}]`
 					console.debug(`${prefix} Parsing assistant messages done, continuing stream in background...`)
 					let usageFound = false
-					while (!item.done) {
-						const chunk = item.value
-						item = await iterator.next()
+					for await (const chunk of stream) {
 						if (chunk.type == "usage") {
 							usageFound = true
 							inputTokens += chunk.inputTokens
