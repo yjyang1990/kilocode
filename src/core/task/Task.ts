@@ -1481,7 +1481,7 @@ export class Task extends EventEmitter<ClineEvents> {
 					while (!item.done) {
 						const chunk = item.value
 						item = await iterator.next()
-						if (chunk.type == "usage") {
+						if (chunk && chunk.type == "usage") {
 							usageFound = true
 							inputTokens += chunk.inputTokens
 							outputTokens += chunk.outputTokens
