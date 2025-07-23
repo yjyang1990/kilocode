@@ -1393,7 +1393,13 @@ export class Task extends EventEmitter<ClineEvents> {
 			this.isStreaming = true
 
 			try {
-				for await (const chunk of stream) {
+				// kilocode change: use manual iterator instead of for ... of
+				const iterator = stream[Symbol.asyncIterator]()
+				let item = await iterator.next()
+				while (!item.done) {
+					const chunk = item.value
+					item = await iterator.next()
+
 					if (!chunk) {
 						// Sometimes chunk is undefined, no idea that can cause
 						// it, but this workaround seems to fix it.
@@ -1466,6 +1472,52 @@ export class Task extends EventEmitter<ClineEvents> {
 						break
 					}
 				}
+
+				// kilocode_change start: continue stream in background to ensure we have all usage info
+				const drainStreamInBackground = async () => {
+					const prefix = `[Request ${lastApiReqIndex}]`
+					console.debug(`${prefix} Parsing assistant messages done, continuing stream in background...`)
+					let usageFound = false
+					while (!item.done) {
+						const chunk = item.value
+						item = await iterator.next()
+						if (chunk.type == "usage") {
+							usageFound = true
+							inputTokens += chunk.inputTokens
+							outputTokens += chunk.outputTokens
+							cacheWriteTokens += chunk.cacheWriteTokens ?? 0
+							cacheReadTokens += chunk.cacheReadTokens ?? 0
+							totalCost = chunk.totalCost
+						} else {
+							console.debug(`${prefix} Discarding chunk of type ${chunk.type}`)
+						}
+					}
+					if (usageFound) {
+						console.debug(`${prefix} Stream done, updating request message with usage info`)
+						updateApiReqMsg()
+					} else {
+						console.debug(`${prefix} Stream done`)
+					}
+					if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
+						TelemetryService.instance.captureLlmCompletion(this.taskId, {
+							inputTokens,
+							outputTokens,
+							cacheWriteTokens,
+							cacheReadTokens,
+							cost:
+								totalCost ??
+								calculateApiCostAnthropic(
+									this.api.getModel().info,
+									inputTokens,
+									outputTokens,
+									cacheWriteTokens,
+									cacheReadTokens,
+								),
+						})
+					}
+				}
+				drainStreamInBackground() // no await so it runs in the background
+				// kilocode_change end
 			} catch (error) {
 				// Abandoned happens when extension is no longer waiting for the
 				// Cline instance to finish aborting (error is thrown here when
@@ -1497,23 +1549,24 @@ export class Task extends EventEmitter<ClineEvents> {
 				this.isStreaming = false
 			}
 
-			if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
-				TelemetryService.instance.captureLlmCompletion(this.taskId, {
-					inputTokens,
-					outputTokens,
-					cacheWriteTokens,
-					cacheReadTokens,
-					cost:
-						totalCost ??
-						calculateApiCostAnthropic(
-							this.api.getModel().info,
-							inputTokens,
-							outputTokens,
-							cacheWriteTokens,
-							cacheReadTokens,
-						),
-				})
-			}
+			// kilocode_change: this was moved to the drainStreamInBackground() function above
+			//if (inputTokens > 0 || outputTokens > 0 || cacheWriteTokens > 0 || cacheReadTokens > 0) {
+			//	TelemetryService.instance.captureLlmCompletion(this.taskId, {
+			//		inputTokens,
+			//		outputTokens,
+			//		cacheWriteTokens,
+			//		cacheReadTokens,
+			//		cost:
+			//			totalCost ??
+			//			calculateApiCostAnthropic(
+			//				this.api.getModel().info,
+			//				inputTokens,
+			//				outputTokens,
+			//				cacheWriteTokens,
+			//				cacheReadTokens,
+			//			),
+			//	})
+			//}
 
 			// Need to call here in case the stream was aborted.
 			if (this.abort || this.abandoned) {
