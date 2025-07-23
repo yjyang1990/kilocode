@@ -682,7 +682,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "Розширення автоматично отримує останній список моделей, доступних на <serviceLink>{{serviceName}}</serviceLink>. Якщо ти не впевнений, яку модель вибрати, Kilo Code найкраще працює з <defaultModelLink>{{defaultModelId}}</defaultModelLink>. Ти також можеш спробувати пошукати \"free\" для безкоштовних варіантів, які зараз доступні.",
+		"automaticFetch": "Розширення автоматично отримує останній список моделей, доступних на <serviceLink>{{serviceName}}</serviceLink>. Якщо ти не впевнений, яку модель вибрати, Kilo Code найкраще працює з <defaultModelLink>{{defaultModelId}}</defaultModelLink>.",
 		"label": "Модель",
 		"searchPlaceholder": "Пошук",
 		"noMatchFound": "Збігів не знайдено",

@@ -692,7 +692,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "الإضافة تجيب أحدث النماذج من <serviceLink>{{serviceName}}</serviceLink>. إذا متردد، Kilo Code يعمل أفضل مع <defaultModelLink>{{defaultModelId}}</defaultModelLink>. جرّب كلمة \"free\" للخيارات المجانية.",
+		"automaticFetch": "الإضافة تجلب تلقائياً أحدث قائمة بالنماذج المتاحة على <serviceLink>{{serviceName}}</serviceLink>. إذا كنت غير متأكد من النموذج الذي تختاره، فإن Kilo Code يعمل بشكل أفضل مع <defaultModelLink>{{defaultModelId}}</defaultModelLink>.",
 		"label": "النموذج",
 		"searchPlaceholder": "بحث",
 		"noMatchFound": "ما فيه تطابق",
