@@ -1,3 +1,4 @@
+import crypto from "crypto"
 import * as vscode from "vscode"
 import { GhostDocumentStore } from "./GhostDocumentStore"
 import { GhostStrategy } from "./GhostStrategy"
@@ -11,9 +12,10 @@ import { getWorkspacePath } from "../../utils/path"
 import { GhostSuggestionsState } from "./GhostSuggestions"
 import { GhostCodeActionProvider } from "./GhostCodeActionProvider"
 import { GhostCodeLensProvider } from "./GhostCodeLensProvider"
-import { GhostServiceSettings } from "@roo-code/types"
+import { GhostServiceSettings, TelemetryEventName } from "@roo-code/types"
 import { ContextProxy } from "../../core/config/ContextProxy"
 import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManager"
+import { TelemetryService } from "@roo-code/telemetry"
 
 export class GhostProvider {
 	private static instance: GhostProvider | null = null
@@ -26,6 +28,7 @@ export class GhostProvider {
 	private context: vscode.ExtensionContext
 	private providerSettingsManager: ProviderSettingsManager
 	private settings: GhostServiceSettings | null = null
+	private taskId: string | null = null
 
 	// VSCode Providers
 	public codeActionProvider: GhostCodeActionProvider
@@ -72,6 +75,12 @@ export class GhostProvider {
 	}
 
 	public async promptCodeSuggestion() {
+		this.taskId = crypto.randomUUID()
+
+		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_QUICK_TASK, {
+			taskId: this.taskId,
+		})
+
 		const userInput = await vscode.window.showInputBox({
 			prompt: t("kilocode:ghost.input.title"),
 			placeHolder: t("kilocode:ghost.input.placeholder"),
@@ -95,6 +104,12 @@ export class GhostProvider {
 		if (!editor) {
 			return
 		}
+
+		this.taskId = crypto.randomUUID()
+		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_AUTO_TASK, {
+			taskId: this.taskId,
+		})
+
 		const document = editor.document
 		const range = editor.selection.isEmpty ? undefined : editor.selection
 
@@ -107,6 +122,12 @@ export class GhostProvider {
 	): Promise<void> {
 		// Store the document in the document store
 		this.getDocumentStore().storeDocument(document)
+
+		this.taskId = crypto.randomUUID()
+		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_AUTO_TASK, {
+			taskId: this.taskId,
+		})
+
 		await this.provideCodeSuggestions({ document, range })
 	}
 
@@ -154,8 +175,20 @@ export class GhostProvider {
 				if (!this.model.loaded) {
 					await this.reload()
 				}
-				const response = await this.model.generateResponse(systemPrompt, userPrompt)
+				const { response, cost, inputTokens, outputTokens, cacheWriteTokens, cacheReadTokens } =
+					await this.model.generateResponse(systemPrompt, userPrompt)
 				console.log("Ghost response:", response)
+
+				TelemetryService.instance.captureEvent(TelemetryEventName.LLM_COMPLETION, {
+					taskId: this.taskId,
+					inputTokens,
+					outputTokens,
+					cacheWriteTokens,
+					cacheReadTokens,
+					cost,
+					service: "INLINE_ASSIST",
+				})
+
 				if (cancelled) {
 					return
 				}
@@ -265,6 +298,9 @@ export class GhostProvider {
 		if (!this.hasPendingSuggestions() || this.workspaceEdit.isLocked()) {
 			return
 		}
+		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_REJECT_SUGGESTION, {
+			taskId: this.taskId,
+		})
 		this.decorations.clearAll()
 		await this.workspaceEdit.revertSuggestionsPlaceholder(this.suggestions)
 		this.suggestions.clear()
@@ -289,6 +325,9 @@ export class GhostProvider {
 			console.log("No group selected, returning")
 			return
 		}
+		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_ACCEPT_SUGGESTION, {
+			taskId: this.taskId,
+		})
 		this.decorations.clearAll()
 		await this.workspaceEdit.revertSuggestionsPlaceholder(this.suggestions)
 		await this.workspaceEdit.applySelectedSuggestions(this.suggestions)
