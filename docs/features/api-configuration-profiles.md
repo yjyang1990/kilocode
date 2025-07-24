@@ -75,7 +75,13 @@ This feature makes it easier to navigate between commonly used profiles, especia
 
 ## Linking Profiles to Modes
 In the <Codicon name="notebook" /> Prompts tab, you can explicitly associate a specific Configuration Profile with each Mode. The system also automatically remembers which profile you last used with each mode, making your workflow more efficient.
-<img src="/docs/img/api-configuration-profiles/api-configuration-profiles-11.png" alt="Profile-Mode association interface in Prompts tab" width="550" />
+
+Watch this demonstration of how to connect configuration profiles with specific modes for optimized workflows:
+
+<video width="600" controls>
+  <source src="/img/api-configuration-profiles/provider-modes.mp4#t=0.001" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
 
 ## Security Note
 
