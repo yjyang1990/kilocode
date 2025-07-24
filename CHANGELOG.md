@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.64.3
-
-### Patch Changes
+## [v4.64.3]
 
 - [#1494](https://github.com/Kilo-Org/kilocode/pull/1494) [`1488591`](https://github.com/Kilo-Org/kilocode/commit/148859168d0dc1521d5ee7c5d96263ffae47a587) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Improved error reporting for Checkpoint-related failures
 
