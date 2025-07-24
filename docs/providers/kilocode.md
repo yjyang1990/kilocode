@@ -1,46 +1,62 @@
 ---
-sidebar_label: Kilo Code
+sidebar_label: Kilo Code Provider
 ---
 
-# Using Kilo Code's API Provider
+# Using Kilo Code's Built-in Provider
 
-:::warning
+Kilo Code provides its own built-in API provider that gives you access to the latest frontier coding models through a simple registration process. No need to manage API keys from multiple providers - just sign up and start coding.
 
-This documentation is currently aimed at only Anthropic and Claude Sonnet 3.7 and doesn't reflect the simplicity of using Kilo Code as a provider - it simply a place holder
+**Website:** [https://kilocode.ai/](https://kilocode.ai/)
 
+## Getting Started with Free Credits
+
+When you sign up for Kilo Code, you'll receive free credits to help you get started:
+
+1. **Initial Registration:** Complete the registration process to receive an initial amount of free credits immediately
+2. **Unlock Additional Credits:** To access more free credits:
+   * Add a payment method for identity verification
+   * Authorize a temporary $10 hold on your card (not a charge)
+3. **Start Coding:** Once verified, enjoy your free tokens and start using Kilo Code right away
+
+:::note About the temporary hold
+The $10 hold is for identity verification only:
+- **Not a charge** - This is a temporary authorization that will not be charged
+- **Released after 7 days** - Kilo Code releases the hold automatically
+- **Bank processing** - After release, it may take 5-10 business days for funds to return (varies by bank)
+- **Tracking available** - We can provide a STAN number to help track with your bank if needed
 :::
 
+## Registration Process
 
-Anthropic is an AI safety and research company that builds reliable, interpretable, and steerable AI systems.  Their Claude models are known for their strong reasoning abilities, helpfulness, and honesty.
+Kilo Code offers a streamlined registration that connects you directly to frontier coding models:
 
-**Website:** [https://www.anthropic.com/](https://www.anthropic.com/)
+1. **Start Registration:** Click "Try Kilo Code for Free" in the extension
+2. **Sign In:** Use your Google account to sign in at kilocode.ai
+3. **Authorize VS Code:**
+   * kilocode.ai will prompt you to open Visual Studio Code
+   * For web-based IDEs, you'll copy the API key manually instead
+4. **Complete Setup:** Allow VS Code to open the authorization URL when prompted
 
-## Getting an API Key
-
-1.  **Sign Up/Sign In:** Go to the [Anthropic Console](https://console.anthropic.com/). Create an account or sign in.
-2.  **Navigate to API Keys:**  Go to the [API keys](https://console.anthropic.com/settings/keys) section.
-3.  **Create a Key:** Click "Create Key". Give your key a descriptive name (e.g., "Kilo Code").
-4.  **Copy the Key:**  **Important:** Copy the API key *immediately*.  You will not be able to see it again.  Store it securely.
+<!-- <img src="/img/setting-up/signupflow.gif" alt="Sign up and registration flow with Kilo Code" width="600" /> -->
 
 ## Supported Models
 
-Kilo Code supports the following Anthropic Claude models:
-
-*   `claude-3-7-sonnet-20250219`
-
-See [Anthropic's Model Documentation](https://docs.anthropic.com/en/docs/about-claude/models) for more details on each model's capabilities.
+Kilo Code provides access to the latest frontier coding models through its built-in provider. The specific models available are automatically updated and managed by the Kilo Code service, ensuring you always have access to the most capable models for coding tasks.
 
 ## Configuration in Kilo Code
 
-1.  **Open Kilo Code Settings:** Click the gear icon (<Codicon name="gear" />) in the Kilo Code panel.
-2.  **Select Provider:** Choose "Anthropic" from the "API Provider" dropdown.
-3.  **Enter API Key:** Paste your Anthropic API key into the "Anthropic API Key" field.
-4.  **Select Model:** Choose your desired Claude model from the "Model" dropdown.
-5.  **(Optional) Custom Base URL:** If you need to use a custom base URL for the Anthropic API, check "Use custom base URL" and enter the URL. Most people won't need to adjust this.
+Once you've completed the registration process, Kilo Code is automatically configured:
+
+1. **Automatic Setup:** After successful registration, Kilo Code is ready to use immediately
+2. **No API Key Management:** Your authentication is handled seamlessly through the registration process
+3. **Model Selection:** Access to frontier models is provided automatically through your Kilo Code account
 
 ## Tips and Notes
 
-*   **Prompt Caching:** Claude 3 models support [prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching), which can significantly reduce costs and latency for repeated prompts.
-*   **Context Window:** Claude models have large context windows (200,000 tokens), allowing you to include a significant amount of code and context in your prompts.
-*   **Pricing:** Refer to the [Anthropic Pricing](https://www.anthropic.com/pricing) page for the latest pricing information.
-*   **Rate Limits:** Anthropic has strict rate limits based on [usage tiers](https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier). If you're repeatedly hitting rate limits, consider contacting Anthropic sales or accessing Claude through a different provider like [OpenRouter](/providers/openrouter) or [Requesty](/providers/requesty).
+* **Free Credits:** New users receive free credits to explore Kilo Code's capabilities
+* **Identity Verification:** The temporary hold system ensures service reliability while preventing misuse
+* **Seamless Integration:** No need to manage multiple API keys or provider configurations
+* **Latest Models:** Automatic access to the most current frontier coding models
+* **Support Available:** Contact [hi@kilocode.ai](mailto:hi@kilocode.ai) for questions about pricing or tokens
+
+For detailed setup instructions, see [Setting up Kilo Code](/getting-started/setting-up).

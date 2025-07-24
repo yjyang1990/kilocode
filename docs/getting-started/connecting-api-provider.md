@@ -2,20 +2,30 @@
 sidebar_label: Connecting To A Provider
 ---
 
-# Connecting Your First AI Provider
+# Connecting an AI Provider
 
-Kilo Code requires an API key from an AI model provider to function. We recommend these options for accessing the powerful **Claude 3.7 Sonnet** model:
+Kilo Code requires an API key from an AI model provider to function. 
 
-- **OpenRouter (Recommended):** Provides access to multiple AI models through a single API key. Ideal for getting started quickly with minimal setup. [View pricing](https://openrouter.ai/models?order=pricing-low-to-high).
+We recommend these options for accessing the powerful **Claude 4 Sonnet** model:
+
+- **Kilo Code API provider (Recommended):** Provides access to all of the models available through OpenRouter with competitive pricing and free credits to get started. [View pricing](https://kilocode.ai/pricing)
+- **OpenRouter:** Provides access to multiple AI models through a single API key. [View pricing](https://openrouter.ai/models?order=pricing-low-to-high).
 - **Anthropic:** Direct access to Claude models. Requires API access approval and may have [rate limits depending on your tier](https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier). See [Anthropic's pricing page](https://www.anthropic.com/pricing#anthropic-api) for details.
 
-## Getting Your API Key
+## Using the Kilo Code Provider
+By default when you install Kilo Code the extension, you'll be prompted to sign in or create an account in the [Kilo Code Provider](/providers/kilocode).
 
-### Option 1: LLM Routers
+That will walk you through the account setup and _automatically_ configure Kilo Code properly to get you started. If you'd rather use another provider, you'll need to manually get your API key as described below.
+
+## Using another API Provider
+
+### Getting Your API Key
+
+#### Option 1: LLM Routers
 
 LLM routers let you access multiple AI models with one API key, simplifying cost management and switching between models. They often offer [competitive pricing](https://openrouter.ai/models?order=pricing-low-to-high) compared to direct providers.
 
-#### OpenRouter
+##### OpenRouter
 
 1. Go to [openrouter.ai](https://openrouter.ai/)
 2. Sign in with your Google or GitHub account
@@ -26,7 +36,7 @@ LLM routers let you access multiple AI models with one API key, simplifying cost
 
 *OpenRouter dashboard with "Create key" button. Name your key and copy it after creation.*
 
-#### Requesty
+##### Requesty
 
 1. Go to [requesty.ai](https://requesty.ai/)
 2. Sign in with your Google account or email
@@ -37,11 +47,11 @@ LLM routers let you access multiple AI models with one API key, simplifying cost
 
 *Requesty API management page with "Create API Key" button. Copy your key immediately - it's shown only once.*
 
-### Option 2: Direct Providers
+#### Option 2: Direct Providers
 
 For direct access to specific models from their original providers, with full access to their features and capabilities:
 
-#### Anthropic
+##### Anthropic
 
 1. Go to [console.anthropic.com](https://console.anthropic.com/)
 2. Sign up for an account or log in
@@ -52,7 +62,7 @@ For direct access to specific models from their original providers, with full ac
 
 *Anthropic console API Keys section with "Create key" button. Name your key, set expiration, and copy it immediately.*
 
-#### OpenAI
+##### OpenAI
 
 1. Go to [platform.openai.com](https://platform.openai.com/)
 2. Sign up for an account or log in
@@ -63,7 +73,7 @@ For direct access to specific models from their original providers, with full ac
 
 *OpenAI platform with "Create new secret key" button. Name your key and copy it immediately after creation.*
 
-## Configuring Kilo Code in VS Code
+### Configuring the Provider in Kilo Code
 
 Once you have your API key:
 
