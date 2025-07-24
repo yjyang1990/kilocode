@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.64.2
-
-### Patch Changes
+## [v4.64.2]
 
 - [#1477](https://github.com/Kilo-Org/kilocode/pull/1477) [`8edf106`](https://github.com/Kilo-Org/kilocode/commit/8edf1063d308f36074e10d68cf8418d0f20665d6) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Prevent selection of incompatible providers when you switch models
 
