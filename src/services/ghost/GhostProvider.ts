@@ -121,7 +121,7 @@ export class GhostProvider {
 		range: vscode.Range | vscode.Selection,
 	): Promise<void> {
 		// Store the document in the document store
-		this.getDocumentStore().storeDocument(document)
+		// this.getDocumentStore().storeDocument(document)
 
 		this.taskId = crypto.randomUUID()
 		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_AUTO_TASK, {
