@@ -5,23 +5,23 @@ sidebar_label: Additional Features
 
 # Additional Features
 
-This page describes additional features in Kilo Code that enhance your development workflow.
+Kilo Code's extras streamline routine tasks and improve accessibility.
 
 ## Suggested Responses
 
-Kilo Code provides suggested responses to questions, saving you time typing. These suggestions appear as buttons below the chat input box after you ask a question. Click a suggestion to quickly use it as your next prompt.
-
-This feature aims to streamline your workflow by anticipating your potential follow-up questions and providing one-click access to relevant prompts.
+Kilo Code offers suggested responses so you spend less time typing.
+- After you ask a question, buttons appear below the chat box.
+- Click a button to reuse it as your next prompt.
 
 ## Text to Speech
 
-Kilo Code includes a Text-to-Speech (TTS) feature that reads out the AI responses, allowing you to listen to the information instead of reading it. This can be helpful for accessibility, learning, or simply for a change of pace.
-
-To use Text-to-Speech, simply enable it in the Kilo Code settings. Once enabled, a speaker icon will appear next to each AI response in the chat. Click the icon to start listening.
+The Text-to-Speech feature lets Kilo Code read responses aloud.
+1. Enable TTS in settings.
+2. Click the speaker icon next to any response to start listening.
 
 ## Global Language Support
 
-Kilo Code supports 14 languages, making it accessible to a wider range of users globally. You can now use Kilo Code in:
+Kilo Code supports 14 languages:
 
 - Simplified Chinese
 - Traditional Chinese
@@ -38,6 +38,4 @@ Kilo Code supports 14 languages, making it accessible to a wider range of users 
 - Polish
 - Catalan
 
-To change your language, go to **Advanced Settings > Language** in the Kilo Code settings panel.
-
-This global update ensures a smoother and more inclusive coding experience for users around the world.
+Change languages under **Advanced Settings > Language**.
