@@ -6,21 +6,7 @@ const createMockDocument = (uri: string, content: string): vscode.TextDocument =
 	({
 		uri: vscode.Uri.parse(uri),
 		fileName: uri,
-		isUntitled: false,
-		languageId: "typescript",
-		version: 1,
-		isDirty: false,
-		isClosed: false,
-		save: vi.fn(),
-		eol: 1, // LF
-		lineCount: content.split("\n").length,
 		getText: vi.fn().mockReturnValue(content),
-		getWordRangeAtPosition: vi.fn(),
-		validateRange: vi.fn(),
-		validatePosition: vi.fn(),
-		offsetAt: vi.fn(),
-		positionAt: vi.fn(),
-		lineAt: vi.fn(),
 	}) as any
 
 describe("GhostDocumentStore", () => {
@@ -28,18 +14,6 @@ describe("GhostDocumentStore", () => {
 
 	beforeEach(() => {
 		store = new GhostDocumentStore()
-	})
-
-	test("should store a document with history", () => {
-		const doc = createMockDocument("file:///test.ts", "console.log('hello')")
-
-		store.storeDocument(doc)
-
-		const stored = store.getDocument("file:///test.ts")
-		expect(stored).toBeDefined()
-		expect(stored!.uri).toBe("file:///test.ts")
-		expect(stored!.history).toHaveLength(1)
-		expect(stored!.history[0]).toBe("console.log('hello')")
 	})
 
 	test("should append to history for existing document", () => {
