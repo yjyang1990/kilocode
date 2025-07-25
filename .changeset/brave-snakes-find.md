@@ -1,6 +1,5 @@
 ---
 "kilo-code": minor
-"@roo-code/types": patch
 ---
 
 Introduce a new Virtual Quota Fallback Provider - delegate to other Profiles based on cost or request count limits!
