@@ -1418,7 +1418,7 @@ describe("Cline", () => {
 					enableDiff: false,
 					task: "test task",
 					startTask: false,
-					context: mockExtensionContext,
+					context: mockExtensionContext, // kilocode_change
 				})
 
 				expect(task.diffEnabled).toBe(false)
@@ -1439,6 +1439,7 @@ describe("Cline", () => {
 					apiConfiguration: anthropicConfig,
 					task: "test task",
 					startTask: false,
+					context: mockExtensionContext, // kilocode_change
 				})
 				// Should use anthropic protocol even with non-claude model
 				expect(anthropicTask.apiConfiguration.apiProvider).toBe("anthropic")
@@ -1453,6 +1454,7 @@ describe("Cline", () => {
 					apiConfiguration: openrouterClaudeConfig,
 					task: "test task",
 					startTask: false,
+					context: mockExtensionContext, // kilocode_change
 				})
 				expect(openrouterClaudeTask.apiConfiguration.apiProvider).toBe("openrouter")
 
@@ -1466,6 +1468,7 @@ describe("Cline", () => {
 					apiConfiguration: openrouterGptConfig,
 					task: "test task",
 					startTask: false,
+					context: mockExtensionContext, // kilocode_change
 				})
 				expect(openrouterGptTask.apiConfiguration.apiProvider).toBe("openrouter")
 
@@ -1488,6 +1491,7 @@ describe("Cline", () => {
 						apiConfiguration: config,
 						task: "test task",
 						startTask: false,
+						context: mockExtensionContext, // kilocode_change
 					})
 					// Verify the model ID contains claude (case-insensitive)
 					expect(modelId.toLowerCase()).toContain("claude")
@@ -1504,6 +1508,7 @@ describe("Cline", () => {
 					apiConfiguration: undefinedProviderConfig,
 					task: "test task",
 					startTask: false,
+					context: mockExtensionContext, // kilocode_change
 				})
 				expect(undefinedProviderTask.apiConfiguration.apiProvider).toBeUndefined()
 
@@ -1516,6 +1521,7 @@ describe("Cline", () => {
 					apiConfiguration: noModelConfig,
 					task: "test task",
 					startTask: false,
+					context: mockExtensionContext, // kilocode_change
 				})
 				expect(noModelTask.apiConfiguration.apiProvider).toBe("openai")
 			})
