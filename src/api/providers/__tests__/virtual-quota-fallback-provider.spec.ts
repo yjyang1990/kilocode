@@ -2,6 +2,9 @@
 
 // Mock vscode first to avoid import errors
 vitest.mock("vscode", () => ({
+	window: {
+		showInformationMessage: vitest.fn(),
+	},
 	globalState: {
 		get: vitest.fn(),
 		update: vitest.fn(),
@@ -266,6 +269,14 @@ describe("VirtualQuotaFallbackProvider", () => {
 		})
 
 		describe("adjustActiveHandler", () => {
+			beforeEach(() => {
+				;(mockSettingsManager.getProfile as any).mockImplementation(async ({ id }: { id: string }) => {
+					if (id === "p1") return { id: "p1", name: "primary-profile" }
+					if (id === "p2") return { id: "p2", name: "secondary-profile" }
+					if (id === "p3") return { id: "p3", name: "backup-profile" }
+					return undefined
+				})
+			})
 			it("should set first handler as active if it is under limit", async () => {
 				const handler = new VirtualQuotaFallbackHandler({
 					profiles: [mockPrimaryProfile],
@@ -442,4 +453,3 @@ describe("VirtualQuotaFallbackProvider", () => {
 		})
 	})
 })
-
