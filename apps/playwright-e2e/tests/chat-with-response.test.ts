@@ -1,27 +1,22 @@
+// kilocode_change - new file
 import { test, type TestFixtures } from "./playwright-base-test"
-import {
-	verifyExtensionInstalled,
-	waitForWebviewText,
-	findWebview as findWebview,
-	configureApiKeyThroughUI,
-} from "../helpers/webview-helpers"
+import { sendMessage, waitForWebviewText, verifyExtensionInstalled, configureApiKeyThroughUI } from "../helpers"
 
-test.describe("Full E2E Test", () => {
-	test("should configure credentials and send a message", async ({ workbox: page }: TestFixtures) => {
+test.describe("E2E Chat Test", () => {
+	test("should configure credentials and send a message", async ({ workbox: page, takeScreenshot }: TestFixtures) => {
 		await verifyExtensionInstalled(page)
-
 		await waitForWebviewText(page, "Welcome to Kilo Code!")
+		await takeScreenshot("welcome")
 
 		await configureApiKeyThroughUI(page)
-
 		await waitForWebviewText(page, "Generate, refactor, and debug code with AI assistance")
 
-		const webviewFrame = await findWebview(page)
-		const chatInput = webviewFrame.locator('textarea, input[type="text"]').first()
-		await chatInput.waitFor({ timeout: 5000 })
+		await page.waitForTimeout(1000) // Let the page settle to avoid flakey screenshots
+		await takeScreenshot("ready-to-chat")
 
-		await chatInput.fill("Output only the result of '1+1'")
-		await chatInput.press("Enter")
-		await waitForWebviewText(page, "2", 30_000)
+		// Don't take any more screenshots after the reponse starts-
+		// llm responses aren't deterministic any capturing the reponse would cause screenshot flakes
+		await sendMessage(page, "Fill in the blanks for this phrase: 'hello w_r_d'")
+		await waitForWebviewText(page, "hello world", 30_000)
 	})
 })

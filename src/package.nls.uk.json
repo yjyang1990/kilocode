@@ -28,6 +28,8 @@
 	"command.profile.title": "Профіль",
 	"configuration.title": "Kilo Code",
 	"commands.allowedCommands.description": "Команди, які можуть автоматично виконуватися, коли увімкнено 'Always approve execute operations'",
+	"commands.deniedCommands.description": "Префікси команд, які будуть автоматично відхилені без запиту на схвалення. У випадку конфліктів з дозволеними командами, найдовший відповідний префікс має пріоритет. Додайте * щоб відхилити всі команди.",
+	"commands.commandExecutionTimeout.description": "Максимальний час у секундах очікування завершення виконання команди перед тайм-аутом (0 = без тайм-ауту, 1-600с, за замовчуванням: 0с)",
 	"settings.vsCodeLmModelSelector.description": "Налаштування для VSCode Language Model API",
 	"settings.vsCodeLmModelSelector.vendor.description": "Постачальник мовної моделі (наприклад, copilot)",
 	"settings.vsCodeLmModelSelector.family.description": "Сімейство мовної моделі (наприклад, gpt-4)",

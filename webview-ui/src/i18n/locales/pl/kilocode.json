@@ -26,7 +26,11 @@
 			"account": "Konto Kilo Code",
 			"apiKey": "Klucz API Kilo Code",
 			"login": "Zaloguj się do Kilo Code",
-			"logout": "Wyloguj się z Kilo Code"
+			"logout": "Wyloguj się z Kilo Code",
+			"providerRouting": {
+				"title": "Kilo Code - Routing dostawców OpenRouter",
+				"description": "Kilo Code kieruje żądania do najlepszych dostępnych dostawców dla Twojego modelu. Domyślnie żądania są równoważone obciążeniem między najlepszymi dostawcami, aby zmaksymalizować czas działania. Możesz jednak wybrać konkretnego dostawcę do użycia dla tego modelu."
+			}
 		},
 		"contextManagement": {
 			"allowVeryLargeReads": {
@@ -134,12 +138,44 @@
 	"ghost": {
 		"title": "Pomoc w tekście",
 		"settings": {
+			"enableQuickInlineTaskKeybinding": {
+				"label": "Szybkie zadanie w tekście",
+				"description": "Potrzebujesz tylko szybkiej zmiany? Zaznacz jakiś kod (albo nie!) i naciśnij Cmd+I. Opisz swój cel zwykłym językiem (\"stwórz komponent React z tymi propsami\", \"dodaj obsługę błędów do tej funkcji\"), i otrzymaj wiele gotowych do użycia sugestii bezpośrednio w swoim edytorze. <DocsLink>Zobacz skrót</DocsLink>"
+			},
+			"enableAutoInlineTaskKeybinding": {
+				"label": "Zadanie automatyczne w linii",
+				"description": "Potrzebujesz szybkiej poprawki, uzupełnienia lub refaktoryzacji? Kilo użyje otaczającego kontekstu, aby zaproponować natychmiastowe usprawnienia, pozwalając Ci pozostać w stanie flow. <DocsLink>Zobacz skrót</DocsLink>"
+			},
 			"provider": "Dostawca",
 			"apiConfigId": {
 				"label": "Konfiguracja API",
 				"current": "Użyj aktualnie wybranej konfiguracji API",
 				"description": "Wybierz konfigurację API do użycia w podpowiedziach Inline Assist lub po prostu użyj tej, która jest aktualnie wybrana"
-			}
+			},
+			"triggers": "Wyzwalacze",
+			"keybindingDescription": "Funkcje Inline Assist są uruchamiane za pomocą poleceń. Możesz skonfigurować <DocsLink>skróty klawiaturowe tutaj</DocsLink>."
 		}
+	},
+	"virtualProvider": {
+		"title": "Ustawienia Wirtualnego Dostawcy Zapasowego Limitu",
+		"description": "Skonfiguruj listę profili, każdy z własnymi limitami przydziału. Gdy limity przydziału jednego dostawcy zostaną wyczerpane, użyty zostanie następny profil z listy, aż do wyczerpania wszystkich dostępnych.",
+		"profileLabel": "Profil {{number}}",
+		"primaryProfileLabel": "Profil {{number}} (Podstawowy)",
+		"moveProfileUp": "Przesuń profil do góry",
+		"moveProfileDown": "Przenieś profil w dół",
+		"removeProfile": "Usuń profil",
+		"selectProfilePlaceholder": "Wybierz profil...",
+		"addProfile": "Dodaj profil",
+		"noProfilesAvailable": "Brak dostępnych profili. Skonfiguruj najpierw co najmniej jeden profil dostawcy niewirtualnego.",
+		"dangerZoneTitle": "Strefa Niebezpieczna",
+		"dangerZoneDescription": "Te działania są destrukcyjne i nie można ich cofnąć.",
+		"clearUsageData": "Wyczyść Dane Użytkowania",
+		"confirmClearTitle": "Czy jesteś pewien?",
+		"confirmClearDescription": "To trwale usunie wszystkie przechowywane dane użytkowania dla wirtualnych dostawców. Tej akcji nie można cofnąć.",
+		"perMinute": "Na minutę",
+		"tokensLabel": "Tokeny",
+		"perDay": "Dziennie",
+		"perHour": "Za godzinę",
+		"requestsLabel": "Prośby"
 	}
 }

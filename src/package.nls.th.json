@@ -28,6 +28,8 @@
 	"command.profile.title": "โปรไฟล์",
 	"configuration.title": "Kilo Code",
 	"commands.allowedCommands.description": "คำสั่งที่สามารถดำเนินการอัตโนมัติเมื่อเปิดใช้งาน 'Always approve execute operations'",
+	"commands.deniedCommands.description": "คำนำหน้าคำสั่งที่จะถูกปฏิเสธโดยอัตโนมัติโดยไม่ขออนุมัติ ในกรณีที่ขัดแย้งกับคำสั่งที่อนุญาต คำนำหน้าที่ตรงกันที่ยาวที่สุดจะมีความสำคัญ เพิ่ม * เพื่อปฏิเสธคำสั่งทั้งหมด",
+	"commands.commandExecutionTimeout.description": "เวลาสูงสุดเป็นวินาทีในการรอให้การดำเนินการคำสั่งเสร็จสิ้นก่อนหมดเวลา (0 = ไม่มีการหมดเวลา, 1-600 วินาที, ค่าเริ่มต้น: 0 วินาที)",
 	"settings.vsCodeLmModelSelector.description": "การตั้งค่าสำหรับ VSCode Language Model API",
 	"settings.vsCodeLmModelSelector.vendor.description": "ผู้ให้บริการของโมเดลภาษา (เช่น copilot)",
 	"settings.vsCodeLmModelSelector.family.description": "ตระกูลของโมเดลภาษา (เช่น gpt-4)",

@@ -28,6 +28,8 @@
 	"command.profile.title": "Profil",
 	"configuration.title": "Kilo Code",
 	"commands.allowedCommands.description": "Příkazy, které mohou být automaticky spuštěny, když je povoleno 'Always approve execute operations'",
+	"commands.deniedCommands.description": "Prefixy příkazů, které budou automaticky zamítnuty bez žádosti o schválení. V případě konfliktu s povolenými příkazy má přednost nejdelší odpovídající prefix. Přidejte * pro zamítnutí všech příkazů.",
+	"commands.commandExecutionTimeout.description": "Maximální doba v sekundách čekání na dokončení spuštění příkazu před vypršením časového limitu (0 = bez limitu, 1-600s, výchozí: 0s)",
 	"settings.vsCodeLmModelSelector.description": "Nastavení pro VSCode Language Model API",
 	"settings.vsCodeLmModelSelector.vendor.description": "Dodavatel jazykového modelu (např. copilot)",
 	"settings.vsCodeLmModelSelector.family.description": "Rodina jazykového modelu (např. gpt-4)",

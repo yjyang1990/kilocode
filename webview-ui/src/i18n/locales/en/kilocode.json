@@ -26,7 +26,11 @@
 			"account": "Kilo Code Account",
 			"apiKey": "Kilo Code API Key",
 			"login": "Log in at Kilo Code",
-			"logout": "Log out from Kilo Code"
+			"logout": "Log out from Kilo Code",
+			"providerRouting": {
+				"title": "Kilo Code - OpenRouter Provider Routing",
+				"description": "Kilo Code routes requests to the best available providers for your model. By default, requests are load balanced across the top providers to maximize uptime. However, you can choose a specific provider to use for this model."
+			}
 		},
 		"contextManagement": {
 			"allowVeryLargeReads": {
@@ -134,6 +138,16 @@
 	"ghost": {
 		"title": "Inline Assist",
 		"settings": {
+			"triggers": "Triggers",
+			"keybindingDescription": "Inline Assist features are triggered by commands. You can configure the <DocsLink>Keyboard Shortcuts here</DocsLink>.",
+			"enableQuickInlineTaskKeybinding": {
+				"label": "Quick Inline Task",
+				"description": "Only need a quick change? Select some code (or don't!) and hit Cmd+I. Describe your goal in plain English (\"create a React component with these props\", \"add error handling to this function\"), and get multiple, ready-to-use suggestions right in your editor. <DocsLink>See shortcut</DocsLink>"
+			},
+			"enableAutoInlineTaskKeybinding": {
+				"label": "Auto Inline Task",
+				"description": "Need a quick fix, completion, or refactor? Kilo will use the surrounding context to offer immediate improvements, keeping you in the flow. <DocsLink>See shortcut</DocsLink>"
+			},
 			"provider": "Provider",
 			"apiConfigId": {
 				"label": "API Configuration",
@@ -141,5 +155,27 @@
 				"description": "Select an API configuration to use for Inline Assist prompts, or just use whatever is currently selected"
 			}
 		}
+	},
+	"virtualProvider": {
+		"title": "Virtual Quota Fallback Provider Settings",
+		"description": "Configure a list of profiles each with their own quota limits. When one provider's quota limits are reached, the next profile in the list will be used until none remain.",
+		"profileLabel": "Profile {{number}}",
+		"primaryProfileLabel": "Profile {{number}} (Primary)",
+		"moveProfileUp": "Move profile up",
+		"moveProfileDown": "Move profile down",
+		"removeProfile": "Remove profile",
+		"selectProfilePlaceholder": "Select profile...",
+		"addProfile": "Add profile",
+		"noProfilesAvailable": "No profile profiles available. Please configure at least one non-virtual provider profile first.",
+		"tokensLabel": "Tokens",
+		"perMinute": "Per Minute",
+		"perHour": "Per Hour",
+		"perDay": "Per Day",
+		"requestsLabel": "Requests",
+		"dangerZoneTitle": "Danger Zone",
+		"dangerZoneDescription": "These actions are destructive and cannot be undone.",
+		"clearUsageData": "Clear Usage Data",
+		"confirmClearTitle": "Are you sure?",
+		"confirmClearDescription": "This will permanently delete all stored usage data for virtual providers. This action cannot be undone."
 	}
 }

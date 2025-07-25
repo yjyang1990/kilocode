@@ -34,6 +34,7 @@ export const providerNames = [
 	"fireworks", // kilocode_change
 	"kilocode", // kilocode_change
 	"cerebras", // kilocode_change
+	"virtual-quota-fallback", // kilocode_change
 ] as const
 
 export const providerNamesSchema = z.enum(providerNames)
@@ -56,12 +57,19 @@ export type ProviderSettingsEntry = z.infer<typeof providerSettingsEntrySchema>
  * ProviderSettings
  */
 
+/**
+ * Default value for consecutive mistake limit
+ */
+export const DEFAULT_CONSECUTIVE_MISTAKE_LIMIT = 3
+
 const baseProviderSettingsSchema = z.object({
 	includeMaxTokens: z.boolean().optional(),
 	diffEnabled: z.boolean().optional(),
+	todoListEnabled: z.boolean().optional(),
 	fuzzyMatchThreshold: z.number().optional(),
 	modelTemperature: z.number().nullish(),
 	rateLimitSeconds: z.number().optional(),
+	consecutiveMistakeLimit: z.number().min(0).optional(),
 
 	// Model reasoning.
 	enableReasoningEffort: z.boolean().optional(),
@@ -94,6 +102,7 @@ const anthropicSchema = apiModelIdProviderModelSchema.extend({
 
 const claudeCodeSchema = apiModelIdProviderModelSchema.extend({
 	claudeCodePath: z.string().optional(),
+	claudeCodeMaxOutputTokens: z.number().int().min(1).max(200000).optional(),
 })
 
 const glamaSchema = baseProviderSettingsSchema.extend({
@@ -233,16 +242,32 @@ const litellmSchema = baseProviderSettingsSchema.extend({
 const kilocodeSchema = baseProviderSettingsSchema.extend({
 	kilocodeToken: z.string().optional(),
 	kilocodeModel: z.string().optional(),
+	openRouterSpecificProvider: z.string().optional(),
 })
-
 const fireworksSchema = baseProviderSettingsSchema.extend({
 	fireworksModelId: z.string().optional(),
 	fireworksApiKey: z.string().optional(),
 })
-
 const cerebrasSchema = baseProviderSettingsSchema.extend({
 	cerebrasApiKey: z.string().optional(),
 	cerebrasModelId: z.string().optional(),
+})
+export const virtualQuotaFallbackProfileDataSchema = z.object({
+	profileName: z.string().optional(),
+	profileId: z.string().optional(),
+	profileLimits: z
+		.object({
+			tokensPerMinute: z.coerce.number().optional(),
+			tokensPerHour: z.coerce.number().optional(),
+			tokensPerDay: z.coerce.number().optional(),
+			requestsPerMinute: z.coerce.number().optional(),
+			requestsPerHour: z.coerce.number().optional(),
+			requestsPerDay: z.coerce.number().optional(),
+		})
+		.optional(),
+})
+const virtualQuotaFallbackSchema = baseProviderSettingsSchema.extend({
+	profiles: z.array(virtualQuotaFallbackProfileDataSchema).optional(),
 })
 // kilocode_change end
 
@@ -277,6 +302,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	kilocodeSchema.merge(z.object({ apiProvider: z.literal("kilocode") })), // kilocode_change
 	fireworksSchema.merge(z.object({ apiProvider: z.literal("fireworks") })), // kilocode_change
 	cerebrasSchema.merge(z.object({ apiProvider: z.literal("cerebras") })), // kilocode_change
+	virtualQuotaFallbackSchema.merge(z.object({ apiProvider: z.literal("virtual-quota-fallback") })), // kilocode_change
 	defaultSchema,
 ])
 
@@ -309,6 +335,7 @@ export const providerSettingsSchema = z.object({
 	...kilocodeSchema.shape, // kilocode_change
 	...fireworksSchema.shape, // kilocode_change
 	...cerebrasSchema.shape, // kilocode_change
+	...virtualQuotaFallbackSchema.shape, // kilocode_change
 })
 
 export type ProviderSettings = z.infer<typeof providerSettingsSchema>
@@ -331,4 +358,12 @@ export const MODEL_ID_KEYS: Partial<keyof ProviderSettings>[] = [
 export const getModelId = (settings: ProviderSettings): string | undefined => {
 	const modelIdKey = MODEL_ID_KEYS.find((key) => settings[key])
 	return modelIdKey ? (settings[modelIdKey] as string) : undefined
+}
+
+// Providers that use Anthropic-style API protocol
+export const ANTHROPIC_STYLE_PROVIDERS: ProviderName[] = ["anthropic", "claude-code"]
+
+// Helper function to determine API protocol for a provider
+export const getApiProtocol = (provider: ProviderName | undefined): "anthropic" | "openai" => {
+	return provider && ANTHROPIC_STYLE_PROVIDERS.includes(provider) ? "anthropic" : "openai"
 }

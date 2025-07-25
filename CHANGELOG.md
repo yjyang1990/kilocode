@@ -1,5 +1,102 @@
 # kilo-code
 
+## [v4.64.3]
+
+- [#1494](https://github.com/Kilo-Org/kilocode/pull/1494) [`1488591`](https://github.com/Kilo-Org/kilocode/commit/148859168d0dc1521d5ee7c5d96263ffae47a587) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Improved error reporting for Checkpoint-related failures
+
+## [v4.64.2]
+
+- [#1477](https://github.com/Kilo-Org/kilocode/pull/1477) [`8edf106`](https://github.com/Kilo-Org/kilocode/commit/8edf1063d308f36074e10d68cf8418d0f20665d6) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Prevent selection of incompatible providers when you switch models
+
+## [v4.64.1]
+
+- [#1474](https://github.com/Kilo-Org/kilocode/pull/1474) [`7efe383`](https://github.com/Kilo-Org/kilocode/commit/7efe383628f91b7977c0cffcdfc0a7a226ab1f01) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Inline Assist Telemetry
+
+## [v4.64.0]
+
+- [#1447](https://github.com/Kilo-Org/kilocode/pull/1447) [`38d135e`](https://github.com/Kilo-Org/kilocode/commit/38d135eafc395fe5c9883fbe9fcd79941a21e0ce) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - (retry) The Task view now shows per-request cost when using the Kilo Code provider
+
+## [v4.63.2]
+
+- [#1462](https://github.com/Kilo-Org/kilocode/pull/1462) [`54f09c6`](https://github.com/Kilo-Org/kilocode/commit/54f09c6edbd9ea13ebbd645fad9de5a448d5a11d) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Kilo Code no longer uses Gemini 2.5 Pro after a fresh install/reset while showing Sonnet 3.7
+
+- [#1471](https://github.com/Kilo-Org/kilocode/pull/1471) [`d95b409`](https://github.com/Kilo-Org/kilocode/commit/d95b40981715fffbfe62d1fc4e54472195db1f2c) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Fix Kilo Code profile persist of Routing Provider
+
+## [v4.63.1]
+
+- [#1460](https://github.com/Kilo-Org/kilocode/pull/1460) [`415ea90`](https://github.com/Kilo-Org/kilocode/commit/415ea904e8b9ddd35ce1e4a894411f3679c94922) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Improve label of todo list toggle
+
+## [v4.63.0]
+
+- [#1451](https://github.com/Kilo-Org/kilocode/pull/1451) [`66b5892`](https://github.com/Kilo-Org/kilocode/commit/66b5892fbc56d88372ba2ad87118f8696ccbd366) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Add toggles that disable Inline Assist features to the Settings panel
+
+- [#1450](https://github.com/Kilo-Org/kilocode/pull/1450) [`077dba2`](https://github.com/Kilo-Org/kilocode/commit/077dba2964ad99bea5f57d9db1718063abd08a18) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Add todo list tool enable checkbox to provider advanced settings (thanks @daniel-lxs, @mrubens!)
+
+- [#1443](https://github.com/Kilo-Org/kilocode/pull/1443) [`eba422a`](https://github.com/Kilo-Org/kilocode/commit/eba422acb01017cc9c7465f414836ff9f14bc86c) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Adds support for changing the Kilo Code providers routing strategy
+
+    You can now select the OpenRouter provider to process your Kilo Code requests.
+
+### Patch Changes
+
+- [#1454](https://github.com/Kilo-Org/kilocode/pull/1454) [`b34b55a`](https://github.com/Kilo-Org/kilocode/commit/b34b55a3f074f14bdfc28bb1998cd91fdf74b0b5) Thanks [@chainedcoder](https://github.com/chainedcoder)! - Load project ID from Gemini CLI's .env file
+
+- [#1448](https://github.com/Kilo-Org/kilocode/pull/1448) [`4e9118b`](https://github.com/Kilo-Org/kilocode/commit/4e9118b7c876c2d2620f2b72503ec17b85ec0539) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Removed language support for Filipino, Greek and Swedish because usage is very low. When can re-add these languages if there is demand.
+
+## [v4.62.0]
+
+- [#1386](https://github.com/Kilo-Org/kilocode/pull/1386) [`48fb539`](https://github.com/Kilo-Org/kilocode/commit/48fb5392a962279463d8db225559db42f32d4ad8) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Include changes from Roo Code v3.23.14
+
+    - Fix Mermaid syntax warning (thanks @MuriloFP!)
+    - Expand Vertex AI region config to include all available regions in GCP Vertex AI (thanks @shubhamgupta731!)
+    - Handle Qdrant vector dimension mismatch when switching embedding models (thanks @daniel-lxs!)
+    - Fix typos in comment & document (thanks @noritaka1166!)
+    - Improve the display of codebase search results
+    - Correct translation fallback logic for embedding errors (thanks @daniel-lxs!)
+    - Clean up MCP tool disabling
+    - Link to marketplace from modes and MCP tab
+    - Fix TTS button display (thanks @sensei-woo!)
+    - Add Devstral Medium model support
+    - Add comprehensive error telemetry to code-index service (thanks @daniel-lxs!)
+    - Exclude cache tokens from context window calculation (thanks @daniel-lxs!)
+    - Enable dynamic tool selection in architect mode for context discovery
+    - Add configurable max output tokens setting for claude-code
+    - Add enable/disable toggle for code indexing (thanks @daniel-lxs!)
+    - Add a command auto-deny list to auto-approve settings
+    - Add navigation link to history tab in HistoryPreview
+    - Enable Claude Code provider to run natively on Windows (thanks @SannidhyaSah!)
+    - Add gemini-embedding-001 model to code-index service (thanks @daniel-lxs!)
+    - Resolve vector dimension mismatch error when switching embedding models
+    - Return the cwd in the exec tool's response so that the model is not lost after subsequent calls (thanks @chris-garrett!)
+    - Add configurable timeout for command execution in VS Code settings
+    - Prioritize built-in model dimensions over custom dimensions (thanks @daniel-lxs!)
+    - Add padding to the index model options
+    - Add Kimi K2 model to Groq along with fixes to context condensing math
+    - Add Cmd+Shift+. keyboard shortcut for previous mode switching
+    - Update the max-token calculation in model-params to better support Kimi K2 and others
+    - Add the ability to "undo" enhance prompt changes
+    - Fix a bug where the path component of the baseURL for the LiteLLM provider contains path in it (thanks @ChuKhaLi)
+    - Add support for Vertex AI model name formatting when using Claude Code with Vertex AI (thanks @janaki-sasidhar)
+    - The list-files tool must include at least the first-level directory contents (thanks @qdaxb)
+    - Add a configurable limit that controls both consecutive errors and tool repetitions (thanks @MuriloFP)
+    - Add `.terraform/` and `.terragrunt-cache/` directories to the checkpoint exclusion patterns (thanks @MuriloFP)
+    - Increase Ollama API timeout values (thanks @daniel-lxs)
+    - Fix an issue where you need to "discard changes" before saving even though there are no settings changes
+    - Fix `DirectoryScanner` memory leak and improve file limit handling (thanks @daniel-lxs)
+    - Fix time formatting in environment (thanks @chrarnoldus)
+    - Prevent empty mode names from being saved (thanks @daniel-lxs)
+    - Improve auto-approve checkbox UX
+    - Improve the chat message edit / delete functionality (thanks @liwilliam2021)
+    - Add `commandExecutionTimeout` to `GlobalSettings`
+    - Log api-initiated tasks to a tmp directory
+
+### Patch Changes
+
+- [#1154](https://github.com/Kilo-Org/kilocode/pull/1154) [`d871e5e`](https://github.com/Kilo-Org/kilocode/commit/d871e5efb88050d2b4795e8b463e336342dbe550) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Update the Kilo code icon to adapt to light/dark themes
+
+- [#1396](https://github.com/Kilo-Org/kilocode/pull/1396) [`2c46e91`](https://github.com/Kilo-Org/kilocode/commit/2c46e913bba7699eb3bc1425dbe898217f7ee9fe) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Adds new Settings page for Inline Assist
+
+    You can now select the provider you'd like to use for `Inline Assist` commands
+
 ## [v4.61.1]
 
 - [#1435](https://github.com/Kilo-Org/kilocode/pull/1435) [`05b5bf4`](https://github.com/Kilo-Org/kilocode/commit/05b5bf400fd195109aa8b2bada01b843acc58318) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Revert "Show per-request cost for Kilo Code provider"

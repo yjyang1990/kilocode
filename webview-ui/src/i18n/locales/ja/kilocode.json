@@ -26,7 +26,11 @@
 			"account": "Kilo Code アカウント",
 			"apiKey": "Kilo Code APIキー",
 			"login": "Kilo Codeにログイン",
-			"logout": "Kilo Codeからログアウト"
+			"logout": "Kilo Codeからログアウト",
+			"providerRouting": {
+				"title": "Kilo Code - OpenRouterプロバイダーのルーティング",
+				"description": "Kilo Codeは、モデルに最適な利用可能なプロバイダーにリクエストをルーティングします。デフォルトでは、稼働時間を最大化するために、リクエストはトッププロバイダー間で負荷分散されます。ただし、このモデルに使用する特定のプロバイダーを選択できます。"
+			}
 		},
 		"contextManagement": {
 			"allowVeryLargeReads": {
@@ -134,12 +138,44 @@
 	"ghost": {
 		"title": "インライン支援",
 		"settings": {
+			"enableQuickInlineTaskKeybinding": {
+				"label": "クイックインラインタスク",
+				"description": "ちょっとした変更だけが必要ですか？コードを選択して（または選択せずに！）Cmd+Iを押してください。目標を普通の言葉で説明してください（「これらのpropsを持つReactコンポーネントを作成」、「この関数にエラー処理を追加」など）。すぐに使える複数の提案がエディタ上に表示されます。<DocsLink>ショートカットを見る</DocsLink>"
+			},
+			"enableAutoInlineTaskKeybinding": {
+				"label": "自動インライン タスク",
+				"description": "素早く修正、補完、リファクタリングが必要ですか？Kiloは周囲のコンテキストを使用して即座に改善を提案し、あなたの作業の流れを維持します。<DocsLink>ショートカットを見る</DocsLink>"
+			},
 			"provider": "プロバイダー",
 			"apiConfigId": {
 				"label": "API設定",
 				"current": "現在選択されているAPI設定を使用",
 				"description": "インラインアシストプロンプトに使用するAPI構成を選択するか、現在選択されているものを使用してください"
-			}
+			},
+			"triggers": "トリガー",
+			"keybindingDescription": "インラインアシスト機能はコマンドによって起動されます。<DocsLink>キーボードショートカットはこちら</DocsLink>で設定できます。"
 		}
+	},
+	"virtualProvider": {
+		"title": "仮想クォータフォールバックプロバイダー設定",
+		"description": "それぞれ独自のクォータ制限を持つプロファイルのリストを構成します。あるプロバイダーのクォータ制限に達すると、残りがなくなるまでリスト内の次のプロファイルが使用されます。",
+		"profileLabel": "プロフィール {{number}}",
+		"primaryProfileLabel": "プロフィール {{number}} (プライマリ)",
+		"moveProfileUp": "プロフィールを上に移動",
+		"moveProfileDown": "プロフィールを下に移動",
+		"removeProfile": "プロフィールを削除",
+		"selectProfilePlaceholder": "プロフィールを選択...",
+		"addProfile": "プロフィールを追加",
+		"noProfilesAvailable": "利用可能なプロファイルがありません。まず、少なくとも1つの非仮想プロバイダープロファイルを構成してください。",
+		"dangerZoneTitle": "危険ゾーン",
+		"dangerZoneDescription": "これらのアクションは破壊的で、元に戻すことはできません。",
+		"clearUsageData": "使用データをクリア",
+		"confirmClearTitle": "本当によろしいですか？",
+		"confirmClearDescription": "これにより、仮想プロバイダーの保存された使用データがすべて永続的に削除されます。この操作は元に戻すことができません。",
+		"tokensLabel": "トークン",
+		"perMinute": "毎分",
+		"requestsLabel": "リクエスト",
+		"perDay": "1日あたり",
+		"perHour": "1時間あたり"
 	}
 }

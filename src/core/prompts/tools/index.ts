@@ -138,6 +138,11 @@ export function getToolDescriptionsForMode(
 		tools.delete("edit_file")
 	}
 
+	// Conditionally exclude update_todo_list if disabled in settings
+	if (settings?.todoListEnabled === false) {
+		tools.delete("update_todo_list")
+	}
+
 	// Map tool descriptions for allowed tools
 	const descriptions = Array.from(tools).map((toolName) => {
 		const descriptionFn = toolDescriptionMap[toolName]

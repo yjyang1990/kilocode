@@ -1,14 +1,13 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from "react" // kilocode_change Fragment
 import { convertHeadersToObject } from "./utils/headers"
 import { useDebounce } from "react-use"
-import { VSCodeButtonLink } from "../common/VSCodeButtonLink"
 import { VSCodeLink, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
-
-import { getKiloCodeBackendSignInUrl } from "../kilocode/helpers" // kilocode_change
+import { ExternalLinkIcon } from "@radix-ui/react-icons"
 
 import {
 	type ProviderName,
 	type ProviderSettings,
+	DEFAULT_CONSECUTIVE_MISTAKE_LIMIT,
 	openRouterDefaultModelId,
 	requestyDefaultModelId,
 	glamaDefaultModelId,
@@ -26,6 +25,7 @@ import {
 	chutesDefaultModelId,
 	bedrockDefaultModelId,
 	vertexDefaultModelId,
+	kilocodeDefaultModelId,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -34,7 +34,11 @@ import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { useRouterModels } from "@src/components/ui/hooks/useRouterModels"
 import { useSelectedModel } from "@src/components/ui/hooks/useSelectedModel"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
-import { filterModels } from "./utils/organizationFilters" // kilocode_change: unused filterProviders
+import {
+	useOpenRouterModelProviders,
+	OPENROUTER_DEFAULT_PROVIDER_NAME,
+} from "@src/components/ui/hooks/useOpenRouterModelProviders"
+import { filterModels } from "./utils/organizationFilters"
 import {
 	Select,
 	SelectTrigger,
@@ -43,7 +47,9 @@ import {
 	SelectItem,
 	// SearchableSelect, // kilocode_change
 	SelectSeparator,
-	Button, // kilocode_change
+	Collapsible,
+	CollapsibleTrigger,
+	CollapsibleContent,
 } from "@src/components/ui"
 
 import {
@@ -69,18 +75,23 @@ import {
 	VSCodeLM,
 	XAI,
 	Cerebras, // kilocode_change
+	VirtualQuotaFallbackProvider, // kilocode_change
 } from "./providers"
 
 import { MODELS_BY_PROVIDER, PROVIDERS } from "./constants"
 import { inputEventTransform, noTransform } from "./transforms"
-import { ModelPicker } from "./ModelPicker"
+// import { ModelPicker } from "./ModelPicker" // kilocode_change
 import { ModelInfoView } from "./ModelInfoView"
 import { ApiErrorMessage } from "./ApiErrorMessage"
 import { ThinkingBudget } from "./ThinkingBudget"
 import { DiffSettingsControl } from "./DiffSettingsControl"
+import { TodoListSettingsControl } from "./TodoListSettingsControl"
 import { TemperatureControl } from "./TemperatureControl"
 import { RateLimitSecondsControl } from "./RateLimitSecondsControl"
+import { ConsecutiveMistakeLimitControl } from "./ConsecutiveMistakeLimitControl"
 import { BedrockCustomArn } from "./providers/BedrockCustomArn"
+import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_change
+import { KiloCodeAdvanced } from "../kilocode/settings/providers/KiloCodeAdvanced" // kilocode_change
 import { buildDocLink } from "@src/utils/docLinks"
 import { cerebrasDefaultModelId } from "@roo/api"
 import { Checkbox } from "vscrui"
@@ -143,6 +154,7 @@ const ApiOptions = ({
 	)
 
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
+	const [isAdvancedSettingsOpen, setIsAdvancedSettingsOpen] = useState(false)
 
 	// Track if user has explicitly unselected morph while on OpenRouter
 	const [userUnselectedMorph, setUserUnselectedMorph] = useState(false)
@@ -171,12 +183,25 @@ const ApiOptions = ({
 	})
 	// kilocode_change end
 
+	const { data: openRouterModelProviders } = useOpenRouterModelProviders(
+		apiConfiguration?.openRouterModelId,
+		apiConfiguration?.openRouterBaseUrl,
+		apiConfiguration?.openRouterApiKey,
+		{
+			enabled:
+				!!apiConfiguration?.openRouterModelId &&
+				routerModels?.openrouter &&
+				Object.keys(routerModels.openrouter).length > 1 &&
+				apiConfiguration.openRouterModelId in routerModels.openrouter,
+		},
+	)
+
 	// Update `apiModelId` whenever `selectedModelId` changes.
 	useEffect(() => {
-		if (selectedModelId) {
+		if (selectedModelId && apiConfiguration.apiModelId !== selectedModelId) {
 			setApiConfigurationField("apiModelId", selectedModelId)
 		}
-	}, [selectedModelId, setApiConfigurationField])
+	}, [selectedModelId, setApiConfigurationField, apiConfiguration.apiModelId])
 
 	// Automatically enable Morph when OpenRouter is the selected provider
 	useEffect(() => {
@@ -317,7 +342,7 @@ const ApiOptions = ({
 				openai: { field: "openAiModelId" },
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
-				kilocode: { field: "kilocodeModel", default: "claude37" }, // kilocode_change
+				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId }, // kilocode_change
 				cerebras: { field: "cerebrasModelId", default: cerebrasDefaultModelId }, // kilocode_change
 			}
 
@@ -392,61 +417,16 @@ const ApiOptions = ({
 
 			{/* kilocode_change start */}
 			{selectedProvider === "kilocode" && (
-				<>
-					<div style={{ marginTop: "0px" }} className="text-sm text-vscode-descriptionForeground -mt-2">
-						You get $20 for free!
-					</div>
-					<div>
-						<label className="block font-medium -mb-2">{t("kilocode:settings.provider.account")}</label>
-					</div>
-					{!hideKiloCodeButton &&
-						(apiConfiguration.kilocodeToken ? (
-							<div>
-								<Button
-									variant="secondary"
-									onClick={async () => {
-										setApiConfigurationField("kilocodeToken", "")
-
-										vscode.postMessage({
-											type: "upsertApiConfiguration",
-											text: currentApiConfigName,
-											apiConfiguration: {
-												...apiConfiguration,
-												kilocodeToken: "",
-											},
-										})
-									}}>
-									{t("kilocode:settings.provider.logout")}
-								</Button>
-							</div>
-						) : (
-							<VSCodeButtonLink variant="secondary" href={getKiloCodeBackendSignInUrl(uriScheme, uiKind)}>
-								{t("kilocode:settings.provider.login")}
-							</VSCodeButtonLink>
-						))}
-
-					<VSCodeTextField
-						value={apiConfiguration?.kilocodeToken || ""}
-						type="password"
-						onInput={handleInputChange("kilocodeToken")}
-						placeholder={t("kilocode:settings.provider.apiKey")}
-						className="w-full">
-						<div className="flex justify-between items-center mb-1">
-							<label className="block font-medium">{t("kilocode:settings.provider.apiKey")}</label>
-						</div>
-					</VSCodeTextField>
-
-					<ModelPicker
-						apiConfiguration={apiConfiguration}
-						setApiConfigurationField={setApiConfigurationField}
-						defaultModelId="claude37"
-						models={routerModels?.["kilocode-openrouter"] ?? {}}
-						modelIdKey="kilocodeModel"
-						serviceName="Kilo Code"
-						serviceUrl="https://kilocode.ai"
-						organizationAllowList={organizationAllowList}
-					/>
-				</>
+				<KiloCode
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					hideKiloCodeButton={hideKiloCodeButton}
+					currentApiConfigName={currentApiConfigName}
+					routerModels={routerModels}
+					organizationAllowList={organizationAllowList}
+					uriScheme={uriScheme}
+					uiKind={uiKind}
+				/>
 			)}
 			{/* kilocode_change end */}
 
@@ -601,6 +581,12 @@ const ApiOptions = ({
 			{selectedProvider === "cerebras" && (
 				<Cerebras apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
+			{selectedProvider === "virtual-quota-fallback" && (
+				<VirtualQuotaFallbackProvider
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+				/>
+			)}
 			{/* kilocode_change end */}
 
 			{selectedProvider === "litellm" && (
@@ -678,28 +664,97 @@ const ApiOptions = ({
 			/>
 
 			{!fromWelcomeView && (
-				<>
-					<MorphSettingsInternal
-						apiConfiguration={apiConfiguration}
-						handleInputChange={handleInputChange}
-						setApiConfigurationField={setApiConfigurationField}
-						setUserUnselectedMorph={setUserUnselectedMorph}
-					/>
-					<DiffSettingsControl
-						diffEnabled={apiConfiguration.diffEnabled}
-						fuzzyMatchThreshold={apiConfiguration.fuzzyMatchThreshold}
-						onChange={(field, value) => setApiConfigurationField(field, value)}
-					/>
-					<TemperatureControl
-						value={apiConfiguration.modelTemperature}
-						onChange={handleInputChange("modelTemperature", noTransform)}
-						maxValue={2}
-					/>
-					<RateLimitSecondsControl
-						value={apiConfiguration.rateLimitSeconds || 0}
-						onChange={(value) => setApiConfigurationField("rateLimitSeconds", value)}
-					/>
-				</>
+				<Collapsible open={isAdvancedSettingsOpen} onOpenChange={setIsAdvancedSettingsOpen}>
+					<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">
+						<span className={`codicon codicon-chevron-${isAdvancedSettingsOpen ? "down" : "right"}`}></span>
+						<span className="font-medium">{t("settings:advancedSettings.title")}</span>
+					</CollapsibleTrigger>
+					<CollapsibleContent className="space-y-3">
+						<MorphSettingsInternal
+							apiConfiguration={apiConfiguration}
+							handleInputChange={handleInputChange}
+							setApiConfigurationField={setApiConfigurationField}
+							setUserUnselectedMorph={setUserUnselectedMorph}
+						/>
+						<TodoListSettingsControl
+							todoListEnabled={apiConfiguration.todoListEnabled}
+							onChange={(field, value) => setApiConfigurationField(field, value)}
+						/>
+						<DiffSettingsControl
+							diffEnabled={apiConfiguration.diffEnabled}
+							fuzzyMatchThreshold={apiConfiguration.fuzzyMatchThreshold}
+							onChange={(field, value) => setApiConfigurationField(field, value)}
+						/>
+						<TemperatureControl
+							value={apiConfiguration.modelTemperature}
+							onChange={handleInputChange("modelTemperature", noTransform)}
+							maxValue={2}
+						/>
+						<RateLimitSecondsControl
+							value={apiConfiguration.rateLimitSeconds || 0}
+							onChange={(value) => setApiConfigurationField("rateLimitSeconds", value)}
+						/>
+						<ConsecutiveMistakeLimitControl
+							value={
+								apiConfiguration.consecutiveMistakeLimit !== undefined
+									? apiConfiguration.consecutiveMistakeLimit
+									: DEFAULT_CONSECUTIVE_MISTAKE_LIMIT
+							}
+							onChange={(value) => setApiConfigurationField("consecutiveMistakeLimit", value)}
+						/>
+						{/* kilocode_change start */}
+						{selectedProvider === "kilocode" && (
+							<KiloCodeAdvanced
+								apiConfiguration={apiConfiguration}
+								setApiConfigurationField={setApiConfigurationField}
+								routerModels={routerModels}
+							/>
+						)}
+						{/* kilocode_change end */}
+						{selectedProvider === "openrouter" &&
+							openRouterModelProviders &&
+							Object.keys(openRouterModelProviders).length > 0 && (
+								<div>
+									<div className="flex items-center gap-1">
+										<label className="block font-medium mb-1">
+											{t("settings:providers.openRouter.providerRouting.title")}
+										</label>
+										<a href={`https://openrouter.ai/${selectedModelId}/providers`}>
+											<ExternalLinkIcon className="w-4 h-4" />
+										</a>
+									</div>
+									<Select
+										value={
+											apiConfiguration?.openRouterSpecificProvider ||
+											OPENROUTER_DEFAULT_PROVIDER_NAME
+										}
+										onValueChange={(value) =>
+											setApiConfigurationField("openRouterSpecificProvider", value)
+										}>
+										<SelectTrigger className="w-full">
+											<SelectValue placeholder={t("settings:common.select")} />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value={OPENROUTER_DEFAULT_PROVIDER_NAME}>
+												{OPENROUTER_DEFAULT_PROVIDER_NAME}
+											</SelectItem>
+											{Object.entries(openRouterModelProviders).map(([value, { label }]) => (
+												<SelectItem key={value} value={value}>
+													{label}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+									<div className="text-sm text-vscode-descriptionForeground mt-1">
+										{t("settings:providers.openRouter.providerRouting.description")}{" "}
+										<a href="https://openrouter.ai/docs/features/provider-routing">
+											{t("settings:providers.openRouter.providerRouting.learnMore")}.
+										</a>
+									</div>
+								</div>
+							)}
+					</CollapsibleContent>
+				</Collapsible>
 			)}
 		</div>
 	)

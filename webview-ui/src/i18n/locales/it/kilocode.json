@@ -26,7 +26,11 @@
 			"account": "Account Kilo Code",
 			"apiKey": "Chiave API Kilo Code",
 			"login": "Accedi a Kilo Code",
-			"logout": "Disconnetti da Kilo Code"
+			"logout": "Disconnetti da Kilo Code",
+			"providerRouting": {
+				"title": "Kilo Code - Routing dei provider OpenRouter",
+				"description": "Kilo Code instrada le richieste ai migliori provider disponibili per il tuo modello. Per impostazione predefinita, le richieste vengono bilanciate tra i provider principali per massimizzare i tempi di attività. Tuttavia, puoi scegliere un provider specifico da utilizzare per questo modello."
+			}
 		},
 		"contextManagement": {
 			"allowVeryLargeReads": {
@@ -134,12 +138,44 @@
 	"ghost": {
 		"title": "Assistenza in linea",
 		"settings": {
+			"enableQuickInlineTaskKeybinding": {
+				"label": "Attività Rapida In Linea",
+				"description": "Hai solo bisogno di una modifica rapida? Seleziona del codice (o anche no!) e premi Cmd+I. Descrivi il tuo obiettivo in linguaggio semplice (\"crea un componente React con queste props\", \"aggiungi la gestione degli errori a questa funzione\") e ottieni molteplici suggerimenti pronti all'uso direttamente nel tuo editor. <DocsLink>Vedi scorciatoia</DocsLink>"
+			},
+			"enableAutoInlineTaskKeybinding": {
+				"label": "Attività Automatica in Linea",
+				"description": "Hai bisogno di una correzione rapida, di completare o refactoring del codice? Kilo userà il contesto circostante per offrire miglioramenti immediati, mantenendoti concentrato. <DocsLink>Vedi scorciatoia</DocsLink>"
+			},
 			"provider": "Fornitore",
 			"apiConfigId": {
 				"label": "Configurazione API",
 				"current": "Usa la configurazione API attualmente selezionata",
 				"description": "Seleziona una configurazione API da utilizzare per i prompt di Inline Assist, o semplicemente usa quella attualmente selezionata"
-			}
+			},
+			"triggers": "Trigger",
+			"keybindingDescription": "Le funzionalità di Inline Assist sono attivate da comandi. Puoi configurare le <DocsLink>scorciatoie da tastiera qui</DocsLink>."
 		}
+	},
+	"virtualProvider": {
+		"title": "Impostazioni Provider di Fallback per Quote Virtuali",
+		"description": "Configura un elenco di profili, ciascuno con i propri limiti di quota. Quando vengono raggiunti i limiti di quota di un provider, verrà utilizzato il profilo successivo nell'elenco fino a quando non ne rimangono più.",
+		"profileLabel": "Profilo {{number}}",
+		"primaryProfileLabel": "Profilo {{number}} (Principale)",
+		"moveProfileUp": "Sposta il profilo in alto",
+		"moveProfileDown": "Sposta il profilo in basso",
+		"removeProfile": "Rimuovi profilo",
+		"selectProfilePlaceholder": "Seleziona profilo...",
+		"addProfile": "Aggiungi profilo",
+		"noProfilesAvailable": "Nessun profilo disponibile. Si prega di configurare prima almeno un profilo di provider non virtuale.",
+		"dangerZoneTitle": "Zona di Pericolo",
+		"dangerZoneDescription": "Queste azioni sono distruttive e non possono essere annullate.",
+		"clearUsageData": "Cancella Dati di Utilizzo",
+		"confirmClearTitle": "Sei sicuro?",
+		"confirmClearDescription": "Questo eliminerà permanentemente tutti i dati di utilizzo memorizzati per i provider virtuali. Questa azione non può essere annullata.",
+		"perMinute": "Al Minuto",
+		"tokensLabel": "Token",
+		"perHour": "All'ora",
+		"perDay": "Al Giorno",
+		"requestsLabel": "Richieste"
 	}
 }
