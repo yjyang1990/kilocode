@@ -170,7 +170,7 @@ export class KilocodeOllamaHandler extends BaseProvider {
 				messages: ollamaMessages,
 				stream: true,
 				options: {
-					num_ctx: model.info.contextWindow || 131072,
+					num_ctx: model.info.contextWindow,
 				},
 			})
 
