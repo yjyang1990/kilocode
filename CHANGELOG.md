@@ -1,5 +1,15 @@
 # Roo Code Changelog
 
+## 3.24.0
+
+### Minor Changes
+
+-   - Add Hugging Face provider with support for open source models (thanks @TGlide!)
+
+### Patch Changes
+
+- Kick off release
+
 ## [3.23.19] - 2025-07-23
 
 - Add Roo Code Cloud Waitlist CTAs (thanks @brunobergher!)
