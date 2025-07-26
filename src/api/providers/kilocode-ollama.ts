@@ -3,6 +3,8 @@ import { Message, Ollama } from "ollama"
 import { ModelInfo, openAiModelInfoSaneDefaults } from "@roo-code/types"
 import { ApiStream } from "../transform/stream"
 import { BaseProvider } from "./base-provider"
+import { ModelRecord } from "../../shared/api"
+import { getModels } from "./fetchers/modelCache"
 
 function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessageParam[]): Message[] {
 	const ollamaMessages: Message[] = []
@@ -126,6 +128,7 @@ interface OllamaHandlerOptions {
 export class KilocodeOllamaHandler extends BaseProvider {
 	private options: OllamaHandlerOptions
 	private client: Ollama | undefined
+	protected models: ModelRecord = {}
 
 	constructor(options: OllamaHandlerOptions) {
 		super()
@@ -211,10 +214,16 @@ export class KilocodeOllamaHandler extends BaseProvider {
 		}
 	}
 
+	async fetchModel() {
+		this.models = await getModels({ provider: "ollama", baseUrl: this.options.ollamaBaseUrl })
+		return this.getModel()
+	}
+
 	getModel(): { id: string; info: ModelInfo } {
+		const modelId = this.options.ollamaModelId || ""
 		return {
-			id: this.options.ollamaModelId || "",
-			info: openAiModelInfoSaneDefaults,
+			id: modelId,
+			info: this.models[modelId] || openAiModelInfoSaneDefaults,
 		}
 	}
 }
