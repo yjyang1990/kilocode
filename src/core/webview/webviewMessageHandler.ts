@@ -571,7 +571,6 @@ export const webviewMessageHandler = async (
 					key: "kilocode-openrouter",
 					options: { provider: "kilocode-openrouter", kilocodeToken: apiConfiguration.kilocodeToken },
 				},
-				{ key: "ollama", options: { provider: "ollama", baseUrl: apiConfiguration.ollamaBaseUrl } },
 			]
 			// kilocode_change end
 
@@ -586,6 +585,13 @@ export const webviewMessageHandler = async (
 					options: { provider: "litellm", apiKey: litellmApiKey, baseUrl: litellmBaseUrl },
 				})
 			}
+
+			// kilocode_start start: contrary to the comment above, this is still necessary
+			modelFetchPromises.push({
+				key: "ollama",
+				options: { provider: "ollama", baseUrl: apiConfiguration.ollamaBaseUrl },
+			})
+			// kilocode_start end
 
 			const results = await Promise.allSettled(
 				modelFetchPromises.map(async ({ key, options }) => {
