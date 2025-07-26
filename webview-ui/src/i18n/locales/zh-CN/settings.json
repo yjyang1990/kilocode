@@ -389,7 +389,7 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "错误和重复限制",
-			"description": "在显示“Roo遇到问题”对话框前允许的连续错误或重复操作次数",
+			"description": "在显示\"Kilo Code遇到问题\"对话框前允许的连续错误或重复操作次数",
 			"unlimitedDescription": "已启用无限重试（自动继续）。对话框将永远不会出现。",
 			"warning": "⚠️ 设置为 0 允许无限重试，这可能会消耗大量 API 使用量"
 		},
@@ -608,7 +608,7 @@
 		},
 		"todoList": {
 			"label": "启用任务清单工具",
-			"description": "启用后，Roo 可以创建和管理任务清单来跟踪任务进度。这有助于将复杂任务组织成可管理的步骤。"
+			"description": "启用后，Kilo Code 可以创建和管理任务清单来跟踪任务进度。这有助于将复杂任务组织成可管理的步骤。"
 		}
 	},
 	"experimental": {
