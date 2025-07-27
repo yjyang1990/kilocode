@@ -1554,9 +1554,10 @@ export class Task extends EventEmitter<ClineEvents> {
 						let chunkCount = 0
 						while (!item.done) {
 							// Check for timeout
-							if (Date.now() - startTime > timeoutMs) {
+							const time = Date.now() - startTime
+							if (this.abort || time > timeoutMs) {
 								console.warn(
-									`[Background Usage Collection] Timed out after ${timeoutMs}ms for model: ${modelId}, processed ${chunkCount} chunks`,
+									`[Background Usage Collection] Cancelled after ${time}ms for model: ${modelId}, processed ${chunkCount} chunks`,
 								)
 								iterator.return(undefined)
 								break
