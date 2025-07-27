@@ -345,6 +345,26 @@ describe("VirtualQuotaFallbackProvider", () => {
 			})
 		})
 
+		it("should notify about handler switch", async () => {
+			const showInformationMessageSpy = vitest.spyOn(vscode.window, "showInformationMessage")
+			;(mockSettingsManager.getProfile as any).mockImplementation(async ({ id }: { id: string }) => {
+				if (id === "p1") return { id: "p1", name: "primary-profile" }
+				return undefined
+			})
+
+			const handler = new VirtualQuotaFallbackHandler({
+				profiles: [mockPrimaryProfile],
+			} as any)
+			;(handler as any).handlers = [{ handler: mockPrimaryHandler, profileId: "p1", config: mockPrimaryProfile }]
+
+			// Set initial active handler to something different to trigger a switch
+			;(handler as any).activeProfileId = "initial"
+			;(handler as any).activeHandler = { getModel: () => ({ id: "initial-model" }) }
+			await handler.adjustActiveHandler()
+
+			expect(showInformationMessageSpy).toHaveBeenCalledWith("Switched active provider to: primary-profile")
+		})
+
 		describe("createMessage", () => {
 			it("should forward the call to the active handler and track usage", async () => {
 				const handler = new VirtualQuotaFallbackHandler({
@@ -452,25 +472,6 @@ describe("VirtualQuotaFallbackProvider", () => {
 				const handler = new VirtualQuotaFallbackHandler({} as any)
 				;(handler as any).activeHandler = undefined
 				expect(() => handler.getModel()).toThrow("No active handler configured")
-			})
-
-			it("should notify about handler switch", async () => {
-				const showInformationMessageSpy = vitest.spyOn(vscode.window, "showInformationMessage")
-
-				const handler = new VirtualQuotaFallbackHandler({
-					profiles: [mockPrimaryProfile],
-				} as any)
-				;(handler as any).handlers = [
-					{ handler: mockPrimaryHandler, profileId: "p1", config: mockPrimaryProfile },
-				]
-
-				// Set initial active handler to something different to trigger a switch
-				;(handler as any).activeProfileId = "initial"
-				;(handler as any).activeHandler = { getModel: () => ({ id: "initial-model" }) }
-
-				await handler.adjustActiveHandler()
-
-				expect(showInformationMessageSpy).toHaveBeenCalledWith("Switched active provider to: primary-profile")
 			})
 		})
 	})
