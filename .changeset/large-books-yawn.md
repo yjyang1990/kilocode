@@ -2,4 +2,4 @@
 "kilo-code": minor
 ---
 
-Port the Ollama implementation from Cline and fix the context window size display.
+Ollama models now use and report the correct context window size.
