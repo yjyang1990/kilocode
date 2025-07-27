@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.65.3
-
-### Patch Changes
+## [v4.65.3]
 
 - [#1544](https://github.com/Kilo-Org/kilocode/pull/1544) [`758d4ad`](https://github.com/Kilo-Org/kilocode/commit/758d4addb361ae9bc7eb3ba3a98f37a298f8d60d) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Improvements to token and cost usage reporting
 
