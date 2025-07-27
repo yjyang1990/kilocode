@@ -1637,6 +1637,9 @@ export class Task extends EventEmitter<ClineEvents> {
 								},
 								lastApiReqIndex,
 							)
+						} else {
+							usageMissing = true
+							refreshApiReqMsg(apiReqIndex)
 						}
 					}
 				}
