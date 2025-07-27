@@ -1549,7 +1549,7 @@ export class Task extends EventEmitter<ClineEvents> {
 					}
 
 					try {
-						const modelId = this.api.getModel()
+						const modelId = this.api.getModel().id
 						let usageFound = false
 						let chunkCount = 0
 						while (!item.done) {
