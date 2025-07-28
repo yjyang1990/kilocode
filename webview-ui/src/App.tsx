@@ -25,7 +25,6 @@ import { DeleteMessageDialog, EditMessageDialog } from "./components/chat/Messag
 import ErrorBoundary from "./components/ErrorBoundary"
 // import { AccountView } from "./components/account/AccountView" // kilocode_change: we have our own profile view
 import { useAddNonInteractiveClickListener } from "./components/ui/hooks/useNonInteractiveClick"
-import { KiloCodeErrorBoundary } from "./kilocode/KiloCodeErrorBoundary"
 import { TooltipProvider } from "./components/ui/tooltip"
 import { STANDARD_TOOLTIP_DELAY } from "./components/ui/standard-tooltip"
 import { useKiloIdentity } from "./utils/kilocode/useKiloIdentity"
@@ -333,10 +332,4 @@ const AppWithProviders = () => (
 	</ErrorBoundary>
 )
 
-const AppWithKiloCodeErrorBoundary = () => (
-	<KiloCodeErrorBoundary>
-		<AppWithProviders />
-	</KiloCodeErrorBoundary>
-)
-
-export default AppWithKiloCodeErrorBoundary // kilocode_change
+export default AppWithProviders
