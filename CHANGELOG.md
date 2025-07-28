@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.67.0
-
-### Minor Changes
+## [v4.67.0]
 
 - [#1484](https://github.com/Kilo-Org/kilocode/pull/1484) [`8294250`](https://github.com/Kilo-Org/kilocode/commit/8294250662f15c819f68781b507cb0e35a29b71b) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Improve Inline Assist suggestions by adding comprehensive context awareness
 
