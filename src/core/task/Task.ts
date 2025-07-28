@@ -1495,7 +1495,7 @@ export class Task extends EventEmitter<ClineEvents> {
 
 				const drainStreamInBackgroundToFindAllUsage = async (apiReqIndex: number) => {
 					const timeoutMs = 30_000
-					const startTime = Date.now()
+					const startTime = performance.now()
 
 					// Local variables to accumulate usage data without affecting the main flow
 					let bgInputTokens = currentTokens.input
@@ -1558,11 +1558,10 @@ export class Task extends EventEmitter<ClineEvents> {
 
 					try {
 						const modelId = this.api.getModel().id
-						let usageFound = false
 						let chunkCount = 0
 						while (!item.done) {
 							// Check for timeout
-							const time = Date.now() - startTime
+							const time = performance.now() - startTime
 							if (this.abort || time > timeoutMs) {
 								console.warn(
 									`[Background Usage Collection] Cancelled after ${time}ms for model: ${modelId}, processed ${chunkCount} chunks`,
@@ -1576,7 +1575,6 @@ export class Task extends EventEmitter<ClineEvents> {
 							chunkCount++
 
 							if (chunk && chunk.type === "usage") {
-								usageFound = true
 								bgInputTokens += chunk.inputTokens
 								bgOutputTokens += chunk.outputTokens
 								bgCacheWriteTokens += chunk.cacheWriteTokens ?? 0
@@ -1585,18 +1583,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							}
 						}
 
-						if (usageFound) {
-							await captureUsageData(
-								{
-									input: bgInputTokens,
-									output: bgOutputTokens,
-									cacheWrite: bgCacheWriteTokens,
-									cacheRead: bgCacheReadTokens,
-									total: bgTotalCost,
-								},
-								lastApiReqIndex,
-							)
-						} else if (
+						if (
 							bgInputTokens > 0 ||
 							bgOutputTokens > 0 ||
 							bgCacheWriteTokens > 0 ||
