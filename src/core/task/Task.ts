@@ -1566,7 +1566,7 @@ export class Task extends EventEmitter<ClineEvents> {
 								console.warn(
 									`[Background Usage Collection] Cancelled after ${time}ms for model: ${modelId}, processed ${chunkCount} chunks`,
 								)
-								iterator.return(undefined)
+								await iterator.return(undefined)
 								break
 							}
 
