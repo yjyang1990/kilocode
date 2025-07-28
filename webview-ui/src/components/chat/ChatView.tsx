@@ -661,12 +661,12 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							text: trimmedInput,
 							images: images,
 						})
-						// Clear input state after sending
-						setInputValue("")
-						setSelectedImages([])
 					} else {
 						vscode.postMessage({ type: "askResponse", askResponse: "yesButtonClicked" })
 					}
+					// Clear input state after sending
+					setInputValue("")
+					setSelectedImages([])
 					break
 				case "completion_result":
 				case "resume_completed_task":
@@ -763,6 +763,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							if (!isHidden && !sendingDisabled && !enableButtons) {
 								textAreaRef.current?.focus()
 							}
+							break
+						case "focusInput":
+							textAreaRef.current?.focus()
 							break
 					}
 					break
@@ -976,8 +979,8 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	// Check if a command message should be auto-approved.
 	const isAllowedCommand = useCallback(
 		(message: ClineMessage | undefined): boolean => {
-			if (message?.type !== "ask") return false
 			// kilocode_change start wrap in try/catch
+			if (message?.type !== "ask") return false
 			try {
 				return getCommandDecisionForMessage(message) === "auto_approve"
 			} catch (e) {
