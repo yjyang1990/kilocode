@@ -799,7 +799,7 @@ export class CustomModesManager {
 			rulesFolderPath = path.join(baseDir, `rules-${importMode.slug}`)
 		} else {
 			const workspacePath = getWorkspacePath()
-			baseDir = path.join(workspacePath, ".roo")
+			baseDir = getProjectRooDirectoryForCwd(workspacePath) // kilocode_change
 			rulesFolderPath = path.join(baseDir, `rules-${importMode.slug}`)
 		}
 
@@ -916,106 +916,8 @@ export class CustomModesManager {
 					source: source, // Use the provided source parameter
 				})
 
-				// Handle project-level imports
-				if (source === "project") {
-					const workspacePath = getWorkspacePath()
-
-					// Always remove the existing rules folder for this mode if it exists
-					// This ensures that if the imported mode has no rules, the folder is cleaned up
-					const rulesFolderPath = path.join(
-						getProjectRooDirectoryForCwd(workspacePath), // kilocode_change
-						`rules-${importMode.slug}`,
-					)
-					try {
-						await fs.rm(rulesFolderPath, { recursive: true, force: true })
-						logger.info(`Removed existing rules folder for mode ${importMode.slug}`)
-					} catch (error) {
-						// It's okay if the folder doesn't exist
-						logger.debug(`No existing rules folder to remove for mode ${importMode.slug}`)
-					}
-
-					// Only create new rules files if they exist in the import
-					if (rulesFiles && Array.isArray(rulesFiles) && rulesFiles.length > 0) {
-						// Import the new rules files with path validation
-						for (const ruleFile of rulesFiles) {
-							if (ruleFile.relativePath && ruleFile.content) {
-								// Validate the relative path to prevent path traversal attacks
-								const normalizedRelativePath = path.normalize(ruleFile.relativePath)
-
-								// Ensure the path doesn't contain traversal sequences
-								if (normalizedRelativePath.includes("..") || path.isAbsolute(normalizedRelativePath)) {
-									logger.error(`Invalid file path detected: ${ruleFile.relativePath}`)
-									continue // Skip this file but continue with others
-								}
-
-								const targetPath = path.join(
-									getProjectRooDirectoryForCwd(workspacePath), // kilocode_change
-									normalizedRelativePath,
-								)
-								const normalizedTargetPath = path.normalize(targetPath)
-								const expectedBasePath = path.normalize(getProjectRooDirectoryForCwd(workspacePath)) // kilocode_change
-
-								// Ensure the resolved path stays within the .roo directory
-								if (!normalizedTargetPath.startsWith(expectedBasePath)) {
-									logger.error(`Path traversal attempt detected: ${ruleFile.relativePath}`)
-									continue // Skip this file but continue with others
-								}
-
-								// Ensure directory exists
-								const targetDir = path.dirname(targetPath)
-								await fs.mkdir(targetDir, { recursive: true })
-
-								// Write the file
-								await fs.writeFile(targetPath, ruleFile.content, "utf-8")
-							}
-						}
-					}
-				} else if (source === "global" && rulesFiles && Array.isArray(rulesFiles)) {
-					// For global imports, preserve the rules files structure in the global .roo directory
-					const globalRooDir = getGlobalRooDirectory()
-
-					// Always remove the existing rules folder for this mode if it exists
-					// This ensures that if the imported mode has no rules, the folder is cleaned up
-					const rulesFolderPath = path.join(globalRooDir, `rules-${importMode.slug}`)
-					try {
-						await fs.rm(rulesFolderPath, { recursive: true, force: true })
-						logger.info(`Removed existing global rules folder for mode ${importMode.slug}`)
-					} catch (error) {
-						// It's okay if the folder doesn't exist
-						logger.debug(`No existing global rules folder to remove for mode ${importMode.slug}`)
-					}
-
-					// Import the new rules files with path validation
-					for (const ruleFile of rulesFiles) {
-						if (ruleFile.relativePath && ruleFile.content) {
-							// Validate the relative path to prevent path traversal attacks
-							const normalizedRelativePath = path.normalize(ruleFile.relativePath)
-
-							// Ensure the path doesn't contain traversal sequences
-							if (normalizedRelativePath.includes("..") || path.isAbsolute(normalizedRelativePath)) {
-								logger.error(`Invalid file path detected: ${ruleFile.relativePath}`)
-								continue // Skip this file but continue with others
-							}
-
-							const targetPath = path.join(globalRooDir, normalizedRelativePath)
-							const normalizedTargetPath = path.normalize(targetPath)
-							const expectedBasePath = path.normalize(globalRooDir)
-
-							// Ensure the resolved path stays within the global .roo directory
-							if (!normalizedTargetPath.startsWith(expectedBasePath)) {
-								logger.error(`Path traversal attempt detected: ${ruleFile.relativePath}`)
-								continue // Skip this file but continue with others
-							}
-
-							// Ensure directory exists
-							const targetDir = path.dirname(targetPath)
-							await fs.mkdir(targetDir, { recursive: true })
-
-							// Write the file
-							await fs.writeFile(targetPath, ruleFile.content, "utf-8")
-						}
-					}
-				}
+				// Import rules files (this also handles cleanup of existing rules folders)
+				await this.importRulesFiles(importMode, rulesFiles || [], source)
 			}
 
 			// Refresh the modes after import
