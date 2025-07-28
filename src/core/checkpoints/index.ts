@@ -93,7 +93,7 @@ export function getCheckpointService(cline: Task) {
 	} catch (err) {
 		log(`[Task#getCheckpointService] ${err.message}`)
 		cline.enableCheckpoints = false
-		reportError("Task#getCheckpointService", err)
+		reportError("Task#getCheckpointService", err) // kilocode_change
 		return undefined
 	}
 }
