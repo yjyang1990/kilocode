@@ -1652,6 +1652,14 @@ export class Task extends EventEmitter<ClineEvents> {
 				})
 				// kilocode_change end
 			} catch (error) {
+				// kilocode_change start
+				TelemetryService.instance.captureException(error, {
+					abandoned: this.abandoned,
+					abort: this.abort,
+					source: "recursivelyMakeClineRequests",
+				})
+				// kilocode_change end
+
 				// Abandoned happens when extension is no longer waiting for the
 				// Cline instance to finish aborting (error is thrown here when
 				// any function in the for loop throws due to this.abort).
