@@ -1298,7 +1298,7 @@ export class Task extends EventEmitter<ClineEvents> {
 			let inputTokens = 0
 			let outputTokens = 0
 			let totalCost: number | undefined
-			let usageMissing = false
+			let usageMissing = false // kilocode_change
 
 			// We can't use `api_req_finished` anymore since it's a unique case
 			// where it could come after a streaming message (i.e. in the middle
@@ -1330,7 +1330,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							cacheWriteTokens,
 							cacheReadTokens,
 						),
-					usageMissing,
+					usageMissing, // kilocode_change
 					cancelReason,
 					streamingFailedMessage,
 				} satisfies ClineApiReqInfo)
