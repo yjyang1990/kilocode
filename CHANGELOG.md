@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.66.0
-
-### Minor Changes
+## [v4.66.0]
 
 - [#1539](https://github.com/Kilo-Org/kilocode/pull/1539) [`fd3679b`](https://github.com/Kilo-Org/kilocode/commit/fd3679b56b1b72ca41d70b30d805c94d377f3626) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Ollama models now use and report the correct context window size.
 
