@@ -1535,7 +1535,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							cacheReadTokens = tokens.cacheRead
 							totalCost = tokens.total
 
-							refreshApiReqMsg(messageIndex)
+							await refreshApiReqMsg(messageIndex)
 
 							// Capture telemetry
 							TelemetryService.instance.captureLlmCompletion(this.taskId, {
