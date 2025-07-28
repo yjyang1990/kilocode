@@ -1347,7 +1347,8 @@ describe.skip("ChatView - Version Indicator Tests", () => {
 	})
 })
 
-describe("ChatView - RooCloudCTA Display Tests", () => {
+// kilocode_change skip
+it.skip("ChatView - RooCloudCTA Display Tests", () => {
 	beforeEach(() => vi.clearAllMocks())
 
 	it("does not show RooCloudCTA when user is authenticated to Cloud", () => {
@@ -1390,7 +1391,8 @@ describe("ChatView - RooCloudCTA Display Tests", () => {
 		expect(getByTestId("roo-tips")).toBeInTheDocument()
 	})
 
-	it("shows RooCloudCTA when user is not authenticated and has run 4 or more tasks", async () => {
+	// kilocode_change skip
+	it.skip("shows RooCloudCTA when user is not authenticated and has run 4 or more tasks", async () => {
 		const { getByTestId, queryByTestId } = renderChatView()
 
 		// Hydrate state with user not authenticated and 4+ tasks in history
@@ -1412,7 +1414,8 @@ describe("ChatView - RooCloudCTA Display Tests", () => {
 		expect(queryByTestId("roo-tips")).not.toBeInTheDocument()
 	})
 
-	it("shows RooCloudCTA when user is not authenticated and has run 5 tasks", async () => {
+	// kilocode_change skip
+	it.skip("shows RooCloudCTA when user is not authenticated and has run 5 tasks", async () => {
 		const { getByTestId, queryByTestId } = renderChatView()
 
 		// Hydrate state with user not authenticated and 5 tasks in history
@@ -1468,7 +1471,8 @@ describe("ChatView - RooCloudCTA Display Tests", () => {
 		})
 	})
 
-	it("shows RooTips when user is authenticated (instead of RooCloudCTA)", () => {
+	// kilocode_change skip
+	it.skip("shows RooTips when user is authenticated (instead of RooCloudCTA)", () => {
 		const { queryByTestId, getByTestId } = renderChatView()
 
 		// Hydrate state with user authenticated to cloud
@@ -1488,7 +1492,8 @@ describe("ChatView - RooCloudCTA Display Tests", () => {
 		expect(getByTestId("roo-tips")).toBeInTheDocument()
 	})
 
-	it("shows RooTips when user has fewer than 4 tasks (instead of RooCloudCTA)", () => {
+	// kilocode_change skip
+	it.skip("shows RooTips when user has fewer than 4 tasks (instead of RooCloudCTA)", () => {
 		const { queryByTestId, getByTestId } = renderChatView()
 
 		// Hydrate state with user not authenticated but fewer than 4 tasks

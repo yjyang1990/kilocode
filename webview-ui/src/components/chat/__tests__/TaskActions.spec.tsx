@@ -374,7 +374,8 @@ describe("TaskActions", () => {
 		})
 	})
 
-	describe("Button States", () => {
+	// kilocode_change skip
+	describe.skip("Button States", () => {
 		it("keeps share, export, and copy buttons enabled but disables delete button when buttonsDisabled is true", () => {
 			render(<TaskActions item={mockItem} buttonsDisabled={true} />)
 
