@@ -39,7 +39,7 @@ import {
 	kilocodeDefaultModelId,
 } from "@roo-code/types"
 
-import { cerebrasModels, cerebrasDefaultModelId } from "@roo/api" // kilocode_change
+import { cerebrasModels, cerebrasDefaultModelId, fireworksDefaultModelId, fireworksModels } from "@roo/api" // kilocode_change
 
 import type { RouterModels } from "@roo/api"
 
@@ -270,6 +270,22 @@ function getSelectedModel({
 				info: routerModels["kilocode-openrouter"][kilocodeDefaultModelId],
 			}
 		}
+		case "fireworks": {
+			return {
+				id: apiConfiguration.fireworksModelId ?? fireworksDefaultModelId,
+				info: fireworksModels[
+					(apiConfiguration.fireworksModelId ?? fireworksDefaultModelId) as keyof typeof fireworksModels
+				],
+			}
+		}
+		case "virtual-quota-fallback": {
+			return {
+				id: apiConfiguration.apiModelId ?? anthropicDefaultModelId,
+				info: anthropicModels[
+					(apiConfiguration.apiModelId ?? anthropicDefaultModelId) as keyof typeof anthropicModels
+				],
+			}
+		}
 		// kilocode_change end
 
 		case "claude-code": {
@@ -282,7 +298,7 @@ function getSelectedModel({
 		// case "human-relay":
 		// case "fake-ai":
 		default: {
-			provider satisfies "anthropic" | "gemini-cli" | "human-relay" | "fake-ai"
+			provider satisfies "anthropic" | "human-relay" | "fake-ai"
 			const id = apiConfiguration.apiModelId ?? anthropicDefaultModelId
 			const info = anthropicModels[id as keyof typeof anthropicModels]
 			return { id, info }
