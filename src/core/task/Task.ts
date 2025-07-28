@@ -1605,7 +1605,7 @@ export class Task extends EventEmitter<ClineEvents> {
 								`[Background Usage Collection] Suspicious: request ${apiReqIndex} is complete, but no usage info was found. Model: ${modelId}`,
 							)
 							usageMissing = true
-							refreshApiReqMsg(apiReqIndex)
+							await refreshApiReqMsg(apiReqIndex)
 						}
 					} catch (error) {
 						console.error("Error draining stream for usage data:", error)
@@ -1628,7 +1628,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							)
 						} else {
 							usageMissing = true
-							refreshApiReqMsg(apiReqIndex)
+							await refreshApiReqMsg(apiReqIndex)
 						}
 					}
 				}
