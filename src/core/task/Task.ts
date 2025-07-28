@@ -1300,6 +1300,7 @@ export class Task extends EventEmitter<ClineEvents> {
 			let inputTokens = 0
 			let outputTokens = 0
 			let totalCost: number | undefined
+			let usageMissing = false // kilocode_change
 
 			// We can't use `api_req_finished` anymore since it's a unique case
 			// where it could come after a streaming message (i.e. in the middle
@@ -1331,6 +1332,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							cacheWriteTokens,
 							cacheReadTokens,
 						),
+					usageMissing, // kilocode_change
 					cancelReason,
 					streamingFailedMessage,
 				} satisfies ClineApiReqInfo)
@@ -1502,6 +1504,18 @@ export class Task extends EventEmitter<ClineEvents> {
 					let bgCacheReadTokens = currentTokens.cacheRead
 					let bgTotalCost = currentTokens.total
 
+					const refreshApiReqMsg = async (messageIndex: number) => {
+						// Update the API request message with the latest usage data
+						updateApiReqMsg()
+						await this.saveClineMessages()
+
+						// Update the specific message in the webview
+						const apiReqMessage = this.clineMessages[messageIndex]
+						if (apiReqMessage) {
+							await this.updateClineMessage(apiReqMessage)
+						}
+					}
+
 					// Helper function to capture telemetry and update messages
 					const captureUsageData = async (
 						tokens: {
@@ -1521,15 +1535,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							cacheReadTokens = tokens.cacheRead
 							totalCost = tokens.total
 
-							// Update the API request message with the latest usage data
-							updateApiReqMsg()
-							await this.saveClineMessages()
-
-							// Update the specific message in the webview
-							const apiReqMessage = this.clineMessages[messageIndex]
-							if (apiReqMessage) {
-								await this.updateClineMessage(apiReqMessage)
-							}
+							refreshApiReqMsg(messageIndex)
 
 							// Capture telemetry
 							TelemetryService.instance.captureLlmCompletion(this.taskId, {
@@ -1611,6 +1617,8 @@ export class Task extends EventEmitter<ClineEvents> {
 							console.warn(
 								`[Background Usage Collection] Suspicious: request ${apiReqIndex} is complete, but no usage info was found. Model: ${modelId}`,
 							)
+							usageMissing = true
+							refreshApiReqMsg(apiReqIndex)
 						}
 					} catch (error) {
 						console.error("Error draining stream for usage data:", error)
@@ -1631,6 +1639,9 @@ export class Task extends EventEmitter<ClineEvents> {
 								},
 								lastApiReqIndex,
 							)
+						} else {
+							usageMissing = true
+							refreshApiReqMsg(apiReqIndex)
 						}
 					}
 				}
