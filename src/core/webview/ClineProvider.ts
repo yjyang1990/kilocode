@@ -117,7 +117,7 @@ export class ClineProvider
 
 	public isViewLaunched = false
 	public settingsImportedAt?: number
-	public readonly latestAnnouncementId = "jul-09-2025-3-23-0" // Update for v3.23.0 announcement
+	public readonly latestAnnouncementId = "jul-26-2025-3-24-0" // Update for v3.24.0 announcement
 	public readonly providerSettingsManager: ProviderSettingsManager
 	public readonly customModesManager: CustomModesManager
 
@@ -163,7 +163,7 @@ export class ClineProvider
 				this.log(`Failed to initialize MCP Hub: ${error}`)
 			})
 
-		this.marketplaceManager = new MarketplaceManager(this.context)
+		this.marketplaceManager = new MarketplaceManager(this.context, this.customModesManager)
 	}
 
 	// Adds a new Cline instance to clineStack, marking the start of a new task.
@@ -1507,7 +1507,8 @@ export class ClineProvider
 			dismissedNotificationIds, // kilocode_change
 			alwaysAllowFollowupQuestions,
 			followupAutoApproveTimeoutMs,
-			diagnosticsEnabled,
+			includeDiagnosticMessages,
+			maxDiagnosticMessages,
 		} = await this.getState()
 
 		const telemetryKey = process.env.KILOCODE_POSTHOG_API_KEY
@@ -1636,7 +1637,8 @@ export class ClineProvider
 			dismissedNotificationIds: dismissedNotificationIds ?? [], // kilocode_change
 			alwaysAllowFollowupQuestions: alwaysAllowFollowupQuestions ?? false,
 			followupAutoApproveTimeoutMs: followupAutoApproveTimeoutMs ?? 60000,
-			diagnosticsEnabled: diagnosticsEnabled ?? true,
+			includeDiagnosticMessages: includeDiagnosticMessages ?? true,
+			maxDiagnosticMessages: maxDiagnosticMessages ?? 50,
 		}
 	}
 
@@ -1809,6 +1811,9 @@ export class ClineProvider
 				codebaseIndexSearchMinScore: stateValues.codebaseIndexConfig?.codebaseIndexSearchMinScore,
 			},
 			profileThresholds: stateValues.profileThresholds ?? {},
+			// Add diagnostic message settings
+			includeDiagnosticMessages: stateValues.includeDiagnosticMessages ?? true,
+			maxDiagnosticMessages: stateValues.maxDiagnosticMessages ?? 50,
 		}
 	}
 

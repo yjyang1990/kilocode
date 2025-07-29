@@ -77,6 +77,7 @@ export interface WebviewMessage {
 		| "requestOllamaModels"
 		| "requestLmStudioModels"
 		| "requestVsCodeLmModels"
+		| "requestHuggingFaceModels"
 		| "openImage"
 		| "saveImage"
 		| "openFile"
@@ -176,6 +177,8 @@ export interface WebviewMessage {
 		| "maxReadFileLine"
 		| "maxConcurrentFileReads"
 		| "allowVeryLargeReads" // kilocode_change
+		| "includeDiagnosticMessages"
+		| "maxDiagnosticMessages"
 		| "searchFiles"
 		| "setHistoryPreviewCollapsed"
 		| "showFeedbackOptions" // kilocode_change
