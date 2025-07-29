@@ -120,6 +120,7 @@ export interface ExtensionMessage {
 		| "codeIndexSecretStatus"
 		| "showDeleteMessageDialog"
 		| "showEditMessageDialog"
+		| "kilocodeNotificationsResponse" // kilocode_change
 	text?: string
 	payload?: ProfileDataResponsePayload | BalanceDataResponsePayload // kilocode_change: Add payload for profile and balance data
 	action?:
@@ -190,6 +191,17 @@ export interface ExtensionMessage {
 	settings?: any
 	messageTs?: number
 	context?: string
+	// kilocode_change start: Notifications
+	notifications?: Array<{
+		id: string
+		title: string
+		message: string
+		action?: {
+			actionText: string
+			actionURL: string
+		}
+	}>
+	// kilocode_change end
 }
 
 export type ExtensionState = Pick<
@@ -265,6 +277,7 @@ export type ExtensionState = Pick<
 	| "localRulesToggles" // kilocode_change
 	| "globalWorkflowToggles" // kilocode_change
 	| "commitMessageApiConfigId" // kilocode_change
+	| "dismissedNotificationIds" // kilocode_change
 	| "ghostServiceSettings" // kilocode_change
 	| "condensingApiConfigId"
 	| "customCondensingPrompt"

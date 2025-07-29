@@ -1504,6 +1504,7 @@ export class ClineProvider
 			codebaseIndexModels,
 			profileThresholds,
 			systemNotificationsEnabled, // kilocode_change
+			dismissedNotificationIds, // kilocode_change
 			alwaysAllowFollowupQuestions,
 			followupAutoApproveTimeoutMs,
 			diagnosticsEnabled,
@@ -1632,6 +1633,7 @@ export class ClineProvider
 			cloudApiUrl: getRooCodeApiUrl(),
 			hasOpenedModeSelector: this.getGlobalState("hasOpenedModeSelector") ?? false,
 			systemNotificationsEnabled: systemNotificationsEnabled ?? false, // kilocode_change
+			dismissedNotificationIds: dismissedNotificationIds ?? [], // kilocode_change
 			alwaysAllowFollowupQuestions: alwaysAllowFollowupQuestions ?? false,
 			followupAutoApproveTimeoutMs: followupAutoApproveTimeoutMs ?? 60000,
 			diagnosticsEnabled: diagnosticsEnabled ?? true,
@@ -1781,6 +1783,7 @@ export class ClineProvider
 			maxConcurrentFileReads: stateValues.maxConcurrentFileReads ?? 5,
 			allowVeryLargeReads: stateValues.allowVeryLargeReads ?? false, // kilocode_change
 			systemNotificationsEnabled: stateValues.systemNotificationsEnabled ?? true, // kilocode_change
+			dismissedNotificationIds: stateValues.dismissedNotificationIds ?? [], // kilocode_change
 			historyPreviewCollapsed: stateValues.historyPreviewCollapsed ?? false,
 			cloudUserInfo,
 			cloudIsAuthenticated,

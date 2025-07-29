@@ -34,6 +34,7 @@ export interface ExtensionStateContextType extends ExtensionState {
 	setHoveringTaskTimeline: (value: boolean) => void // kilocode_change
 	systemNotificationsEnabled?: boolean // kilocode_change
 	setSystemNotificationsEnabled: (value: boolean) => void // kilocode_change
+	dismissedNotificationIds: string[] // kilocode_change
 	didHydrateState: boolean
 	showWelcome: boolean
 	theme: any
@@ -126,6 +127,7 @@ export interface ExtensionStateContextType extends ExtensionState {
 	setEnhancementApiConfigId: (value: string) => void
 	commitMessageApiConfigId?: string // kilocode_change
 	setCommitMessageApiConfigId: (value: string) => void // kilocode_change
+	markNotificationAsDismissed: (notificationId: string) => void // kilocode_change
 	ghostServiceSettings?: GhostServiceSettings // kilocode_change
 	setGhostServiceSettings: (value: GhostServiceSettings) => void // kilocode_change
 	setExperimentEnabled: (id: ExperimentId, enabled: boolean) => void
@@ -215,6 +217,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		customSupportPrompts: {},
 		experiments: experimentDefault,
 		enhancementApiConfigId: "",
+		dismissedNotificationIds: [], // kilocode_change
 		commitMessageApiConfigId: "", // kilocode_change
 		ghostServiceSettings: {}, // kilocode_change
 		condensingApiConfigId: "", // Default empty string for condensing API config ID
@@ -491,6 +494,14 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		setEnhancementApiConfigId: (value) =>
 			setState((prevState) => ({ ...prevState, enhancementApiConfigId: value })),
 		// kilocode_change start
+		markNotificationAsDismissed: (notificationId) => {
+			setState((prevState) => {
+				return {
+					...prevState,
+					dismissedNotificationIds: [notificationId, ...(prevState.dismissedNotificationIds || [])],
+				}
+			})
+		},
 		setGhostServiceSettings: (value) => setState((prevState) => ({ ...prevState, ghostServiceSettings: value })),
 		setCommitMessageApiConfigId: (value) =>
 			setState((prevState) => ({ ...prevState, commitMessageApiConfigId: value })),
@@ -539,6 +550,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		// kilocode_change start
 		setSystemNotificationsEnabled: (value) =>
 			setState((prevState) => ({ ...prevState, systemNotificationsEnabled: value })),
+		dismissedNotificationIds: state.dismissedNotificationIds || [], // kilocode_change
 		// kilocode_change end
 		alwaysAllowUpdateTodoList: state.alwaysAllowUpdateTodoList,
 		setAlwaysAllowUpdateTodoList: (value) => {

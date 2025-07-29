@@ -54,7 +54,7 @@ import { generateSystemPrompt } from "./generateSystemPrompt"
 import { getCommand } from "../../utils/commands"
 import { toggleWorkflow, toggleRule, createRuleFile, deleteRuleFile } from "./kilorules"
 import { mermaidFixPrompt } from "../prompts/utilities/mermaid" // kilocode_change
-import { editMessageHandler } from "../kilocode/webview/webviewMessageHandlerUtils" // kilocode_change
+import { editMessageHandler, fetchKilocodeNotificationsHandler } from "../kilocode/webview/webviewMessageHandlerUtils" // kilocode_change
 
 const ALLOWED_VSCODE_SETTINGS = new Set(["terminal.integrated.inheritEnv"])
 
@@ -2562,6 +2562,21 @@ export const webviewMessageHandler = async (
 		// kilocode_change start
 		case "editMessage": {
 			await editMessageHandler(provider, message)
+			break
+		}
+		case "fetchKilocodeNotifications": {
+			await fetchKilocodeNotificationsHandler(provider)
+			break
+		}
+		case "dismissNotificationId": {
+			if (!message.notificationId) {
+				break
+			}
+
+			const dismissedNotificationIds = getGlobalState("dismissedNotificationIds") || []
+
+			await updateGlobalState("dismissedNotificationIds", [...dismissedNotificationIds, message.notificationId])
+			await provider.postStateToWebview()
 			break
 		}
 		// kilocode_change end

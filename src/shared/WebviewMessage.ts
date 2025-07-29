@@ -231,6 +231,7 @@ export interface WebviewMessage {
 		| "profileThresholds"
 		| "editMessage" // kilocode_change
 		| "systemNotificationsEnabled" // kilocode_change
+		| "dismissNotificationId" // kilocode_change
 		| "shareTaskSuccess"
 		| "exportMode"
 		| "exportModeResult"
@@ -240,6 +241,7 @@ export interface WebviewMessage {
 		| "checkRulesDirectoryResult"
 		| "saveCodeIndexSettingsAtomic"
 		| "requestCodeIndexSecretStatus"
+		| "fetchKilocodeNotifications"
 	text?: string
 	editedMessageContent?: string
 	tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "account"
@@ -268,6 +270,7 @@ export interface WebviewMessage {
 	isGlobal?: boolean // kilocode_change
 	filename?: string // kilocode_change
 	ruleType?: string // kilocode_change
+	notificationId?: string // kilocode_change
 	// kilocode_change end
 	serverName?: string
 	toolName?: string
