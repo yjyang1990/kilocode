@@ -1190,6 +1190,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		}
 
 		visibleMessages.forEach((message) => {
+			// kilocode_change start: upstream pr https://github.com/RooCodeInc/Roo-Code/pull/5452
 			// Special handling for browser_action_result - ensure it's always in a browser session
 			if (message.say === "browser_action_result" && !isInBrowserSession) {
 				isInBrowserSession = true
@@ -1201,6 +1202,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 				isInBrowserSession = true
 				currentGroup = []
 			}
+			// kilocode_change end
 
 			if (message.ask === "browser_action_launch") {
 				// Complete existing browser session if any.
@@ -1231,6 +1233,8 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 				if (isBrowserSessionMessage(message)) {
 					currentGroup.push(message)
+
+					// kilocode_change start: upstream pr https://github.com/RooCodeInc/Roo-Code/pull/5452
 					if (message.say === "browser_action_result") {
 						// Check if the previous browser_action was a close action
 						const lastBrowserAction = [...currentGroup].reverse().find((m) => m.say === "browser_action")
@@ -1241,6 +1245,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							}
 						}
 					}
+					// kilocode_change end
 				} else {
 					// complete existing browser session if any
 					endBrowserSession()
