@@ -1,7 +1,7 @@
 import * as vscode from "vscode"
 import { t } from "../../i18n"
 
-interface AutocompleteStatusBarStateParams {
+interface GhostStatusBarStateProps {
 	enabled?: boolean
 	model?: string
 	hasValidToken?: boolean
@@ -9,7 +9,7 @@ interface AutocompleteStatusBarStateParams {
 	lastCompletionCost?: number
 }
 
-export class AutocompleteStatusBar {
+export class GhostStatusBar {
 	statusBar: vscode.StatusBarItem
 	enabled: boolean
 	model: string
@@ -17,7 +17,7 @@ export class AutocompleteStatusBar {
 	totalSessionCost?: number
 	lastCompletionCost?: number
 
-	constructor(params: AutocompleteStatusBarStateParams) {
+	constructor(params: GhostStatusBarStateProps) {
 		this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100)
 		this.enabled = params.enabled || false
 		this.model = params.model || "default"
@@ -29,9 +29,8 @@ export class AutocompleteStatusBar {
 	}
 
 	private init() {
-		this.statusBar.text = t("kilocode:autocomplete.statusBar.enabled")
-		this.statusBar.tooltip = t("kilocode:autocomplete.statusBar.tooltip.basic")
-		this.statusBar.command = "kilo-code.toggleAutocomplete"
+		this.statusBar.text = t("kilocode:ghost.statusBar.enabled")
+		this.statusBar.tooltip = t("kilocode:ghost.statusBar.tooltip.basic")
 		this.show()
 	}
 
@@ -48,12 +47,12 @@ export class AutocompleteStatusBar {
 	}
 
 	private humanFormatCost(cost: number): string {
-		if (cost === 0) return t("kilocode:autocomplete.statusBar.cost.zero")
-		if (cost > 0 && cost < 0.01) return t("kilocode:autocomplete.statusBar.cost.lessThanCent") // Less than one cent
+		if (cost === 0) return t("kilocode:ghost.statusBar.cost.zero")
+		if (cost > 0 && cost < 0.01) return t("kilocode:ghost.statusBar.cost.lessThanCent") // Less than one cent
 		return `$${cost.toFixed(2)}`
 	}
 
-	public update(params: AutocompleteStatusBarStateParams) {
+	public update(params: GhostStatusBarStateProps) {
 		this.enabled = params.enabled !== undefined ? params.enabled : this.enabled
 		this.model = params.model !== undefined ? params.model : this.model
 		this.hasValidToken = params.hasValidToken !== undefined ? params.hasValidToken : this.hasValidToken
@@ -64,24 +63,24 @@ export class AutocompleteStatusBar {
 	}
 
 	private renderDisabled() {
-		this.statusBar.text = t("kilocode:autocomplete.statusBar.disabled")
-		this.statusBar.tooltip = t("kilocode:autocomplete.statusBar.tooltip.disabled")
+		this.statusBar.text = t("kilocode:ghost.statusBar.disabled")
+		this.statusBar.tooltip = t("kilocode:ghost.statusBar.tooltip.disabled")
 	}
 
 	private renderTokenError() {
-		this.statusBar.text = t("kilocode:autocomplete.statusBar.warning")
-		this.statusBar.tooltip = t("kilocode:autocomplete.statusBar.tooltip.tokenError")
+		this.statusBar.text = t("kilocode:ghost.statusBar.warning")
+		this.statusBar.tooltip = t("kilocode:ghost.statusBar.tooltip.tokenError")
 	}
 
 	private renderDefault() {
 		const totalCostFormatted = this.humanFormatCost(this.totalSessionCost || 0)
 		const lastCompletionCostFormatted = this.lastCompletionCost?.toFixed(5) || 0
-		this.statusBar.text = `${t("kilocode:autocomplete.statusBar.enabled")} (${totalCostFormatted})`
+		this.statusBar.text = `${t("kilocode:ghost.statusBar.enabled")} (${totalCostFormatted})`
 		this.statusBar.tooltip = `\
-${t("kilocode:autocomplete.statusBar.tooltip.basic")}
-• ${t("kilocode:autocomplete.statusBar.tooltip.lastCompletion")} $${lastCompletionCostFormatted}
-• ${t("kilocode:autocomplete.statusBar.tooltip.sessionTotal")} ${totalCostFormatted}
-• ${t("kilocode:autocomplete.statusBar.tooltip.model")} ${this.model}\
+${t("kilocode:ghost.statusBar.tooltip.basic")}
+• ${t("kilocode:ghost.statusBar.tooltip.lastCompletion")} $${lastCompletionCostFormatted}
+• ${t("kilocode:ghost.statusBar.tooltip.sessionTotal")} ${totalCostFormatted}
+• ${t("kilocode:ghost.statusBar.tooltip.model")} ${this.model}\
 `
 	}
 

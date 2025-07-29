@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import * as vscode from "vscode"
-import { MockTextDocument } from "./MockTextDocument"
+import { MockTextDocument } from "../MockTextDocument"
 
 vi.mock("vscode", () => ({
 	EndOfLine: { LF: 1, CRLF: 2 },
