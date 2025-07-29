@@ -57,7 +57,7 @@ import { reportExcessiveRecursion, yieldPromise } from "../kilocode"
  */
 
 export async function presentAssistantMessage(cline: Task, recursionDepth: number = 0 /*kilocode_change*/) {
-	reportExcessiveRecursion(presentAssistantMessage.name, recursionDepth) // kilocode_change
+	reportExcessiveRecursion("presentAssistantMessage", recursionDepth) // kilocode_change
 
 	if (cline.abort) {
 		throw new Error(`[Task#presentAssistantMessage] task ${cline.taskId}.${cline.instanceId} aborted`)
