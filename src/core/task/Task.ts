@@ -1502,7 +1502,7 @@ export class Task extends EventEmitter<ClineEvents> {
 
 				const drainStreamInBackgroundToFindAllUsage = async (apiReqIndex: number) => {
 					const timeoutMs = 30_000
-					const startTime = Date.now()
+					const startTime = performance.now()
 
 					// Local variables to accumulate usage data without affecting the main flow
 					let bgInputTokens = currentTokens.input
@@ -1542,7 +1542,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							cacheReadTokens = tokens.cacheRead
 							totalCost = tokens.total
 
-							refreshApiReqMsg(messageIndex)
+							await refreshApiReqMsg(messageIndex)
 
 							// Capture telemetry
 							TelemetryService.instance.captureLlmCompletion(this.taskId, {
@@ -1565,16 +1565,15 @@ export class Task extends EventEmitter<ClineEvents> {
 
 					try {
 						const modelId = this.api.getModel().id
-						let usageFound = false
 						let chunkCount = 0
 						while (!item.done) {
 							// Check for timeout
-							const time = Date.now() - startTime
+							const time = performance.now() - startTime
 							if (this.abort || time > timeoutMs) {
 								console.warn(
 									`[Background Usage Collection] Cancelled after ${time}ms for model: ${modelId}, processed ${chunkCount} chunks`,
 								)
-								iterator.return(undefined)
+								await iterator.return(undefined)
 								break
 							}
 
@@ -1583,7 +1582,6 @@ export class Task extends EventEmitter<ClineEvents> {
 							chunkCount++
 
 							if (chunk && chunk.type === "usage") {
-								usageFound = true
 								bgInputTokens += chunk.inputTokens
 								bgOutputTokens += chunk.outputTokens
 								bgCacheWriteTokens += chunk.cacheWriteTokens ?? 0
@@ -1592,18 +1590,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							}
 						}
 
-						if (usageFound) {
-							await captureUsageData(
-								{
-									input: bgInputTokens,
-									output: bgOutputTokens,
-									cacheWrite: bgCacheWriteTokens,
-									cacheRead: bgCacheReadTokens,
-									total: bgTotalCost,
-								},
-								lastApiReqIndex,
-							)
-						} else if (
+						if (
 							bgInputTokens > 0 ||
 							bgOutputTokens > 0 ||
 							bgCacheWriteTokens > 0 ||
@@ -1625,7 +1612,7 @@ export class Task extends EventEmitter<ClineEvents> {
 								`[Background Usage Collection] Suspicious: request ${apiReqIndex} is complete, but no usage info was found. Model: ${modelId}`,
 							)
 							usageMissing = true
-							refreshApiReqMsg(apiReqIndex)
+							await refreshApiReqMsg(apiReqIndex)
 						}
 					} catch (error) {
 						console.error("Error draining stream for usage data:", error)
@@ -1648,7 +1635,7 @@ export class Task extends EventEmitter<ClineEvents> {
 							)
 						} else {
 							usageMissing = true
-							refreshApiReqMsg(apiReqIndex)
+							await refreshApiReqMsg(apiReqIndex)
 						}
 					}
 				}
