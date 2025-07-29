@@ -138,7 +138,7 @@ export class GhostProvider {
 			return
 		}
 		await ContextProxy.instance?.setValues?.({ ghostServiceSettings: this.settings })
-		await this.cline.postStateToWebview()
+		await this.cline.postStateToWebview
 	}
 
 	public async reload() {
