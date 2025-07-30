@@ -12,6 +12,7 @@ import { getReadablePath } from "../../utils/path"
 import { Experiments, ProviderSettings } from "@roo-code/types"
 import { getKiloBaseUriFromToken } from "../../utils/kilocode-token"
 import { DEFAULT_HEADERS } from "../../api/providers/constants"
+import { TelemetryService } from "@roo-code/telemetry"
 
 async function validateParams(
 	cline: Task,
@@ -20,12 +21,6 @@ async function validateParams(
 	codeEdit: string | undefined,
 	pushToolResult: PushToolResult,
 ): Promise<boolean> {
-	console.log("[MORPH DEBUG] validateParams called with params:", {
-		targetFile,
-		instructions,
-		codeEdit,
-	})
-
 	if (!targetFile) {
 		cline.consecutiveMistakeCount++
 		cline.recordToolError("edit_file")
@@ -71,7 +66,11 @@ export async function editFileTool(
 				instructions: removeClosingTag("instructions", instructions),
 				codeEdit: removeClosingTag("code_edit", code_edit),
 			}
-			await cline.ask("tool", JSON.stringify(partialMessageProps), block.partial).catch(() => {})
+			try {
+				await cline.ask("tool", JSON.stringify(partialMessageProps), block.partial)
+			} catch (error) {
+				TelemetryService.instance.captureException(error, { context: "editFileTool" })
+			}
 			return
 		}
 
@@ -169,6 +168,7 @@ export async function editFileTool(
 
 		await cline.diffViewProvider.reset()
 	} catch (error) {
+		TelemetryService.instance.captureException(error, { context: "editFileTool" })
 		await handleError("editing file with Morph", error as Error)
 		await cline.diffViewProvider.reset()
 	}
@@ -236,6 +236,7 @@ async function applyMorphEdit(
 
 		return { success: true, result: mergedCode }
 	} catch (error) {
+		TelemetryService.instance.captureException(error, { context: "applyMorphEdit" })
 		return {
 			success: false,
 			error: error instanceof Error ? error.message : "Unknown error occurred",
