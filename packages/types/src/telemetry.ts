@@ -144,13 +144,14 @@ export const rooCodeTelemetryEventSchema = z.discriminatedUnion("type", [
 	z.object({
 		type: z.enum([
 			// kilocode_change start
-			TelemetryEventName.COMMIT_MSG_GENERATED,
-			TelemetryEventName.INLINE_ASSIST_QUICK_TASK,
-			TelemetryEventName.INLINE_ASSIST_AUTO_TASK,
-			TelemetryEventName.INLINE_ASSIST_ACCEPT_SUGGESTION,
-			TelemetryEventName.INLINE_ASSIST_REJECT_SUGGESTION,
-			TelemetryEventName.WEBVIEW_MEMORY_USAGE,
+			TelemetryEventName.COMMIT_MSG_GENERATED, // kilocode_change
+			TelemetryEventName.INLINE_ASSIST_QUICK_TASK, // kilocode_change
+			TelemetryEventName.INLINE_ASSIST_AUTO_TASK, // kilocode_change
+			TelemetryEventName.INLINE_ASSIST_ACCEPT_SUGGESTION, // kilocode_change
+			TelemetryEventName.INLINE_ASSIST_REJECT_SUGGESTION, // kilocode_change
+			TelemetryEventName.WEBVIEW_MEMORY_USAGE, // kilocode_change
 			// kilocode_change end
+
 			TelemetryEventName.TASK_CREATED,
 			TelemetryEventName.TASK_RESTARTED,
 			TelemetryEventName.TASK_COMPLETED,
