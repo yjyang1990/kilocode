@@ -112,7 +112,7 @@ export function getToolDescriptionsForMode(
 	}
 
 	// kilocode_change: Morph fast apply - looks scary
-	if (experiments?.morphFastApply === true) {
+	if (experiments?.morphFastApply !== true) {
 		tools.delete("edit_file")
 	}
 
