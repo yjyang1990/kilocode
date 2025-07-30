@@ -52,8 +52,8 @@ export const KilocodeNotifications: React.FC = () => {
 			url: action.actionURL,
 		})
 		telemetryClient.capture(TelemetryEventName.NOTIFICATION_CLICKED, {
-			text: action.actionText,
-			url: action.actionURL,
+			actionText: action.actionText,
+			actionURL: action.actionURL,
 		})
 	}
 
