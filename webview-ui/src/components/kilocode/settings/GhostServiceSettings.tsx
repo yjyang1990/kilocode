@@ -34,6 +34,8 @@ export const GhostServiceSettingsView = ({
 	} = ghostServiceSettings || {}
 	const { listApiConfigMeta } = useExtensionState()
 
+	console.log("ghostServiceSettings", ghostServiceSettings)
+
 	const onEnableAutoTriggerChange = (newValue: boolean) => {
 		setCachedStateField("ghostServiceSettings", {
 			...ghostServiceSettings,

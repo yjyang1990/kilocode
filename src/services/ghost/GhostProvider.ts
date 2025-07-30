@@ -45,6 +45,11 @@ export class GhostProvider {
 	private sessionCost: number = 0
 	private lastCompletionCost: number = 0
 
+	// Auto-trigger timer management
+	private autoTriggerTimer: NodeJS.Timeout | null = null
+	private isUserTyping: boolean = false
+	private lastTextChangeTime: number = 0
+
 	// VSCode Providers
 	public codeActionProvider: GhostCodeActionProvider
 	public codeLensProvider: GhostCodeLensProvider
@@ -122,6 +127,12 @@ export class GhostProvider {
 
 		// Store the updated document and parse its AST
 		await this.documentStore.storeDocument({ document: event.document })
+
+		// Track when text changes occur (for selection change detection)
+		this.lastTextChangeTime = Date.now()
+
+		// Handle auto-trigger logic
+		this.handleTypingEvent(event)
 	}
 
 	private async onDidChangeTextEditorSelection(event: vscode.TextEditorSelectionChangeEvent): Promise<void> {
@@ -129,17 +140,26 @@ export class GhostProvider {
 			return
 		}
 		this.cursor.update()
+
+		// Only reset auto-trigger timer when user intentionally moves cursor (not when typing)
+		// Check if selection change happened shortly after a text change (within 50ms)
+		const timeSinceLastTextChange = Date.now() - this.lastTextChangeTime
+		const isSelectionChangeFromTyping = timeSinceLastTextChange < 50
+
+		if (!isSelectionChangeFromTyping) {
+			this.clearAutoTriggerTimer()
+		}
 	}
 
 	private loadSettings() {
 		const state = ContextProxy.instance?.getValues?.()
 		const experimentEnabled = experiments.isEnabled(state.experiments ?? {}, EXPERIMENT_IDS.INLINE_ASSIST)
-		if (this.enabled && !experimentEnabled) {
-			this.disable()
-		}
-		if (!this.enabled && experimentEnabled) {
-			this.enable()
-		}
+		// if (this.enabled && !experimentEnabled) {
+		// 	this.disable()
+		// }
+		// if (!this.enabled && experimentEnabled) {
+		// 	this.enable()
+		// }
 		this.enabled = experimentEnabled
 		return state.ghostServiceSettings
 	}
@@ -227,71 +247,57 @@ export class GhostProvider {
 		await this.cancelSuggestions()
 
 		let cancelled = false
-
 		const context = await this.ghostContext.generate(initialContext)
 
-		await vscode.window.withProgress(
-			{
-				location: vscode.ProgressLocation.Notification,
-				title: t("kilocode:ghost.progress.title"),
-				cancellable: true,
-			},
-			async (progress, progressToken) => {
-				progressToken.onCancellationRequested(() => {
-					cancelled = true
-				})
+		this.cursor.show()
+		// Load custom instructions
+		const workspacePath = getWorkspacePath()
+		const customInstructions = await addCustomInstructions("", "", workspacePath, "ghost")
 
-				progress.report({ message: t("kilocode:ghost.progress.analyzing") })
+		const systemPrompt = this.strategy.getSystemPrompt(customInstructions)
+		const userPrompt = this.strategy.getSuggestionPrompt(context)
+		if (cancelled) {
+			this.cursor.hide()
+			return
+		}
 
-				// Load custom instructions
-				const workspacePath = getWorkspacePath()
-				const customInstructions = await addCustomInstructions("", "", workspacePath, "ghost")
+		if (!this.model.loaded) {
+			this.cursor.hide()
+			await this.reload()
+		}
 
-				const systemPrompt = this.strategy.getSystemPrompt(customInstructions)
-				const userPrompt = this.strategy.getSuggestionPrompt(context)
-				if (cancelled) {
-					return
-				}
+		const { response, cost, inputTokens, outputTokens, cacheWriteTokens, cacheReadTokens } =
+			await this.model.generateResponse(systemPrompt, userPrompt)
 
-				progress.report({ message: t("kilocode:ghost.progress.generating") })
-				if (!this.model.loaded) {
-					await this.reload()
-				}
+		this.updateCostTracking(cost)
 
-				const { response, cost, inputTokens, outputTokens, cacheWriteTokens, cacheReadTokens } =
-					await this.model.generateResponse(systemPrompt, userPrompt)
+		TelemetryService.instance.captureEvent(TelemetryEventName.LLM_COMPLETION, {
+			taskId: this.taskId,
+			inputTokens,
+			outputTokens,
+			cacheWriteTokens,
+			cacheReadTokens,
+			cost,
+			service: "INLINE_ASSIST",
+		})
 
-				this.updateCostTracking(cost)
+		if (cancelled) {
+			this.cursor.hide()
+			return
+		}
 
-				TelemetryService.instance.captureEvent(TelemetryEventName.LLM_COMPLETION, {
-					taskId: this.taskId,
-					inputTokens,
-					outputTokens,
-					cacheWriteTokens,
-					cacheReadTokens,
-					cost,
-					service: "INLINE_ASSIST",
-				})
-
-				if (cancelled) {
-					return
-				}
-
-				// First parse the response into edit operations
-				progress.report({ message: t("kilocode:ghost.progress.processing") })
-				this.suggestions = await this.strategy.parseResponse(response, context)
-
-				if (cancelled) {
-					this.suggestions.clear()
-					await this.render()
-					return
-				}
-				// Generate placeholder for show the suggestions
-				progress.report({ message: t("kilocode:ghost.progress.showing") })
-				await this.workspaceEdit.applySuggestionsPlaceholders(this.suggestions)
-				await this.render()
-			},
-		)
+		// First parse the response into edit operations
+		this.suggestions = await this.strategy.parseResponse(response, context)
+		if (cancelled) {
+			this.suggestions.clear()
+			this.cursor.hide()
+			await this.render()
+			return
+		}
+		// Generate placeholder for show the suggestions
+		this.cursor.hide()
+		await this.workspaceEdit.applySuggestionsPlaceholders(this.suggestions)
+		await this.render()
 	}
 
 	private async render() {
@@ -308,6 +314,7 @@ export class GhostProvider {
 		if (!editor) {
 			return
 		}
+		this.clearAutoTriggerTimer()
 		await this.render()
 	}
 
@@ -397,6 +404,8 @@ export class GhostProvider {
 		this.decorations.clearAll()
 		await this.workspaceEdit.revertSuggestionsPlaceholder(this.suggestions)
 		this.suggestions.clear()
+
+		this.clearAutoTriggerTimer()
 		await this.render()
 	}
 
@@ -430,6 +439,8 @@ export class GhostProvider {
 		suggestionsFile.deleteSelectedGroup()
 		this.suggestions.validateFiles()
 		await this.workspaceEdit.applySuggestionsPlaceholders(this.suggestions)
+
+		this.clearAutoTriggerTimer()
 		await this.render()
 	}
 
@@ -447,6 +458,8 @@ export class GhostProvider {
 		await this.workspaceEdit.revertSuggestionsPlaceholder(this.suggestions)
 		await this.workspaceEdit.applySuggestions(this.suggestions)
 		this.suggestions.clear()
+
+		this.clearAutoTriggerTimer()
 		await this.render()
 	}
 
@@ -543,6 +556,7 @@ export class GhostProvider {
 
 	public dispose() {
 		this.disposeStatusBar()
+		this.clearAutoTriggerTimer()
 	}
 
 	public async disable() {
@@ -552,6 +566,8 @@ export class GhostProvider {
 			enableQuickInlineTaskKeybinding: false,
 		}
 		this.disposeStatusBar()
+		this.clearAutoTriggerTimer()
+
 		await this.cancelSuggestions()
 		await this.saveSettings()
 		await this.updateGlobalContext()
@@ -579,5 +595,77 @@ export class GhostProvider {
 		} else if (response === disableInlineAssist) {
 			await vscode.commands.executeCommand<any>("kilo-code.ghost.disable")
 		}
+	}
+
+	/**
+	 * Handle typing events for auto-trigger functionality
+	 */
+	private handleTypingEvent(event: vscode.TextDocumentChangeEvent): void {
+		// Skip if auto-trigger is not enabled
+		if (!this.isAutoTriggerEnabled()) {
+			return
+		}
+
+		// Skip if we already have suggestions
+		if (this.hasPendingSuggestions()) {
+			return
+		}
+
+		// Mark that user is typing
+		this.isUserTyping = true
+
+		// Clear any existing timer
+		this.clearAutoTriggerTimer()
+
+		// Start cursor animation to show we're ready
+		this.cursor.show()
+
+		// Start a new timer
+		const delay = (this.settings?.autoTriggerDelay || 3) * 1000
+		this.autoTriggerTimer = setTimeout(() => {
+			this.onAutoTriggerTimeout()
+		}, delay)
+	}
+
+	/**
+	 * Clear the auto-trigger timer
+	 */
+	private clearAutoTriggerTimer(): void {
+		this.cursor.hide()
+		if (this.autoTriggerTimer) {
+			clearTimeout(this.autoTriggerTimer)
+			this.autoTriggerTimer = null
+		}
+		this.isUserTyping = false
+	}
+
+	/**
+	 * Check if auto-trigger is enabled in settings
+	 */
+	private isAutoTriggerEnabled(): boolean {
+		return this.settings?.enableAutoTrigger === true
+	}
+
+	/**
+	 * Handle auto-trigger timeout - triggers code suggestion automatically
+	 */
+	private async onAutoTriggerTimeout(): Promise<void> {
+		// Reset typing state
+		this.isUserTyping = false
+		this.autoTriggerTimer = null
+
+		// Double-check that we should still trigger
+		if (!this.enabled || !this.isAutoTriggerEnabled() || this.hasPendingSuggestions()) {
+			return
+		}
+
+		// Get the active editor
+		const editor = vscode.window.activeTextEditor
+		if (!editor) {
+			return
+		}
+
+		// Trigger code suggestion automatically
+		await this.codeSuggestion()
 	}
 }

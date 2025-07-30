@@ -1,7 +1,7 @@
 import * as vscode from "vscode"
 
 export class GhostCursorAnimation {
-	private active = true
+	private active = false
 	private decoration: vscode.TextEditorDecorationType
 
 	public constructor(context: vscode.ExtensionContext) {
@@ -20,14 +20,25 @@ export class GhostCursorAnimation {
 	}
 
 	public update() {
-		if (!this.active) {
-			return
-		}
 		const editor = vscode.window.activeTextEditor
 		if (!editor) {
 			return
 		}
+		if (!this.active) {
+			editor.setDecorations(this.decoration, [])
+			return
+		}
 		const position = this.getPosition(editor)
 		editor.setDecorations(this.decoration, [position])
+	}
+
+	public show() {
+		this.active = true
+		this.update()
+	}
+
+	public hide() {
+		this.active = false
+		this.update()
 	}
 }
