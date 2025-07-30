@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.69.0
-
-### Minor Changes
+## [v4.69.0]
 
 - [#1514](https://github.com/Kilo-Org/kilocode/pull/1514) [`3d09426`](https://github.com/Kilo-Org/kilocode/commit/3d0942667c80cb0e9a185fe1bf1b2dc67f82a694) Thanks [@mcowger](https://github.com/mcowger)! - Show a toast to the user when the active handler changes in the virtual quota fallback provider.
 
