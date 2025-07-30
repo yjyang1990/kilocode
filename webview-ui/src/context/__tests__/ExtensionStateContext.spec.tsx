@@ -265,6 +265,7 @@ describe("mergeExtensionState", () => {
 				powerSteering: true,
 				multiFileApplyDiff: true,
 				inlineAssist: false, // kilocode_change
+				morphFastApply: false, // kilocode_change
 			},
 		}
 
@@ -277,11 +278,9 @@ describe("mergeExtensionState", () => {
 
 		expect(result.experiments).toEqual({
 			powerSteering: true,
-			marketplace: false,
-			disableCompletionCommand: false,
-			concurrentFileReads: true,
 			multiFileApplyDiff: true,
 			inlineAssist: false, // kilocode_change
+			morphFastApply: false, // kilocode_change
 		})
 	})
 })
