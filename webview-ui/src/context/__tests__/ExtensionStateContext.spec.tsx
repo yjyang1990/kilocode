@@ -263,11 +263,8 @@ describe("mergeExtensionState", () => {
 			apiConfiguration: { modelMaxThinkingTokens: 456, modelTemperature: 0.3 },
 			experiments: {
 				powerSteering: true,
-				marketplace: false,
-				disableCompletionCommand: false,
-				concurrentFileReads: true,
 				multiFileApplyDiff: true,
-			} as Record<ExperimentId, boolean>,
+			},
 		}
 
 		const result = mergeExtensionState(prevState, newState)

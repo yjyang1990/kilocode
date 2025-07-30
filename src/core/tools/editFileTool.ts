@@ -1,13 +1,16 @@
+// kilocode_change: Morph fast apply -- file added
+
 import path from "path"
 import { promises as fs } from "fs"
 import OpenAI from "openai"
-import * as vscode from "vscode"
 
 import { Task } from "../task/Task"
 import { formatResponse } from "../prompts/responses"
 import { ToolUse, AskApproval, HandleError, PushToolResult, RemoveClosingTag } from "../../shared/tools"
 import { fileExistsAtPath } from "../../utils/fs"
 import { getReadablePath } from "../../utils/path"
+import { Experiments, ProviderSettings } from "@roo-code/types"
+import { getKiloBaseUriFromToken } from "../../utils/kilocode-token"
 
 async function validateParams(
 	cline: Task,
@@ -193,7 +196,7 @@ async function applyMorphEdit(
 		const config = state.apiConfiguration
 
 		// Check if user has Morph enabled via OpenRouter or direct API
-		const morphConfig = await getMorphConfiguration(config)
+		const morphConfig = await getMorphConfiguration(state.experiments, state.apiConfiguration)
 		if (!morphConfig.available) {
 			return { success: false, error: morphConfig.error || "Morph is not available" }
 		}
@@ -244,13 +247,34 @@ interface MorphConfiguration {
 	error?: string
 }
 
-async function getMorphConfiguration(apiConfig: any): Promise<MorphConfiguration> {
+async function getMorphConfiguration(
+	experiments: Experiments,
+	apiConfig: ProviderSettings,
+): Promise<MorphConfiguration> {
 	// Check if Morph is enabled in API configuration
-	const morphEnabled = apiConfig.morphEnabled === true
-	if (!morphEnabled) {
+	if (experiments.morphFastApply !== true) {
 		return {
 			available: false,
 			error: "Morph is disabled. Enable it in API Options > Enable Editing with Morph FastApply",
+		}
+	}
+
+	// If user has direct Morph API key, use it
+	if (apiConfig.morphApiKey) {
+		return {
+			available: true,
+			apiKey: apiConfig.morphApiKey,
+			baseUrl: "https://api.morphllm.com/v1",
+			model: "auto",
+		}
+	}
+
+	if (apiConfig.apiProvider === "kilocode" && apiConfig.kilocodeToken) {
+		return {
+			available: true,
+			apiKey: apiConfig.kilocodeToken,
+			baseUrl: `${getKiloBaseUriFromToken(apiConfig.kilocodeToken)}/api/openrouter/`,
+			model: "morph/morph-v3-large", // Morph model via OpenRouter
 		}
 	}
 
@@ -261,16 +285,6 @@ async function getMorphConfiguration(apiConfig: any): Promise<MorphConfiguration
 			apiKey: apiConfig.openRouterApiKey,
 			baseUrl: apiConfig.openRouterBaseUrl || "https://openrouter.ai/api/v1",
 			model: "morph/morph-v3-large", // Morph model via OpenRouter
-		}
-	}
-
-	// Otherwise, if user has direct Morph API key, use it
-	if (apiConfig.morphApiKey) {
-		return {
-			available: true,
-			apiKey: apiConfig.morphApiKey,
-			baseUrl: "https://api.morphllm.com/v1",
-			model: "auto",
 		}
 	}
 

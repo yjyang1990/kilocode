@@ -59,17 +59,19 @@ export const toolParamNames = [
 	"replace",
 	"use_regex",
 	"ignore_case",
-	"title", // kilocode_change
-	"description", // kilocode_change
+	// kilocode_change start
+	"title",
+	"description",
+	"target_file",
+	"instructions",
+	"code_edit",
+	// kilocode_change end
 	"args",
 	"start_line",
 	"end_line",
 	"query",
 	"args",
 	"todos",
-	"target_file",
-	"instructions",
-	"code_edit",
 ] as const
 
 export type ToolParamName = (typeof toolParamNames)[number]
@@ -174,10 +176,12 @@ export interface SearchAndReplaceToolUse extends ToolUse {
 		Partial<Pick<Record<ToolParamName, string>, "use_regex" | "ignore_case" | "start_line" | "end_line">>
 }
 
+// kilocode_change start: Morph fast apply
 export interface EditFileToolUse extends ToolUse {
 	name: "edit_file"
 	params: Required<Pick<Record<ToolParamName, string>, "target_file" | "instructions" | "code_edit">>
 }
+// kilocode_change end
 
 // Define tool group configuration
 export type ToolGroupConfig = {
@@ -191,7 +195,7 @@ export const TOOL_DISPLAY_NAMES: Record<ToolName, string> = {
 	fetch_instructions: "fetch instructions",
 	write_to_file: "write files",
 	apply_diff: "apply changes",
-	edit_file: "edit file",
+	edit_file: "edit file", // kilocode_change: Morph fast apply
 	search_files: "search files",
 	list_files: "list files",
 	list_code_definition_names: "list definitions",
@@ -224,7 +228,14 @@ export const TOOL_GROUPS: Record<ToolGroup, ToolGroupConfig> = {
 		],
 	},
 	edit: {
-		tools: ["apply_diff", "edit_file", "write_to_file", "insert_content", "search_and_replace", "new_rule"],
+		tools: [
+			"apply_diff",
+			"edit_file", // kilocode_change: Morph fast apply
+			"write_to_file",
+			"insert_content",
+			"search_and_replace",
+			"new_rule",
+		],
 	},
 	browser: {
 		tools: ["browser_action"],

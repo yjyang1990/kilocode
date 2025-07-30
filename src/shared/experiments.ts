@@ -1,6 +1,7 @@
 import type { AssertEqual, Equals, Keys, Values, ExperimentId, Experiments } from "@roo-code/types"
 
 export const EXPERIMENT_IDS = {
+	MORPH_FAST_APPLY: "morphFastApply", // kilocode_change
 	MULTI_FILE_APPLY_DIFF: "multiFileApplyDiff",
 	POWER_STEERING: "powerSteering",
 } as const satisfies Record<string, ExperimentId>
@@ -14,6 +15,7 @@ interface ExperimentConfig {
 }
 
 export const experimentConfigsMap: Record<ExperimentKey, ExperimentConfig> = {
+	MORPH_FAST_APPLY: { enabled: false }, // kilocode_change
 	MULTI_FILE_APPLY_DIFF: { enabled: false },
 	POWER_STEERING: { enabled: false },
 }

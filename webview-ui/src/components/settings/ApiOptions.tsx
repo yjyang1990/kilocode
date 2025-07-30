@@ -97,7 +97,6 @@ import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_c
 import { KiloCodeAdvanced } from "../kilocode/settings/providers/KiloCodeAdvanced" // kilocode_change
 import { buildDocLink } from "@src/utils/docLinks"
 import { cerebrasDefaultModelId } from "@roo/api"
-import { Checkbox } from "vscrui"
 
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
@@ -159,9 +158,6 @@ const ApiOptions = ({
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
 	const [isAdvancedSettingsOpen, setIsAdvancedSettingsOpen] = useState(false)
 
-	// Track if user has explicitly unselected morph while on OpenRouter
-	const [userUnselectedMorph, setUserUnselectedMorph] = useState(false)
-
 	const handleInputChange = useCallback(
 		<K extends keyof ProviderSettings, E>(
 			field: K,
@@ -205,13 +201,6 @@ const ApiOptions = ({
 			setApiConfigurationField("apiModelId", selectedModelId)
 		}
 	}, [selectedModelId, setApiConfigurationField, apiConfiguration.apiModelId])
-
-	// Automatically enable Morph when OpenRouter is the selected provider
-	useEffect(() => {
-		if (selectedProvider === "openrouter" && !apiConfiguration.morphEnabled && !userUnselectedMorph) {
-			setApiConfigurationField("morphEnabled", true)
-		}
-	}, [selectedProvider, apiConfiguration.morphEnabled, setApiConfigurationField, userUnselectedMorph])
 
 	// Debounced refresh model updates, only executed 250ms after the user
 	// stops typing.
@@ -282,14 +271,6 @@ const ApiOptions = ({
 	const onProviderChange = useCallback(
 		(value: ProviderName) => {
 			setApiConfigurationField("apiProvider", value)
-
-			// Reset user unselected morph state when changing providers
-			setUserUnselectedMorph(false)
-
-			// Automatically enable Morph when OpenRouter is selected
-			if (value === "openrouter") {
-				setApiConfigurationField("morphEnabled", true)
-			}
 
 			// It would be much easier to have a single attribute that stores
 			// the modelId, but we have a separate attribute for each of
@@ -374,9 +355,7 @@ const ApiOptions = ({
 			return undefined
 		}
 
-		{
-			/* kilocode_change start */
-		}
+		// kilocode_change start
 		// Providers that don't have documentation pages yet
 		const excludedProviders = [
 			"fireworks",
@@ -392,9 +371,7 @@ const ApiOptions = ({
 		if (excludedProviders.includes(selectedProvider)) {
 			return undefined
 		}
-		{
-			/* kilocode_change end */
-		}
+		// kilocode_change end
 
 		// Get the URL slug - use custom mapping if available, otherwise use the provider key.
 		const slugs: Record<string, string> = {
@@ -704,12 +681,6 @@ const ApiOptions = ({
 						<span className="font-medium">{t("settings:advancedSettings.title")}</span>
 					</CollapsibleTrigger>
 					<CollapsibleContent className="space-y-3">
-						<MorphSettingsInternal
-							apiConfiguration={apiConfiguration}
-							handleInputChange={handleInputChange}
-							setApiConfigurationField={setApiConfigurationField}
-							setUserUnselectedMorph={setUserUnselectedMorph}
-						/>
 						<TodoListSettingsControl
 							todoListEnabled={apiConfiguration.todoListEnabled}
 							onChange={(field, value) => setApiConfigurationField(field, value)}
@@ -789,63 +760,6 @@ const ApiOptions = ({
 							)}
 					</CollapsibleContent>
 				</Collapsible>
-			)}
-		</div>
-	)
-}
-
-interface MorphSettingsInternalProps {
-	apiConfiguration: ProviderSettings
-	handleInputChange: <K extends keyof ProviderSettings, E>(
-		field: K,
-		transform?: (event: E) => ProviderSettings[K],
-	) => (event: E | Event) => void
-	setApiConfigurationField: <K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => void
-	setUserUnselectedMorph: (value: boolean) => void
-}
-
-const MorphSettingsInternal = ({
-	apiConfiguration,
-	handleInputChange,
-	setApiConfigurationField,
-	setUserUnselectedMorph,
-}: MorphSettingsInternalProps) => {
-	const handleMorphEnabledChange = (enabled: boolean) => {
-		setApiConfigurationField("morphEnabled", enabled)
-
-		// Track if user unselected morph while on OpenRouter
-		if (!enabled && apiConfiguration.apiProvider === "openrouter") {
-			setUserUnselectedMorph(true)
-		}
-	}
-
-	return (
-		<div className="space-y-3">
-			<Checkbox
-				checked={apiConfiguration.morphEnabled || false}
-				onChange={handleMorphEnabledChange}
-				data-testid="morph-enabled-checkbox">
-				Enable Editing with Morph FastApply
-			</Checkbox>
-			{apiConfiguration.morphEnabled && (
-				<div className="space-y-3 pl-6">
-					{apiConfiguration.apiProvider !== "openrouter" && (
-						<>
-							<div className="text-xs text-vscode-descriptionForeground">
-								Configure Morph for AI-powered fast file editing.
-							</div>
-							<VSCodeTextField
-								type="password"
-								value={apiConfiguration.morphApiKey || ""}
-								placeholder="Enter your Morph API key (optional)"
-								onInput={handleInputChange("morphApiKey", inputEventTransform)}
-								data-testid="morph-api-key"
-								className="w-full">
-								API Key
-							</VSCodeTextField>
-						</>
-					)}
-				</div>
 			)}
 		</div>
 	)

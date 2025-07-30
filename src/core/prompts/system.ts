@@ -1,7 +1,13 @@
 import * as vscode from "vscode"
 import * as os from "os"
 
-import type { ModeConfig, PromptComponent, CustomModePrompts, TodoItem } from "@roo-code/types"
+import type {
+	ModeConfig,
+	PromptComponent,
+	CustomModePrompts,
+	TodoItem,
+	Experiments, // kilocode_change
+} from "@roo-code/types"
 
 import type { SystemPromptSettings } from "./types"
 
@@ -15,7 +21,7 @@ import { CodeIndexManager } from "../../services/code-index/manager"
 
 import { PromptVariables, loadSystemPromptFile } from "./sections/custom-system-prompt"
 
-import { getToolDescriptionsForMode, checkMorphAvailability } from "./tools"
+import { getToolDescriptionsForMode } from "./tools"
 import {
 	getRulesSection,
 	getSystemInfoSection,
@@ -28,6 +34,7 @@ import {
 	addCustomInstructions,
 	markdownFormattingSection,
 } from "./sections"
+import { getMorphInstructions } from "./tools/edit-file" // kilocode_change: Morph fast apply
 
 // Helper function to get prompt component, filtering out empty objects
 export function getPromptComponent(
@@ -40,17 +47,6 @@ export function getPromptComponent(
 		return undefined
 	}
 	return component
-}
-
-// Helper function to generate morph instructions when available
-function getMorphInstructions(cwd: string, supportsComputerUse: boolean, settings?: Record<string, any>): string {
-	const morphAvailable = checkMorphAvailability({ cwd, supportsComputerUse, settings })
-	return morphAvailable
-		? `
-
-		Morph FastApply is enabled. When making any file edits, you MUST ALWAYS use the \`edit_file\` tool instead of other editing tools like \`write_to_file\`, \`search_and_replace\`, or \`apply_diff\`. The \`edit_file\` tool uses a less intelligent specialized model to apply code edits to files.**
-`
-		: ""
 }
 
 async function generatePrompt(
@@ -98,9 +94,6 @@ async function generatePrompt(
 
 	const codeIndexManager = CodeIndexManager.getInstance(context)
 
-	// Check if Morph is available and add specific instructions
-	const morphInstructions = getMorphInstructions(cwd, supportsComputerUse, settings)
-
 	const basePrompt = `${roleDefinition}
 
 ${markdownFormattingSection()}
@@ -123,7 +116,7 @@ ${getToolDescriptionsForMode(
 
 ${getToolUseGuidelinesSection(codeIndexManager)}
 
-${morphInstructions}
+${getMorphInstructions(experiments) /* kilocode_change: Morph fast apply */}
 
 ${mcpServersSection}
 
@@ -160,7 +153,7 @@ export const SYSTEM_PROMPT = async (
 	customModes?: ModeConfig[],
 	globalCustomInstructions?: string,
 	diffEnabled?: boolean,
-	experiments?: Record<string, boolean>,
+	experiments?: Experiments, // kilocode_change: type
 	enableMcpServerCreation?: boolean,
 	language?: string,
 	rooIgnoreInstructions?: string,
@@ -211,14 +204,12 @@ export const SYSTEM_PROMPT = async (
 			},
 		)
 
-		const morphInstructions = getMorphInstructions(cwd, supportsComputerUse, settings)
-
 		// For file-based prompts, don't include the tool sections
 		return `${roleDefinition}
 
 ${fileCustomSystemPrompt}
 
-${morphInstructions}
+${getMorphInstructions(experiments) /* kilocode_change: Morph fast apply */}
 
 ${customInstructions}`
 	}

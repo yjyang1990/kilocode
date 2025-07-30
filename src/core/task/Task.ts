@@ -1750,9 +1750,6 @@ export class Task extends EventEmitter<ClineEvents> {
 			let didEndLoop = false
 
 			if (assistantMessage.length > 0) {
-				// Log the complete API response
-				console.log(`[API Response] Task ${this.taskId}.${this.instanceId}:`, assistantMessage)
-
 				await this.addToApiConversationHistory({
 					role: "assistant",
 					content: [{ type: "text", text: assistantMessage }],
@@ -1970,7 +1967,6 @@ export class Task extends EventEmitter<ClineEvents> {
 				rooIgnoreInstructions,
 				maxReadFileLine !== -1,
 				{
-					...apiConfiguration,
 					maxConcurrentFileReads: maxConcurrentFileReads ?? 5,
 					todoListEnabled: apiConfiguration?.todoListEnabled ?? true,
 					useAgentRules: vscode.workspace.getConfiguration("roo-cline").get<boolean>("useAgentRules") ?? true,
