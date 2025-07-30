@@ -1943,7 +1943,12 @@ export class ClineProvider
 	 * like the current mode, API provider, git repository information, etc.
 	 */
 	public async getTelemetryProperties(): Promise<TelemetryProperties> {
-		const { mode, apiConfiguration, language } = await this.getState()
+		const {
+			mode,
+			apiConfiguration,
+			language,
+			experiments, // kilocode_change
+		} = await this.getState()
 		const task = this.getCurrentCline()
 
 		const packageJSON = this.context.extension?.packageJSON
@@ -1987,6 +1992,21 @@ export class ClineProvider
 				}
 			}
 		}
+
+		function getFastApply() {
+			try {
+				return {
+					fastApply: {
+						morphFastApply: Boolean(experiments.morphFastApply),
+						morphApiKey: Boolean(apiConfiguration.morphApiKey),
+					},
+				}
+			} catch (error) {
+				return {
+					fastApplyException: stringifyError(error),
+				}
+			}
+		}
 		// kilocode_change end
 
 		// Calculate todo list statistics
@@ -2012,8 +2032,11 @@ export class ClineProvider
 			language,
 			mode,
 			apiProvider: apiConfiguration?.apiProvider,
-			...(await getModelId()), // kilocode_change
-			...getMemory(), // kilocode_change
+			// kilocode_change start
+			...(await getModelId()),
+			...getMemory(),
+			...getFastApply(),
+			// kilocode_change end
 			diffStrategy: task?.diffStrategy?.getName(),
 			isSubtask: task ? !!task.parentTask : undefined,
 			cloudIsAuthenticated,
