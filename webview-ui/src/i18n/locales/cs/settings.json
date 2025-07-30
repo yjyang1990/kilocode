@@ -705,6 +705,13 @@
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Povolit souběžné úpravy souborů",
 			"description": "Pokud je povoleno, Kilo Code může upravovat více souborů v jednom požadavku. Pokud je zakázáno, Kilo Code musí upravovat soubory jeden po druhém. Zakázání může pomoci při práci s méně schopnými modely nebo když chcete mít větší kontrolu nad úpravami souborů."
+		},
+		"MORPH_FAST_APPLY": {
+			"name": "Povolit Morph Fast Apply",
+			"description": "Pokud je povoleno, Kilo Code může upravovat soubory pomocí Morph Fast Apply.",
+			"apiKey": "Klíč API Morph (volitelné)",
+			"placeholder": "Zadejte svůj klíč API Morph (volitelné)",
+			"warning": "Pokud nenakonfigurujete klíč API Morph, můžete stále používat Fast Apply s Kilo Code nebo OpenRouter, ale bude vám účtováno použití modelu!"
 		}
 	},
 	"promptCaching": {

@@ -694,6 +694,13 @@
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "تعديلات ملفات متزامنة",
 			"description": "يحرر عدة ملفات في طلب واحد."
+		},
+		"MORPH_FAST_APPLY": {
+			"name": "تفعيل Morph Fast Apply",
+			"description": "عند التفعيل، يمكن لـ Kilo Code تحرير الملفات باستخدام Morph Fast Apply.",
+			"apiKey": "مفتاح Morph API (اختياري)",
+			"placeholder": "أدخل مفتاح Morph API (اختياري)",
+			"warning": "إذا لم تقم بتكوين مفتاح Morph API، يمكنك لا تزال استخدام Fast Apply مع Kilo Code أو OpenRouter، لكن سيتم تحصيل رسوم من حسابك لاستخدام النموذج!"
 		}
 	},
 	"promptCaching": {

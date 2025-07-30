@@ -673,6 +673,13 @@
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Włącz równoczesne edycje plików",
 			"description": "Gdy włączone, Kilo Code może edytować wiele plików w jednym żądaniu. Gdy wyłączone, Kilo Code musi edytować pliki jeden po drugim. Wyłączenie tego może pomóc podczas pracy z mniej zdolnymi modelami lub gdy chcesz mieć większą kontrolę nad modyfikacjami plików."
+		},
+		"MORPH_FAST_APPLY": {
+			"name": "Włącz Morph Fast Apply",
+			"description": "Gdy włączone, Kilo Code może edytować pliki używając Morph Fast Apply.",
+			"apiKey": "Klucz API Morph (opcjonalny)",
+			"placeholder": "Wprowadź swój klucz API Morph (opcjonalny)",
+			"warning": "Jeśli nie skonfigurujesz klucza API Morph, nadal możesz używać Fast Apply z Kilo Code lub OpenRouter, ale Twoje konto zostanie obciążone za użycie modelu!"
 		}
 	},
 	"promptCaching": {
