@@ -678,6 +678,10 @@
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Enable concurrent file edits",
 			"description": "When enabled, Kilo Code can edit multiple files in a single request. When disabled, Kilo Code must edit files one at a time. Disabling this can help when working with less capable models or when you want more control over file modifications."
+		},
+		"MORPH_FAST_APPLY": {
+			"name": "Enable Morph Fast Apply",
+			"description": "When enabled, Kilo Code can edit files using Morph Fast Apply."
 		}
 	},
 	"promptCaching": {
