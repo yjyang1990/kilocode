@@ -72,6 +72,7 @@ export class GhostProvider {
 		vscode.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument, this, context.subscriptions)
 		vscode.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, context.subscriptions)
 		vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, context.subscriptions)
+		vscode.window.onDidChangeTextEditorSelection(this.onDidChangeTextEditorSelection, this, context.subscriptions)
 
 		void this.reload()
 	}
@@ -121,6 +122,13 @@ export class GhostProvider {
 
 		// Store the updated document and parse its AST
 		await this.documentStore.storeDocument({ document: event.document })
+	}
+
+	private async onDidChangeTextEditorSelection(event: vscode.TextEditorSelectionChangeEvent): Promise<void> {
+		if (!this.enabled) {
+			return
+		}
+		this.cursor.update()
 	}
 
 	private loadSettings() {

@@ -7,13 +7,9 @@ export class GhostCursorAnimation {
 	public constructor(context: vscode.ExtensionContext) {
 		this.decoration = vscode.window.createTextEditorDecorationType({
 			gutterIconPath: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "logo-outline-black.gif"),
-			gutterIconSize: "20px",
+			gutterIconSize: "30px",
 			isWholeLine: false,
 		})
-
-		setInterval(() => {
-			this.render()
-		}, 200)
 	}
 
 	private getPosition(editor: vscode.TextEditor): vscode.Range {
@@ -23,7 +19,7 @@ export class GhostCursorAnimation {
 		return new vscode.Range(lineEndPosition, lineEndPosition)
 	}
 
-	private render() {
+	public update() {
 		if (!this.active) {
 			return
 		}
@@ -31,7 +27,6 @@ export class GhostCursorAnimation {
 		if (!editor) {
 			return
 		}
-
 		const position = this.getPosition(editor)
 		editor.setDecorations(this.decoration, [position])
 	}
