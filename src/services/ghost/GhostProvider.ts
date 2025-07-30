@@ -19,6 +19,7 @@ import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManag
 import { GhostContext } from "./GhostContext"
 import { TelemetryService } from "@roo-code/telemetry"
 import { ClineProvider } from "../../core/webview/ClineProvider"
+import { experiments, EXPERIMENT_IDS } from "../../shared/experiments"
 
 export class GhostProvider {
 	private static instance: GhostProvider | null = null
@@ -34,6 +35,7 @@ export class GhostProvider {
 	private settings: GhostServiceSettings | null = null
 	private ghostContext: GhostContext
 
+	private enabled: boolean = false
 	private taskId: string | null = null
 
 	// Status bar integration
@@ -56,6 +58,7 @@ export class GhostProvider {
 		this.model = new GhostModel()
 		this.ghostContext = new GhostContext(this.documentStore)
 
+		this.loadSettings()
 		this.initializeStatusBar()
 
 		// Register the providers
@@ -77,7 +80,7 @@ export class GhostProvider {
 	 */
 	private onDidCloseTextDocument(document: vscode.TextDocument): void {
 		// Only process file documents
-		if (document.uri.scheme !== "file") {
+		if (!this.enabled || document.uri.scheme !== "file") {
 			return
 		}
 
@@ -90,7 +93,7 @@ export class GhostProvider {
 	 */
 	private async onDidOpenTextDocument(document: vscode.TextDocument): Promise<void> {
 		// Only process file documents
-		if (document.uri.scheme !== "file") {
+		if (!this.enabled || document.uri.scheme !== "file") {
 			return
 		}
 
@@ -105,7 +108,7 @@ export class GhostProvider {
 	 */
 	private async onDidChangeTextDocument(event: vscode.TextDocumentChangeEvent): Promise<void> {
 		// Only process file documents
-		if (event.document.uri.scheme !== "file") {
+		if (!this.enabled || event.document.uri.scheme !== "file") {
 			return
 		}
 
@@ -118,7 +121,16 @@ export class GhostProvider {
 	}
 
 	private loadSettings() {
-		return ContextProxy.instance?.getValues?.()?.ghostServiceSettings
+		const state = ContextProxy.instance?.getValues?.()
+		const experimentEnabled = experiments.isEnabled(state.experiments ?? {}, EXPERIMENT_IDS.INLINE_ASSIST)
+		if (this.enabled && !experimentEnabled) {
+			this.disable()
+		}
+		if (!this.enabled && experimentEnabled) {
+			this.enable()
+		}
+		this.enabled = experimentEnabled
+		return state.ghostServiceSettings
 	}
 
 	private async saveSettings() {
@@ -151,11 +163,10 @@ export class GhostProvider {
 		return GhostProvider.instance
 	}
 
-	public getDocumentStore() {
-		return this.documentStore
-	}
-
 	public async promptCodeSuggestion() {
+		if (!this.enabled) {
+			return
+		}
 		this.taskId = crypto.randomUUID()
 
 		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_QUICK_TASK, {
@@ -181,6 +192,9 @@ export class GhostProvider {
 	}
 
 	public async codeSuggestion() {
+		if (!this.enabled) {
+			return
+		}
 		const editor = vscode.window.activeTextEditor
 		if (!editor) {
 			return
@@ -277,6 +291,9 @@ export class GhostProvider {
 	}
 
 	public async onDidChangeActiveTextEditor(editor: vscode.TextEditor | undefined) {
+		if (!this.enabled) {
+			return
+		}
 		if (!editor) {
 			return
 		}
@@ -297,6 +314,9 @@ export class GhostProvider {
 	}
 
 	public async displaySuggestions() {
+		if (!this.enabled) {
+			return
+		}
 		const editor = vscode.window.activeTextEditor
 		if (!editor) {
 			return
@@ -350,6 +370,9 @@ export class GhostProvider {
 	}
 
 	public hasPendingSuggestions(): boolean {
+		if (!this.enabled) {
+			return false
+		}
 		return this.suggestions.hasSuggestions()
 	}
 
@@ -367,6 +390,9 @@ export class GhostProvider {
 	}
 
 	public async applySelectedSuggestions() {
+		if (!this.enabled) {
+			return
+		}
 		if (!this.hasPendingSuggestions() || this.workspaceEdit.isLocked()) {
 			return
 		}
@@ -397,6 +423,9 @@ export class GhostProvider {
 	}
 
 	public async applyAllSuggestions() {
+		if (!this.enabled) {
+			return
+		}
 		if (!this.hasPendingSuggestions() || this.workspaceEdit.isLocked()) {
 			return
 		}
@@ -411,6 +440,9 @@ export class GhostProvider {
 	}
 
 	public async selectNextSuggestion() {
+		if (!this.enabled) {
+			return
+		}
 		if (!this.hasPendingSuggestions()) {
 			return
 		}
@@ -429,6 +461,9 @@ export class GhostProvider {
 	}
 
 	public async selectPreviousSuggestion() {
+		if (!this.enabled) {
+			return
+		}
 		if (!this.hasPendingSuggestions()) {
 			return
 		}
@@ -447,6 +482,9 @@ export class GhostProvider {
 	}
 
 	private initializeStatusBar() {
+		if (!this.enabled) {
+			return
+		}
 		this.statusBar = new GhostStatusBar({
 			enabled: false,
 			model: "loading...",
@@ -475,10 +513,10 @@ export class GhostProvider {
 
 	private updateStatusBar() {
 		if (!this.statusBar) {
-			return
+			this.initializeStatusBar()
 		}
 
-		this.statusBar.update({
+		this.statusBar?.update({
 			enabled: true,
 			model: this.getCurrentModelName(),
 			hasValidToken: this.hasValidApiToken(),
@@ -487,9 +525,13 @@ export class GhostProvider {
 		})
 	}
 
-	public dispose() {
+	private disposeStatusBar() {
 		this.statusBar?.dispose()
 		this.statusBar = null
+	}
+
+	public dispose() {
+		this.disposeStatusBar()
 	}
 
 	public async disable() {
@@ -498,6 +540,8 @@ export class GhostProvider {
 			enableAutoInlineTaskKeybinding: false,
 			enableQuickInlineTaskKeybinding: false,
 		}
+		this.disposeStatusBar()
+		await this.cancelSuggestions()
 		await this.saveSettings()
 		await this.updateGlobalContext()
 	}
@@ -508,6 +552,7 @@ export class GhostProvider {
 			enableAutoInlineTaskKeybinding: true,
 			enableQuickInlineTaskKeybinding: true,
 		}
+		this.updateStatusBar()
 		await this.saveSettings()
 		await this.updateGlobalContext()
 	}
