@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.70.1
-
-### Patch Changes
+## [v4.70.1]
 
 - [#1614](https://github.com/Kilo-Org/kilocode/pull/1614) [`2f9d064`](https://github.com/Kilo-Org/kilocode/commit/2f9d064b0370bfa4da92ceffec0026a16feb178a) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - GitHub accounts now show their avatar on the profile page
 
