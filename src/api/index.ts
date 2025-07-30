@@ -12,12 +12,13 @@ import {
 	VertexHandler,
 	AnthropicVertexHandler,
 	OpenAiHandler,
-	OllamaHandler,
+	// OllamaHandler, // kilocode_change
 	LmStudioHandler,
 	GeminiHandler,
 	GeminiCliHandler, // kilocode_change
 	OpenAiNativeHandler,
 	DeepSeekHandler,
+	MoonshotHandler,
 	MistralHandler,
 	VsCodeLmHandler,
 	UnboundHandler,
@@ -26,6 +27,7 @@ import {
 	FakeAIHandler,
 	XAIHandler,
 	GroqHandler,
+	HuggingFaceHandler,
 	ChutesHandler,
 	LiteLLMHandler,
 	CerebrasHandler, // kilocode_change
@@ -35,6 +37,7 @@ import {
 // kilocode_change start
 import { FireworksHandler } from "./providers/fireworks"
 import { KilocodeOpenrouterHandler } from "./providers/kilocode-openrouter"
+import { KilocodeOllamaHandler } from "./providers/kilocode-ollama"
 // kilocode_change end
 
 export interface SingleCompletionHandler {
@@ -89,7 +92,7 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 		case "openai":
 			return new OpenAiHandler(options)
 		case "ollama":
-			return new OllamaHandler(options)
+			return new KilocodeOllamaHandler(options)
 		case "lmstudio":
 			return new LmStudioHandler(options)
 		case "gemini":
@@ -102,6 +105,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new OpenAiNativeHandler(options)
 		case "deepseek":
 			return new DeepSeekHandler(options)
+		case "moonshot":
+			return new MoonshotHandler(options)
 		case "vscode-lm":
 			return new VsCodeLmHandler(options)
 		case "mistral":
@@ -124,6 +129,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new XAIHandler(options)
 		case "groq":
 			return new GroqHandler(options)
+		case "huggingface":
+			return new HuggingFaceHandler(options)
 		case "chutes":
 			return new ChutesHandler(options)
 		case "litellm":
@@ -133,6 +140,7 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new CerebrasHandler(options)
 		// kilocode_change end
 		default:
+			apiProvider satisfies "gemini-cli" | undefined
 			return new AnthropicHandler(options)
 	}
 }

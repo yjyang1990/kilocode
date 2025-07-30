@@ -3,7 +3,7 @@
 	"displayName": "%extension.displayName%",
 	"description": "%extension.description%",
 	"publisher": "kilocode",
-	"version": "4.65.2",
+	"version": "4.69.0",
 	"icon": "assets/icons/logo-outline-black.png",
 	"galleryBanner": {
 		"color": "#FFFFFF",
@@ -44,6 +44,7 @@
 		"llama",
 		"Kilo Code",
 		"kilocode",
+		"roo code",
 		"roocode"
 	],
 	"activationEvents": [
@@ -299,6 +300,11 @@
 				"when": "inlineSuggestionVisible && editorTextFocus && !editorTabMovesFocus && !inSnippetMode && !suggestWidgetVisible && editorLangId != 'markdown'"
 			},
 			{
+				"command": "kilo-code.ghost.applyAllSuggestions",
+				"key": "shift+tab",
+				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.hasSuggestions"
+			},
+			{
 				"command": "kilo-code.ghost.applyCurrentSuggestions",
 				"key": "tab",
 				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.hasSuggestions"
@@ -322,13 +328,25 @@
 				"command": "kilo-code.ghost.promptCodeSuggestion",
 				"key": "ctrl+i",
 				"mac": "cmd+i",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableQuickInlineTaskKeybinding"
+				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableQuickInlineTaskKeybinding && !github.copilot.completions.enabled"
 			},
 			{
 				"command": "kilo-code.ghost.generateSuggestions",
 				"key": "ctrl+l",
 				"mac": "cmd+l",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableAutoInlineTaskKeybinding"
+				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableAutoInlineTaskKeybinding && !github.copilot.completions.enabled"
+			},
+			{
+				"command": "kilo-code.ghost.showIncompatibilityExtensionPopup",
+				"key": "ctrl+l",
+				"mac": "cmd+l",
+				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableAutoInlineTaskKeybinding && github.copilot.completions.enabled"
+			},
+			{
+				"command": "kilo-code.ghost.showIncompatibilityExtensionPopup",
+				"key": "ctrl+i",
+				"mac": "cmd+i",
+				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableQuickInlineTaskKeybinding && github.copilot.completions.enabled"
 			}
 		],
 		"menus": {
@@ -530,6 +548,11 @@
 					"type": "string",
 					"default": "",
 					"description": "%settings.autoImportSettingsPath.description%"
+				},
+				"kilo-code.useAgentRules": {
+					"type": "boolean",
+					"default": true,
+					"description": "%settings.useAgentRules.description%"
 				}
 			}
 		},
@@ -602,6 +625,7 @@
 		"monaco-vscode-textmate-theme-converter": "^0.1.7",
 		"node-cache": "^5.1.2",
 		"node-ipc": "^12.0.0",
+		"ollama": "^0.5.16",
 		"openai": "^5.0.0",
 		"os-name": "^6.0.0",
 		"p-limit": "^6.2.0",

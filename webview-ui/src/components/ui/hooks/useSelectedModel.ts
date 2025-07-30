@@ -8,6 +8,8 @@ import {
 	bedrockModels,
 	deepSeekDefaultModelId,
 	deepSeekModels,
+	moonshotDefaultModelId,
+	moonshotModels,
 	geminiDefaultModelId,
 	geminiModels,
 	geminiCliDefaultModelId,
@@ -37,7 +39,7 @@ import {
 	kilocodeDefaultModelId,
 } from "@roo-code/types"
 
-import { cerebrasModels, cerebrasDefaultModelId } from "@roo/api" // kilocode_change
+import { cerebrasModels, cerebrasDefaultModelId, fireworksDefaultModelId, fireworksModels } from "@roo/api" // kilocode_change
 
 import type { RouterModels } from "@roo/api"
 
@@ -145,6 +147,16 @@ function getSelectedModel({
 			const info = groqModels[id as keyof typeof groqModels]
 			return { id, info }
 		}
+		case "huggingface": {
+			const id = apiConfiguration.huggingFaceModelId ?? "meta-llama/Llama-3.3-70B-Instruct"
+			const info = {
+				maxTokens: 8192,
+				contextWindow: 131072,
+				supportsImages: false,
+				supportsPromptCache: false,
+			}
+			return { id, info }
+		}
 		case "chutes": {
 			const id = apiConfiguration.apiModelId ?? chutesDefaultModelId
 			const info = chutesModels[id as keyof typeof chutesModels]
@@ -188,6 +200,11 @@ function getSelectedModel({
 		case "deepseek": {
 			const id = apiConfiguration.apiModelId ?? deepSeekDefaultModelId
 			const info = deepSeekModels[id as keyof typeof deepSeekModels]
+			return { id, info }
+		}
+		case "moonshot": {
+			const id = apiConfiguration.apiModelId ?? moonshotDefaultModelId
+			const info = moonshotModels[id as keyof typeof moonshotModels]
 			return { id, info }
 		}
 		case "openai-native": {
@@ -263,6 +280,22 @@ function getSelectedModel({
 				info: routerModels["kilocode-openrouter"][kilocodeDefaultModelId],
 			}
 		}
+		case "fireworks": {
+			return {
+				id: apiConfiguration.fireworksModelId ?? fireworksDefaultModelId,
+				info: fireworksModels[
+					(apiConfiguration.fireworksModelId ?? fireworksDefaultModelId) as keyof typeof fireworksModels
+				],
+			}
+		}
+		case "virtual-quota-fallback": {
+			return {
+				id: apiConfiguration.apiModelId ?? anthropicDefaultModelId,
+				info: anthropicModels[
+					(apiConfiguration.apiModelId ?? anthropicDefaultModelId) as keyof typeof anthropicModels
+				],
+			}
+		}
 		// kilocode_change end
 
 		case "claude-code": {
@@ -275,6 +308,7 @@ function getSelectedModel({
 		// case "human-relay":
 		// case "fake-ai":
 		default: {
+			provider satisfies "anthropic" | "human-relay" | "fake-ai"
 			const id = apiConfiguration.apiModelId ?? anthropicDefaultModelId
 			const info = anthropicModels[id as keyof typeof anthropicModels]
 			return { id, info }

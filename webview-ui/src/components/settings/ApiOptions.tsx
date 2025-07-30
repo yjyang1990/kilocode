@@ -19,6 +19,7 @@ import {
 	geminiDefaultModelId,
 	geminiCliDefaultModelId,
 	deepSeekDefaultModelId,
+	moonshotDefaultModelId,
 	mistralDefaultModelId,
 	xaiDefaultModelId,
 	groqDefaultModelId,
@@ -62,9 +63,11 @@ import {
 	GeminiCli,
 	Glama,
 	Groq,
+	HuggingFace,
 	LMStudio,
 	LiteLLM,
 	Mistral,
+	Moonshot,
 	Ollama,
 	OpenAI,
 	OpenAICompatible,
@@ -333,6 +336,7 @@ const ApiOptions = ({
 				gemini: { field: "apiModelId", default: geminiDefaultModelId },
 				"gemini-cli": { field: "apiModelId", default: geminiCliDefaultModelId },
 				deepseek: { field: "apiModelId", default: deepSeekDefaultModelId },
+				moonshot: { field: "apiModelId", default: moonshotDefaultModelId },
 				mistral: { field: "apiModelId", default: mistralDefaultModelId },
 				xai: { field: "apiModelId", default: xaiDefaultModelId },
 				groq: { field: "apiModelId", default: groqDefaultModelId },
@@ -368,6 +372,28 @@ const ApiOptions = ({
 
 		if (!name) {
 			return undefined
+		}
+
+		{
+			/* kilocode_change start */
+		}
+		// Providers that don't have documentation pages yet
+		const excludedProviders = [
+			"fireworks",
+			"gemini-cli",
+			"moonshot",
+			"chutes",
+			"cerebras",
+			"virtual-quota-fallback",
+			"litellm",
+		]
+
+		// Skip documentation link when the provider is excluded because documentation is not available
+		if (excludedProviders.includes(selectedProvider)) {
+			return undefined
+		}
+		{
+			/* kilocode_change end */
 		}
 
 		// Get the URL slug - use custom mapping if available, otherwise use the provider key.
@@ -557,6 +583,10 @@ const ApiOptions = ({
 				<DeepSeek apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
+			{selectedProvider === "moonshot" && (
+				<Moonshot apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
 			{selectedProvider === "vscode-lm" && (
 				<VSCodeLM apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
@@ -571,6 +601,10 @@ const ApiOptions = ({
 
 			{selectedProvider === "groq" && (
 				<Groq apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
+			{selectedProvider === "huggingface" && (
+				<HuggingFace apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "chutes" && (

@@ -3,6 +3,8 @@ import * as os from "os"
 
 import type { ModeConfig, PromptComponent, CustomModePrompts, TodoItem } from "@roo-code/types"
 
+import type { SystemPromptSettings } from "./types"
+
 import { Mode, modes, defaultModeSlug, getModeBySlug, getGroupName, getModeSelection } from "../../shared/modes"
 import { DiffStrategy } from "../../shared/tools"
 import { formatLanguage } from "../../shared/language"
@@ -68,7 +70,7 @@ async function generatePrompt(
 	language?: string,
 	rooIgnoreInstructions?: string,
 	partialReadsEnabled?: boolean,
-	settings?: Record<string, any>,
+	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
 ): Promise<string> {
 	if (!context) {
@@ -82,9 +84,14 @@ async function generatePrompt(
 	const modeConfig = getModeBySlug(mode, customModeConfigs) || modes.find((m) => m.slug === mode) || modes[0]
 	const { roleDefinition, baseInstructions } = getModeSelection(mode, promptComponent, customModeConfigs)
 
+	// Check if MCP functionality should be included
+	const hasMcpGroup = modeConfig.groups.some((groupEntry) => getGroupName(groupEntry) === "mcp")
+	const hasMcpServers = mcpHub && mcpHub.getServers().length > 0
+	const shouldIncludeMcp = hasMcpGroup && hasMcpServers
+
 	const [modesSection, mcpServersSection] = await Promise.all([
 		getModesSection(context),
-		modeConfig.groups.some((groupEntry) => getGroupName(groupEntry) === "mcp")
+		shouldIncludeMcp
 			? getMcpServersSection(mcpHub, effectiveDiffStrategy, enableMcpServerCreation)
 			: Promise.resolve(""),
 	])
@@ -107,7 +114,7 @@ ${getToolDescriptionsForMode(
 	codeIndexManager,
 	effectiveDiffStrategy,
 	browserViewportSize,
-	mcpHub,
+	shouldIncludeMcp ? mcpHub : undefined,
 	customModeConfigs,
 	experiments,
 	partialReadsEnabled,
@@ -120,7 +127,7 @@ ${morphInstructions}
 
 ${mcpServersSection}
 
-${getCapabilitiesSection(cwd, supportsComputerUse, mcpHub, effectiveDiffStrategy, codeIndexManager)}
+${getCapabilitiesSection(cwd, supportsComputerUse, shouldIncludeMcp ? mcpHub : undefined, effectiveDiffStrategy, codeIndexManager)}
 
 ${modesSection}
 
@@ -158,7 +165,7 @@ export const SYSTEM_PROMPT = async (
 	language?: string,
 	rooIgnoreInstructions?: string,
 	partialReadsEnabled?: boolean,
-	settings?: Record<string, any>,
+	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
 ): Promise<string> => {
 	if (!context) {
@@ -197,7 +204,11 @@ export const SYSTEM_PROMPT = async (
 			globalCustomInstructions || "",
 			cwd,
 			mode,
-			{ language: language ?? formatLanguage(vscode.env.language), rooIgnoreInstructions, settings },
+			{
+				language: language ?? formatLanguage(vscode.env.language),
+				rooIgnoreInstructions,
+				settings,
+			},
 		)
 
 		const morphInstructions = getMorphInstructions(cwd, supportsComputerUse, settings)
