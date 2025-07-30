@@ -2,4 +2,4 @@
 "kilo-code": patch
 ---
 
-Add experimental support for Morph Fast Apply
+Thanks @bhaktatejas922! Add experimental support for Morph Fast Apply
