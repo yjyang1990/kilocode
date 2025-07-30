@@ -65,6 +65,11 @@ export const registerGhostProvider = (context: vscode.ExtensionContext, cline: C
 		}),
 	)
 	context.subscriptions.push(
+		vscode.commands.registerCommand("kilo-code.ghost.cancelRequest", async () => {
+			await ghost.cancelRequest()
+		}),
+	)
+	context.subscriptions.push(
 		vscode.commands.registerCommand("kilo-code.ghost.enable", async () => {
 			await ghost.enable()
 		}),

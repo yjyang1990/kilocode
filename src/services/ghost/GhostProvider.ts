@@ -39,6 +39,8 @@ export class GhostProvider {
 
 	private enabled: boolean = false
 	private taskId: string | null = null
+	private isProcessing: boolean = false
+	private isRequestCancelled: boolean = false
 
 	// Status bar integration
 	private statusBar: GhostStatusBar | null = null
@@ -47,7 +49,6 @@ export class GhostProvider {
 
 	// Auto-trigger timer management
 	private autoTriggerTimer: NodeJS.Timeout | null = null
-	private isUserTyping: boolean = false
 	private lastTextChangeTime: number = 0
 
 	// VSCode Providers
@@ -245,24 +246,22 @@ export class GhostProvider {
 	private async provideCodeSuggestions(initialContext: GhostSuggestionContext): Promise<void> {
 		// Cancel any ongoing suggestions
 		await this.cancelSuggestions()
+		this.startProcessing()
+		this.isRequestCancelled = false
 
-		let cancelled = false
 		const context = await this.ghostContext.generate(initialContext)
-
-		this.cursor.show()
 		// Load custom instructions
 		const workspacePath = getWorkspacePath()
 		const customInstructions = await addCustomInstructions("", "", workspacePath, "ghost")
 
 		const systemPrompt = this.strategy.getSystemPrompt(customInstructions)
 		const userPrompt = this.strategy.getSuggestionPrompt(context)
-		if (cancelled) {
-			this.cursor.hide()
+		if (this.isRequestCancelled) {
 			return
 		}
 
 		if (!this.model.loaded) {
-			this.cursor.hide()
+			this.stopProcessing()
 			await this.reload()
 		}
 
@@ -281,21 +280,19 @@ export class GhostProvider {
 			service: "INLINE_ASSIST",
 		})
 
-		if (cancelled) {
-			this.cursor.hide()
+		if (this.isRequestCancelled) {
 			return
 		}
 
 		// First parse the response into edit operations
 		this.suggestions = await this.strategy.parseResponse(response, context)
-		if (cancelled) {
+		if (this.isRequestCancelled) {
 			this.suggestions.clear()
-			this.cursor.hide()
 			await this.render()
 			return
 		}
 		// Generate placeholder for show the suggestions
-		this.cursor.hide()
+		this.stopProcessing()
 		await this.workspaceEdit.applySuggestionsPlaceholders(this.suggestions)
 		await this.render()
 	}
@@ -375,6 +372,7 @@ export class GhostProvider {
 	private async updateGlobalContext() {
 		const hasSuggestions = this.suggestions.hasSuggestions()
 		await vscode.commands.executeCommand("setContext", "kilocode.ghost.hasSuggestions", hasSuggestions)
+		await vscode.commands.executeCommand("setContext", "kilocode.ghost.isProcessing", this.isProcessing)
 		await vscode.commands.executeCommand(
 			"setContext",
 			"kilocode.ghost.enableQuickInlineTaskKeybinding",
@@ -597,6 +595,26 @@ export class GhostProvider {
 		}
 	}
 
+	private startProcessing() {
+		this.cursor.show()
+		this.isProcessing = true
+		this.updateGlobalContext()
+	}
+
+	private stopProcessing() {
+		this.cursor.hide()
+		this.isProcessing = false
+		this.updateGlobalContext()
+	}
+
+	public cancelRequest() {
+		this.stopProcessing()
+		this.isRequestCancelled = true
+		if (this.autoTriggerTimer) {
+			this.clearAutoTriggerTimer()
+		}
+	}
+
 	/**
 	 * Handle typing events for auto-trigger functionality
 	 */
@@ -611,15 +629,9 @@ export class GhostProvider {
 			return
 		}
 
-		// Mark that user is typing
-		this.isUserTyping = true
-
 		// Clear any existing timer
 		this.clearAutoTriggerTimer()
-
-		// Start cursor animation to show we're ready
-		this.cursor.show()
-
+		this.startProcessing()
 		// Start a new timer
 		const delay = (this.settings?.autoTriggerDelay || 3) * 1000
 		this.autoTriggerTimer = setTimeout(() => {
@@ -631,12 +643,11 @@ export class GhostProvider {
 	 * Clear the auto-trigger timer
 	 */
 	private clearAutoTriggerTimer(): void {
-		this.cursor.hide()
+		this.stopProcessing()
 		if (this.autoTriggerTimer) {
 			clearTimeout(this.autoTriggerTimer)
 			this.autoTriggerTimer = null
 		}
-		this.isUserTyping = false
 	}
 
 	/**
@@ -651,7 +662,6 @@ export class GhostProvider {
 	 */
 	private async onAutoTriggerTimeout(): Promise<void> {
 		// Reset typing state
-		this.isUserTyping = false
 		this.autoTriggerTimer = null
 
 		// Double-check that we should still trigger
