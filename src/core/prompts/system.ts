@@ -116,9 +116,7 @@ ${getToolDescriptionsForMode(
 
 ${getToolUseGuidelinesSection(codeIndexManager)}
 
-${getMorphInstructions(experiments) /* kilocode_change: Morph fast apply */}
-
-${mcpServersSection}
+${getMorphInstructions(experiments) /* kilocode_change: Morph fast apply */}${mcpServersSection}
 
 ${getCapabilitiesSection(cwd, supportsComputerUse, shouldIncludeMcp ? mcpHub : undefined, effectiveDiffStrategy, codeIndexManager)}
 
@@ -209,9 +207,7 @@ export const SYSTEM_PROMPT = async (
 
 ${fileCustomSystemPrompt}
 
-${getMorphInstructions(experiments) /* kilocode_change: Morph fast apply */}
-
-${customInstructions}`
+${getMorphInstructions(experiments) /* kilocode_change: Morph fast apply */}${customInstructions}`
 	}
 
 	// If diff is disabled, don't pass the diffStrategy
