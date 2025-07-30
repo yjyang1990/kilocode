@@ -375,8 +375,8 @@ export class GhostProvider {
 		)
 		await vscode.commands.executeCommand(
 			"setContext",
-			"kilocode.ghost.enableAutoInlineTaskKeybinding",
-			this.settings?.enableAutoInlineTaskKeybinding || false,
+			"kilocode.ghost.enableSmartInlineTaskKeybinding",
+			this.settings?.enableSmartInlineTaskKeybinding || false,
 		)
 	}
 
@@ -548,7 +548,7 @@ export class GhostProvider {
 	public async disable() {
 		this.settings = {
 			...this.settings,
-			enableAutoInlineTaskKeybinding: false,
+			enableSmartInlineTaskKeybinding: false,
 			enableQuickInlineTaskKeybinding: false,
 		}
 		this.disposeStatusBar()
@@ -560,7 +560,7 @@ export class GhostProvider {
 	public async enable() {
 		this.settings = {
 			...this.settings,
-			enableAutoInlineTaskKeybinding: true,
+			enableSmartInlineTaskKeybinding: true,
 			enableQuickInlineTaskKeybinding: true,
 		}
 		this.updateStatusBar()

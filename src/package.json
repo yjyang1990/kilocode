@@ -334,13 +334,13 @@
 				"command": "kilo-code.ghost.generateSuggestions",
 				"key": "ctrl+l",
 				"mac": "cmd+l",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableAutoInlineTaskKeybinding && !github.copilot.completions.enabled"
+				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableSmartInlineTaskKeybinding && !github.copilot.completions.enabled"
 			},
 			{
 				"command": "kilo-code.ghost.showIncompatibilityExtensionPopup",
 				"key": "ctrl+l",
 				"mac": "cmd+l",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableAutoInlineTaskKeybinding && github.copilot.completions.enabled"
+				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableSmartInlineTaskKeybinding && github.copilot.completions.enabled"
 			},
 			{
 				"command": "kilo-code.ghost.showIncompatibilityExtensionPopup",
