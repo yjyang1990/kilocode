@@ -264,6 +264,7 @@ describe("mergeExtensionState", () => {
 			experiments: {
 				powerSteering: true,
 				multiFileApplyDiff: true,
+				inlineAssist: false, // kilocode_change
 			},
 		}
 
@@ -280,6 +281,7 @@ describe("mergeExtensionState", () => {
 			disableCompletionCommand: false,
 			concurrentFileReads: true,
 			multiFileApplyDiff: true,
+			inlineAssist: false, // kilocode_change
 		})
 	})
 })

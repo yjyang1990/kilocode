@@ -680,6 +680,10 @@
 			"apiKey": "Morph API-sleutel (optioneel)",
 			"placeholder": "Voer je Morph API-sleutel in (optioneel)",
 			"warning": "Als je geen Morph API-sleutel configureert, kun je Fast Apply nog steeds gebruiken met Kilo Code of OpenRouter, maar je account wordt gefactureerd voor modelgebruik!"
+		},
+		"INLINE_ASSIST": {
+			"name": "Inline Ondersteuning",
+			"description": "Schakel Inline Assist-functies in voor snelle codevoorstellen en verbeteringen direct in uw editor. Bevat Quick Inline Task (Cmd+I) voor gerichte wijzigingen en Auto Inline Task voor contextuele verbeteringen."
 		}
 	},
 	"promptCaching": {

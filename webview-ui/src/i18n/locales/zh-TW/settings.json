@@ -680,6 +680,10 @@
 			"apiKey": "Morph API 金鑰（選用）",
 			"placeholder": "輸入您的 Morph API 金鑰（選用）",
 			"warning": "如果您未設定 Morph API 金鑰，仍可透過 Kilo Code 或 OpenRouter 使用 Fast Apply，但您的帳戶將被收取模型使用費用！"
+		},
+		"INLINE_ASSIST": {
+			"name": "内联助手",
+			"description": "启用内联辅助功能，在您的编辑器中直接获取快速代码建议和改进。包括快速内联任务（Cmd+I）用于定向更改和自动内联任务用于上下文相关的改进。"
 		}
 	},
 	"promptCaching": {

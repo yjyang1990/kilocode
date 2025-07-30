@@ -680,6 +680,10 @@
 			"apiKey": "Morph APIキー（オプション）",
 			"placeholder": "Morph APIキーを入力してください（オプション）",
 			"warning": "Morph APIキーを設定しない場合でも、Kilo CodeまたはOpenRouterでFast Applyを使用できますが、モデル使用料金がアカウントに請求されます！"
+		},
+		"INLINE_ASSIST": {
+			"name": "インラインアシスト",
+			"description": "エディタ内で直接コードの提案や改善を行う、インラインアシスト機能を有効にします。ターゲットを絞った変更のためのクイックインラインタスク（Cmd+I）や、文脈に応じた改善のための自動インラインタスクが含まれます。"
 		}
 	},
 	"promptCaching": {

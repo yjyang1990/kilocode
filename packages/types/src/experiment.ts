@@ -6,7 +6,7 @@ import type { Keys, Equals, AssertEqual } from "./type-fu.js"
  * ExperimentId
  */
 
-const kilocodeExperimentIds = ["morphFastApply"] as const
+const kilocodeExperimentIds = ["morphFastApply", "inlineAssist"] as const
 export const experimentIds = ["powerSteering", "multiFileApplyDiff"] as const
 
 export const experimentIdsSchema = z.enum([...experimentIds, ...kilocodeExperimentIds])
@@ -21,6 +21,7 @@ export const experimentsSchema = z.object({
 	morphFastApply: z.boolean().optional(), // kilocode_change
 	powerSteering: z.boolean().optional(),
 	multiFileApplyDiff: z.boolean().optional(),
+	inlineAssist: z.boolean().optional(), // kilocode_change
 })
 
 export type Experiments = z.infer<typeof experimentsSchema>

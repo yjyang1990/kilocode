@@ -701,6 +701,10 @@
 			"apiKey": "Kunci API Morph (opsional)",
 			"placeholder": "Masukkan kunci API Morph Anda (opsional)",
 			"warning": "Jika Anda tidak mengonfigurasi kunci API Morph, Anda masih dapat menggunakan Fast Apply dengan Kilo Code atau OpenRouter, tetapi akun Anda akan ditagih untuk penggunaan model!"
+		},
+		"INLINE_ASSIST": {
+			"name": "Bantuan Inline",
+			"description": "Aktifkan fitur Inline Assist untuk saran dan perbaikan kode cepat langsung di editor Anda. Termasuk Quick Inline Task (Cmd+I) untuk perubahan terarah dan Auto Inline Task untuk perbaikan kontekstual."
 		}
 	},
 	"promptCaching": {

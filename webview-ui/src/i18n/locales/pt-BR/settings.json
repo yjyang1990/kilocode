@@ -680,6 +680,10 @@
 			"apiKey": "Chave de API Morph (opcional)",
 			"placeholder": "Digite sua chave de API Morph (opcional)",
 			"warning": "Se você não configurar uma chave de API Morph, ainda poderá usar Fast Apply com Kilo Code ou OpenRouter, mas sua conta será cobrada pelo uso do modelo!"
+		},
+		"INLINE_ASSIST": {
+			"name": "Assistência em Linha",
+			"description": "Ative os recursos de assistência em linha para obter sugestões e melhorias de código rápidas diretamente no seu editor. Inclui Tarefa Rápida em Linha (Cmd+I) para alterações direcionadas e Tarefa Automática em Linha para melhorias contextuais."
 		}
 	},
 	"promptCaching": {

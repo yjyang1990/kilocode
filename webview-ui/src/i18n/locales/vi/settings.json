@@ -680,6 +680,10 @@
 			"apiKey": "Khóa API Morph (tùy chọn)",
 			"placeholder": "Nhập khóa API Morph của bạn (tùy chọn)",
 			"warning": "Nếu bạn không cấu hình khóa API Morph, bạn vẫn có thể sử dụng Fast Apply với Kilo Code hoặc OpenRouter, nhưng tài khoản của bạn sẽ bị tính phí cho việc sử dụng mô hình!"
+		},
+		"INLINE_ASSIST": {
+			"name": "Trợ lý Nội dòng",
+			"description": "Bật tính năng Trợ giúp nội tuyến (Inline Assist) để nhận gợi ý và cải tiến mã nhanh chóng ngay trong trình soạn thảo của bạn. Bao gồm Tác vụ nội tuyến nhanh (Cmd+I) cho những thay đổi có mục tiêu và Tác vụ nội tuyến tự động cho những cải tiến theo ngữ cảnh."
 		}
 	},
 	"promptCaching": {
