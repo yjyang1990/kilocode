@@ -2,13 +2,8 @@
 
 Kilo Code provides sophisticated browser automation capabilities that let you interact with websites directly from VS Code. This feature enables testing web applications, automating browser tasks, and capturing screenshots without leaving your development environment.
 
-<video width="100%" controls>
-  <source src="/docs/img/browser-use/Roo-Code-Browser-Use.mp4#t=0.001" type="video/mp4"></source>
-  Your browser does not support the video tag.
-</video>
-
 :::info Model Support Required
-Browser Use within Kilo Code requires the use of Claude Sonnet 3.5 or 3.7
+Browser Use within Kilo Code requires the use and advanced agentic model, and has only been tested with Claude Sonnet 3.5, 3.7, and 4
 :::
 
 ## How Browser Use Works

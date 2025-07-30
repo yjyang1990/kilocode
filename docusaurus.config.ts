@@ -43,7 +43,7 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'zh-CN'],
   },
 
   presets: [
@@ -169,7 +169,7 @@ const config: Config = {
         alt: 'Kilo Code Logo',
         src: 'img/kilo-v1.svg',
         srcDark: 'img/kilo-v1-white.svg',
-        href: 'https://kilocode.ai',
+        href: '/',
         target: '_self'
       },
       items: [
@@ -181,6 +181,10 @@ const config: Config = {
         {
           href: VSCODE_MARKETPLACE_URL,
           label: 'Install Extension',
+          position: 'right',
+        },
+        {
+          type: 'localeDropdown',
           position: 'right',
         },
       ],

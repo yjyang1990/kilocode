@@ -1,43 +1,83 @@
 import Image from '@site/src/components/Image';
 
-# The Chat Interface
+# Chatting with Kilo Code
 
-The Kilo Code chat interface is your primary way of interacting with it. It's located in the Kilo Code panel, which you can open by clicking the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in the VS Code Primary Side Bar.
+:::tip
 
-The Kilo Code panel can also be moved to the VS Code Secondary Side Bar. If you ever accidentally close the Kilo Code panel, you can get it back using View > Open View... and searching for "Kilo Code".
+**Bottom line:** Kilo Code is an AI coding assistant that lives in VS Code. You chat with it in plain English, and it writes, edits, and explains code for you.
 
-## Components of the Chat Interface
+:::
 
-The chat interface consists of the following main elements:
+## Quick Setup
 
-1. **Chat / Task History:** This area displays the conversation history between you and Kilo Code, or if you are not in a current task the history of all of the tasks you've created.  It shows your requests, Kilo Code's responses, and any actions taken (like file edits or command executions).
+Find the Kilo Code icon (<img src="/docs/img/kilo-v1.svg" width="12" />) in VS Code's Primary Side Bar. Click it to open the chat panel.
 
-2. **Input Field:** This is where you type your tasks and questions for Kilo Code.  You can use [plain English to communicate what you want Kilo Code to do](/basic-usage/typing-your-requests).
+**Lost the panel?** Go to View > Open View... and search for "Kilo Code"
 
-3. **Action Buttons:** These buttons appear below the input field and allow you to approve or reject Kilo Code's proposed actions.  The available buttons change depending on the context and your [auto-approval settings](/features/auto-approving-actions).
+## How to Talk to Kilo Code
 
-4. **Send Button:** This looks like a small plane and it's located to the far right of the input field. This sends messages to Kilo after you've typed them. Alternatively you can just press `Enter`
+**The key insight:** Just type what you want in normal English. No special commands needed.
 
-5. **Plus Button:** The plus button is located at the top in the header, and it starts a new task session.
+<Image src="/docs/img/typing-your-requests/typing-your-requests.png" alt="Example of typing a request in Kilo Code" width="600" />
 
-6. **Settings Button:** The settings button is a gear, and it's used for opening the settings to customize features or behavior.
+**Good requests:**
 
-7. **Mode Selector:** The mode selector is a dropdown located to the left of the chat input field. It is used for selecting which mode Kilo should use for your tasks.
+```
+create a new file named utils.py and add a function called add that takes two numbers as arguments and returns their sum
+```
+
+```
+in the file @src/components/Button.tsx, change the color of the button to blue
+```
+
+```
+find all instances of the variable oldValue in @/src/App.js and replace them with newValue
+```
+
+**What makes requests work:**
+- **Be specific** - "Fix the bug in `calculateTotal` that returns incorrect results" beats "Fix the code"
+- **Use @ mentions** - Reference files and code directly with `@filename`
+- **One task at a time** - Break complex work into manageable steps
+- **Include examples** - Show the style or format you want
+
+
+## The Chat Interface
 
 <Image 
     src="/docs/img/the-chat-interface/the-chat-interface-1.png" 
     alt="Chat interface components labeled with callouts" width="750" 
-    caption="The key components of the Kilo Code chat interface"
+    caption="Everything you need is right here"
 />
 
-## Interacting with Messages
+**Essential controls:**
+- **Chat history** - See your conversation and task history
+- **Input field** - Type your requests here (press Enter to send)
+- **Action buttons** - Approve or reject Kilo's proposed changes
+- **Plus button** - Start a new task session
+- **Mode selector** - Choose how Kilo should approach your task
 
-* **Clickable Links:** File paths, URLs, and other mentions in the chat history are clickable.  Clicking a file path will open the file in the editor.  Clicking a URL will open it in your default browser.
-* **Copying Text:** You can copy text from the chat history by selecting it and using the standard copy command (`Ctrl/Cmd + C`).  Some elements, like code blocks, have a dedicated "Copy" button.
-* **Expanding and Collapsing**: Click on a message to expand or collapse it.
+## Quick Interactions
 
-## Status Indicators
+**Click to act:**
+- File paths → Opens the file
+- URLs → Opens in browser
+- Messages → Expand/collapse details
+- Code blocks → Copy button appears
 
-* **Loading Spinner:**  When Kilo Code is processing a request, you'll see a loading spinner.
-* **Error Messages:**  If an error occurs, a red error message will be displayed.
-* **Success Messages:** Green messages indicate successful completion of actions.
+**Status signals:**
+- Spinning → Kilo is working
+- Red → Error occurred
+- Green → Success
+
+## Common Mistakes to Avoid
+
+| Instead of this... | Try this |
+|-------------------|----------|
+| "Fix the code" | "Fix the bug in `calculateTotal` that returns incorrect results" |
+| Assuming Kilo knows context | Use `@` to reference specific files |
+| Multiple unrelated tasks | Submit one focused request at a time |
+| Technical jargon overload | Clear, straightforward language works best |
+
+**Why it matters:** Kilo Code works best when you communicate like you're talking to a smart teammate who needs clear direction.
+
+Ready to start coding? Open the chat panel and describe what you want to build!

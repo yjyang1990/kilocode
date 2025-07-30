@@ -25,7 +25,7 @@ You'll find these settings in the Kilo Code settings panel (click the <Codicon n
 *   **API Provider:** Select "OpenAI Compatible".
 *   **Base URL:** Enter the base URL provided by your chosen provider.  **This is crucial.**
 *   **API Key:** Enter your API key.
-*   **Model:** Chooose a model.
+*   **Model:** Choose a model.
 *   **Model Configuration:** This lets you customize advanced configuration for the model
     - Max Output Tokens
     - Context Window
@@ -33,6 +33,29 @@ You'll find these settings in the Kilo Code settings panel (click the <Codicon n
     - Computer Use
     - Input Price
     - Output Price
+
+### Full Endpoint URL Support
+
+Kilo Code supports full endpoint URLs in the Base URL field, providing greater flexibility for provider configuration:
+
+**Standard Base URL Format:**
+```
+https://api.provider.com/v1
+```
+
+**Full Endpoint URL Format:**
+```
+https://api.provider.com/v1/chat/completions
+https://custom-endpoint.provider.com/api/v2/models/chat
+```
+
+This enhancement allows you to:
+- Connect to providers with non-standard endpoint structures
+- Use custom API gateways or proxy services
+- Work with providers that require specific endpoint paths
+- Integrate with enterprise or self-hosted API deployments
+
+**Note:** When using full endpoint URLs, ensure the URL points to the correct chat completions endpoint for your provider.
 
 ## Supported Models (for OpenAI Native Endpoint)
 

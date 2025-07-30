@@ -15,7 +15,7 @@ Tools are organized into logical groups based on their functionality:
 | **Browser Group** | Web automation | [browser_action](/features/tools/browser-action) | Web testing and interaction |
 | **Command Group** | System command execution | [execute_command](/features/tools/execute-command) | Running scripts, building projects |
 | **MCP Group** | External tool integration | [use_mcp_tool](/features/tools/use-mcp-tool), [access_mcp_resource](/features/tools/access-mcp-resource) | Specialized functionality through external servers |
-| **Workflow Group** | Mode and task management | [switch_mode](/features/tools/switch-mode), [new_task](/features/tools/new-task), [ask_followup_question](/features/tools/ask-followup-question), [attempt_completion](/features/tools/attempt-completion) | Context switching and task organization |
+| **Workflow Group** | Mode and task management | [switch_mode](/features/tools/switch-mode), [new_task](/features/tools/new-task), [ask_followup_question](/features/tools/ask-followup-question), [attempt_completion](/features/tools/attempt-completion), [update_todo_list](/features/tools/update-todo-list) | Context switching and task organization |
 
 ### Always Available Tools
 
@@ -25,6 +25,7 @@ Certain tools are accessible regardless of the current mode:
 - [attempt_completion](/features/tools/attempt-completion): Signal task completion
 - [switch_mode](/features/tools/switch-mode): Change operational modes
 - [new_task](/features/tools/new-task): Create subtasks
+- [update_todo_list](/features/tools/update-todo-list): Manage step-by-step task tracking
 
 ## Available Tools
 
@@ -65,6 +66,7 @@ These tools help manage the conversation and task flow:
 - [attempt_completion](/features/tools/attempt-completion) - Presents final results
 - [switch_mode](/features/tools/switch-mode) - Changes to a different mode for specialized tasks
 - [new_task](/features/tools/new-task) - Creates a new subtask
+- [update_todo_list](/features/tools/update-todo-list) - Tracks task progress with step-by-step checklists
 
 ## Tool Calling Mechanism
 
@@ -205,6 +207,11 @@ Tools are made available based on the current mode:
 3. **Task Management**
    ```
    [new_task](/features/tools/new-task) → [switch_mode](/features/tools/switch-mode) → [execute_command](/features/tools/execute-command)
+   ```
+
+4. **Progress Tracking**
+   ```
+   [update_todo_list](/features/tools/update-todo-list) → [execute_command](/features/tools/execute-command) → [update_todo_list](/features/tools/update-todo-list)
    ```
 
 ## Error Handling and Recovery

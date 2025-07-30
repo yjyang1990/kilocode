@@ -1,4 +1,4 @@
-# Auto-Generate Commit Messages
+# Generate Commit Messages
 
 Generate descriptive commit messages automatically based on your staged git changes. Kilo Code analyzes your staged files and creates conventional commit messages that follow best practices.
 

@@ -7,9 +7,9 @@ The `apply_diff` tool makes precise, surgical changes to files by specifying exa
 The tool accepts these parameters:
 
 - `path` (required): The path of the file to modify relative to the current working directory.
-- `diff` (required): The search/replace block defining the changes using a format specific to the active diff strategy.
-- `start_line` (optional): A hint for where the search content begins, used by some strategies.
-- `end_line` (optional): A hint for where the search content ends, used by some strategies.
+- `diff` (required): The search/replace block defining the changes. **Line numbers are mandatory within the diff content format** for all currently implemented strategies.
+
+**Note**: While the system is designed to be extensible with different diff strategies, all currently implemented strategies require line numbers to be specified within the diff content itself using the `:start_line:` marker.
 
 ## What It Does
 
@@ -65,10 +65,10 @@ Kilo Code uses this strategy for applying diffs:
 
 ### MultiSearchReplaceDiffStrategy
 
-An enhanced search/replace format supporting multiple changes in one request. Requires line numbers for each search block.
+An enhanced search/replace format supporting multiple changes in one request. **Line numbers are mandatory for each search block.**
 
 *   **Best for**: Multiple, distinct changes where line numbers are known or can be estimated.
-*   **Requires**: Exact match for the `SEARCH` block content, including whitespace and indentation. Line numbers (`:start_line:`, `:end_line:`) are mandatory. Markers within content must be escaped (`\`).
+*   **Requires**: Exact match for the `SEARCH` block content, including whitespace and indentation. The `:start_line:` marker is **required** within each SEARCH block. Markers within content must be escaped (`\`).
 
 Example format for the `<diff>` block:
 

@@ -4,7 +4,9 @@ sidebar_label: Your First Task
 
 # Starting Your First Task with Kilo Code
 
-Now that you've [set up Kilo Code](/getting-started/setting-up), you're ready to start using Kilo Code! This guide walks you through your first interaction.
+This quick tour shows how Kilo Code handles a simple request from start to finish.
+
+After you [set up Kilo Code](/getting-started/setting-up), follow these steps:
 
 ## Step 1: Open the Kilo Code Panel
 
@@ -44,8 +46,8 @@ Kilo Code analyzes your request and proposes specific actions. These may include
 <img src="/docs/img/your-first-task/your-first-task-7.png" alt="Reviewing a proposed file creation action" width="400" />
 *Kilo Code shows exactly what action it wants to perform and waits for your approval.*
 
-* In **Code** mode, many capabilities required to write code are enabled by default. 
-* In **Architect** and **Ask** modes, the agent will not write any code. 
+* In **Code** mode, writing capabilities are on by default.
+* In **Architect** and **Ask** modes, Kilo Code won't write code.
 
 :::tip
 
@@ -64,10 +66,10 @@ Kilo Code works iteratively. After each action, it waits for your feedback befor
 
 ## Conclusion
 
-You've now completed your first task with Kilo Code! Through this process, you've learned:
+You've completed your first task. Along the way you learned:
 
 * How to interact with Kilo Code using natural language
-* The approval-based workflow that keeps you in control
-* The iterative approach Kilo Code uses to solve problems step-by-step
+* Why approval keeps you in control
+* How iteration lets the AI refine its work
 
-This iterative, approval-based workflow is at the core of how Kilo Code works—letting AI handle the tedious parts of coding while you maintain complete oversight. Now that you understand the basics, you're ready to tackle more complex tasks, explore different [modes](/basic-usage/using-modes) for specialized workflows, or try the [auto-approval feature](/features/auto-approving-actions) to speed up repetitive tasks.
+Ready for more? Explore different [modes](/basic-usage/using-modes) or try [auto-approval](/features/auto-approving-actions) to speed up repetitive tasks.
