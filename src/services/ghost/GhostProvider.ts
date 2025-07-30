@@ -20,6 +20,7 @@ import { GhostContext } from "./GhostContext"
 import { TelemetryService } from "@roo-code/telemetry"
 import { ClineProvider } from "../../core/webview/ClineProvider"
 import { experiments, EXPERIMENT_IDS } from "../../shared/experiments"
+import { GhostCursorAnimation } from "./GhostCursorAnimation"
 
 export class GhostProvider {
 	private static instance: GhostProvider | null = null
@@ -34,6 +35,7 @@ export class GhostProvider {
 	private providerSettingsManager: ProviderSettingsManager
 	private settings: GhostServiceSettings | null = null
 	private ghostContext: GhostContext
+	private cursor: GhostCursorAnimation
 
 	private enabled: boolean = false
 	private taskId: string | null = null
@@ -57,6 +59,7 @@ export class GhostProvider {
 		this.providerSettingsManager = new ProviderSettingsManager(context)
 		this.model = new GhostModel()
 		this.ghostContext = new GhostContext(this.documentStore)
+		this.cursor = new GhostCursorAnimation(context)
 
 		this.loadSettings()
 		this.initializeStatusBar()
