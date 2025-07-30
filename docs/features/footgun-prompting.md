@@ -33,9 +33,10 @@ Footgun Prompting, AKA Overriding System Prompt, allows advanced users to comple
 
 You can find the option and instructions within the Kilo Code UI:
 
-1.  Click the <Codicon name="notebook" /> icon in the Kilo Code top menu bar.
-2.  Expand the **"Advanced: Override System Prompt"** section.
-3.  Clicking the file path link within the explanation will open or create the correct override file for the currently selected mode in VS Code.
+1.  Click the MODE selector in the bottom-left of the Kilo Code text-input box.
+2.  Click "Edit..." at the bottom of the mode-selection list
+3.  Expand the **"Advanced: Override System Prompt"** section at the bottom.
+4.  Clicking the file path link within the explanation will open or create the correct override file for the currently selected mode in VS Code.
 
 <img src="/docs/img/footgun-prompting/footgun-prompting.png" alt="UI showing the Advanced: Override System Prompt section" width="500" />
 
