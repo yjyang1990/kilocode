@@ -11,6 +11,7 @@ import { fileExistsAtPath } from "../../utils/fs"
 import { getReadablePath } from "../../utils/path"
 import { Experiments, ProviderSettings } from "@roo-code/types"
 import { getKiloBaseUriFromToken } from "../../utils/kilocode-token"
+import { DEFAULT_HEADERS } from "../../api/providers/constants"
 
 async function validateParams(
 	cline: Task,
@@ -193,7 +194,6 @@ async function applyMorphEdit(
 		}
 
 		const state = await provider.getState()
-		const config = state.apiConfiguration
 
 		// Check if user has Morph enabled via OpenRouter or direct API
 		const morphConfig = await getMorphConfiguration(state.experiments, state.apiConfiguration)
@@ -205,6 +205,10 @@ async function applyMorphEdit(
 		const client = new OpenAI({
 			apiKey: morphConfig.apiKey,
 			baseURL: morphConfig.baseUrl,
+			defaultHeaders: {
+				"X-KiloCode-TaskId": cline.taskId,
+				...DEFAULT_HEADERS,
+			},
 		})
 
 		// Apply the edit using Morph's format
