@@ -198,6 +198,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		terminalCompressProgressBar,
 		maxConcurrentFileReads,
 		allowVeryLargeReads, // kilocode_change
+		terminalCommandApiConfigId, // kilocode_change
 		condensingApiConfigId,
 		customCondensingPrompt,
 		customSupportPrompts,
@@ -375,6 +376,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			vscode.postMessage({ type: "terminalZshP10k", bool: terminalZshP10k })
 			vscode.postMessage({ type: "terminalZdotdir", bool: terminalZdotdir })
 			vscode.postMessage({ type: "terminalCompressProgressBar", bool: terminalCompressProgressBar })
+			vscode.postMessage({ type: "terminalCommandApiConfigId", text: terminalCommandApiConfigId || "" }) // kilocode_change
 			vscode.postMessage({ type: "mcpEnabled", bool: mcpEnabled })
 			vscode.postMessage({ type: "alwaysApproveResubmit", bool: alwaysApproveResubmit })
 			vscode.postMessage({ type: "requestDelaySeconds", value: requestDelaySeconds })
@@ -821,6 +823,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							terminalZshP10k={terminalZshP10k}
 							terminalZdotdir={terminalZdotdir}
 							terminalCompressProgressBar={terminalCompressProgressBar}
+							terminalCommandApiConfigId={terminalCommandApiConfigId} // kilocode_change
 							setCachedStateField={setCachedStateField}
 						/>
 					)}
@@ -839,7 +842,12 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 
 					{/* Experimental Section */}
 					{activeTab === "experimental" && (
-						<ExperimentalSettings setExperimentEnabled={setExperimentEnabled} experiments={experiments} />
+						<ExperimentalSettings
+							setExperimentEnabled={setExperimentEnabled}
+							experiments={experiments}
+							apiConfiguration={apiConfiguration /*kilocode_change*/}
+							setApiConfigurationField={setApiConfigurationField /*kilocode_change*/}
+						/>
 					)}
 
 					{/* Language Section */}

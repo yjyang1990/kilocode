@@ -265,13 +265,11 @@ describe("mergeExtensionState", () => {
 			apiConfiguration: { modelMaxThinkingTokens: 456, modelTemperature: 0.3 },
 			experiments: {
 				powerSteering: true,
-				marketplace: false,
-				disableCompletionCommand: false,
-				concurrentFileReads: true,
 				multiFileApplyDiff: true,
 				inlineAssist: false, // kilocode_change
 				preventFocusDisruption: false,
-			} as Record<ExperimentId, boolean>,
+				morphFastApply: false, // kilocode_change
+			},
 		}
 
 		const result = mergeExtensionState(prevState, newState)
@@ -283,12 +281,10 @@ describe("mergeExtensionState", () => {
 
 		expect(result.experiments).toEqual({
 			powerSteering: true,
-			marketplace: false,
-			disableCompletionCommand: false,
-			concurrentFileReads: true,
 			multiFileApplyDiff: true,
 			inlineAssist: false, // kilocode_change
 			preventFocusDisruption: false,
+			morphFastApply: false, // kilocode_change
 		})
 	})
 })

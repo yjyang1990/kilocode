@@ -405,7 +405,7 @@ export class ClineProvider
 		this.getState().then(
 			({
 				terminalShellIntegrationTimeout = Terminal.defaultShellIntegrationTimeout,
-				terminalShellIntegrationDisabled = false,
+				terminalShellIntegrationDisabled = true, // kilocode_change: default
 				terminalCommandDelay = 0,
 				terminalZshClearEolMark = true,
 				terminalZshOhMy = false,
@@ -1546,6 +1546,7 @@ export class ClineProvider
 			customSupportPrompts,
 			enhancementApiConfigId,
 			commitMessageApiConfigId, // kilocode_change
+			terminalCommandApiConfigId, // kilocode_change
 			autoApprovalEnabled,
 			customModes,
 			experiments,
@@ -1640,7 +1641,7 @@ export class ClineProvider
 			terminalOutputLineLimit: terminalOutputLineLimit ?? 500,
 			terminalOutputCharacterLimit: terminalOutputCharacterLimit ?? DEFAULT_TERMINAL_OUTPUT_CHARACTER_LIMIT,
 			terminalShellIntegrationTimeout: terminalShellIntegrationTimeout ?? Terminal.defaultShellIntegrationTimeout,
-			terminalShellIntegrationDisabled: terminalShellIntegrationDisabled ?? false,
+			terminalShellIntegrationDisabled: terminalShellIntegrationDisabled ?? true, // kilocode_change: default
 			terminalCommandDelay: terminalCommandDelay ?? 0,
 			terminalPowershellCounter: terminalPowershellCounter ?? false,
 			terminalZshClearEolMark: terminalZshClearEolMark ?? true,
@@ -1660,6 +1661,7 @@ export class ClineProvider
 			customSupportPrompts: customSupportPrompts ?? {},
 			enhancementApiConfigId,
 			commitMessageApiConfigId, // kilocode_change
+			terminalCommandApiConfigId, // kilocode_change
 			autoApprovalEnabled: autoApprovalEnabled ?? true,
 			customModes,
 			experiments: experiments ?? experimentDefault,
@@ -1837,7 +1839,7 @@ export class ClineProvider
 				stateValues.terminalOutputCharacterLimit ?? DEFAULT_TERMINAL_OUTPUT_CHARACTER_LIMIT,
 			terminalShellIntegrationTimeout:
 				stateValues.terminalShellIntegrationTimeout ?? Terminal.defaultShellIntegrationTimeout,
-			terminalShellIntegrationDisabled: stateValues.terminalShellIntegrationDisabled ?? false,
+			terminalShellIntegrationDisabled: stateValues.terminalShellIntegrationDisabled ?? true, // kilocode_change: default
 			terminalCommandDelay: stateValues.terminalCommandDelay ?? 0,
 			terminalPowershellCounter: stateValues.terminalPowershellCounter ?? false,
 			terminalZshClearEolMark: stateValues.terminalZshClearEolMark ?? true,
@@ -1859,6 +1861,7 @@ export class ClineProvider
 			customSupportPrompts: stateValues.customSupportPrompts ?? {},
 			enhancementApiConfigId: stateValues.enhancementApiConfigId,
 			commitMessageApiConfigId: stateValues.commitMessageApiConfigId, // kilocode_change
+			terminalCommandApiConfigId: stateValues.terminalCommandApiConfigId, // kilocode_change
 			ghostServiceSettings: stateValues.ghostServiceSettings ?? {}, // kilocode_change
 			experiments: stateValues.experiments ?? experimentDefault,
 			autoApprovalEnabled: stateValues.autoApprovalEnabled ?? true,
@@ -2037,7 +2040,12 @@ export class ClineProvider
 	 * like the current mode, API provider, git repository information, etc.
 	 */
 	public async getTelemetryProperties(): Promise<TelemetryProperties> {
-		const { mode, apiConfiguration, language } = await this.getState()
+		const {
+			mode,
+			apiConfiguration,
+			language,
+			experiments, // kilocode_change
+		} = await this.getState()
 		const task = this.getCurrentCline()
 
 		const packageJSON = this.context.extension?.packageJSON
@@ -2081,6 +2089,21 @@ export class ClineProvider
 				}
 			}
 		}
+
+		function getFastApply() {
+			try {
+				return {
+					fastApply: {
+						morphFastApply: Boolean(experiments.morphFastApply),
+						morphApiKey: Boolean(apiConfiguration.morphApiKey),
+					},
+				}
+			} catch (error) {
+				return {
+					fastApplyException: stringifyError(error),
+				}
+			}
+		}
 		// kilocode_change end
 
 		// Calculate todo list statistics
@@ -2106,8 +2129,11 @@ export class ClineProvider
 			language,
 			mode,
 			apiProvider: apiConfiguration?.apiProvider,
-			...(await getModelId()), // kilocode_change
-			...getMemory(), // kilocode_change
+			// kilocode_change start
+			...(await getModelId()),
+			...getMemory(),
+			...getFastApply(),
+			// kilocode_change end
 			diffStrategy: task?.diffStrategy?.getName(),
 			isSubtask: task ? !!task.parentTask : undefined,
 			cloudIsAuthenticated,
