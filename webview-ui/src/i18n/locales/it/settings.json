@@ -679,7 +679,7 @@
 			"description": "Quando abilitato, Kilo Code può modificare i file utilizzando Morph Fast Apply.",
 			"apiKey": "Chiave API Morph (opzionale)",
 			"placeholder": "Inserisci la tua chiave API Morph (opzionale)",
-			"warning": "Se non configuri una chiave API Morph, puoi comunque utilizzare Fast Apply con Kilo Code o OpenRouter, ma il tuo account verrà addebitato per l'utilizzo del modello!"
+			"warning": "Se non configuri una chiave API Morph, puoi comunque utilizzare Fast Apply con Kilo Code o OpenRouter. Il tuo account verrà addebitato per l'utilizzo del modello, questo attualmente non viene mostrato nell'interfaccia dell'estensione."
 		},
 		"INLINE_ASSIST": {
 			"name": "Assistenza Inline",

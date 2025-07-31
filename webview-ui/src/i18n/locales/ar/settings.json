@@ -700,7 +700,7 @@
 			"description": "عند التفعيل، يمكن لـ Kilo Code تحرير الملفات باستخدام Morph Fast Apply.",
 			"apiKey": "مفتاح Morph API (اختياري)",
 			"placeholder": "أدخل مفتاح Morph API (اختياري)",
-			"warning": "إذا لم تقم بتكوين مفتاح Morph API، يمكنك لا تزال استخدام Fast Apply مع Kilo Code أو OpenRouter، لكن سيتم تحصيل رسوم من حسابك لاستخدام النموذج!"
+			"warning": "إذا لم تقم بتكوين مفتاح Morph API، يمكنك لا تزال استخدام Fast Apply مع Kilo Code أو OpenRouter. سيتم تحصيل رسوم من حسابك لاستخدام النموذج، هذا غير مُعرض حاليًا في واجهة الإضافة."
 		},
 		"INLINE_ASSIST": {
 			"name": "المساعد المضمّن",

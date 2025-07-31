@@ -711,7 +711,7 @@
 			"description": "Pokud je povoleno, Kilo Code může upravovat soubory pomocí Morph Fast Apply.",
 			"apiKey": "Klíč API Morph (volitelné)",
 			"placeholder": "Zadejte svůj klíč API Morph (volitelné)",
-			"warning": "Pokud nenakonfigurujete klíč API Morph, můžete stále používat Fast Apply s Kilo Code nebo OpenRouter, ale bude vám účtováno použití modelu!"
+			"warning": "Pokud nenakonfigurujete klíč API Morph, můžete stále používat Fast Apply s Kilo Code nebo OpenRouter. Váš účet bude účtován za použití modelu, což se aktuálně nezobrazuje v uživatelském rozhraní rozšíření."
 		},
 		"INLINE_ASSIST": {
 			"name": "Inline pomoc",

@@ -678,7 +678,7 @@
 			"description": "Wenn aktiviert, kann Kilo Code Dateien mit Morph Fast Apply bearbeiten.",
 			"apiKey": "Morph API-Schlüssel (optional)",
 			"placeholder": "Gib deinen Morph API-Schlüssel ein (optional)",
-			"warning": "Wenn du keinen Morph API-Schlüssel konfigurierst, kannst du Fast Apply trotzdem mit Kilo Code oder OpenRouter verwenden, aber dein Konto wird für die Modellnutzung belastet!"
+			"warning": "Wenn du keinen Morph API-Schlüssel konfigurierst, kannst du Fast Apply trotzdem mit Kilo Code oder OpenRouter verwenden. Dein Konto wird für die Modellnutzung belastet, dies wird derzeit nicht in der Erweiterungs-UI angezeigt."
 		},
 		"INLINE_ASSIST": {
 			"name": "Inline-Unterstützung",

@@ -679,7 +679,7 @@
 			"description": "啟用後，Kilo Code 可使用 Morph Fast Apply 編輯檔案。",
 			"apiKey": "Morph API 金鑰（選用）",
 			"placeholder": "輸入您的 Morph API 金鑰（選用）",
-			"warning": "如果您未設定 Morph API 金鑰，仍可透過 Kilo Code 或 OpenRouter 使用 Fast Apply，但您的帳戶將被收取模型使用費用！"
+			"warning": "如果您未設定 Morph API 金鑰，仍可透過 Kilo Code 或 OpenRouter 使用 Fast Apply。您的帳戶將被收取模型使用費用，目前擴充套件 UI 中不會顯示此費用。"
 		},
 		"INLINE_ASSIST": {
 			"name": "内联助手",

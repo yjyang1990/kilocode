@@ -679,7 +679,7 @@
 			"description": "有効にすると、Kilo CodeはMorph Fast Applyを使用してファイルを編集できます。",
 			"apiKey": "Morph APIキー（オプション）",
 			"placeholder": "Morph APIキーを入力してください（オプション）",
-			"warning": "Morph APIキーを設定しない場合でも、Kilo CodeまたはOpenRouterでFast Applyを使用できますが、モデル使用料金がアカウントに請求されます！"
+			"warning": "Morph APIキーを設定しない場合でも、Kilo CodeまたはOpenRouterでFast Applyを使用できます。アカウントにモデル使用料金が請求されますが、現在この料金は拡張機能のUIには表示されません。"
 		},
 		"INLINE_ASSIST": {
 			"name": "インラインアシスト",

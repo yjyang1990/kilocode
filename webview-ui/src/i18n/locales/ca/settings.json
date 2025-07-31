@@ -678,7 +678,7 @@
 			"description": "Quan està habilitat, Kilo Code pot editar fitxers utilitzant Morph Fast Apply.",
 			"apiKey": "Clau API de Morph (opcional)",
 			"placeholder": "Introduïu la vostra clau API de Morph (opcional)",
-			"warning": "Si no configureu una clau API de Morph, encara podeu utilitzar Fast Apply amb Kilo Code o OpenRouter, però se us facturarà l'ús del model!"
+			"warning": "Si no configureu una clau API de Morph, encara podeu utilitzar Fast Apply amb Kilo Code o OpenRouter. El vostre compte serà facturat per l'ús del model, això actualment no es mostra a la interfície de l'extensió."
 		},
 		"INLINE_ASSIST": {
 			"name": "Assistència en línia",

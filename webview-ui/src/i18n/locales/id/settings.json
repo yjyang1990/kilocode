@@ -700,7 +700,7 @@
 			"description": "Ketika diaktifkan, Kilo Code dapat mengedit file menggunakan Morph Fast Apply.",
 			"apiKey": "Kunci API Morph (opsional)",
 			"placeholder": "Masukkan kunci API Morph Anda (opsional)",
-			"warning": "Jika Anda tidak mengonfigurasi kunci API Morph, Anda masih dapat menggunakan Fast Apply dengan Kilo Code atau OpenRouter, tetapi akun Anda akan ditagih untuk penggunaan model!"
+			"warning": "Jika Anda tidak mengonfigurasi kunci API Morph, Anda masih dapat menggunakan Fast Apply dengan Kilo Code atau OpenRouter. Akun Anda akan ditagih untuk penggunaan model, ini saat ini tidak ditampilkan di UI ekstensi."
 		},
 		"INLINE_ASSIST": {
 			"name": "Bantuan Inline",
