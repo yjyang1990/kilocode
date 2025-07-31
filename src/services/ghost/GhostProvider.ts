@@ -58,6 +58,8 @@ export class GhostProvider {
 	private constructor(context: vscode.ExtensionContext, cline: ClineProvider) {
 		this.context = context
 		this.cline = cline
+
+		// Register Internal Components
 		this.decorations = new GhostDecorations()
 		this.documentStore = new GhostDocumentStore()
 		this.strategy = new GhostStrategy()
@@ -66,9 +68,6 @@ export class GhostProvider {
 		this.model = new GhostModel()
 		this.ghostContext = new GhostContext(this.documentStore)
 		this.cursor = new GhostCursorAnimation(context)
-
-		this.loadSettings()
-		this.initializeStatusBar()
 
 		// Register the providers
 		this.codeActionProvider = new GhostCodeActionProvider()
@@ -79,107 +78,12 @@ export class GhostProvider {
 		vscode.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, context.subscriptions)
 		vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, context.subscriptions)
 		vscode.window.onDidChangeTextEditorSelection(this.onDidChangeTextEditorSelection, this, context.subscriptions)
+		vscode.window.onDidChangeActiveTextEditor(this.onDidChangeActiveTextEditor, this, context.subscriptions)
 
 		void this.reload()
 	}
 
-	private async watcherState() {}
-
-	/**
-	 * Handle document close events to remove the document from the store and free memory
-	 */
-	private onDidCloseTextDocument(document: vscode.TextDocument): void {
-		// Only process file documents
-		if (!this.enabled || document.uri.scheme !== "file") {
-			return
-		}
-
-		// Remove the document completely from the store
-		this.documentStore.removeDocument(document.uri)
-	}
-
-	/**
-	 * Handle document open events to parse the AST
-	 */
-	private async onDidOpenTextDocument(document: vscode.TextDocument): Promise<void> {
-		// Only process file documents
-		if (!this.enabled || document.uri.scheme !== "file") {
-			return
-		}
-
-		// Store the document and parse its AST
-		await this.documentStore.storeDocument({
-			document,
-		})
-	}
-
-	/**
-	 * Handle document change events to update the AST
-	 */
-	private async onDidChangeTextDocument(event: vscode.TextDocumentChangeEvent): Promise<void> {
-		// Only process file documents
-		if (!this.enabled || event.document.uri.scheme !== "file") {
-			return
-		}
-
-		if (this.workspaceEdit.isLocked()) {
-			return
-		}
-
-		// Store the updated document and parse its AST
-		await this.documentStore.storeDocument({ document: event.document })
-
-		// Track when text changes occur (for selection change detection)
-		this.lastTextChangeTime = Date.now()
-
-		// Handle auto-trigger logic
-		this.handleTypingEvent(event)
-	}
-
-	private async onDidChangeTextEditorSelection(event: vscode.TextEditorSelectionChangeEvent): Promise<void> {
-		if (!this.enabled) {
-			return
-		}
-		this.cursor.update()
-
-		// Only reset auto-trigger timer when user intentionally moves cursor (not when typing)
-		// Check if selection change happened shortly after a text change (within 50ms)
-		const timeSinceLastTextChange = Date.now() - this.lastTextChangeTime
-		const isSelectionChangeFromTyping = timeSinceLastTextChange < 50
-
-		if (!isSelectionChangeFromTyping) {
-			this.clearAutoTriggerTimer()
-		}
-	}
-
-	private loadSettings() {
-		const state = ContextProxy.instance?.getValues?.()
-		const experimentEnabled = experiments.isEnabled(state.experiments ?? {}, EXPERIMENT_IDS.INLINE_ASSIST)
-		// if (this.enabled && !experimentEnabled) {
-		// 	this.disable()
-		// }
-		// if (!this.enabled && experimentEnabled) {
-		// 	this.enable()
-		// }
-		this.enabled = experimentEnabled
-		return state.ghostServiceSettings
-	}
-
-	private async saveSettings() {
-		if (!this.settings) {
-			return
-		}
-		await ContextProxy.instance?.setValues?.({ ghostServiceSettings: this.settings })
-		await this.cline.postStateToWebview
-	}
-
-	public async reload() {
-		this.settings = this.loadSettings()
-		await this.model.reload(this.settings, this.providerSettingsManager)
-		await this.updateGlobalContext()
-		this.updateStatusBar()
-	}
-
+	// Singleton Management
 	public static initialize(context: vscode.ExtensionContext, cline: ClineProvider): GhostProvider {
 		if (GhostProvider.instance) {
 			throw new Error("GhostProvider is already initialized. Use getInstance() instead.")
@@ -195,12 +99,129 @@ export class GhostProvider {
 		return GhostProvider.instance
 	}
 
+	// Settings Management
+	private loadExperimentStatus() {
+		const state = ContextProxy.instance?.getValues?.()
+		return experiments.isEnabled(state.experiments ?? {}, EXPERIMENT_IDS.INLINE_ASSIST)
+	}
+
+	private loadSettings() {
+		const state = ContextProxy.instance?.getValues?.()
+		return state.ghostServiceSettings
+	}
+
+	private async saveSettings() {
+		if (!this.settings) {
+			return
+		}
+		await ContextProxy.instance?.setValues?.({ ghostServiceSettings: this.settings })
+		await this.cline.postStateToWebview
+	}
+
+	private async load() {
+		this.settings = this.loadSettings()
+		await this.model.reload(this.settings, this.providerSettingsManager)
+		await this.updateGlobalContext()
+		this.updateStatusBar()
+	}
+
+	private async unload() {
+		this.clearAutoTriggerTimer()
+		this.disposeStatusBar()
+		await this.cancelSuggestions()
+	}
+
+	public async disable() {
+		this.settings = {
+			...this.settings,
+			enableAutoTrigger: false,
+			enableSmartInlineTaskKeybinding: false,
+			enableQuickInlineTaskKeybinding: false,
+		}
+		await this.saveSettings()
+		await this.reload()
+	}
+
+	public async enable() {
+		this.settings = {
+			...this.settings,
+			enableAutoTrigger: true,
+			enableSmartInlineTaskKeybinding: true,
+			enableQuickInlineTaskKeybinding: true,
+		}
+		await this.saveSettings()
+		await this.reload()
+	}
+
+	public async reload() {
+		const enabled = this.loadExperimentStatus()
+		if (this.enabled && !enabled) {
+			this.enabled = enabled
+			await this.unload()
+			return
+		}
+		this.enabled = enabled
+		if (this.enabled) {
+			await this.load()
+		}
+		return
+	}
+
+	// VsCode Event Handlers
+	private onDidCloseTextDocument(document: vscode.TextDocument): void {
+		if (!this.enabled || document.uri.scheme !== "file") {
+			return
+		}
+		this.documentStore.removeDocument(document.uri)
+	}
+
+	private async onDidOpenTextDocument(document: vscode.TextDocument): Promise<void> {
+		if (!this.enabled || document.uri.scheme !== "file") {
+			return
+		}
+		await this.documentStore.storeDocument({
+			document,
+		})
+	}
+
+	private async onDidChangeTextDocument(event: vscode.TextDocumentChangeEvent): Promise<void> {
+		if (!this.enabled || event.document.uri.scheme !== "file") {
+			return
+		}
+		if (this.workspaceEdit.isLocked()) {
+			return
+		}
+		await this.documentStore.storeDocument({ document: event.document })
+		this.lastTextChangeTime = Date.now()
+		this.handleTypingEvent(event)
+	}
+
+	private async onDidChangeTextEditorSelection(event: vscode.TextEditorSelectionChangeEvent): Promise<void> {
+		if (!this.enabled) {
+			return
+		}
+		this.cursor.update()
+		const timeSinceLastTextChange = Date.now() - this.lastTextChangeTime
+		const isSelectionChangeFromTyping = timeSinceLastTextChange < 50
+		if (!isSelectionChangeFromTyping) {
+			this.clearAutoTriggerTimer()
+		}
+	}
+
+	private async onDidChangeActiveTextEditor(editor: vscode.TextEditor | undefined) {
+		if (!this.enable || !editor) {
+			return
+		}
+		this.clearAutoTriggerTimer()
+		await this.render()
+	}
+
 	public async promptCodeSuggestion() {
 		if (!this.enabled) {
 			return
 		}
-		this.taskId = crypto.randomUUID()
 
+		this.taskId = crypto.randomUUID()
 		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_QUICK_TASK, {
 			taskId: this.taskId,
 		})
@@ -217,9 +238,9 @@ export class GhostProvider {
 		if (!editor) {
 			return
 		}
+
 		const document = editor.document
 		const range = editor.selection.isEmpty ? undefined : editor.selection
-
 		await this.provideCodeSuggestions({ document, range, userInput })
 	}
 
@@ -302,17 +323,6 @@ export class GhostProvider {
 		await this.displaySuggestions()
 		await this.displayCodeLens()
 		await this.moveCursorToSuggestion()
-	}
-
-	public async onDidChangeActiveTextEditor(editor: vscode.TextEditor | undefined) {
-		if (!this.enabled) {
-			return
-		}
-		if (!editor) {
-			return
-		}
-		this.clearAutoTriggerTimer()
-		await this.render()
 	}
 
 	private async moveCursorToSuggestion() {
@@ -550,36 +560,6 @@ export class GhostProvider {
 	private disposeStatusBar() {
 		this.statusBar?.dispose()
 		this.statusBar = null
-	}
-
-	public dispose() {
-		this.disposeStatusBar()
-		this.clearAutoTriggerTimer()
-	}
-
-	public async disable() {
-		this.settings = {
-			...this.settings,
-			enableSmartInlineTaskKeybinding: false,
-			enableQuickInlineTaskKeybinding: false,
-		}
-		this.disposeStatusBar()
-		this.clearAutoTriggerTimer()
-
-		await this.cancelSuggestions()
-		await this.saveSettings()
-		await this.updateGlobalContext()
-	}
-
-	public async enable() {
-		this.settings = {
-			...this.settings,
-			enableSmartInlineTaskKeybinding: true,
-			enableQuickInlineTaskKeybinding: true,
-		}
-		this.updateStatusBar()
-		await this.saveSettings()
-		await this.updateGlobalContext()
 	}
 
 	public async showIncompatibilityExtensionPopup() {
