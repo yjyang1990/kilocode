@@ -15,6 +15,7 @@ import {
 	litellmDefaultModelId,
 	openAiNativeDefaultModelId,
 	anthropicDefaultModelId,
+	doubaoDefaultModelId,
 	claudeCodeDefaultModelId,
 	geminiDefaultModelId,
 	geminiCliDefaultModelId,
@@ -27,6 +28,7 @@ import {
 	bedrockDefaultModelId,
 	vertexDefaultModelId,
 	kilocodeDefaultModelId,
+	sambaNovaDefaultModelId,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -59,6 +61,7 @@ import {
 	Chutes,
 	ClaudeCode,
 	DeepSeek,
+	Doubao,
 	Gemini,
 	GeminiCli,
 	Glama,
@@ -73,6 +76,7 @@ import {
 	OpenAICompatible,
 	OpenRouter,
 	Requesty,
+	SambaNova,
 	Unbound,
 	Vertex,
 	VSCodeLM,
@@ -317,6 +321,7 @@ const ApiOptions = ({
 				gemini: { field: "apiModelId", default: geminiDefaultModelId },
 				"gemini-cli": { field: "apiModelId", default: geminiCliDefaultModelId },
 				deepseek: { field: "apiModelId", default: deepSeekDefaultModelId },
+				doubao: { field: "apiModelId", default: doubaoDefaultModelId },
 				moonshot: { field: "apiModelId", default: moonshotDefaultModelId },
 				mistral: { field: "apiModelId", default: mistralDefaultModelId },
 				xai: { field: "apiModelId", default: xaiDefaultModelId },
@@ -324,6 +329,7 @@ const ApiOptions = ({
 				chutes: { field: "apiModelId", default: chutesDefaultModelId },
 				bedrock: { field: "apiModelId", default: bedrockDefaultModelId },
 				vertex: { field: "apiModelId", default: vertexDefaultModelId },
+				sambanova: { field: "apiModelId", default: sambaNovaDefaultModelId },
 				openai: { field: "openAiModelId" },
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
@@ -354,16 +360,28 @@ const ApiOptions = ({
 		if (!name) {
 			return undefined
 		}
-		
-		{/* kilocode_change start */}
+
+		{
+			/* kilocode_change start */
+		}
 		// Providers that don't have documentation pages yet
-		const excludedProviders = ["fireworks", "gemini-cli", "moonshot", "chutes", "cerebras", "virtual-quota-fallback", "litellm"]
+		const excludedProviders = [
+			"fireworks",
+			"gemini-cli",
+			"moonshot",
+			"chutes",
+			"cerebras",
+			"virtual-quota-fallback",
+			"litellm",
+		]
 
 		// Skip documentation link when the provider is excluded because documentation is not available
 		if (excludedProviders.includes(selectedProvider)) {
 			return undefined
 		}
-		{/* kilocode_change end */}
+		{
+			/* kilocode_change end */
+		}
 
 		// Get the URL slug - use custom mapping if available, otherwise use the provider key.
 		const slugs: Record<string, string> = {
@@ -528,7 +546,11 @@ const ApiOptions = ({
 			)}
 
 			{selectedProvider === "gemini" && (
-				<Gemini apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<Gemini
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					fromWelcomeView={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "gemini-cli" && (
@@ -550,6 +572,10 @@ const ApiOptions = ({
 
 			{selectedProvider === "deepseek" && (
 				<DeepSeek apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
+			{selectedProvider === "doubao" && (
+				<Doubao apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "moonshot" && (
@@ -599,6 +625,10 @@ const ApiOptions = ({
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
 				/>
+			)}
+
+			{selectedProvider === "sambanova" && (
+				<SambaNova apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "human-relay" && (

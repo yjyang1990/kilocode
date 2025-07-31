@@ -250,6 +250,8 @@ describe("mergeExtensionState", () => {
 			sharingEnabled: false,
 			profileThresholds: {},
 			hasOpenedModeSelector: false, // Add the new required property
+			maxImageFileSize: 5,
+			maxTotalImageSize: 20,
 		}
 
 		const prevState: ExtensionState = {
@@ -268,6 +270,7 @@ describe("mergeExtensionState", () => {
 				concurrentFileReads: true,
 				multiFileApplyDiff: true,
 				inlineAssist: false, // kilocode_change
+				preventFocusDisruption: false,
 			} as Record<ExperimentId, boolean>,
 		}
 
@@ -285,6 +288,7 @@ describe("mergeExtensionState", () => {
 			concurrentFileReads: true,
 			multiFileApplyDiff: true,
 			inlineAssist: false, // kilocode_change
+			preventFocusDisruption: false,
 		})
 	})
 })

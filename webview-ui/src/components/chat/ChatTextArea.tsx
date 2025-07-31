@@ -514,7 +514,6 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							const direction = event.key === "ArrowUp" ? -1 : 1
 							const options = getContextMenuOptions(
 								searchQuery,
-								inputValue,
 								selectedType,
 								queryItems,
 								fileSearchResults,
@@ -551,7 +550,6 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						event.preventDefault()
 						const selectedOption = getContextMenuOptions(
 							searchQuery,
-							inputValue,
 							selectedType,
 							queryItems,
 							fileSearchResults,
