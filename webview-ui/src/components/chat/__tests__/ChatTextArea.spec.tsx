@@ -910,7 +910,8 @@ describe("ChatTextArea", () => {
 		})
 	})
 
-	describe("slash command highlighting", () => {
+	// kilocode_change: skip because we have our own slash commands
+	describe.skip("slash command highlighting", () => {
 		const mockCommands = [
 			{ name: "setup", source: "project", description: "Setup the project" },
 			{ name: "deploy", source: "global", description: "Deploy the application" },
