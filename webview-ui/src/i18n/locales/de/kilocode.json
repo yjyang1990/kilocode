@@ -60,7 +60,14 @@
 		"dashboard": "Dashboard",
 		"logOut": "Abmelden",
 		"currentBalance": "AKTUELLES GUTHABEN",
-		"loading": "Lädt..."
+		"loading": "Lädt...",
+		"shop": {
+			"title": "Credits kaufen",
+			"popular": "Beliebt",
+			"credits": "Credits",
+			"action": "Jetzt kaufen",
+			"viewAll": "Alle Preisoptionen anzeigen"
+		}
 	},
 	"docs": "Dokumentation",
 	"rules": {

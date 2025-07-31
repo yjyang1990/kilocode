@@ -60,7 +60,14 @@
 		"dashboard": "儀表板",
 		"logOut": "登出",
 		"currentBalance": "目前餘額",
-		"loading": "載入中..."
+		"loading": "載入中...",
+		"shop": {
+			"title": "購買點數",
+			"popular": "熱門",
+			"credits": "點數",
+			"action": "立即購買",
+			"viewAll": "檢視所有價格選項"
+		}
 	},
 	"docs": "文件",
 	"rules": {

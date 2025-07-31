@@ -60,7 +60,14 @@
 		"dashboard": "대시보드",
 		"logOut": "로그아웃",
 		"currentBalance": "현재 잔액",
-		"loading": "로딩 중..."
+		"loading": "로딩 중...",
+		"shop": {
+			"title": "크레딧 구매",
+			"popular": "인기",
+			"credits": "크레딧",
+			"action": "지금 구매",
+			"viewAll": "모든 가격 옵션 보기"
+		}
 	},
 	"docs": "문서",
 	"rules": {

@@ -60,7 +60,14 @@
 		"dashboard": "仪表板",
 		"logOut": "退出登录",
 		"currentBalance": "当前余额",
-		"loading": "加载中..."
+		"loading": "加载中...",
+		"shop": {
+			"title": "购买 Credits",
+			"popular": "热门",
+			"credits": "Credits",
+			"action": "立即购买",
+			"viewAll": "查看所有价格选项"
+		}
 	},
 	"docs": "文档",
 	"rules": {

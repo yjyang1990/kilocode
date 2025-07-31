@@ -60,7 +60,14 @@
 		"dashboard": "Panel de control",
 		"logOut": "Cerrar sesión",
 		"currentBalance": "SALDO ACTUAL",
-		"loading": "Cargando..."
+		"loading": "Cargando...",
+		"shop": {
+			"title": "Comprar Créditos",
+			"popular": "Popular",
+			"credits": "créditos",
+			"action": "Comprar Ahora",
+			"viewAll": "Ver todas las opciones de precio"
+		}
 	},
 	"docs": "Documentos",
 	"rules": {

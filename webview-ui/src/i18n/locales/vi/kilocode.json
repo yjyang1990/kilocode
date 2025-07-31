@@ -60,7 +60,14 @@
 		"dashboard": "Bảng điều khiển",
 		"logOut": "Đăng xuất",
 		"currentBalance": "SỐ DƯ HIỆN TẠI",
-		"loading": "Đang tải..."
+		"loading": "Đang tải...",
+		"shop": {
+			"title": "Mua Tín dụng",
+			"popular": "Phổ biến",
+			"credits": "tín dụng",
+			"action": "Mua Ngay",
+			"viewAll": "Xem tất cả tùy chọn giá"
+		}
 	},
 	"docs": "Tài liệu",
 	"rules": {

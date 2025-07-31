@@ -60,7 +60,14 @@
 		"dashboard": "Dashboard",
 		"logOut": "Keluar",
 		"currentBalance": "SALDO SAAT INI",
-		"loading": "Memuat..."
+		"loading": "Memuat...",
+		"shop": {
+			"title": "Beli Kredit",
+			"popular": "Populer",
+			"credits": "kredit",
+			"action": "Beli Sekarang",
+			"viewAll": "Lihat semua opsi harga"
+		}
 	},
 	"docs": "Dokumentasi",
 	"rules": {
