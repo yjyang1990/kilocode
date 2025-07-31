@@ -4,7 +4,7 @@
 		"introText1": "Kilo Code ist ein kostenloser Open-Source-KI-Coding-Agent.",
 		"introText2": "Er funktioniert mit den neuesten KI-Modellen wie Claude 4 Sonnet, Gemini 2.5 Pro, GPT-4.1 und über 450 weiteren.",
 		"introText3": "Erstelle ein kostenloses Konto und erhalte $20 an Tokens zur Nutzung mit jedem KI-Modell.",
-		"ctaButton": "Kostenloses Konto erstellen",
+		"ctaButton": "Loslegen",
 		"manualModeButton": "Eigenen API-Schlüssel verwenden",
 		"alreadySignedUp": "Bereits registriert?",
 		"loginText": "Hier anmelden"
@@ -60,7 +60,14 @@
 		"dashboard": "Dashboard",
 		"logOut": "Abmelden",
 		"currentBalance": "AKTUELLES GUTHABEN",
-		"loading": "Lädt..."
+		"loading": "Lädt...",
+		"shop": {
+			"title": "Credits kaufen",
+			"popular": "Beliebt",
+			"credits": "Credits",
+			"action": "Jetzt kaufen",
+			"viewAll": "Alle Preisoptionen anzeigen"
+		}
 	},
 	"docs": "Dokumentation",
 	"rules": {

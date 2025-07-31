@@ -98,11 +98,11 @@ export class PostHogTelemetryClient extends BaseTelemetryClient {
 	}
 
 	// kilocode_change start
-	public override captureException(error: Error, properties?: Record<string | number, unknown>): void {
+	public override async captureException(error: Error, properties?: Record<string | number, unknown>): Promise<void> {
 		if (this.isTelemetryEnabled()) {
 			let providerProperties = {}
 			try {
-				providerProperties = this.providerRef?.deref()?.getTelemetryProperties() || {}
+				providerProperties = (await this.providerRef?.deref()?.getTelemetryProperties()) || {}
 			} catch (error) {
 				console.error("Error getting provider properties", error)
 			}

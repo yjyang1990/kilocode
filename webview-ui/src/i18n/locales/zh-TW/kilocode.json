@@ -4,7 +4,7 @@
 		"introText1": "Kilo Code 是一個免費的開源 AI 程式設計代理。",
 		"introText2": "它適用於最新的 AI 模型，如 Claude 4 Sonnet、Gemini 2.5 Pro、GPT-4.1 以及 450 多個其他模型。",
 		"introText3": "建立免費帳戶，獲得價值 20 美元的 token，可用於任何 AI 模型。",
-		"ctaButton": "建立免費帳戶",
+		"ctaButton": "開始使用",
 		"manualModeButton": "使用你自己的 API 金鑰",
 		"alreadySignedUp": "已經註冊了？",
 		"loginText": "在此登入"
@@ -60,7 +60,14 @@
 		"dashboard": "儀表板",
 		"logOut": "登出",
 		"currentBalance": "目前餘額",
-		"loading": "載入中..."
+		"loading": "載入中...",
+		"shop": {
+			"title": "購買點數",
+			"popular": "熱門",
+			"credits": "點數",
+			"action": "立即購買",
+			"viewAll": "檢視所有價格選項"
+		}
 	},
 	"docs": "文件",
 	"rules": {
