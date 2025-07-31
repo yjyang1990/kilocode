@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.71.0
-
-### Minor Changes
+## [v4.71.0]
 
 - [#1656](https://github.com/Kilo-Org/kilocode/pull/1656) [`68a3f4a`](https://github.com/Kilo-Org/kilocode/commit/68a3f4a583751ae70ecb5fbd83db119375c4d5bd) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Disable terminal shell integration by default
 
