@@ -116,7 +116,7 @@ ${getToolDescriptionsForMode(
 
 ${getToolUseGuidelinesSection(codeIndexManager)}
 
-${getMorphInstructions(experiments) /* kilocode_change: Morph fast apply */}${mcpServersSection}
+${getMorphInstructions(experiments) /* kilocode_change: newlines are returned by function */}${mcpServersSection}
 
 ${getCapabilitiesSection(cwd, supportsComputerUse, shouldIncludeMcp ? mcpHub : undefined, effectiveDiffStrategy, codeIndexManager)}
 
