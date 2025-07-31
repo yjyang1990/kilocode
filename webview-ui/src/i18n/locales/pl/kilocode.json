@@ -60,7 +60,14 @@
 		"dashboard": "Panel kontrolny",
 		"logOut": "Wyloguj się",
 		"currentBalance": "AKTUALNY STAN KONTA",
-		"loading": "Ładowanie..."
+		"loading": "Ładowanie...",
+		"shop": {
+			"title": "Kup Kredyty",
+			"popular": "Popularne",
+			"credits": "kredyty",
+			"action": "Kup Teraz",
+			"viewAll": "Zobacz wszystkie opcje cenowe"
+		}
 	},
 	"docs": "Dokumentacja",
 	"rules": {

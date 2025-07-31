@@ -60,7 +60,14 @@
 		"dashboard": "Přehled",
 		"logOut": "Odhlásit se",
 		"currentBalance": "AKTUÁLNÍ ZŮSTATEK",
-		"loading": "Načítání..."
+		"loading": "Načítání...",
+		"shop": {
+			"title": "Koupit kredity",
+			"popular": "Populární",
+			"credits": "kredity",
+			"action": "Koupit nyní",
+			"viewAll": "Zobrazit všechny cenové možnosti"
+		}
 	},
 	"docs": "Dokumentace",
 	"rules": {

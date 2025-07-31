@@ -60,7 +60,14 @@
 		"dashboard": "Dashboard",
 		"logOut": "Disconnetti",
 		"currentBalance": "SALDO ATTUALE",
-		"loading": "Caricamento..."
+		"loading": "Caricamento...",
+		"shop": {
+			"title": "Acquista Crediti",
+			"popular": "Popolare",
+			"credits": "crediti",
+			"action": "Acquista Ora",
+			"viewAll": "Visualizza tutte le opzioni di prezzo"
+		}
 	},
 	"docs": "Documentazione",
 	"rules": {

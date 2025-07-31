@@ -51,7 +51,14 @@
 		"dashboard": "Tauler de control",
 		"logOut": "Tancar sessió",
 		"currentBalance": "SALDO ACTUAL",
-		"loading": "Carregant..."
+		"loading": "Carregant...",
+		"shop": {
+			"title": "Comprar Crèdits",
+			"popular": "Popular",
+			"credits": "crèdits",
+			"action": "Comprar Ara",
+			"viewAll": "Veure totes les opcions de preus"
+		}
 	},
 	"chat": {
 		"condense": {

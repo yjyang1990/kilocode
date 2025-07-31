@@ -60,7 +60,14 @@
 		"dashboard": "Kontrol Paneli",
 		"logOut": "Çıkış Yap",
 		"currentBalance": "MEVCUT BAKİYE",
-		"loading": "Yükleniyor..."
+		"loading": "Yükleniyor...",
+		"shop": {
+			"title": "Kredi Satın Al",
+			"popular": "Popüler",
+			"credits": "kredi",
+			"action": "Şimdi Satın Al",
+			"viewAll": "Tüm fiyatlandırma seçeneklerini göster"
+		}
 	},
 	"docs": "Belgeler",
 	"rules": {

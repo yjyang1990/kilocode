@@ -60,7 +60,14 @@
 		"dashboard": "Painel",
 		"logOut": "Sair",
 		"currentBalance": "SALDO ATUAL",
-		"loading": "Carregando..."
+		"loading": "Carregando...",
+		"shop": {
+			"title": "Comprar Créditos",
+			"popular": "Popular",
+			"credits": "créditos",
+			"action": "Comprar Agora",
+			"viewAll": "Ver todas as opções de preço"
+		}
 	},
 	"docs": "Documentação",
 	"rules": {

@@ -60,7 +60,14 @@
 		"dashboard": "Dashboard",
 		"logOut": "Log out",
 		"currentBalance": "CURRENT BALANCE",
-		"loading": "Loading..."
+		"loading": "Loading...",
+		"shop": {
+			"title": "Buy Credits",
+			"popular": "Popular",
+			"credits": "credits",
+			"action": "Buy Now",
+			"viewAll": "View all pricing options"
+		}
 	},
 	"docs": "Docs",
 	"rules": {

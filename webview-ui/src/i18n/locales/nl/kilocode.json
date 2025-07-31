@@ -60,7 +60,14 @@
 		"dashboard": "Dashboard",
 		"logOut": "Uitloggen",
 		"currentBalance": "HUIDIG SALDO",
-		"loading": "Laden..."
+		"loading": "Laden...",
+		"shop": {
+			"title": "Credits Kopen",
+			"popular": "Populair",
+			"credits": "credits",
+			"action": "Nu Kopen",
+			"viewAll": "Alle prijs opties bekijken"
+		}
 	},
 	"docs": "Documentatie",
 	"rules": {
