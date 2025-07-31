@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.70.2
-
-### Patch Changes
+## [v4.70.2]
 
 - [#1645](https://github.com/Kilo-Org/kilocode/pull/1645) [`81e20ef`](https://github.com/Kilo-Org/kilocode/commit/81e20ef2168b966f8757acf009b27a7374a29386) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Profile credits shop
 
