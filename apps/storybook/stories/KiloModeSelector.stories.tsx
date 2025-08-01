@@ -7,12 +7,26 @@ import { withI18n } from "../src/decorators/withI18n"
 import { withTheme } from "../src/decorators/withTheme"
 import { withTooltipProvider } from "../src/decorators/withTooltipProvider"
 
-const KiloModeSelectorWrapper = (props: any) => {
+interface WrapperProps {
+	value?: Mode
+	customModes?: any
+	modeShortcutText?: string
+	title?: string
+	disabled?: boolean
+	initiallyOpen?: boolean
+}
+
+const KiloModeSelectorWrapper = (props: WrapperProps) => {
 	const [selectedMode, setSelectedMode] = useState<Mode>(props.value || "code")
 
 	return (
 		<div style={{ padding: "20px", minHeight: "400px", maxWidth: "300px" }}>
-			<KiloModeSelector {...props} value={selectedMode} onChange={setSelectedMode} />
+			<KiloModeSelector
+				{...props}
+				value={selectedMode}
+				onChange={setSelectedMode}
+				modeShortcutText={props.modeShortcutText || "⌘ + . for next mode"}
+			/>
 		</div>
 	)
 }
