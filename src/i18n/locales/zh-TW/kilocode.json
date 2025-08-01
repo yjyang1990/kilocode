@@ -112,7 +112,7 @@
 		"inputPrompt": "Kilo：描述您想要生成的命令",
 		"inputPlaceholder": "例如，结束在端口3001上运行的进程，查找大文件等",
 		"generatingProgress": "Kilo：正在生成终端命令...",
-		"commandGenerated": "千克: 生成的命令: {{command}}",
+		"commandGenerated": "Kilo: 生成的命令: {{command}}",
 		"generationFailed": "Kilo：命令生成失败：{{error}}",
 		"warningDialog": {
 			"title": "终端安全警告",
