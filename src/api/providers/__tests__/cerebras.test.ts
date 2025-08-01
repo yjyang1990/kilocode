@@ -35,7 +35,7 @@ describe("CerebrasHandler", () => {
 
 	test("should return default model when no model is specified", () => {
 		const model = handler.getModel()
-		expect(model.id).toBe(cerebrasDefaultModelId)
+		expect(model.id).toBe(cerebrasDefaultModelId.replace("-free", ""))
 		expect(model.info).toEqual(cerebrasModels[cerebrasDefaultModelId])
 	})
 
