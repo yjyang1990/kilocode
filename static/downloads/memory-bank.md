@@ -98,7 +98,7 @@ This workflow is designed for repetitive tasks that follow similar patterns and 
 - Implementing new API endpoints following established patterns
 - Adding new features that follow existing architecture
 
-Tasks are stored in the file `tasks.md` in the memory bank folder. The file is optional an can be empty. The file can store many tasks. 
+Tasks are stored in the file `tasks.md` in the memory bank folder. The file is optional and can be empty. The file can store many tasks. 
 
 To execute Add Task workflow:
 
