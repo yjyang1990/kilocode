@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.72.0
-
-### Minor Changes
+## [v4.72.0]
 
 - [#1663](https://github.com/Kilo-Org/kilocode/pull/1663) [`b043643`](https://github.com/Kilo-Org/kilocode/commit/b043643fe067e415ef28375554e24b8829fa5600) Thanks [@hassoncs](https://github.com/hassoncs)! - Add descriptions to the Mode Selector menu
 
