@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.72.1
-
-### Patch Changes
+## [v4.72.1]
 
 - [#1697](https://github.com/Kilo-Org/kilocode/pull/1697) [`bcea22c`](https://github.com/Kilo-Org/kilocode/commit/bcea22c5cf6c446a73edbaeabcae8bce62da6441) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - A note on where to find the MCP Marketplace was added
 
