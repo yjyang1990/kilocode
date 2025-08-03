@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.73.1
-
-### Patch Changes
+## [v4.73.1]
 
 - [#1707](https://github.com/Kilo-Org/kilocode/pull/1707) [`d2af1bd`](https://github.com/Kilo-Org/kilocode/commit/d2af1bd779f8e5480355eeceaeaba91679696d95) Thanks [@possible055](https://github.com/possible055)! - Refine Traditional Chinese translation
 
