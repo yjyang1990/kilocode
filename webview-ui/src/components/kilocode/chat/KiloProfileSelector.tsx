@@ -1,4 +1,4 @@
-import React from "react"
+// kilocode_change - new file
 import { SelectDropdown, DropdownOptionType, Button, StandardTooltip } from "@/components/ui"
 import { vscode } from "@/utils/vscode"
 import { useAppTranslation } from "@/i18n/TranslationContext"

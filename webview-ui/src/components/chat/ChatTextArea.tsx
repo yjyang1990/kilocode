@@ -19,12 +19,12 @@ import {
 	SearchResult,
 } from "@src/utils/context-mentions"
 import { convertToMentionPath } from "@/utils/path-mentions"
-import { DropdownOptionType, Button, StandardTooltip } from "@/components/ui"
+import { DropdownOptionType, Button, StandardTooltip } from "@/components/ui" // kilocode_change
 
 import Thumbnails from "../common/Thumbnails"
 import ModeSelector from "./ModeSelector"
 import KiloModeSelector from "./KiloModeSelector"
-import { KiloProfileSelector } from "../kilocode/chat/KiloProfileSelector"
+import { KiloProfileSelector } from "../kilocode/chat/KiloProfileSelector" // kilocode_change
 import { MAX_IMAGES_PER_MESSAGE } from "./ChatView"
 import ContextMenu from "./ContextMenu"
 import {
