@@ -79,7 +79,7 @@
 		"statusTitle": "狀態",
 		"settingsTitle": "索引設定",
 		"disabledMessage": "程式碼庫索引目前已停用。請在全域設定中啟用以設定索引選項。",
-		"embedderProviderLabel": "嵌入器供應商",
+		"embedderProviderLabel": "嵌入模型供應商",
 		"modelPlaceholder": "輸入模型名稱",
 		"selectModel": "選擇模型",
 		"ollamaBaseUrlLabel": "Ollama 基礎 URL",
