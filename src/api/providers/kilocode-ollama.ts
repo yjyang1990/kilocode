@@ -5,6 +5,7 @@ import { ApiStream } from "../transform/stream"
 import { BaseProvider } from "./base-provider"
 import { ModelRecord } from "../../shared/api"
 import { getModels } from "./fetchers/modelCache"
+import * as undici from "undici"
 
 function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessageParam[]): Message[] {
 	const ollamaMessages: Message[] = []
@@ -137,7 +138,15 @@ export class KilocodeOllamaHandler extends BaseProvider {
 	private ensureClient(): Ollama {
 		if (!this.client) {
 			try {
-				this.client = new Ollama({ host: this.options.ollamaBaseUrl || "http://localhost:11434" })
+				const fetchWithTimeout = (input: undici.RequestInfo, init?: undici.RequestInit) =>
+					undici.fetch(input, {
+						...init,
+						dispatcher: new undici.Agent({ headersTimeout: 3_600_000, bodyTimeout: 3_600_000 }),
+					})
+				this.client = new Ollama({
+					host: this.options.ollamaBaseUrl || "http://localhost:11434",
+					fetch: fetchWithTimeout as unknown as typeof fetch,
+				})
 			} catch (error) {
 				throw new Error(`Error creating Ollama client: ${error.message}`)
 			}
