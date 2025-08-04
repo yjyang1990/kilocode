@@ -30,6 +30,8 @@ export const providerNames = [
 	"human-relay",
 	"fake-ai",
 	"xai",
+	"zai",
+	"bigmodel",
 	"groq",
 	"chutes",
 	"litellm",
@@ -242,6 +244,14 @@ const xaiSchema = apiModelIdProviderModelSchema.extend({
 	xaiApiKey: z.string().optional(),
 })
 
+const zaiSchema = apiModelIdProviderModelSchema.extend({
+	zaiApiKey: z.string().optional(),
+})
+
+const bigModelSchema = apiModelIdProviderModelSchema.extend({
+	bigModelApiKey: z.string().optional(),
+})
+
 const groqSchema = apiModelIdProviderModelSchema.extend({
 	groqApiKey: z.string().optional(),
 })
@@ -327,6 +337,8 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	humanRelaySchema.merge(z.object({ apiProvider: z.literal("human-relay") })),
 	fakeAiSchema.merge(z.object({ apiProvider: z.literal("fake-ai") })),
 	xaiSchema.merge(z.object({ apiProvider: z.literal("xai") })),
+	zaiSchema.merge(z.object({ apiProvider: z.literal("zai") })),
+	bigModelSchema.merge(z.object({ apiProvider: z.literal("bigmodel") })),
 	groqSchema.merge(z.object({ apiProvider: z.literal("groq") })),
 	huggingFaceSchema.merge(z.object({ apiProvider: z.literal("huggingface") })),
 	chutesSchema.merge(z.object({ apiProvider: z.literal("chutes") })),
@@ -363,6 +375,8 @@ export const providerSettingsSchema = z.object({
 	...humanRelaySchema.shape,
 	...fakeAiSchema.shape,
 	...xaiSchema.shape,
+	...zaiSchema.shape,
+	...bigModelSchema.shape,
 	...groqSchema.shape,
 	...huggingFaceSchema.shape,
 	...chutesSchema.shape,

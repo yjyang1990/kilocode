@@ -17,6 +17,10 @@ import {
 	vertexModels,
 	xaiDefaultModelId,
 	xaiModels,
+	zaiDefaultModelId,
+	zaiModels,
+	bigModelDefaultModelId,
+	bigModelModels,
 	groqModels,
 	groqDefaultModelId,
 	chutesModels,
@@ -81,6 +85,18 @@ const getModelsByProvider = ({
 			return {
 				models: xaiModels,
 				defaultModel: xaiDefaultModelId,
+			}
+		}
+		case "zai": {
+			return {
+				models: zaiModels,
+				defaultModel: zaiDefaultModelId,
+			}
+		}
+		case "bigmodel": {
+			return {
+				models: bigModelModels,
+				defaultModel: bigModelDefaultModelId,
 			}
 		}
 		case "groq": {

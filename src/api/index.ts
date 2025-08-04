@@ -26,6 +26,8 @@ import {
 	HumanRelayHandler,
 	FakeAIHandler,
 	XAIHandler,
+	ZAIHandler,
+	BigModelHandler,
 	GroqHandler,
 	HuggingFaceHandler,
 	ChutesHandler,
@@ -131,6 +133,10 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new FakeAIHandler(options)
 		case "xai":
 			return new XAIHandler(options)
+		case "zai":
+			return new ZAIHandler(options)
+		case "bigmodel":
+			return new BigModelHandler(options)
 		case "groq":
 			return new GroqHandler(options)
 		case "huggingface":

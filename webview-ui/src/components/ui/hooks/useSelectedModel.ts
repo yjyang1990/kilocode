@@ -23,6 +23,10 @@ import {
 	vertexModels,
 	xaiDefaultModelId,
 	xaiModels,
+	zaiModels,
+	zaiDefaultModelId,
+	bigModelModels,
+	bigModelDefaultModelId,
 	groqModels,
 	groqDefaultModelId,
 	chutesModels,
@@ -145,6 +149,16 @@ function getSelectedModel({
 			const id = apiConfiguration.apiModelId ?? xaiDefaultModelId
 			const info = xaiModels[id as keyof typeof xaiModels]
 			return info ? { id, info } : { id, info: undefined }
+		}
+		case "zai": {
+			const id = apiConfiguration.apiModelId ?? zaiDefaultModelId
+			const info = zaiModels[id as keyof typeof zaiModels]
+			return info ? { id, info } : { id, info: undefined }
+		}
+		case "bigmodel": {
+			const id = apiConfiguration.apiModelId ?? bigModelDefaultModelId
+			const info = bigModelModels[id as keyof typeof bigModelModels]
+			return { id, info }
 		}
 		case "groq": {
 			const id = apiConfiguration.apiModelId ?? groqDefaultModelId

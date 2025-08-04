@@ -193,6 +193,8 @@ export const SECRET_STATE_KEYS = [
 	"unboundApiKey",
 	"requestyApiKey",
 	"xaiApiKey",
+	"zaiApiKey",
+	"bigModelApiKey",
 	"groqApiKey",
 	"chutesApiKey",
 	"litellmApiKey",

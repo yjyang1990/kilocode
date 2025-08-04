@@ -23,6 +23,8 @@ import {
 	moonshotDefaultModelId,
 	mistralDefaultModelId,
 	xaiDefaultModelId,
+	zaiDefaultModelId,
+	bigModelDefaultModelId,
 	groqDefaultModelId,
 	chutesDefaultModelId,
 	bedrockDefaultModelId,
@@ -81,6 +83,8 @@ import {
 	Vertex,
 	VSCodeLM,
 	XAI,
+	ZAI,
+	BigModel,
 	Cerebras, // kilocode_change
 	VirtualQuotaFallbackProvider, // kilocode_change
 } from "./providers"
@@ -325,6 +329,8 @@ const ApiOptions = ({
 				moonshot: { field: "apiModelId", default: moonshotDefaultModelId },
 				mistral: { field: "apiModelId", default: mistralDefaultModelId },
 				xai: { field: "apiModelId", default: xaiDefaultModelId },
+				zai: { field: "apiModelId", default: zaiDefaultModelId },
+				bigmodel: { field: "apiModelId", default: bigModelDefaultModelId },
 				groq: { field: "apiModelId", default: groqDefaultModelId },
 				chutes: { field: "apiModelId", default: chutesDefaultModelId },
 				bedrock: { field: "apiModelId", default: bedrockDefaultModelId },
@@ -371,6 +377,8 @@ const ApiOptions = ({
 			"cerebras",
 			"virtual-quota-fallback",
 			"litellm",
+			"zai",
+			"bigmodel",
 		]
 
 		// Skip documentation link when the provider is excluded because documentation is not available
@@ -588,6 +596,14 @@ const ApiOptions = ({
 
 			{selectedProvider === "xai" && (
 				<XAI apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
+			{selectedProvider === "zai" && (
+				<ZAI apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
+			{selectedProvider === "bigmodel" && (
+				<BigModel apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "groq" && (
