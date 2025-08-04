@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.74.0
-
-### Minor Changes
+## [v4.74.0]
 
 - [#1721](https://github.com/Kilo-Org/kilocode/pull/1721) [`3f816a8`](https://github.com/Kilo-Org/kilocode/commit/3f816a8e65b7c94d7212130f1312c9d77ff84ebf) Thanks [@damonto](https://github.com/damonto)! - Remove shortcut notation from activity bar title that was present in some languages
 
