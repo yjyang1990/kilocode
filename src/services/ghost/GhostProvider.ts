@@ -334,8 +334,16 @@ export class GhostProvider {
 		if (!editor) {
 			return
 		}
-		editor.selection = new vscode.Selection(topLine, 0, topLine, 0)
-		editor.revealRange(new vscode.Range(topLine, 0, topLine, 0), vscode.TextEditorRevealType.InCenter)
+		// Get the text of the line to find its length
+		const lineText = editor.document.lineAt(topLine).text
+		const lineLength = lineText.length
+
+		// Move cursor to the end of the line
+		editor.selection = new vscode.Selection(topLine, lineLength, topLine, lineLength)
+		editor.revealRange(
+			new vscode.Range(topLine, lineLength, topLine, lineLength),
+			vscode.TextEditorRevealType.InCenter,
+		)
 	}
 
 	public async displaySuggestions() {
@@ -605,13 +613,14 @@ export class GhostProvider {
 	 * Handle typing events for auto-trigger functionality
 	 */
 	private handleTypingEvent(event: vscode.TextDocumentChangeEvent): void {
-		// Skip if auto-trigger is not enabled
-		if (!this.isAutoTriggerEnabled()) {
+		// Cancel existing suggestions when user starts typing
+		if (this.hasPendingSuggestions()) {
+			void this.cancelSuggestions()
 			return
 		}
 
-		// Skip if we already have suggestions
-		if (this.hasPendingSuggestions()) {
+		// Skip if auto-trigger is not enabled
+		if (!this.isAutoTriggerEnabled()) {
 			return
 		}
 
