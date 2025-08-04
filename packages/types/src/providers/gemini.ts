@@ -295,6 +295,7 @@ export const geminiModels = {
 		supportsReasoningBudget: true,
 		maxThinkingTokens: 24_576,
 	},
+	// kilocode_change start
 	"gemma-3-27b-it": {
 		maxTokens: 128_000,
 		contextWindow: 128_000,
@@ -303,4 +304,5 @@ export const geminiModels = {
 		inputPrice: 0,
 		outputPrice: 0,
 	},
+	// kilocode_change end
 } as const satisfies Record<string, ModelInfo>
