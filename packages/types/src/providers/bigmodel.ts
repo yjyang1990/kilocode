@@ -17,7 +17,7 @@ export const bigModelModels = {
 		cacheWritesPrice: 0.11,
 		cacheReadsPrice: 0,
 		description:
-			"Z.ai‘s latest flagship model reaches SOTA among global open-source models in overall capabilities, and for the first time natively integrates reasoning, coding, and agent functionalities within a single model!",
+			"GLM-4.5 is Zhipu's latest featured model. Its comprehensive capabilities in reasoning, coding, and agent reach the state-of-the-art (SOTA) level among open-source models, with a context length of up to 128k.",
 	},
 	"glm-4.5-air": {
 		maxTokens: 98304,
@@ -29,6 +29,6 @@ export const bigModelModels = {
 		cacheWritesPrice: 0.03,
 		cacheReadsPrice: 0,
 		description:
-			"Z.ai's new lightweight flagship model delivers SOTA performance with exceptional cost-effectiveness!",
+			"GLM-4.5-Air is the lightweight version of GLM-4.5. It balances performance and cost-effectiveness, and can flexibly switch to hybrid thinking models.",
 	},
 } as const satisfies Record<string, ModelInfo>
