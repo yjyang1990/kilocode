@@ -209,7 +209,7 @@ export class GhostProvider {
 	}
 
 	private async onDidChangeActiveTextEditor(editor: vscode.TextEditor | undefined) {
-		if (!this.enable || !editor) {
+		if (!this.enabled || !editor) {
 			return
 		}
 		this.clearAutoTriggerTimer()
