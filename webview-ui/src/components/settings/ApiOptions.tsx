@@ -23,6 +23,10 @@ import {
 	moonshotDefaultModelId,
 	mistralDefaultModelId,
 	xaiDefaultModelId,
+	// kilocode_change start
+	zaiDefaultModelId,
+	bigModelDefaultModelId,
+	// kilocode_change end
 	groqDefaultModelId,
 	chutesDefaultModelId,
 	bedrockDefaultModelId,
@@ -81,8 +85,12 @@ import {
 	Vertex,
 	VSCodeLM,
 	XAI,
-	Cerebras, // kilocode_change
-	VirtualQuotaFallbackProvider, // kilocode_change
+	// kilocode_change start
+	ZAI,
+	BigModel,
+	Cerebras,
+	VirtualQuotaFallbackProvider,
+	// kilocode_change end
 } from "./providers"
 
 import { MODELS_BY_PROVIDER, PROVIDERS } from "./constants"
@@ -333,8 +341,12 @@ const ApiOptions = ({
 				openai: { field: "openAiModelId" },
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
-				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId }, // kilocode_change
-				cerebras: { field: "cerebrasModelId", default: cerebrasDefaultModelId }, // kilocode_change
+				// kilocode_change start
+				zai: { field: "apiModelId", default: zaiDefaultModelId },
+				bigmodel: { field: "apiModelId", default: bigModelDefaultModelId },
+				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId },
+				cerebras: { field: "cerebrasModelId", default: cerebrasDefaultModelId },
+				// kilocode_change end
 			}
 
 			const config = PROVIDER_MODEL_CONFIG[value]
@@ -371,6 +383,8 @@ const ApiOptions = ({
 			"cerebras",
 			"virtual-quota-fallback",
 			"litellm",
+			"zai",
+			"bigmodel",
 		]
 
 		// Skip documentation link when the provider is excluded because documentation is not available
@@ -603,6 +617,14 @@ const ApiOptions = ({
 			)}
 
 			{/* kilocode_change start */}
+			{selectedProvider === "zai" && (
+				<ZAI apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
+			{selectedProvider === "bigmodel" && (
+				<BigModel apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
 			{selectedProvider === "cerebras" && (
 				<Cerebras apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}

@@ -65,6 +65,8 @@ export class ProfileValidator {
 			case "mistral":
 			case "deepseek":
 			case "xai":
+			case "zai": // kilocode_change
+			case "bigmodel": // kilocode_change
 			case "groq":
 			case "sambanova":
 			case "chutes":
