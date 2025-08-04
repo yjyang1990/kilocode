@@ -193,14 +193,16 @@ export const SECRET_STATE_KEYS = [
 	"unboundApiKey",
 	"requestyApiKey",
 	"xaiApiKey",
-	"zaiApiKey",
-	"bigModelApiKey",
 	"groqApiKey",
 	"chutesApiKey",
 	"litellmApiKey",
 	"codeIndexOpenAiKey",
 	"codeIndexQdrantApiKey",
-	"kilocodeToken", // kilocode_change
+	// kilocode_change start
+	"kilocodeToken",
+	"zaiApiKey",
+	"bigModelApiKey",
+	// kilocode_change end
 	"codebaseIndexOpenAiCompatibleApiKey",
 	"codebaseIndexGeminiApiKey",
 	"codebaseIndexMistralApiKey",

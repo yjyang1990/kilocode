@@ -30,15 +30,17 @@ export const providerNames = [
 	"human-relay",
 	"fake-ai",
 	"xai",
-	"zai",
-	"bigmodel",
 	"groq",
 	"chutes",
 	"litellm",
-	"fireworks", // kilocode_change
-	"kilocode", // kilocode_change
-	"cerebras", // kilocode_change
-	"virtual-quota-fallback", // kilocode_change
+	// kilocode_change start
+	"fireworks",
+	"kilocode",
+	"cerebras",
+	"virtual-quota-fallback",
+	"zai",
+	"bigmodel",
+	// kilocode_change end
 	"huggingface",
 	"sambanova",
 ] as const
@@ -337,9 +339,11 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	humanRelaySchema.merge(z.object({ apiProvider: z.literal("human-relay") })),
 	fakeAiSchema.merge(z.object({ apiProvider: z.literal("fake-ai") })),
 	xaiSchema.merge(z.object({ apiProvider: z.literal("xai") })),
-	zaiSchema.merge(z.object({ apiProvider: z.literal("zai") })),
-	bigModelSchema.merge(z.object({ apiProvider: z.literal("bigmodel") })),
+	// kilocode_change start
+	zaiSchema.merge(z.object({ apiProvider: z.literal("bigmodel") })),
+	bigModelSchema.merge(z.object({ apiProvider: z.literal("groq") })),
 	groqSchema.merge(z.object({ apiProvider: z.literal("groq") })),
+	// kilocode_change end
 	huggingFaceSchema.merge(z.object({ apiProvider: z.literal("huggingface") })),
 	chutesSchema.merge(z.object({ apiProvider: z.literal("chutes") })),
 	litellmSchema.merge(z.object({ apiProvider: z.literal("litellm") })),

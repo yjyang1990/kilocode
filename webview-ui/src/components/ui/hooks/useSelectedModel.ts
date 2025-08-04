@@ -23,10 +23,12 @@ import {
 	vertexModels,
 	xaiDefaultModelId,
 	xaiModels,
+	// kilocode_change start
 	zaiModels,
 	zaiDefaultModelId,
 	bigModelModels,
 	bigModelDefaultModelId,
+	// kilocode_change end
 	groqModels,
 	groqDefaultModelId,
 	chutesModels,
@@ -150,6 +152,7 @@ function getSelectedModel({
 			const info = xaiModels[id as keyof typeof xaiModels]
 			return info ? { id, info } : { id, info: undefined }
 		}
+		// kilocode_change start
 		case "zai": {
 			const id = apiConfiguration.apiModelId ?? zaiDefaultModelId
 			const info = zaiModels[id as keyof typeof zaiModels]
@@ -160,6 +163,7 @@ function getSelectedModel({
 			const info = bigModelModels[id as keyof typeof bigModelModels]
 			return { id, info }
 		}
+		// kilocode_change end
 		case "groq": {
 			const id = apiConfiguration.apiModelId ?? groqDefaultModelId
 			const info = groqModels[id as keyof typeof groqModels]

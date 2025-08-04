@@ -1,3 +1,5 @@
+// kilocode_change - new file
+
 import { useCallback } from "react"
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 

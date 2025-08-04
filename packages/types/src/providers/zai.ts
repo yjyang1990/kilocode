@@ -1,3 +1,4 @@
+// kilocode_change - new file
 import type { ModelInfo } from "../model.js"
 
 // https://docs.z.ai/api-reference/llm/chat-completion

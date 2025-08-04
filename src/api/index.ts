@@ -128,15 +128,15 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new FireworksHandler(options)
 		case "virtual-quota-fallback":
 			return new VirtualQuotaFallbackHandler(options)
+		case "zai":
+			return new ZAIHandler(options)
+		case "bigmodel":
+			return new BigModelHandler(options)
 		// kilocode_change end
 		case "fake-ai":
 			return new FakeAIHandler(options)
 		case "xai":
 			return new XAIHandler(options)
-		case "zai":
-			return new ZAIHandler(options)
-		case "bigmodel":
-			return new BigModelHandler(options)
 		case "groq":
 			return new GroqHandler(options)
 		case "huggingface":
