@@ -5,7 +5,7 @@ import { ApiStream } from "../transform/stream"
 import { BaseProvider } from "./base-provider"
 import { ModelRecord } from "../../shared/api"
 import { getModels } from "./fetchers/modelCache"
-import * as undici from "undici"
+import { fetchWithTimeout } from "./kilocode/fetchWithTimeout"
 
 function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessageParam[]): Message[] {
 	const ollamaMessages: Message[] = []
@@ -120,6 +120,8 @@ function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessagePa
 	return ollamaMessages
 }
 
+const OLLAMA_TIMEOUT_MS = 3_600_000
+
 interface OllamaHandlerOptions {
 	ollamaBaseUrl?: string
 	ollamaModelId?: string
@@ -138,14 +140,9 @@ export class KilocodeOllamaHandler extends BaseProvider {
 	private ensureClient(): Ollama {
 		if (!this.client) {
 			try {
-				const fetchWithTimeout = (input: undici.RequestInfo, init?: undici.RequestInit) =>
-					undici.fetch(input, {
-						...init,
-						dispatcher: new undici.Agent({ headersTimeout: 3_600_000, bodyTimeout: 3_600_000 }),
-					})
 				this.client = new Ollama({
 					host: this.options.ollamaBaseUrl || "http://localhost:11434",
-					fetch: fetchWithTimeout as unknown as typeof fetch,
+					fetch: fetchWithTimeout(OLLAMA_TIMEOUT_MS),
 				})
 			} catch (error) {
 				throw new Error(`Error creating Ollama client: ${error.message}`)
