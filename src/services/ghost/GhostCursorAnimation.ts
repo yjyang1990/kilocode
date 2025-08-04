@@ -1,12 +1,18 @@
 import * as vscode from "vscode"
 
 export class GhostCursorAnimation {
-	private active = false
-	private decoration: vscode.TextEditorDecorationType
+	private state: "hide" | "wait" | "active" = "hide"
+	private decorationWait: vscode.TextEditorDecorationType
+	private decorationActive: vscode.TextEditorDecorationType
 
 	public constructor(context: vscode.ExtensionContext) {
-		this.decoration = vscode.window.createTextEditorDecorationType({
+		this.decorationWait = vscode.window.createTextEditorDecorationType({
 			gutterIconPath: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "logo-outline-black.gif"),
+			gutterIconSize: "30px",
+			isWholeLine: false,
+		})
+		this.decorationActive = vscode.window.createTextEditorDecorationType({
+			gutterIconPath: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "logo-outline-yellow.gif"),
 			gutterIconSize: "30px",
 			isWholeLine: false,
 		})
@@ -24,21 +30,33 @@ export class GhostCursorAnimation {
 		if (!editor) {
 			return
 		}
-		if (!this.active) {
-			editor.setDecorations(this.decoration, [])
+		if (this.state == "hide") {
+			editor.setDecorations(this.decorationActive, [])
+			editor.setDecorations(this.decorationWait, [])
 			return
 		}
 		const position = this.getPosition(editor)
-		editor.setDecorations(this.decoration, [position])
+		if (this.state == "wait") {
+			editor.setDecorations(this.decorationActive, [])
+			editor.setDecorations(this.decorationWait, [position])
+			return
+		}
+		editor.setDecorations(this.decorationWait, [])
+		editor.setDecorations(this.decorationActive, [position])
 	}
 
-	public show() {
-		this.active = true
+	public wait() {
+		this.state = "wait"
+		this.update()
+	}
+
+	public active() {
+		this.state = "active"
 		this.update()
 	}
 
 	public hide() {
-		this.active = false
+		this.state = "hide"
 		this.update()
 	}
 }

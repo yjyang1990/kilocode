@@ -267,7 +267,7 @@ export class GhostProvider {
 	private async provideCodeSuggestions(initialContext: GhostSuggestionContext): Promise<void> {
 		// Cancel any ongoing suggestions
 		await this.cancelSuggestions()
-		this.startProcessing()
+		this.startRequesting()
 		this.isRequestCancelled = false
 
 		const context = await this.ghostContext.generate(initialContext)
@@ -575,8 +575,14 @@ export class GhostProvider {
 		}
 	}
 
+	private startRequesting() {
+		this.cursor.active()
+		this.isProcessing = true
+		this.updateGlobalContext()
+	}
+
 	private startProcessing() {
-		this.cursor.show()
+		this.cursor.wait()
 		this.isProcessing = true
 		this.updateGlobalContext()
 	}
