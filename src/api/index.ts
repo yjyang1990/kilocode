@@ -26,6 +26,8 @@ import {
 	HumanRelayHandler,
 	FakeAIHandler,
 	XAIHandler,
+	ZAIHandler, // kilocode_change
+	BigModelHandler, // kilocode_change
 	GroqHandler,
 	HuggingFaceHandler,
 	ChutesHandler,
@@ -33,6 +35,8 @@ import {
 	CerebrasHandler, // kilocode_change
 	VirtualQuotaFallbackHandler, // kilocode_change
 	ClaudeCodeHandler,
+	SambaNovaHandler,
+	DoubaoHandler,
 } from "./providers"
 // kilocode_change start
 import { FireworksHandler } from "./providers/fireworks"
@@ -105,6 +109,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new OpenAiNativeHandler(options)
 		case "deepseek":
 			return new DeepSeekHandler(options)
+		case "doubao":
+			return new DoubaoHandler(options)
 		case "moonshot":
 			return new MoonshotHandler(options)
 		case "vscode-lm":
@@ -122,6 +128,10 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new FireworksHandler(options)
 		case "virtual-quota-fallback":
 			return new VirtualQuotaFallbackHandler(options)
+		case "zai":
+			return new ZAIHandler(options)
+		case "bigmodel":
+			return new BigModelHandler(options)
 		// kilocode_change end
 		case "fake-ai":
 			return new FakeAIHandler(options)
@@ -139,6 +149,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 		case "cerebras":
 			return new CerebrasHandler(options)
 		// kilocode_change end
+		case "sambanova":
+			return new SambaNovaHandler(options)
 		default:
 			apiProvider satisfies "gemini-cli" | undefined
 			return new AnthropicHandler(options)

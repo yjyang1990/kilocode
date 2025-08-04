@@ -16,7 +16,13 @@ export * from "./ollama.js"
 export * from "./openai.js"
 export * from "./openrouter.js"
 export * from "./requesty.js"
+export * from "./sambanova.js"
 export * from "./unbound.js"
 export * from "./vertex.js"
 export * from "./vscode-llm.js"
 export * from "./xai.js"
+// kilocode_change start
+export * from "./zai.js"
+export * from "./bigmodel.js"
+// kilocode_change end
+export * from "./doubao.js"

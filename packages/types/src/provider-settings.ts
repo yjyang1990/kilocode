@@ -24,6 +24,7 @@ export const providerNames = [
 	"mistral",
 	"moonshot",
 	"deepseek",
+	"doubao",
 	"unbound",
 	"requesty",
 	"human-relay",
@@ -32,11 +33,16 @@ export const providerNames = [
 	"groq",
 	"chutes",
 	"litellm",
-	"fireworks", // kilocode_change
-	"kilocode", // kilocode_change
-	"cerebras", // kilocode_change
-	"virtual-quota-fallback", // kilocode_change
+	// kilocode_change start
+	"fireworks",
+	"kilocode",
+	"cerebras",
+	"virtual-quota-fallback",
+	"zai",
+	"bigmodel",
+	// kilocode_change end
 	"huggingface",
+	"sambanova",
 ] as const
 
 export const providerNamesSchema = z.enum(providerNames)
@@ -78,6 +84,8 @@ const baseProviderSettingsSchema = z.object({
 	reasoningEffort: reasoningEffortsSchema.optional(),
 	modelMaxTokens: z.number().optional(),
 	modelMaxThinkingTokens: z.number().optional(),
+
+	morphApiKey: z.string().optional(), // kilocode_change: Morph fast apply
 
 	// // kilocode_change start
 	// kilocodeToken: z.string().optional(),
@@ -180,6 +188,8 @@ const lmStudioSchema = baseProviderSettingsSchema.extend({
 const geminiSchema = apiModelIdProviderModelSchema.extend({
 	geminiApiKey: z.string().optional(),
 	googleGeminiBaseUrl: z.string().optional(),
+	enableUrlContext: z.boolean().optional(),
+	enableGrounding: z.boolean().optional(),
 })
 
 // kilocode_change start
@@ -202,6 +212,11 @@ const mistralSchema = apiModelIdProviderModelSchema.extend({
 const deepSeekSchema = apiModelIdProviderModelSchema.extend({
 	deepSeekBaseUrl: z.string().optional(),
 	deepSeekApiKey: z.string().optional(),
+})
+
+const doubaoSchema = apiModelIdProviderModelSchema.extend({
+	doubaoBaseUrl: z.string().optional(),
+	doubaoApiKey: z.string().optional(),
 })
 
 const moonshotSchema = apiModelIdProviderModelSchema.extend({
@@ -231,6 +246,16 @@ const xaiSchema = apiModelIdProviderModelSchema.extend({
 	xaiApiKey: z.string().optional(),
 })
 
+// kilocode_change start
+const zaiSchema = apiModelIdProviderModelSchema.extend({
+	zaiApiKey: z.string().optional(),
+})
+
+const bigModelSchema = apiModelIdProviderModelSchema.extend({
+	bigModelApiKey: z.string().optional(),
+})
+// kilocode_change end
+
 const groqSchema = apiModelIdProviderModelSchema.extend({
 	groqApiKey: z.string().optional(),
 })
@@ -249,6 +274,11 @@ const litellmSchema = baseProviderSettingsSchema.extend({
 	litellmBaseUrl: z.string().optional(),
 	litellmApiKey: z.string().optional(),
 	litellmModelId: z.string().optional(),
+	litellmUsePromptCache: z.boolean().optional(),
+})
+
+const sambaNovaSchema = apiModelIdProviderModelSchema.extend({
+	sambaNovaApiKey: z.string().optional(),
 })
 
 // kilocode_change start
@@ -300,24 +330,30 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	vsCodeLmSchema.merge(z.object({ apiProvider: z.literal("vscode-lm") })),
 	lmStudioSchema.merge(z.object({ apiProvider: z.literal("lmstudio") })),
 	geminiSchema.merge(z.object({ apiProvider: z.literal("gemini") })),
-	geminiCliSchema.merge(z.object({ apiProvider: z.literal("gemini-cli") })), // kilocode_change
 	openAiNativeSchema.merge(z.object({ apiProvider: z.literal("openai-native") })),
 	mistralSchema.merge(z.object({ apiProvider: z.literal("mistral") })),
 	deepSeekSchema.merge(z.object({ apiProvider: z.literal("deepseek") })),
+	doubaoSchema.merge(z.object({ apiProvider: z.literal("doubao") })),
 	moonshotSchema.merge(z.object({ apiProvider: z.literal("moonshot") })),
 	unboundSchema.merge(z.object({ apiProvider: z.literal("unbound") })),
 	requestySchema.merge(z.object({ apiProvider: z.literal("requesty") })),
 	humanRelaySchema.merge(z.object({ apiProvider: z.literal("human-relay") })),
 	fakeAiSchema.merge(z.object({ apiProvider: z.literal("fake-ai") })),
 	xaiSchema.merge(z.object({ apiProvider: z.literal("xai") })),
+	// kilocode_change start
+	zaiSchema.merge(z.object({ apiProvider: z.literal("zai") })),
+	bigModelSchema.merge(z.object({ apiProvider: z.literal("bigmodel") })),
+	geminiCliSchema.merge(z.object({ apiProvider: z.literal("gemini-cli") })),
+	kilocodeSchema.merge(z.object({ apiProvider: z.literal("kilocode") })),
+	fireworksSchema.merge(z.object({ apiProvider: z.literal("fireworks") })),
+	cerebrasSchema.merge(z.object({ apiProvider: z.literal("cerebras") })),
+	virtualQuotaFallbackSchema.merge(z.object({ apiProvider: z.literal("virtual-quota-fallback") })),
+	// kilocode_change end
 	groqSchema.merge(z.object({ apiProvider: z.literal("groq") })),
 	huggingFaceSchema.merge(z.object({ apiProvider: z.literal("huggingface") })),
 	chutesSchema.merge(z.object({ apiProvider: z.literal("chutes") })),
 	litellmSchema.merge(z.object({ apiProvider: z.literal("litellm") })),
-	kilocodeSchema.merge(z.object({ apiProvider: z.literal("kilocode") })), // kilocode_change
-	fireworksSchema.merge(z.object({ apiProvider: z.literal("fireworks") })), // kilocode_change
-	cerebrasSchema.merge(z.object({ apiProvider: z.literal("cerebras") })), // kilocode_change
-	virtualQuotaFallbackSchema.merge(z.object({ apiProvider: z.literal("virtual-quota-fallback") })), // kilocode_change
+	sambaNovaSchema.merge(z.object({ apiProvider: z.literal("sambanova") })),
 	defaultSchema,
 ])
 
@@ -334,10 +370,19 @@ export const providerSettingsSchema = z.object({
 	...vsCodeLmSchema.shape,
 	...lmStudioSchema.shape,
 	...geminiSchema.shape,
-	...geminiCliSchema.shape, // kilocode_change
+	// kilocode_change start
+	...geminiCliSchema.shape,
+	...kilocodeSchema.shape,
+	...fireworksSchema.shape,
+	...cerebrasSchema.shape,
+	...zaiSchema.shape,
+	...bigModelSchema.shape,
+	...virtualQuotaFallbackSchema.shape,
+	// kilocode_change end
 	...openAiNativeSchema.shape,
 	...mistralSchema.shape,
 	...deepSeekSchema.shape,
+	...doubaoSchema.shape,
 	...moonshotSchema.shape,
 	...unboundSchema.shape,
 	...requestySchema.shape,
@@ -348,11 +393,8 @@ export const providerSettingsSchema = z.object({
 	...huggingFaceSchema.shape,
 	...chutesSchema.shape,
 	...litellmSchema.shape,
+	...sambaNovaSchema.shape,
 	...codebaseIndexProviderSchema.shape,
-	...kilocodeSchema.shape, // kilocode_change
-	...fireworksSchema.shape, // kilocode_change
-	...cerebrasSchema.shape, // kilocode_change
-	...virtualQuotaFallbackSchema.shape, // kilocode_change
 })
 
 export type ProviderSettings = z.infer<typeof providerSettingsSchema>

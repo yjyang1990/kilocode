@@ -5,6 +5,7 @@ export { CerebrasHandler } from "./cerebras" // kilocode_change
 export { ChutesHandler } from "./chutes"
 export { ClaudeCodeHandler } from "./claude-code"
 export { DeepSeekHandler } from "./deepseek"
+export { DoubaoHandler } from "./doubao"
 export { MoonshotHandler } from "./moonshot"
 export { FakeAIHandler } from "./fake-ai"
 export { GeminiHandler } from "./gemini"
@@ -21,8 +22,13 @@ export { OpenAiNativeHandler } from "./openai-native"
 export { OpenAiHandler } from "./openai"
 export { OpenRouterHandler } from "./openrouter"
 export { RequestyHandler } from "./requesty"
+export { SambaNovaHandler } from "./sambanova"
 export { UnboundHandler } from "./unbound"
 export { VertexHandler } from "./vertex"
-export { VirtualQuotaFallbackHandler } from "./virtual-quota-fallback" // kilocode_change
+// kilocode_change start
+export { VirtualQuotaFallbackHandler } from "./virtual-quota-fallback"
+export { ZAIHandler } from "./zai"
+export { BigModelHandler } from "./bigmodel"
+// kilocode_change end
 export { VsCodeLmHandler } from "./vscode-lm"
 export { XAIHandler } from "./xai"
