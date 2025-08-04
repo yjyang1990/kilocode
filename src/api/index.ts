@@ -26,8 +26,8 @@ import {
 	HumanRelayHandler,
 	FakeAIHandler,
 	XAIHandler,
-	ZAIHandler,
-	BigModelHandler,
+	ZAIHandler, // kilocode_change
+	BigModelHandler, // kilocode_change
 	GroqHandler,
 	HuggingFaceHandler,
 	ChutesHandler,
