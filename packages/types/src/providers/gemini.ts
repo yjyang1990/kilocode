@@ -295,4 +295,12 @@ export const geminiModels = {
 		supportsReasoningBudget: true,
 		maxThinkingTokens: 24_576,
 	},
+	"gemma-3-27b-it": {
+		maxTokens: 128_000,
+		contextWindow: 128_000,
+		supportsImages: true,
+		supportsPromptCache: false,
+		inputPrice: 0,
+		outputPrice: 0,
+	},
 } as const satisfies Record<string, ModelInfo>
