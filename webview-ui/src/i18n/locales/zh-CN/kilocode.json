@@ -161,12 +161,21 @@
 	"ghost": {
 		"title": "内联辅助",
 		"settings": {
+			"autoTrigger": "自动触发",
 			"enableQuickInlineTaskKeybinding": {
 				"label": "快速内联任务",
 				"description": "只需要一个快速的调整？选中一些代码（或者不选！）然后按下Cmd+I。用简单的英语描述你的目标（\"创建一个带有这些属性的React组件\"，\"为这个函数添加错误处理\"），然后在编辑器中直接获取多个可立即使用的建议。<DocsLink>查看快捷键</DocsLink>"
 			},
-			"enableAutoInlineTaskKeybinding": {
-				"label": "自动内联任务",
+			"enableAutoTrigger": {
+				"label": "启用自动触发",
+				"description": "启用后，当你停止输入时，Kilo Code 将自动触发内联助手。这对于快速修复和建议很有用。"
+			},
+			"autoTriggerDelay": {
+				"label": "自动触发延迟",
+				"description": "在你停止输入后，Kilo Code 触发内联助手之前的延迟秒数。较低的延迟意味着更快的建议，但可能会更消耗资源。"
+			},
+			"enableSmartInlineTaskKeybinding": {
+				"label": "智能内联任务",
 				"description": "需要快速修复、完成或重构代码？Kilo 将使用周围的上下文提供即时改进，让您保持工作流畅。<DocsLink>查看快捷键</DocsLink>"
 			},
 			"provider": "提供商",
