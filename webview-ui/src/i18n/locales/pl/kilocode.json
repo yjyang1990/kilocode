@@ -32,6 +32,7 @@
 			"apiKey": "Klucz API Kilo Code",
 			"login": "Zaloguj się do Kilo Code",
 			"logout": "Wyloguj się z Kilo Code",
+			"automaticFetch": "Najnowsze modele są automatycznie dostępne w Kilo Code. Jeśli nie jesteś pewien, który model wybrać, Kilo Code działa najlepiej z zalecanymi modelami wymienionymi na górze <strong>pogrubioną czcionką</strong>.",
 			"providerRouting": {
 				"title": "Kilo Code - Routing dostawców OpenRouter",
 				"description": "Kilo Code kieruje żądania do najlepszych dostępnych dostawców dla Twojego modelu. Domyślnie żądania są równoważone obciążeniem między najlepszymi dostawcami, aby zmaksymalizować czas działania. Możesz jednak wybrać konkretnego dostawcę do użycia dla tego modelu."
