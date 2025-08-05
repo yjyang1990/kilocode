@@ -59,8 +59,7 @@ export default defineConfig(({ mode }) => {
 		try {
 			return JSON.parse(fs.readFileSync(path.join(__dirname, "..", "src", "package.json"), "utf8"))
 		} catch (error) {
-			console.warn("Could not read package.json:", error)
-			return { name: "kilo-code", version: "0.0.0" }
+			throw new Error(`Could not read package.json: ${error}`)
 		}
 	}
 
