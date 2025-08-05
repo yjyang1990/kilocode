@@ -32,3 +32,4 @@ export { BigModelHandler } from "./bigmodel"
 // kilocode_change end
 export { VsCodeLmHandler } from "./vscode-lm"
 export { XAIHandler } from "./xai"
+export { FireworksHandler } from "./fireworks"

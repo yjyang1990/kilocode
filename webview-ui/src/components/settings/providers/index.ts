@@ -29,3 +29,4 @@ export { VirtualQuotaFallbackProvider } from "./VirtualQuotaFallbackProvider"
 export { Cerebras } from "./Cerebras"
 // kilocode_change end
 export { LiteLLM } from "./LiteLLM"
+export { Fireworks } from "./Fireworks"
