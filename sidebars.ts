@@ -52,6 +52,7 @@ const sidebars: SidebarsConfig = {
                 "providers/chutes-ai",
                 "providers/claude-code",
                 "providers/deepseek",
+                "providers/fireworks",
                 "providers/vertex",
                 "providers/glama",
                 "providers/gemini",
