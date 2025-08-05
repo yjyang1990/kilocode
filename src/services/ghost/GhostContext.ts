@@ -96,9 +96,6 @@ export class GhostContext {
 		context = this.addRangeASTNode(context)
 		context = this.addRecentOperations(context)
 		context = this.addDiagnostics(context)
-
-		console.log(context)
-
 		return context
 	}
 }
