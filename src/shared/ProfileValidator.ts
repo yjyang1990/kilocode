@@ -70,6 +70,7 @@ export class ProfileValidator {
 			case "groq":
 			case "sambanova":
 			case "chutes":
+			case "fireworks":
 				return profile.apiModelId
 			case "litellm":
 				return profile.litellmModelId

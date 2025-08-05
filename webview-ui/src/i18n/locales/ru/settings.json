@@ -264,6 +264,8 @@
 		"getDeepSeekApiKey": "Получить DeepSeek API-ключ",
 		"doubaoApiKey": "Doubao API-ключ",
 		"getDoubaoApiKey": "Получить Doubao API-ключ",
+		"fireworksApiKey": "Fireworks API-ключ",
+		"getFireworksApiKey": "Получить Fireworks API-ключ",
 		"zaiApiKey": "Z.AI API-ключ",
 		"getZaiApiKey": "Получить Z.AI API-ключ",
 		"bigModelApiKey": "BigModel API-ключ",

@@ -20,9 +20,10 @@ import {
 	chutesModels,
 	sambaNovaModels,
 	doubaoModels,
+	fireworksModels,
 } from "@roo-code/types"
 
-import { fireworksModels, cerebrasModels } from "@roo/api" // kilocode_change
+import { cerebrasModels } from "@roo/api" // kilocode_change
 
 export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, ModelInfo>>> = {
 	anthropic: anthropicModels,
@@ -34,7 +35,6 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	gemini: geminiModels,
 	// kilocode_change start
 	"gemini-cli": geminiCliModels,
-	fireworks: fireworksModels,
 	zai: zaiModels,
 	bigmodel: bigModelModels,
 	cerebras: cerebrasModels,
@@ -46,6 +46,7 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	groq: groqModels,
 	chutes: chutesModels,
 	sambanova: sambaNovaModels,
+	fireworks: fireworksModels,
 }
 
 export const PROVIDERS = [
@@ -56,8 +57,8 @@ export const PROVIDERS = [
 	{ value: "gemini", label: "Google Gemini" },
 	{ value: "gemini-cli", label: "Gemini CLI" },
 	{ value: "doubao", label: "Doubao" },
+	{ value: "fireworks", label: "Fireworks AI" },
 	// kilocode_change start
-	{ value: "fireworks", label: "Fireworks" },
 	{ value: "zai", label: "Z.AI" },
 	{ value: "bigmodel", label: "BigModel" },
 	{ value: "cerebras", label: "Cerebras" },

@@ -264,6 +264,8 @@
 		"getDeepSeekApiKey": "Lấy khóa API DeepSeek",
 		"doubaoApiKey": "Khóa API Doubao",
 		"getDoubaoApiKey": "Lấy khóa API Doubao",
+		"fireworksApiKey": "Khóa API Fireworks",
+		"getFireworksApiKey": "Lấy khóa API Fireworks",
 		"zaiApiKey": "Khóa API Z.AI",
 		"getZaiApiKey": "Lấy khóa API Z.AI",
 		"bigModelApiKey": "Khóa API BigModel",

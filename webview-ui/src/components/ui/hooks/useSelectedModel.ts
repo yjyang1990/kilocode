@@ -47,9 +47,11 @@ import {
 	sambaNovaDefaultModelId,
 	doubaoModels,
 	doubaoDefaultModelId,
+	fireworksDefaultModelId,
+	fireworksModels,
 } from "@roo-code/types"
 
-import { cerebrasModels, cerebrasDefaultModelId, fireworksDefaultModelId, fireworksModels } from "@roo/api" // kilocode_change
+import { cerebrasModels, cerebrasDefaultModelId } from "@roo/api" // kilocode_change
 
 import type { RouterModels } from "@roo/api"
 
@@ -308,12 +310,9 @@ function getSelectedModel({
 			}
 		}
 		case "fireworks": {
-			return {
-				id: apiConfiguration.fireworksModelId ?? fireworksDefaultModelId,
-				info: fireworksModels[
-					(apiConfiguration.fireworksModelId ?? fireworksDefaultModelId) as keyof typeof fireworksModels
-				],
-			}
+			const id = apiConfiguration.apiModelId ?? fireworksDefaultModelId
+			const info = fireworksModels[id as keyof typeof fireworksModels]
+			return { id, info }
 		}
 		case "virtual-quota-fallback": {
 			return {

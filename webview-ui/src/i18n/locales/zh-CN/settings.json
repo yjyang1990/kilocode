@@ -265,6 +265,8 @@
 		"getDeepSeekApiKey": "获取 DeepSeek API 密钥",
 		"doubaoApiKey": "豆包 API 密钥",
 		"getDoubaoApiKey": "获取豆包 API 密钥",
+		"fireworksApiKey": "Fireworks API 密钥",
+		"getFireworksApiKey": "获取 Fireworks API 密钥",
 		"zaiApiKey": "Z.AI API 密钥",
 		"getZaiApiKey": "获取 Z.AI API 密钥",
 		"bigModelApiKey": "BigModel API 密钥",
