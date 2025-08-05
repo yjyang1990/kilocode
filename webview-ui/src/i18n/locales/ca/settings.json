@@ -264,6 +264,8 @@
 		"getDeepSeekApiKey": "Obtenir clau API de DeepSeek",
 		"doubaoApiKey": "Clau API de Doubao",
 		"getDoubaoApiKey": "Obtenir clau API de Doubao",
+		"fireworksApiKey": "Clau API de Fireworks",
+		"getFireworksApiKey": "Obtenir clau API de Fireworks",
 		"zaiApiKey": "Clau API de Z.AI",
 		"getZaiApiKey": "Obtenir clau API de Z.AI",
 		"bigModelApiKey": "Clau API de BigModel",
