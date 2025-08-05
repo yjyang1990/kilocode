@@ -260,6 +260,8 @@
 		"getDeepSeekApiKey": "Get DeepSeek API Key",
 		"doubaoApiKey": "Doubao API Key",
 		"getDoubaoApiKey": "Get Doubao API Key",
+		"fireworksApiKey": "Fireworks API Key",
+		"getFireworksApiKey": "Get Fireworks API Key",
 		"zaiApiKey": "Z.AI API Key",
 		"getZaiApiKey": "Get Z.AI API Key",
 		"bigModelApiKey": "BigModel API Key",

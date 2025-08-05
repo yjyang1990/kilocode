@@ -26,3 +26,4 @@ export * from "./zai.js"
 export * from "./bigmodel.js"
 // kilocode_change end
 export * from "./doubao.js"
+export * from "./fireworks.js"

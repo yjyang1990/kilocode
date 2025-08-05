@@ -37,9 +37,9 @@ import {
 	ClaudeCodeHandler,
 	SambaNovaHandler,
 	DoubaoHandler,
+	FireworksHandler,
 } from "./providers"
 // kilocode_change start
-import { FireworksHandler } from "./providers/fireworks"
 import { KilocodeOpenrouterHandler } from "./providers/kilocode-openrouter"
 import { KilocodeOllamaHandler } from "./providers/kilocode-ollama"
 // kilocode_change end

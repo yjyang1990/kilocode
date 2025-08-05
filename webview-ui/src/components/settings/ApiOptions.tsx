@@ -1,7 +1,7 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from "react" // kilocode_change Fragment
 import { convertHeadersToObject } from "./utils/headers"
 import { useDebounce } from "react-use"
-import { VSCodeLink, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { ExternalLinkIcon } from "@radix-ui/react-icons"
 
 import {
@@ -33,6 +33,7 @@ import {
 	vertexDefaultModelId,
 	kilocodeDefaultModelId,
 	sambaNovaDefaultModelId,
+	fireworksDefaultModelId,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -91,6 +92,7 @@ import {
 	Cerebras,
 	VirtualQuotaFallbackProvider,
 	// kilocode_change end
+	Fireworks,
 } from "./providers"
 
 import { MODELS_BY_PROVIDER, PROVIDERS } from "./constants"
@@ -347,6 +349,7 @@ const ApiOptions = ({
 				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId },
 				cerebras: { field: "cerebrasModelId", default: cerebrasDefaultModelId },
 				// kilocode_change end
+				fireworks: { field: "apiModelId", default: fireworksDefaultModelId },
 			}
 
 			const config = PROVIDER_MODEL_CONFIG[value]
@@ -376,7 +379,6 @@ const ApiOptions = ({
 		// kilocode_change start
 		// Providers that don't have documentation pages yet
 		const excludedProviders = [
-			"fireworks",
 			"gemini-cli",
 			"moonshot",
 			"chutes",
@@ -454,32 +456,7 @@ const ApiOptions = ({
 			{/* kilocode_change end */}
 
 			{selectedProvider === "fireworks" && (
-				<div>
-					<VSCodeTextField
-						value={apiConfiguration?.fireworksApiKey || ""}
-						style={{ width: "100%" }}
-						type="password"
-						onInput={handleInputChange("fireworksApiKey")}
-						placeholder="Enter API Key...">
-						<span style={{ fontWeight: 500 }}>Fireworks API Key</span>
-					</VSCodeTextField>
-					<p
-						style={{
-							fontSize: "12px",
-							marginTop: 3,
-							color: "var(--vscode-descriptionForeground)",
-						}}>
-						This key is stored locally and only used to make API requests from this extension.
-						{!apiConfiguration?.fireworksApiKey && (
-							<>
-								<br />
-								<br />
-								Get your API key from{" "}
-								<VSCodeLink href="https://fireworks.ai/account/api-keys">Fireworks</VSCodeLink>.
-							</>
-						)}
-					</p>
-				</div>
+				<Fireworks apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "openrouter" && (

@@ -287,8 +287,7 @@ const kilocodeSchema = baseProviderSettingsSchema.extend({
 	kilocodeModel: z.string().optional(),
 	openRouterSpecificProvider: z.string().optional(),
 })
-const fireworksSchema = baseProviderSettingsSchema.extend({
-	fireworksModelId: z.string().optional(),
+const fireworksSchema = apiModelIdProviderModelSchema.extend({
 	fireworksApiKey: z.string().optional(),
 })
 const cerebrasSchema = baseProviderSettingsSchema.extend({

@@ -264,6 +264,8 @@
 		"getDeepSeekApiKey": "取得 DeepSeek API 金鑰",
 		"doubaoApiKey": "豆包 API 金鑰",
 		"getDoubaoApiKey": "取得豆包 API 金鑰",
+		"fireworksApiKey": "Fireworks API 金鑰",
+		"getFireworksApiKey": "取得 Fireworks API 金鑰",
 		"zaiApiKey": "Z.AI API 金鑰",
 		"getZaiApiKey": "取得 Z.AI API 金鑰",
 		"bigModelApiKey": "BigModel API 金鑰",

@@ -264,6 +264,8 @@
 		"getDeepSeekApiKey": "Získat klíč API DeepSeek",
 		"doubaoApiKey": "Klíč API Doubao",
 		"getDoubaoApiKey": "Získat klíč API Doubao",
+		"fireworksApiKey": "Klíč API Fireworks",
+		"getFireworksApiKey": "Získat klíč API Fireworks",
 		"zaiApiKey": "Klíč API Z.AI",
 		"getZaiApiKey": "Získat klíč API Z.AI",
 		"bigModelApiKey": "Klíč API BigModel",
