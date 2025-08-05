@@ -71,4 +71,15 @@ export const bigModelModels = {
 			},
 		],
 	},
+	"glm-4.5-flash": {
+		maxTokens: 98304,
+		contextWindow: 131072,
+		supportsImages: false,
+		supportsPromptCache: false,
+		inputPrice: 0,
+		outputPrice: 0,
+		cacheWritesPrice: 0,
+		cacheReadsPrice: 0,
+		description: "Zhipu's most advanced free model to date.",
+	},
 } as const satisfies Record<string, ModelInfo>
