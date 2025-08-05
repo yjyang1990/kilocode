@@ -54,7 +54,18 @@ const persistPortPlugin = (): Plugin => ({
 export default defineConfig(({ mode }) => {
 	let outDir = "../src/webview-ui/build"
 
-	const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "src", "package.json"), "utf8"))
+	// kilocode_change start - read package.json fresh every time to avoid caching issues
+	const getPkg = () => {
+		try {
+			return JSON.parse(fs.readFileSync(path.join(__dirname, "..", "src", "package.json"), "utf8"))
+		} catch (error) {
+			console.warn("Could not read package.json:", error)
+			return { name: "kilo-code", version: "0.0.0" }
+		}
+	}
+
+	const pkg = getPkg()
+	// kilocode_change end
 	const gitSha = getGitSha()
 
 	const define: Record<string, any> = {
