@@ -32,6 +32,7 @@
 			"apiKey": "API Key Kilo Code",
 			"login": "Masuk ke Kilo Code",
 			"logout": "Keluar dari Kilo Code",
+			"automaticFetch": "Model terbaru tersedia secara otomatis di Kilo Code. Jika Anda tidak yakin model mana yang harus dipilih, Kilo Code bekerja paling baik dengan model yang direkomendasikan yang tercantum di bagian atas dengan <strong>huruf tebal</strong>.",
 			"providerRouting": {
 				"title": "Kilo Code - Perutean Penyedia OpenRouter",
 				"description": "Kilo Code merutekan permintaan ke penyedia terbaik yang tersedia untuk model Anda. Secara default, permintaan diseimbangkan bebannya di seluruh penyedia teratas untuk memaksimalkan waktu aktif. Namun, Anda dapat memilih penyedia tertentu untuk digunakan untuk model ini."
