@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.76.0
-
-### Minor Changes
+## [v4.76.0]
 
 - [#1738](https://github.com/Kilo-Org/kilocode/pull/1738) [`0d3643b`](https://github.com/Kilo-Org/kilocode/commit/0d3643b4926fb1d77c865eb96ab9bcfdc49e1ea3) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Inline Assistant: Auto trigger - automatically show code suggestions after a configurable delay
 
