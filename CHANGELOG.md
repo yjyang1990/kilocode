@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.77.0
-
-### Minor Changes
+## [v4.77.0]
 
 - [#1784](https://github.com/Kilo-Org/kilocode/pull/1784) [`bf5bd8e`](https://github.com/Kilo-Org/kilocode/commit/bf5bd8e22e34191730512f0f793d45b6f3a0a694) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Inline Assist - Improve compatibility with more models (JSON Parsing)
 
