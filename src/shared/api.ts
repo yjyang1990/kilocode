@@ -13,7 +13,7 @@ export type ApiHandlerOptions = Omit<ProviderSettings, "apiProvider">
 // Cerebras
 // https://inference-docs.cerebras.ai/api-reference/models
 
-// Cerebras AI Inference Model Definitions - Updated January 2025
+// Cerebras AI Inference Model Definitions - Updated August 2025
 
 export const cerebrasModels = {
 	"gpt-oss-120b": {
