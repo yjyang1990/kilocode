@@ -4,6 +4,7 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { RetryIconButton } from "../common/RetryIconButton"
 import styled from "styled-components"
 import { useTranslation } from "react-i18next"
+import { FreeModelsLink } from "../FreeModelsLink"
 
 type LowCreditWarningProps = {
 	message: ClineMessage
@@ -76,6 +77,7 @@ export const LowCreditWarning = ({ message }: LowCreditWarningProps) => {
 					}}>
 					{t("kilocode:lowCreditWarning.addCredit")}
 				</VSCodeButton>
+				<FreeModelsLink origin="chat" />
 			</div>
 		</>
 	)
