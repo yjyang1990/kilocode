@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.77.1
-
-### Patch Changes
+## [v4.77.1]
 
 - [#1792](https://github.com/Kilo-Org/kilocode/pull/1792) [`ee300bc`](https://github.com/Kilo-Org/kilocode/commit/ee300bcd9138049182f9979ea9794996c96ee3d1) Thanks [@kevinvandijk](https://github.com/kevinvandijk)! - Fix infinite spinning initial API request
 
