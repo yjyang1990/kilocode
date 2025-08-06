@@ -17,7 +17,7 @@ export const FreeModelsLink = ({ origin, modelId }: { origin: "chat" | "settings
 	const { t } = useAppTranslation()
 	return (
 		<VSCodeButtonLink
-			href="https://kilo.love/freeway"
+			href="https://kilo.love/continueforfree"
 			appearance="primary"
 			className="mt-3 w-full"
 			onClick={() => {
