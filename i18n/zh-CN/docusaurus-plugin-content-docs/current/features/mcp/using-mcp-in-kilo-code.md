@@ -25,35 +25,31 @@ MCP服务器配置可以在两个级别进行管理：
 
 你可以直接从Kilo Code MCP设置视图编辑全局和项目级MCP配置文件：
 
-1. 点击Kilo Code窗格顶部导航中的<Codicon name="server" />图标。
+1.  单击 Kilo Code 窗格顶部导航栏中的 <Codicon name="gear" /> 图标以打开 `Settings`。
+2.  单击左侧的 `MCP Servers` 选项卡
+3.  选择 `Installed` 服务器
+3.  单击相应的按钮：
+    *   **`Edit Global MCP`**：打开全局 `mcp_settings.json` 文件。
+    *   **`Edit Project MCP`**：打开项目特定的 `.kilocode/mcp.json` 文件。如果此文件不存在，Kilo Code 将为您创建它。
 
-   <img src="/docs/img/using-mcp-in-kilo-code/using-mcp-in-kilo-code-10.png" alt="Kilo Code中的MCP服务器界面" width="400" />
-
-2. 滚动到MCP设置视图的底部。
-3. 点击适当的按钮：
-    * **`编辑全局MCP`**：打开全局`mcp_settings.json`文件。
-    * **`编辑项目MCP`**：打开项目特定的`.kilocode/mcp.json`文件。如果该文件不存在，Kilo Code将为你创建。
-
-   <img src="/docs/img/using-mcp-in-kilo-code/using-mcp-in-kilo-code-9.png" alt="编辑全局MCP和编辑项目MCP按钮" width="600" />
+  <img src="/docs/img/using-mcp-in-kilo-code/mcp-installed-config.png" alt="编辑全局 MCP 和编辑项目 MCP 按钮" width="600" />
 
 两个文件都使用JSON格式，其中包含一个`mcpServers`对象，包含命名的服务器配置：
-
-```json
-{
-  "mcpServers": {
-    "server1": {
-      "command": "python",
-      "args": ["/path/to/server.py"],
-      "env": {
-        "API_KEY": "your_api_key"
-      },
-      "alwaysAllow": ["tool1", "tool2"],
-      "disabled": false
+  ```json
+  {
+    "mcpServers": {
+      "server1": {
+        "command": "python",
+        "args": ["/path/to/server.py"],
+        "env": {
+          "API_KEY": "your_api_key"
+        },
+        "alwaysAllow": ["tool1", "tool2"],
+        "disabled": false
+      }
     }
   }
-}
 ```
-
 *Kilo Code中的MCP服务器配置示例（STDIO传输）*
 
 ### 理解传输类型
@@ -117,34 +113,6 @@ SSE配置示例：
   }
 }
 ```
-
-## 启用或禁用MCP服务器
-
-在此处禁用MCP服务器将从系统提示中删除所有与MCP相关的逻辑和定义，减少token使用。这将阻止Kilo Code连接任何MCP服务器，并且`use_mcp_tool`和`access_mcp_resource`工具将不可用。如果你不打算使用MCP服务器，请取消勾选此选项。默认情况下为启用。
-
-1. 点击Kilo Code窗格顶部导航中的<Codicon name="server" />图标
-2. 勾选/取消勾选`启用MCP服务器`
-
-   <img src="/docs/img/using-mcp-in-kilo-code/using-mcp-in-kilo-code-2.png" alt="启用MCP服务器切换" width="400" />
-
-## 启用或禁用MCP服务器创建
-
-在此处禁用MCP服务器创建将仅从系统提示中删除Kilo Code用于编写MCP服务器的指令，而不删除操作它们的上下文。这减少了token使用。默认情况下为启用。
-
-1. 点击Kilo Code窗格顶部导航中的<Codicon name="server" />图标
-2. 勾选/取消勾选`启用MCP服务器创建`
-
-   <img src="/docs/img/using-mcp-in-kilo-code/using-mcp-in-kilo-code-3.png" alt="启用MCP服务器创建切换" width="400" />
-
-## 管理单个MCP服务器
-
-   <img src="/docs/img/using-mcp-in-kilo-code/using-mcp-in-kilo-code-8.png" alt="MCP服务器配置面板示例" width="400" />
-
-每个MCP服务器都有自己的配置面板，你可以在此修改设置、管理工具并控制其操作。要访问这些设置：
-
-1. 点击Kilo Code窗格顶部导航中的<Codicon name="server" />图标
-2. 在列表中定位要管理的MCP服务器
-   <img src="/docs/img/using-mcp-in-kilo-code/using-mcp-in-kilo-code-4.png" alt="MCP服务器列表" width="400" />
 
 ### 删除服务器
 

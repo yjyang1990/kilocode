@@ -19,6 +19,8 @@ Kilo Code通过Google AI Gemini API支持Google的Gemini系列模型。
 
 Kilo Code支持以下Gemini模型：
 
+### 聊天模型
+
 * `gemini-2.5-pro-exp-03-25`
 * `gemini-2.0-flash-001`
 * `gemini-2.0-flash-lite-preview-02-05`
@@ -33,7 +35,11 @@ Kilo Code支持以下Gemini模型：
 * `gemini-1.5-pro-exp-0827`
 * `gemini-exp-1206`
 
-参考[Gemini文档](https://ai.google.dev/models/gemini)获取各模型详细信息。
+### 嵌入模型
+
+*   `gemini-embedding-001` - 针对代码库索引和语义搜索进行了优化
+
+有关每个模型的更多详细信息，请参阅 [Gemini 文档](https://ai.google.dev/models/gemini)。
 
 ## 在Kilo Code中的配置
 
@@ -45,3 +51,4 @@ Kilo Code支持以下Gemini模型：
 ## 提示与注意事项
 
 * **定价:** Gemini API使用根据输入和输出的token计费。参考[Gemini定价页面](https://ai.google.dev/pricing)获取详细信息。
+*   **代码库索引：** `gemini-embedding-001` 模型专门支持[代码库索引](/features/codebase-indexing)，为语义代码搜索提供高质量嵌入。

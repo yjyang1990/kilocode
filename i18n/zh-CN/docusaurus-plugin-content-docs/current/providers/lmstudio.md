@@ -2,40 +2,39 @@
 sidebar_label: LM Studio
 ---
 
-# 使用 LM Studio 的 API 提供商
+# 在 Kilo Code 中使用 LM Studio
 
-LM Studio 是一个本地运行的 AI 模型管理工具，允许您在本地计算机上运行各种开源 LLM 模型，并为其提供 API 访问。
+Kilo Code 支持使用 LM Studio 在本地运行模型。LM Studio 提供了一个用户友好的界面，用于下载、配置和运行本地语言模型。它还包括一个内置的本地推理服务器，模拟 OpenAI API，使其易于与 Kilo Code 集成。
 
 **网站：** [https://lmstudio.ai/](https://lmstudio.ai/)
 
 ## 设置 LM Studio
 
-1. **下载并安装：** 从 [LM Studio 网站](https://lmstudio.ai/) 下载并安装适用于您操作系统的版本。
-2. **下载模型：** 在 LM Studio 中，从 Hugging Face 下载您想要使用的模型。建议使用经过测试的模型，如 Mistral 7B 或 Llama 2。
-3. **启动服务器：** 在 LM Studio 中，点击“Server”选项卡，然后点击“Start Server”。默认情况下，服务器将在 `http://localhost:1234` 上运行。
+1.  **下载并安装 LM Studio：** 从 [LM Studio 网站](https://lmstudio.ai/)下载 LM Studio。
+2.  **下载模型：** 使用 LM Studio 界面搜索并下载模型。一些推荐的模型包括：
+    *   CodeLlama 模型（例如，`codellama:7b-code`、`codellama:13b-code`、`codellama:34b-code`）
+    *   Mistral 模型（例如，`mistralai/Mistral-7B-Instruct-v0.1`）
+    *   DeepSeek Coder 模型（例如，`deepseek-coder:6.7b-base`）
+    * 任何其他受 Kilo Code 支持的模型，或者您可以设置上下文窗口的模型。
 
-## 支持的模型
+    查找 GGUF 格式的模型。LM Studio 提供搜索界面以查找和下载模型。
+3.  **启动本地服务器：**
+    *   打开 LM Studio。
+    *   单击“**本地服务器**”选项卡（图标看起来像 `<->`）。
+    *   选择您下载的模型。
+    *   单击“**启动服务器**”。
 
-Kilo Code 支持以下 LM Studio 模型：
+## Kilo Code 中的配置
 
-*   `mistral-7b-instruct-v0.1`
-*   `llama-2-7b-chat`
-*   `llama-2-13b-chat`
-*   `llama-2-70b-chat`
-
-有关每个模型功能的更多详细信息，请参阅 [LM Studio 的文档](https://lmstudio.ai/docs)。
-
-## 在 Kilo Code 中配置
-
-1. **打开 Kilo Code 设置：** 点击 Kilo Code 面板中的齿轮图标 (<Codicon name="gear" />)。
-2. **选择提供商：** 从 "API 提供商" 下拉菜单中选择 "LM Studio"。
-3. **输入 API 密钥：** 将您的 LM Studio API 密钥粘贴到 "LM Studio API 密钥" 字段中。如果未设置 API 密钥，可以留空。
-4. **选择模型：** 从 "模型" 下拉菜单中选择您想要的模型。
-5. **（可选）自定义基础 URL：** 如果您需要为 LM Studio API 使用自定义基础 URL，请勾选“使用自定义基础 URL”并输入 URL。大多数人不需要调整此项。
+1.  **打开 Kilo Code 设置：** 单击 Kilo Code 面板中的齿轮图标（<Codicon name="gear" />）。
+2.  **选择提供商：** 从“API 提供商”下拉菜单中选择“LM Studio”。
+3.  **输入模型 ID：** 输入您在 LM Studio 中加载的模型的文件名（例如，`codellama-7b.Q4_0.gguf`）。您可以在 LM Studio 的“本地服务器”选项卡中找到此信息。
+4.  **（可选）基本 URL：** 默认情况下，Kilo Code 将连接到 `http://localhost:1234` 处的 LM Studio。如果您已将 LM Studio 配置为使用不同的地址或端口，请在此处输入完整的 URL。
 
 ## 提示和注意事项
 
-*   **本地运行：** LM Studio 允许您在本地运行模型，这对于隐私和安全性至关重要。
-*   **模型选择：** 选择适合您任务的模型大小。较大的模型需要更多的计算资源，但可能提供更好的结果。
-*   **硬件要求：** 确保您的计算机具有足够的 RAM 和 GPU 内存来运行您选择的模型。
-*   **速率限制：** LM Studio 没有严格的速率限制，但您的硬件可能会限制性能。
+*   **资源要求：** 在本地运行大型语言模型可能资源密集。确保您的计算机满足您选择的模型的最低要求。
+*   **模型选择：** LM Studio 提供各种模型。尝试找到最适合您需求的模型。
+*   **本地服务器：** LM Studio 本地服务器必须运行，Kilo Code 才能连接到它。
+*   **LM Studio 文档：** 有关更多信息，请参阅 [LM Studio 文档](https://lmstudio.ai/docs)。
+*   **故障排除：** 如果您看到“请检查 LM Studio 开发人员日志以调试出了什么问题”错误，您可能需要调整 LM Studio 中的上下文长度设置。

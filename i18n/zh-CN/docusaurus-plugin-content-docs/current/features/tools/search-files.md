@@ -93,7 +93,14 @@
 
 ## 使用示例
 
-搜索所有 JavaScript 文件中的 TODO 注释：
+- 当要求重构函数时，Kilo Code 首先搜索该函数的所有使用位置，以确保全面更改。
+- 在调查错误时，Kilo Code 搜索相似模式以识别代码库中相关的错误。
+- 在处理技术债务时，Kilo Code 查找项目中所有 TODO 注释。
+- 在分析依赖项时，Kilo Code 查找特定模块的所有导入。
+
+## 用法示例
+
+在所有 JavaScript 文件中搜索 TODO 注释：
 ```
 <search_files>
 <path>src</path>

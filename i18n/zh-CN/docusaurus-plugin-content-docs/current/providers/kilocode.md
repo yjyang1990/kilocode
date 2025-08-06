@@ -1,45 +1,62 @@
 ---
-sidebar_label: Kilo Code
+sidebar_label: Kilo Code Provider
 ---
 
 # 使用 Kilo Code 的 API 提供商
 
-:::warning
+Kilo Code 提供自己的内置 API 提供商，通过简单的注册过程即可访问最新的前沿编码模型。无需管理来自多个提供商的 API 密钥——只需注册即可开始编码。
 
-此文档目前仅针对 Anthropic 和 Claude Sonnet 3.7，并不反映使用 Kilo Code 作为提供商的简单性 - 它只是一个占位符
+**网站：** [https://kilocode.ai/](https://kilocode.ai/)
 
+## 免费积分入门
+
+当您注册 Kilo Code 时，您将获得免费积分以帮助您入门：
+
+1.  **初始注册：** 完成注册过程，立即获得初始数量的免费积分
+2.  **解锁额外积分：** 要访问更多免费积分：
+    *   添加支付方式以进行身份验证
+    *   授权临时冻结您的卡 10 美元（不收费）
+3.  **开始编码：** 验证后，立即享受您的免费 token 并开始使用 Kilo Code
+
+:::note 关于临时冻结
+10 美元的冻结仅用于身份验证：
+- **不收费** - 这是一项临时授权，不会收费
+- **7 天后解除** - Kilo Code 会自动解除冻结
+- **银行处理** - 解除后，资金可能需要 5-10 个工作日才能返回（因银行而异）
+- **可追踪** - 如果需要，我们可以提供 STAN 号码以帮助银行追踪
 :::
 
-Anthropic 是一家 AI 安全和研究公司，致力于构建可靠、可解释和可控制的 AI 系统。他们的 Claude 模型以其强大的推理能力、帮助性和诚实性而闻名。
+## 注册流程
 
-**网站：** [https://www.anthropic.com/](https://www.anthropic.com/)
+Kilo Code 提供简化的注册流程，可将您直接连接到前沿编码模型：
 
-## 获取 API 密钥
+1.  **开始注册：** 在扩展中单击“免费试用 Kilo Code”
+2.  **登录：** 使用您的 Google 帐户在 kilocode.ai 登录
+3.  **授权 VS Code：**
+    *   kilocode.ai 将提示您打开 Visual Studio Code
+    *   对于基于 Web 的 IDE，您将手动复制 API 密钥
+4.  **完成设置：** 提示时允许 VS Code 打开授权 URL
 
-1. **注册/登录：** 前往 [Anthropic 控制台](https://console.anthropic.com/)。创建账户或登录。
-2. **导航到 API 密钥：** 前往 [API 密钥](https://console.anthropic.com/settings/keys) 部分。
-3. **创建密钥：** 点击“创建密钥”。为您的密钥命名（例如，“Kilo Code”）。
-4. **复制密钥：** **重要：** 立即复制 API 密钥。您将无法再次查看它。请妥善保存。
+<!-- <img src="/img/setting-up/signupflow.gif" alt="Kilo Code 的注册流程" width="600" /> -->
 
 ## 支持的模型
 
-Kilo Code 支持以下 Anthropic Claude 模型：
+Kilo Code 通过其内置提供商提供对最新前沿编码模型的访问。可用的特定模型由 Kilo Code 服务自动更新和管理，确保您始终可以访问最强大的编码任务模型。
 
-*   `claude-3-7-sonnet-20250219`
+## Kilo Code 中的配置
 
-有关每个模型功能的更多详细信息，请参阅 [Anthropic 的模型文档](https://docs.anthropic.com/en/docs/about-claude/models)。
+完成注册过程后，Kilo Code 会自动配置：
 
-## 在 Kilo Code 中配置
-
-1. **打开 Kilo Code 设置：** 点击 Kilo Code 面板中的齿轮图标 (<Codicon name="gear" />)。
-2. **选择提供商：** 从 "API 提供商" 下拉菜单中选择 "Anthropic"。
-3. **输入 API 密钥：** 将您的 Anthropic API 密钥粘贴到 "Anthropic API 密钥" 字段中。
-4. **选择模型：** 从 "模型" 下拉菜单中选择您想要的 Claude 模型。
-5. **（可选）自定义基础 URL：** 如果您需要为 Anthropic API 使用自定义基础 URL，请勾选“使用自定义基础 URL”并输入 URL。大多数人不需要调整此项。
+1.  **自动设置：** 成功注册后，Kilo Code 即可立即使用
+2.  **无需 API 密钥管理：** 您的身份验证通过注册过程无缝处理
+3.  **模型选择：** 通过您的 Kilo Code 帐户自动提供对前沿模型的访问
 
 ## 提示和注意事项
 
-*   **提示缓存：** Claude 3 模型支持 [提示缓存](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)，这可以显著降低重复提示的成本和延迟。
-*   **上下文窗口：** Claude 模型具有较大的上下文窗口（200,000 个 token），允许您在提示中包含大量代码和上下文。
-*   **定价：** 请参阅 [Anthropic 定价](https://www.anthropic.com/pricing) 页面获取最新定价信息。
-*   **速率限制：** Anthropic 根据 [使用层级](https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier) 设置了严格的速率限制。如果您反复遇到速率限制，请考虑联系 Anthropic 销售或通过 [OpenRouter](/providers/openrouter) 或 [Requesty](/providers/requesty) 等其他提供商访问 Claude。
+*   **免费积分：** 新用户获得免费积分以探索 Kilo Code 的功能
+*   **身份验证：** 临时冻结系统确保服务可靠性，同时防止滥用
+*   **无缝集成：** 无需管理多个 API 密钥或提供商配置
+*   **最新模型：** 自动访问最新的前沿编码模型
+*   **提供支持：** 有关定价或 token 的问题，请联系 [hi@kilocode.ai](mailto:hi@kilocode.ai)
+
+有关详细设置说明，请参阅[设置 Kilo Code](/getting-started/setting-up)。
