@@ -79,7 +79,7 @@ In the <Codicon name="notebook" /> Prompts tab, you can explicitly associate a s
 Watch this demonstration of how to connect configuration profiles with specific modes for optimized workflows:
 
 <video width="600" controls>
-  <source src="/img/api-configuration-profiles/provider-modes.mp4" type="video/mp4" />
+  <source src="/docs/img/api-configuration-profiles/provider-modes.mp4" type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
