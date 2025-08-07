@@ -386,10 +386,6 @@
 				"learnMore": "تعرف أكثر"
 			}
 		},
-		"cerebras": {
-			"apiKey": "مفتاح Cerebras",
-			"getApiKey": "احصل على مفتاح Cerebras"
-		},
 		"customModel": {
 			"capabilities": "اضبط قدرات وتسعير النموذج المتوافق مع OpenAI.",
 			"maxTokens": {

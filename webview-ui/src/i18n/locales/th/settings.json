@@ -362,10 +362,6 @@
 				"learnMore": "เรียนรู้เพิ่มเติมเกี่ยวกับการกำหนดเส้นทางผู้ให้บริการ"
 			}
 		},
-		"cerebras": {
-			"apiKey": "คีย์ API ของ Cerebras",
-			"getApiKey": "รับคีย์ API ของ Cerebras"
-		},
 		"doubaoApiKey": "คีย์ API ของ Doubao",
 		"getDoubaoApiKey": "รับคีย์ API ของ Doubao",
 		"zaiApiKey": "คีย์ API ของ Z.AI",

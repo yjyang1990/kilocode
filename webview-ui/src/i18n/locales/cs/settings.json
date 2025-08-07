@@ -386,10 +386,6 @@
 				"learnMore": "Zjistěte více o směrování poskytovatelů"
 			}
 		},
-		"cerebras": {
-			"apiKey": "Klíč API Cerebras",
-			"getApiKey": "Získat klíč API Cerebras"
-		},
 		"customModel": {
 			"capabilities": "Nakonfigurujte schopnosti a ceny pro váš vlastní model kompatibilní s OpenAI. Při zadávání schopností modelu buďte opatrní, protože mohou ovlivnit výkon Kilo Code.",
 			"maxTokens": {

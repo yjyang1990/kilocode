@@ -372,10 +372,6 @@
 				"learnMore": "Дізнайтеся більше про маршрутизацію провайдерів"
 			}
 		},
-		"cerebras": {
-			"apiKey": "Ключ API Cerebras",
-			"getApiKey": "Отримати ключ API Cerebras"
-		},
 		"doubaoApiKey": "Ключ API Doubao",
 		"getDoubaoApiKey": "Отримати ключ API Doubao",
 		"zaiApiKey": "Ключ API Z.AI",
