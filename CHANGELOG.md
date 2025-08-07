@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.25.8
+
+### Patch Changes
+
+-   - Fix: Prevent disabled MCP servers from starting processes and show correct status (#6036 by @hannesrudolph, PR by @app/roomote)
+
 ## [3.25.7] - 2025-08-05
 
 - Add support for Claude Opus 4.1
