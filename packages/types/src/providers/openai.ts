@@ -36,16 +36,6 @@ export const openAiNativeModels = {
 		outputPrice: 0,
 		cacheReadsPrice: 0,
 	},
-	"nectarine-alpha-new-reasoning-effort-2025-07-25": {
-		maxTokens: 128000,
-		contextWindow: 256000,
-		supportsImages: true,
-		supportsPromptCache: true,
-		supportsReasoningEffort: true,
-		inputPrice: 0,
-		outputPrice: 0,
-		cacheReadsPrice: 0,
-	},
 	"gpt-4.1": {
 		maxTokens: 32_768,
 		contextWindow: 1_047_576,
@@ -81,6 +71,7 @@ export const openAiNativeModels = {
 		inputPrice: 2.0,
 		outputPrice: 8.0,
 		cacheReadsPrice: 0.5,
+		supportsReasoningEffort: true,
 		reasoningEffort: "medium",
 	},
 	"o3-high": {
@@ -111,6 +102,7 @@ export const openAiNativeModels = {
 		inputPrice: 1.1,
 		outputPrice: 4.4,
 		cacheReadsPrice: 0.275,
+		supportsReasoningEffort: true,
 		reasoningEffort: "medium",
 	},
 	"o4-mini-high": {
@@ -141,6 +133,7 @@ export const openAiNativeModels = {
 		inputPrice: 1.1,
 		outputPrice: 4.4,
 		cacheReadsPrice: 0.55,
+		supportsReasoningEffort: true,
 		reasoningEffort: "medium",
 	},
 	"o3-mini-high": {

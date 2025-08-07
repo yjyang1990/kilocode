@@ -140,7 +140,7 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 
 		const stream = await this.client.chat.completions.create({
 			model: model.id,
-			temperature: this.options.modelTemperature ?? OPENAI_NATIVE_DEFAULT_TEMPERATURE,
+			temperature: 1,
 			messages: [{ role: "developer", content: systemPrompt }, ...convertToOpenAiMessages(messages)],
 			stream: true,
 			stream_options: { include_usage: true },
