@@ -53,8 +53,8 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 			yield* this.handleReasonerMessage(model, id, systemPrompt, messages)
 		} else if (model.id.startsWith("o1")) {
 			yield* this.handleO1FamilyMessage(model, systemPrompt, messages)
-		} else if (this.isGPT5Model(model.id)) {
-			yield* this.handleGPT5Message(model, systemPrompt, messages)
+		} else if (this.isNectarineModel(model.id) || this.isGpt5Model(model.id)) {
+			yield* this.handleNectarineMessage(model, systemPrompt, messages)
 		} else {
 			yield* this.handleDefaultModelMessage(model, systemPrompt, messages)
 		}
@@ -68,6 +68,8 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 		// o1 supports developer prompt with formatting
 		// o1-preview and o1-mini only support user messages
 		const isOriginalO1 = model.id === "o1"
+		const { reasoning } = this.getModel()
+
 		const response = await this.client.chat.completions.create({
 			model: model.id,
 			messages: [
@@ -79,6 +81,7 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 			],
 			stream: true,
 			stream_options: { include_usage: true },
+			...(reasoning && reasoning),
 		})
 
 		yield* this.handleStreamResponse(response, model)
@@ -114,35 +117,45 @@ export class OpenAiNativeHandler extends BaseProvider implements SingleCompletio
 		systemPrompt: string,
 		messages: Anthropic.Messages.MessageParam[],
 	): ApiStream {
+		const { reasoning } = this.getModel()
+
 		const stream = await this.client.chat.completions.create({
 			model: model.id,
 			temperature: this.options.modelTemperature ?? OPENAI_NATIVE_DEFAULT_TEMPERATURE,
 			messages: [{ role: "system", content: systemPrompt }, ...convertToOpenAiMessages(messages)],
 			stream: true,
 			stream_options: { include_usage: true },
+			...(reasoning && reasoning),
 		})
 
 		yield* this.handleStreamResponse(stream, model)
 	}
 
-	private async *handleGPT5Message(
+	private async *handleNectarineMessage(
 		model: OpenAiNativeModel,
 		systemPrompt: string,
 		messages: Anthropic.Messages.MessageParam[],
 	): ApiStream {
+		const { reasoning } = this.getModel()
+
 		const stream = await this.client.chat.completions.create({
 			model: model.id,
-			temperature: 1,
+			temperature: this.options.modelTemperature ?? OPENAI_NATIVE_DEFAULT_TEMPERATURE,
 			messages: [{ role: "developer", content: systemPrompt }, ...convertToOpenAiMessages(messages)],
 			stream: true,
 			stream_options: { include_usage: true },
+			...(reasoning && reasoning),
 		})
 
 		yield* this.handleStreamResponse(stream, model)
 	}
 
-	private isGPT5Model(modelId: string): boolean {
-		return modelId.includes("gpt-5") || modelId.includes("gpt5") || modelId.includes("nectarine")
+	private isNectarineModel(modelId: string): boolean {
+		return modelId.includes("nectarine")
+	}
+
+	private isGpt5Model(modelId: string): boolean {
+		return modelId.startsWith("gpt-5")
 	}
 
 	private async *handleStreamResponse(
