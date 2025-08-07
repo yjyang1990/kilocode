@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.25.10
+
+### Patch Changes
+
+-   - Add support for GPT-5 model (thanks @app/roomote!)
+
 ## [3.25.9] - 2025-08-07
 
 - Fix: Resolve rounding issue with max tokens (#6806 by @markp018, PR by @mrubens)
