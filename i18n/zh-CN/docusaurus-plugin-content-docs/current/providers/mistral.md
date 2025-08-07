@@ -2,32 +2,32 @@
 sidebar_label: Mistral AI
 ---
 
-# 在Kilo Code中使用Mistral AI
+# 在 Kilo Code 中使用 Mistral AI
 
-Kilo Code支持通过Mistral AI API访问模型，包括标准Mistral模型和专门用于代码的Codestral模型。
+Kilo Code 支持通过 Mistral AI API 访问模型，包括标准 Mistral 模型和代码专用 Codestral 模型。
 
-**官网:** [https://mistral.ai/](https://mistral.ai/)
+**网站：** [https://mistral.ai/](https://mistral.ai/)
 
-## 获取API密钥
+## 获取 API 密钥
 
-1. **注册/登录:** 访问[Mistral控制台](https://console.mistral.ai/)。创建账户或登录。您可能需要完成验证流程。
-2. **创建API密钥:**  
-    - [La Plateforme API密钥](https://console.mistral.ai/api-keys/) 和/或 
-    - [Codestral API密钥](https://console.mistral.ai/codestral)
+1.  **注册/登录：** 访问 [Mistral 平台](https://console.mistral.ai/)。创建帐户或登录。您可能需要通过验证过程。
+2.  **创建 API 密钥：**  
+    - [La Plateforme API 密钥](https://console.mistral.ai/api-keys/)和/或 
+    - [Codestral API 密钥](https://console.mistral.ai/codestral)
 
 ## 支持的模型
 
-Kilo Code支持以下Mistral模型：
+Kilo Code 支持以下 Mistral 模型：
 
-| 模型ID               | 默认温度 | 函数调用 | 视觉/图像支持 |
+| 模型 ID | 模型默认温度 | 函数调用 | 视觉/图像支持 |
 |------------------------|-------------------------|------------------|--------|
-| codestral-latest      | 0.3                     | ✅               | ❌      |
-| mistral-large-latest  | 0.7                     | ✅               | ❌      |
-| ministral-8b-latest   | 0.3                     | ✅               | ❌      |
-| ministral-3b-latest   | 0.3                     | ✅               | ❌      |
-| mistral-small-latest  | 0.3                     | ✅               | ❌      |
-| pixtral-large-latest  | 0.7                     | ✅               | ✅      |
-
+| codestral-latest | 0.3 | ✅ | ❌ |
+| devstral | 0.3 | ✅ | ❌ |
+| mistral-large-latest | 0.7 | ✅ | ❌ |
+| ministral-8b-latest | 0.3 | ✅ | ❌ |
+| ministral-3b-latest | 0.3 | ✅ | ❌ |
+| mistral-small-latest | 0.3 | ✅ | ❌ |
+| pixtral-large-latest | 0.7 | ✅ | ✅ |
 Kilo Code中的默认模型温度为0.0，因此您应该考虑尝试[调整温度](/features/model-temperature)！
 
 **注意:** 模型的可用性和规格可能会发生变化。

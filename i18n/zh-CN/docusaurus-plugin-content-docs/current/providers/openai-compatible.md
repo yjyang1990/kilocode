@@ -34,6 +34,29 @@ Kilo Code 支持多种提供 OpenAI API 标准兼容的 AI 模型提供商。这
     - 输入价格
     - 输出价格
 
+### 完整端点 URL 支持
+
+Kilo Code 支持在基本 URL 字段中输入完整端点 URL，为提供商配置提供更大的灵活性：
+
+**标准基本 URL 格式：**
+```
+https://api.provider.com/v1
+```
+
+**完整端点 URL 格式：**
+```
+https://api.provider.com/v1/chat/completions
+https://custom-endpoint.provider.com/api/v2/models/chat
+```
+
+此增强功能允许您：
+- 连接到具有非标准端点结构的提供商
+- 使用自定义 API 网关或代理服务
+- 与需要特定端点路径的提供商合作
+- 与企业或自托管 API 部署集成
+
+**注意：** 使用完整端点 URL 时，请确保 URL 指向您的提供商的正确聊天完成端点。
+
 ## 支持的模型（适用于 OpenAI 原生端点）
 
 虽然此提供商类型允许连接到各种端点，但如果你直接连接到官方 OpenAI API（或完全镜像它的端点），Kilo Code 会根据其源代码中的 `openAiNativeModels` 定义识别以下模型 ID：

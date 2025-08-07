@@ -4,7 +4,7 @@
     "description": "The title of the fallback page when the page crashed"
   },
   "theme.BackToTopButton.buttonAriaLabel": {
-    "message": "回到顶部",
+    "message": "返回顶部",
     "description": "The ARIA label for the back to top button"
   },
   "theme.blog.archive.title": {
@@ -32,31 +32,32 @@
     "description": "The ARIA label for the blog posts pagination"
   },
   "theme.blog.post.paginator.newerPost": {
-    "message": "较新一篇",
+    "message": "下一篇",
     "description": "The blog post button label to navigate to the newer/previous post"
   },
   "theme.blog.post.paginator.olderPost": {
-    "message": "较旧一篇",
+    "message": "上一篇",
     "description": "The blog post button label to navigate to the older/next post"
   },
   "theme.tags.tagsPageLink": {
     "message": "查看所有标签",
     "description": "The label of the link targeting the tag list page"
   },
-  "theme.colorToggle.ariaLabel.mode.system": {
-    "message": "system mode",
-    "description": "The name for the system color mode"
-  },
+"theme.colorToggle.ariaLabel.mode.system": {
+  "message": "跟随系统",
+  "description": "The name for the system color mode"
+}
+,
   "theme.colorToggle.ariaLabel.mode.light": {
     "message": "浅色模式",
     "description": "The name for the light color mode"
   },
   "theme.colorToggle.ariaLabel.mode.dark": {
-    "message": "暗黑模式",
+    "message": "深色模式",
     "description": "The name for the dark color mode"
   },
   "theme.colorToggle.ariaLabel": {
-    "message": "切换浅色/暗黑模式（当前为{mode}）",
+    "message": "切换浅色/深色模式（当前为{mode}）",
     "description": "The ARIA label for the color mode toggle"
   },
   "theme.docs.DocCard.categoryDescription.plurals": {
@@ -68,7 +69,7 @@
     "description": "The ARIA label for the breadcrumbs"
   },
   "theme.docs.paginator.navAriaLabel": {
-    "message": "文件选项卡",
+    "message": "文档导航",
     "description": "The ARIA label for the docs pagination"
   },
   "theme.docs.paginator.previous": {
@@ -80,23 +81,23 @@
     "description": "The label used to navigate to the next doc"
   },
   "theme.docs.tagDocListPageTitle.nDocsTagged": {
-    "message": "{count} 篇文档带有标签",
+    "message": "共 {count} 篇文档",
     "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.docs.tagDocListPageTitle": {
-    "message": "{nDocsTagged}「{tagName}」",
+    "message": "标签「{tagName}」 - {nDocsTagged}",
     "description": "The title of the page for a docs tag"
   },
   "theme.docs.versions.unreleasedVersionLabel": {
-    "message": "此为 {siteTitle} {versionLabel} 版尚未发行的文档。",
+    "message": "这是 {siteTitle} {versionLabel} 版本的未发布文档。",
     "description": "The label used to tell the user that he's browsing an unreleased doc version"
   },
   "theme.docs.versions.unmaintainedVersionLabel": {
-    "message": "此为 {siteTitle} {versionLabel} 版的文档，现已不再积极维护。",
+    "message": "这是 {siteTitle} {versionLabel} 版本的文档，已不再维护。",
     "description": "The label used to tell the user that he's browsing an unmaintained doc version"
   },
   "theme.docs.versions.latestVersionSuggestionLabel": {
-    "message": "最新的文档请参阅 {latestVersionLink} ({versionLabel})。",
+    "message": "请查看最新文档 {latestVersionLink} ({versionLabel})。",
     "description": "The label used to tell the user to check the latest version"
   },
   "theme.docs.versions.latestVersionLinkLabel": {
@@ -111,7 +112,7 @@
     "description": "The link label to edit the current page"
   },
   "theme.common.headingLinkTitle": {
-    "message": "{heading}的直接链接",
+    "message": "{heading}的链接",
     "description": "Title for link to heading"
   },
   "theme.lastUpdated.atDate": {
@@ -147,7 +148,7 @@
     "description": "The default label used for the Caution admonition (:::caution)"
   },
   "theme.admonition.danger": {
-    "message": "危险",
+    "message": "风险",
     "description": "The default label used for the Danger admonition (:::danger)"
   },
   "theme.admonition.info": {
@@ -179,7 +180,7 @@
     "description": "The ARIA label to collapse the sidebar category"
   },
   "theme.NavBar.navAriaLabel": {
-    "message": "主导航",
+    "message": "网站地图",
     "description": "The ARIA label for the main navigation"
   },
   "theme.NotFound.p1": {
@@ -191,7 +192,7 @@
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.TOCCollapsible.toggleButtonLabel": {
-    "message": "本页总览",
+    "message": "目录",
     "description": "The label used by the button on the collapsible TOC component"
   },
   "theme.navbar.mobileLanguageDropdown.label": {
@@ -239,7 +240,7 @@
     "description": "The ARIA label for the sidebar navigation"
   },
   "theme.docs.breadcrumbs.home": {
-    "message": "主页面",
+    "message": "主页",
     "description": "The ARIA label for the home page in the breadcrumbs"
   },
   "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
@@ -247,7 +248,7 @@
     "description": "The ARIA label for close button of mobile sidebar"
   },
   "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
-    "message": "← 回到主菜单",
+    "message": "← 返回主菜单",
     "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
   },
   "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
@@ -263,11 +264,11 @@
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
   "theme.navbar.mobileDropdown.collapseButton.expandAriaLabel": {
-    "message": "Expand the dropdown",
+    "message": "展开下拉菜单",
     "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
   },
   "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
-    "message": "Collapse the dropdown",
+    "message": "折叠下拉菜单",
     "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
   },
   "theme.SearchPage.existingResultsTitle": {
@@ -275,7 +276,7 @@
     "description": "The search page title for non-empty query"
   },
   "theme.SearchPage.emptyResultsTitle": {
-    "message": "搜索文档",
+    "message": "查找文档",
     "description": "The search page title for empty query"
   },
   "theme.SearchPage.searchContext.everywhere": {
@@ -286,11 +287,11 @@
     "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.SearchPage.noResultsText": {
-    "message": "没有找到任何文档",
+    "message": "未找到任何文档",
     "description": "The paragraph for empty search result"
   },
   "theme.SearchBar.noResultsText": {
-    "message": "没有找到任何文档"
+    "message": "未找到任何文档"
   },
   "theme.SearchBar.seeAllOutsideContext": {
     "message": "查看“{context}”以外的全部结果"
@@ -330,11 +331,11 @@
     "description": "The text for authors with 0 blog post"
   },
   "theme.contentVisibility.unlistedBanner.title": {
-    "message": "未列出页",
+    "message": "未公开页面",
     "description": "The unlisted content banner title"
   },
   "theme.contentVisibility.unlistedBanner.message": {
-    "message": "此页面未列出。搜索引擎不会对其索引，只有拥有直接链接的用户才能访问。",
+    "message": "此页面未公开。搜索引擎无法索引它，只有通过直接链接的用户才能访问。",
     "description": "The unlisted content banner message"
   },
   "theme.contentVisibility.draftBanner.title": {
@@ -350,7 +351,7 @@
     "description": "The label of the button to try again rendering when the React error boundary captures an error"
   },
   "theme.common.skipToMainContent": {
-    "message": "跳到主要内容",
+    "message": "跳转到主要内容",
     "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
   },
   "theme.tags.tagsPageTitle": {
@@ -358,3 +359,4 @@
     "description": "The title of the tag list page"
   }
 }
+

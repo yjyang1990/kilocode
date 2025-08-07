@@ -25,6 +25,7 @@ Kilo Code 实现了一个复杂的工具系统，允许 AI 模型以受控和安
 - [attempt_completion](/features/tools/attempt-completion)：标记任务完成
 - [switch_mode](/features/tools/switch-mode)：更改操作模式
 - [new_task](/features/tools/new-task)：创建子任务
+- [update_todo_list](/features/tools/update-todo-list)：管理分步任务跟踪
 
 ## 可用工具
 
@@ -65,6 +66,7 @@ Kilo Code 实现了一个复杂的工具系统，允许 AI 模型以受控和安
 - [attempt_completion](/features/tools/attempt-completion) - 呈现最终结果
 - [switch_mode](/features/tools/switch-mode) - 切换到不同模式以执行专门任务
 - [new_task](/features/tools/new-task) - 创建新子任务
+- [update_todo_list](/features/tools/update-todo-list) - 通过分步清单跟踪任务进度
 
 ## 工具调用机制
 
@@ -205,6 +207,11 @@ Kilo Code 实现了一个复杂的工具系统，允许 AI 模型以受控和安
 3. **任务管理**
    ```
    [new_task](/features/tools/new-task) → [switch_mode](/features/tools/switch-mode) → [execute_command](/features/tools/execute-command)
+   ```
+
+4. **进度跟踪**
+   ```
+   [update_todo_list](/features/tools/update-todo-list) → [execute_command](/features/tools/execute-command) → [update_todo_list](/features/tools/update-todo-list)
    ```
 
 ## 错误处理与恢复
