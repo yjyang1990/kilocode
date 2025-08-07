@@ -1,10 +1,10 @@
 # Roo Code Changelog
 
-## 3.25.10
+## [3.25.10] - 2025-08-07
 
-### Patch Changes
-
--   - Add support for GPT-5 model (thanks @app/roomote!)
+- Add support for GPT-5 (thanks Cline and @app/roomote!)
+- Fix: Use CDATA sections in XML examples to prevent parser errors (#4852 by @hannesrudolph, PR by @hannesrudolph)
+- Fix: Add missing MCP error translation keys (thanks @app/roomote!)
 
 ## [3.25.9] - 2025-08-07
 
