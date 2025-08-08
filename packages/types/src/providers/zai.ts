@@ -31,6 +31,17 @@ export const internationalZAiModels = {
 		description:
 			"GLM-4.5-Air is the lightweight version of GLM-4.5. It balances performance and cost-effectiveness, and can flexibly switch to hybrid thinking models.",
 	},
+	"glm-4.5-flash": {
+		maxTokens: 98304,
+		contextWindow: 131072,
+		supportsImages: false,
+		supportsPromptCache: false,
+		inputPrice: 0,
+		outputPrice: 0,
+		cacheWritesPrice: 0,
+		cacheReadsPrice: 0,
+		description: "Zhipu's most advanced free model to date.",
+	},
 } as const satisfies Record<string, ModelInfo>
 
 export type MainlandZAiModelId = keyof typeof mainlandZAiModels
@@ -99,6 +110,17 @@ export const mainlandZAiModels = {
 				cacheReadsPrice: 0.02,
 			},
 		],
+	},
+	"glm-4.5-flash": {
+		maxTokens: 98304,
+		contextWindow: 131072,
+		supportsImages: false,
+		supportsPromptCache: false,
+		inputPrice: 0,
+		outputPrice: 0,
+		cacheWritesPrice: 0,
+		cacheReadsPrice: 0,
+		description: "Zhipu's most advanced free model to date.",
 	},
 } as const satisfies Record<string, ModelInfo>
 
