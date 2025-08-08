@@ -46,6 +46,13 @@ vi.mock("../../../utils/safeWriteJson", () => ({
 	}),
 }))
 
+// Mock NotificationService
+vi.mock("../kilocode/NotificationService", () => ({
+	NotificationService: vi.fn().mockImplementation(() => ({
+		connect: vi.fn(),
+	})),
+}))
+
 vi.mock("vscode", () => ({
 	workspace: {
 		createFileSystemWatcher: vi.fn().mockReturnValue({
