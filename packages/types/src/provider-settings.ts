@@ -34,11 +34,8 @@ export const providerNames = [
 	"chutes",
 	"litellm",
 	// kilocode_change start
-	"fireworks",
 	"kilocode",
-	"cerebras",
 	"virtual-quota-fallback",
-	"zai",
 	"bigmodel",
 	// kilocode_change end
 	"huggingface",
