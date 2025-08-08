@@ -85,10 +85,13 @@ import { webviewMessageHandler } from "./webviewMessageHandler"
 import { getNonce } from "./getNonce"
 import { getUri } from "./getUri"
 
-import { McpDownloadResponse, McpMarketplaceCatalog } from "../../shared/kilocode/mcp" //kilocode_change
-import { McpServer } from "../../shared/mcp" // kilocode_change
-import { OpenRouterHandler } from "../../api/providers" // kilocode_change
+//kilocode_change start
+import { McpDownloadResponse, McpMarketplaceCatalog } from "../../shared/kilocode/mcp"
+import { McpServer } from "../../shared/mcp"
+import { OpenRouterHandler } from "../../api/providers"
 import { stringifyError } from "../../shared/kilocode/errorUtils"
+import isWsl from "is-wsl"
+// kilocode_change end
 
 /**
  * https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -2242,7 +2245,7 @@ export class ClineProvider
 			appName: packageJSON?.name ?? Package.name,
 			appVersion: packageJSON?.version ?? Package.version,
 			vscodeVersion: vscode.version,
-			platform: process.platform,
+			platform: isWsl ? "wsl" /* kilocode_change */ : process.platform,
 			editorName: vscode.env.appName,
 			language,
 			mode,
