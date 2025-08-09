@@ -153,6 +153,7 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 		case "fireworks":
 			return new FireworksHandler(options)
 		default:
+			apiProvider satisfies "gemini-cli" | undefined
 			return new AnthropicHandler(options)
 	}
 }
