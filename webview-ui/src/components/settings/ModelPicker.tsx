@@ -6,7 +6,7 @@ import { ChevronsUpDown, Check, X } from "lucide-react"
 import type { ProviderSettings, ModelInfo, OrganizationAllowList } from "@roo-code/types"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
-import { useSelectedModel } from "@/components/ui/hooks/useSelectedModel"
+import { useModelProviders, useSelectedModel } from "@/components/ui/hooks/useSelectedModel"
 import { usePreferredModels } from "@/components/ui/hooks/kilocode/usePreferredModels" // kilocode_change
 // import { filterModels } from "./utils/organizationFilters" // kilocode_change: not doing this
 import { cn } from "@src/lib/utils"
@@ -27,6 +27,7 @@ import { useEscapeKey } from "@src/hooks/useEscapeKey"
 
 import { ModelInfoView } from "./ModelInfoView"
 import { ApiErrorMessage } from "./ApiErrorMessage"
+import { KiloModelInfoView } from "../kilocode/settings/KiloModelInfoView"
 
 type ModelIdKey = keyof Pick<
 	ProviderSettings,
@@ -74,6 +75,7 @@ export const ModelPicker = ({
 	const modelIds = usePreferredModels(models) // kilocode_change
 
 	const { id: selectedModelId, info: selectedModelInfo } = useSelectedModel(apiConfiguration)
+	const { data: providers } = useModelProviders(apiConfiguration)
 
 	const [searchValue, setSearchValue] = useState("")
 
@@ -227,15 +229,19 @@ export const ModelPicker = ({
 				</Popover>
 			</div>
 			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
-			{selectedModelId && selectedModelInfo && (
-				<ModelInfoView
-					apiProvider={apiConfiguration.apiProvider}
-					selectedModelId={selectedModelId}
-					modelInfo={selectedModelInfo}
-					isDescriptionExpanded={isDescriptionExpanded}
-					setIsDescriptionExpanded={setIsDescriptionExpanded}
-				/>
-			)}
+			{selectedModelId &&
+				selectedModelInfo &&
+				(providers && Object.keys(providers).length > 1 ? (
+					<KiloModelInfoView model={selectedModelInfo} providers={Object.values(providers)} />
+				) : (
+					<ModelInfoView
+						apiProvider={apiConfiguration.apiProvider}
+						selectedModelId={selectedModelId}
+						modelInfo={selectedModelInfo}
+						isDescriptionExpanded={isDescriptionExpanded}
+						setIsDescriptionExpanded={setIsDescriptionExpanded}
+					/>
+				))}
 			<div className="text-sm text-vscode-descriptionForeground">
 				{
 					/*kilocode_change start*/
