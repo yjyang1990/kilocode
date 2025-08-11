@@ -118,6 +118,10 @@ const openRouterSchema = baseProviderSettingsSchema.extend({
 	openRouterBaseUrl: z.string().optional(),
 	openRouterSpecificProvider: z.string().optional(),
 	openRouterUseMiddleOutTransform: z.boolean().optional(),
+	// kilocode_change start
+	openRouterProviderDataCollection: z.enum(["allow", "deny"]).optional(),
+	openRouterProviderSort: z.enum(["price", "throughput", "latency"]).optional(),
+	// kilocode_change end
 })
 
 const bedrockSchema = apiModelIdProviderModelSchema.extend({
@@ -281,7 +285,6 @@ const sambaNovaSchema = apiModelIdProviderModelSchema.extend({
 const kilocodeSchema = baseProviderSettingsSchema.extend({
 	kilocodeToken: z.string().optional(),
 	kilocodeModel: z.string().optional(),
-	openRouterSpecificProvider: z.string().optional(),
 })
 
 export const virtualQuotaFallbackProfileDataSchema = z.object({
