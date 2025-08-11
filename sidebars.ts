@@ -118,6 +118,7 @@ const sidebars: SidebarsConfig = {
             "features/fast-edits",
             "features/model-temperature",
             "advanced-usage/rate-limits-costs",
+            "advanced-usage/free-and-budget-models",
             "features/footgun-prompting",
           ],
         },
