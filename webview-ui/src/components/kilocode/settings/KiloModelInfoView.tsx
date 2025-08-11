@@ -3,7 +3,6 @@ import { formatPrice } from "@src/utils/formatPrice"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { ModelDescriptionMarkdown } from "../../settings/ModelDescriptionMarkdown"
 import { ModelInfoSupportsItem } from "@/components/settings/ModelInfoView"
-import { useState } from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, StandardTooltip } from "@/components/ui"
 import { FreeModelsInfoView } from "../FreeModelsLink"
 
@@ -62,6 +61,8 @@ export const KiloModelInfoView = ({
 	modelId,
 	model,
 	providers,
+	isDescriptionExpanded,
+	setIsDescriptionExpanded,
 	isPricingExpanded,
 	setIsPricingExpanded,
 }: {
@@ -69,11 +70,12 @@ export const KiloModelInfoView = ({
 	modelId: string
 	model: ModelInfo
 	providers: (ModelInfo & { label: string })[]
+	isDescriptionExpanded: boolean
+	setIsDescriptionExpanded: (isExpanded: boolean) => void
 	isPricingExpanded: boolean
 	setIsPricingExpanded: (isPricingExpanded: boolean) => void
 }) => {
 	const { t } = useAppTranslation()
-	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
 
 	return (
 		<>

@@ -240,6 +240,8 @@ export const ModelPicker = ({
 						modelId={selectedModelId}
 						model={selectedModelInfo}
 						providers={Object.values(providers)}
+						isDescriptionExpanded={isDescriptionExpanded}
+						setIsDescriptionExpanded={setIsDescriptionExpanded}
 						isPricingExpanded={isPricingExpanded}
 						setIsPricingExpanded={setIsPricingExpanded}
 					/>
