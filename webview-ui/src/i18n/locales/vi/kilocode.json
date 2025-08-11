@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "chi phí không xác định",
 		"costUnknownDescription": "Nhà cung cấp API không cung cấp dữ liệu chi phí hoặc yêu cầu đã bị hủy.",
-		"discoverModelPricing": "Khám phá giá cả và khả năng của mô hình",
 		"freeModelsDescription": "Các mô hình miễn phí có thể có giới hạn tốc độ. Sử dụng liên kết dưới đây để tối ưu hóa việc sử dụng mô hình miễn phí của bạn!",
 		"freeModelsLink": "Khám phá các tùy chọn mô hình miễn phí"
 	},
@@ -64,7 +63,6 @@
 			"table": {
 				"provider": "Nhà cung cấp",
 				"context": "Điểm cuối có thể xử lý số lượng token này (đầu vào + đầu ra).",
-				"maxOutput": "Điểm cuối có thể tạo ra số lượng token này.",
 				"inputPrice": "Chi phí cho một triệu token đối với prompt.",
 				"outputPrice": "Chi phí cho một triệu token đối với completion.",
 				"cacheReadPrice": "Chi phí cho một triệu token để đọc từ bộ nhớ đệm.",

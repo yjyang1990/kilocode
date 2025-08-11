@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "cost desconegut",
 		"costUnknownDescription": "El proveïdor de l'API no va proporcionar cap dada de cost o la sol·licitud va ser cancel·lada.",
-		"discoverModelPricing": "Descobreix els preus i capacitats del model",
 		"freeModelsDescription": "Els models gratuïts poden tenir límits de velocitat. Utilitza l'enllaç de sota per optimitzar l'ús dels models gratuïts!",
 		"freeModelsLink": "Descobreix les opcions de models gratuïts"
 	},
@@ -58,7 +57,6 @@
 			"table": {
 				"provider": "Proveïdor",
 				"context": "L'endpoint pot processar aquest nombre de tokens (entrada + sortida).",
-				"maxOutput": "L'endpoint pot generar aquest nombre de tokens.",
 				"inputPrice": "Cost per milió de tokens per al prompt.",
 				"outputPrice": "Cost per milió de tokens per a la compleció.",
 				"cacheReadPrice": "Cost per milió de tokens per llegir de la memòria cau.",

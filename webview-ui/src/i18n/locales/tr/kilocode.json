@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "maliyet bilinmiyor",
 		"costUnknownDescription": "API Sağlayıcısı herhangi bir maliyet verisi sağlamadı veya istek iptal edildi.",
-		"discoverModelPricing": "Model fiyatlandırması ve yeteneklerini keşfedin",
 		"freeModelsDescription": "Ücretsiz modellerin hız limitleri olabilir. Ücretsiz model kullanımını optimize etmek için aşağıdaki bağlantıyı kullan!",
 		"freeModelsLink": "Ücretsiz model seçeneklerini keşfet"
 	},
@@ -64,7 +63,6 @@
 			"table": {
 				"provider": "Sağlayıcı",
 				"context": "Uç nokta bu sayıda token işleyebilir (giriş + çıkış).",
-				"maxOutput": "Uç nokta bu sayıda token üretebilir.",
 				"inputPrice": "İstem için milyon token başına maliyet.",
 				"outputPrice": "Tamamlama için milyon token başına maliyet.",
 				"cacheReadPrice": "Önbellekten okuma için milyon token başına maliyet.",

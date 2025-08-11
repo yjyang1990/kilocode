@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "費用未知",
 		"costUnknownDescription": "API 提供商未提供任何費用資料或請求已取消。",
-		"discoverModelPricing": "了解模型定價和功能",
 		"freeModelsDescription": "免費模型可能有速率限制。使用下方連結來優化你的免費模型使用！",
 		"freeModelsLink": "探索免費模型選項"
 	},
@@ -71,7 +70,6 @@
 			"table": {
 				"provider": "供應商",
 				"context": "端點可以處理這個數量的 Token（輸入 + 輸出）。",
-				"maxOutput": "端點可以產生這個數量的 Token。",
 				"inputPrice": "提示每百萬 Token 的費用。",
 				"outputPrice": "完成每百萬 Token 的費用。",
 				"cacheReadPrice": "從快取讀取每百萬 Token 的費用。",

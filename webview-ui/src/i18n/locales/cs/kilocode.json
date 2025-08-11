@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "neznámé náklady",
 		"costUnknownDescription": "Poskytovatel API neposkytl žádné údaje o nákladech nebo byl požadavek zrušen.",
-		"discoverModelPricing": "Objevte ceny a možnosti modelů",
 		"freeModelsDescription": "Bezplatné modely mohou mít limity na počet požadavků. Použij odkaz níže pro optimalizaci využití bezplatných modelů!",
 		"freeModelsLink": "Objevte možnosti bezplatných modelů"
 	},
@@ -58,7 +57,6 @@
 			"table": {
 				"provider": "Poskytovatel",
 				"context": "Endpoint může zpracovat tento počet tokenů (vstup + výstup).",
-				"maxOutput": "Endpoint může vygenerovat tento počet tokenů.",
 				"inputPrice": "Náklady za milion tokenů pro prompt.",
 				"outputPrice": "Náklady za milion tokenů pro dokončení.",
 				"cacheReadPrice": "Náklady za milion tokenů pro čtení z cache.",

@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "コスト不明",
 		"costUnknownDescription": "APIプロバイダーがコストデータを提供しなかったか、リクエストがキャンセルされました。",
-		"discoverModelPricing": "モデルの価格と機能を確認",
 		"freeModelsDescription": "無料モデルにはレート制限がある場合があります。下のリンクを使って無料モデルの使用を最適化しよう！",
 		"freeModelsLink": "無料モデルのオプションを見る"
 	},
@@ -58,7 +57,6 @@
 			"table": {
 				"provider": "プロバイダー",
 				"context": "エンドポイントが処理できるトークン数（入力+出力）。",
-				"maxOutput": "エンドポイントが生成できるトークン数。",
 				"inputPrice": "プロンプトの100万トークンあたりのコスト。",
 				"outputPrice": "補完の100万トークンあたりのコスト。",
 				"cacheReadPrice": "キャッシュから読み取る100万トークンあたりのコスト。",

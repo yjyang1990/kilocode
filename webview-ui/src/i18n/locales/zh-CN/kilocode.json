@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "费用未知",
 		"costUnknownDescription": "API 提供商未提供任何费用数据或请求已取消。",
-		"discoverModelPricing": "了解模型定价和功能",
 		"freeModelsDescription": "免费模型可能有请求频率限制。使用下方链接优化你的免费模型使用！",
 		"freeModelsLink": "探索免费模型选项"
 	},
@@ -71,7 +70,6 @@
 			"table": {
 				"provider": "提供商",
 				"context": "端点可以处理的 Token 数（输入 + 输出）。",
-				"maxOutput": "端点可以生成的 Token 数。",
 				"inputPrice": "每百万提示 Token 的费用。",
 				"outputPrice": "每百万完成 Token 的费用。",
 				"cacheReadPrice": "每百万从缓存读取 Token 的费用。",

@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "coût inconnu",
 		"costUnknownDescription": "Le fournisseur d'API n'a pas fourni de données de coût ou la demande a été annulée.",
-		"discoverModelPricing": "Découvrir les tarifs et capacités du modèle",
 		"freeModelsDescription": "Les modèles gratuits peuvent avoir des limites de débit. Utilisez le lien ci-dessous pour optimiser votre utilisation des modèles gratuits !",
 		"freeModelsLink": "Découvrir les options de modèles gratuits"
 	},
@@ -58,7 +57,6 @@
 			"table": {
 				"provider": "Fournisseur",
 				"context": "Le point de terminaison peut traiter ce nombre de tokens (entrée + sortie).",
-				"maxOutput": "Le point de terminaison peut générer ce nombre de tokens.",
 				"inputPrice": "Coût par million de tokens pour le prompt.",
 				"outputPrice": "Coût par million de tokens pour la complétion.",
 				"cacheReadPrice": "Coût par million de tokens pour lire depuis le cache.",

@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "custo desconhecido",
 		"costUnknownDescription": "O Provedor de API não forneceu dados de custo ou a solicitação foi cancelada.",
-		"discoverModelPricing": "Descobrir preços e capacidades do modelo",
 		"freeModelsDescription": "Modelos gratuitos podem ter limites de taxa. Use o link abaixo para otimizar seu uso de modelos gratuitos!",
 		"freeModelsLink": "Descubra opções de modelos gratuitos"
 	},
@@ -58,7 +57,6 @@
 			"table": {
 				"provider": "Provedor",
 				"context": "O endpoint pode processar este número de tokens (entrada + saída).",
-				"maxOutput": "O endpoint pode gerar este número de tokens.",
 				"inputPrice": "Custo por milhão de tokens para o prompt.",
 				"outputPrice": "Custo por milhão de tokens para a conclusão.",
 				"cacheReadPrice": "Custo por milhão de tokens para leitura do cache.",

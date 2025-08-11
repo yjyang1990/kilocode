@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "biaya tidak diketahui",
 		"costUnknownDescription": "Penyedia API tidak memberikan data biaya atau permintaan dibatalkan.",
-		"discoverModelPricing": "Temukan harga dan kemampuan model",
 		"freeModelsDescription": "Model gratis mungkin memiliki batas penggunaan. Gunakan tautan di bawah ini untuk mengoptimalkan penggunaan model gratis kamu!",
 		"freeModelsLink": "Temukan opsi model gratis"
 	},
@@ -58,7 +57,6 @@
 			"table": {
 				"provider": "Penyedia",
 				"context": "Endpoint dapat memproses jumlah token ini (input + output).",
-				"maxOutput": "Endpoint dapat menghasilkan jumlah token ini.",
 				"inputPrice": "Biaya per juta token untuk prompt.",
 				"outputPrice": "Biaya per juta token untuk completion.",
 				"cacheReadPrice": "Biaya per juta token untuk membaca dari cache.",

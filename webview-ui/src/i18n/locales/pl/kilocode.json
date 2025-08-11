@@ -16,7 +16,6 @@
 	"pricing": {
 		"costUnknown": "koszt nieznany",
 		"costUnknownDescription": "Dostawca API nie podał żadnych danych o kosztach lub żądanie zostało anulowane.",
-		"discoverModelPricing": "Odkryj ceny i możliwości modeli",
 		"freeModelsDescription": "Darmowe modele mogą mieć limity użycia. Użyj poniższego linku, aby zoptymalizować wykorzystanie darmowych modeli!",
 		"freeModelsLink": "Odkryj opcje darmowych modeli"
 	},
@@ -58,7 +57,6 @@
 			"table": {
 				"provider": "Dostawca",
 				"context": "Punkt końcowy może przetworzyć tę liczbę tokenów (wejście + wyjście).",
-				"maxOutput": "Punkt końcowy może wygenerować tę liczbę tokenów.",
 				"inputPrice": "Koszt za milion tokenów dla promptu.",
 				"outputPrice": "Koszt za milion tokenów dla uzupełnienia.",
 				"cacheReadPrice": "Koszt za milion tokenów dla odczytu z pamięci podręcznej.",
