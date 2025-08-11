@@ -8,36 +8,6 @@ sidebar_label: Free & Budget Models
 
 ## Completely Free Options
 
-### Horizon Beta - Free Frontier Model
-
-**The best free option available:** Horizon Beta provides frontier-level AI capabilities at zero cost through multiple providers.
-
-:::tip Last Updated
-Horizon Beta availability was last verified in January 2025. Model availability may change over time.
-:::
-
-**What makes it special:**
-
-- Completely free with no usage limits
-- Performance comparable to premium models like GPT-4
-- Available through [OpenRouter](/providers/openrouter) and [Kilo Code](/providers/kilocode) providers
-- No credit card required
-
-**Setup Options:**
-
-**Option 1: Through Kilo Code Provider**
-
-1. Configure Kilo Code with the Kilo Code provider
-2. Select "Horizon Beta" as your model
-3. Start using immediately
-
-**Option 2: Through OpenRouter**
-
-1. Create a free [OpenRouter account](https://openrouter.ai)
-2. Get your API key from the dashboard
-3. Configure Kilo Code with OpenRouter provider
-4. Select "Horizon Beta" as your model
-
 ### OpenRouter Free Tier Models
 
 OpenRouter offers several models with generous free tiers. **Note:** You'll need to create a free OpenRouter account to access these models.
