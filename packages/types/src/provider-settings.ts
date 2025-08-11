@@ -112,6 +112,9 @@ const glamaSchema = baseProviderSettingsSchema.extend({
 	glamaApiKey: z.string().optional(),
 })
 
+export const openRouterProviderDataCollectionSchema = z.enum(["allow", "deny"])
+export const openRouterProviderSortSchema = z.enum(["price", "throughput", "latency"])
+
 const openRouterSchema = baseProviderSettingsSchema.extend({
 	openRouterApiKey: z.string().optional(),
 	openRouterModelId: z.string().optional(),
@@ -119,8 +122,8 @@ const openRouterSchema = baseProviderSettingsSchema.extend({
 	openRouterSpecificProvider: z.string().optional(),
 	openRouterUseMiddleOutTransform: z.boolean().optional(),
 	// kilocode_change start
-	openRouterProviderDataCollection: z.enum(["allow", "deny"]).optional(),
-	openRouterProviderSort: z.enum(["price", "throughput", "latency"]).optional(),
+	openRouterProviderDataCollection: openRouterProviderDataCollectionSchema.optional(),
+	openRouterProviderSort: openRouterProviderSortSchema.optional(),
 	// kilocode_change end
 })
 
