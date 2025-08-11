@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.79.1
-
-### Patch Changes
+## [v4.79.1]
 
 - [#1871](https://github.com/Kilo-Org/kilocode/pull/1871) [`fe0b1ce`](https://github.com/Kilo-Org/kilocode/commit/fe0b1ce7141e6fb07f4c4816fd1895a663ce13e7) Thanks [@kevinvandijk](https://github.com/kevinvandijk)! - Include changes from Roo Code v3.25.10
 
