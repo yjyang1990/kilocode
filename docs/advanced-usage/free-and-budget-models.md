@@ -247,8 +247,9 @@ When you need more capability than free models provide, these options deliver ex
 
 **Free tier foundation:**
 
-- [OpenRouter](/providers/openrouter) - Horizon Beta and free models
+- [OpenRouter](/providers/openrouter) - Free models
 - [Groq](/providers/groq) - Fast inference for supported models
+- [Z.ai](https://z.ai/model-api) - Provides a free model GLM-4.5-Flash
 
 **Budget tier options:**
 
