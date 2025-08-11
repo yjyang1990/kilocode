@@ -1,8 +1,6 @@
-import type { ModelInfo } from "@roo-code/types"
-
+import type { ModelInfo, ProviderName } from "@roo-code/types"
 import { formatPrice } from "@src/utils/formatPrice"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
-
 import { ModelDescriptionMarkdown } from "../../settings/ModelDescriptionMarkdown"
 import { ModelInfoSupportsItem } from "@/components/settings/ModelInfoView"
 import { useState } from "react"
@@ -60,12 +58,14 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 }
 
 export const KiloModelInfoView = ({
+	provider,
 	modelId,
 	model,
 	providers,
 	isPricingExpanded,
 	setIsPricingExpanded,
 }: {
+	provider?: ProviderName
 	modelId: string
 	model: ModelInfo
 	providers: (ModelInfo & { label: string })[]
@@ -85,7 +85,9 @@ export const KiloModelInfoView = ({
 					setIsExpanded={setIsDescriptionExpanded}
 				/>
 			)}
-			{modelId.endsWith(":free") && <FreeModelsInfoView modelId={modelId} origin="settings" />}
+			{provider === "kilocode" && modelId.endsWith(":free") && (
+				<FreeModelsInfoView modelId={modelId} origin="settings" />
+			)}
 			<div className="text-sm text-vscode-descriptionForeground">
 				<ModelInfoSupportsItem
 					isSupported={model.supportsImages ?? false}

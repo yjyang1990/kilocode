@@ -236,6 +236,7 @@ export const ModelPicker = ({
 				selectedModelInfo &&
 				(providers.length > 0 ? (
 					<KiloModelInfoView
+						provider={apiConfiguration.apiProvider}
 						modelId={selectedModelId}
 						model={selectedModelInfo}
 						providers={Object.values(providers)}
