@@ -17,12 +17,12 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 				<thead>
 					<tr className="border-b border-vscode-widget-border bg-vscode-editor-background">
 						<th className={thClass}>Provider</th>
-						<th className={thClass}>CW</th>
-						<th className={thClass}>MO</th>
-						<th className={thClass}>I$/M</th>
-						<th className={thClass}>O$/M</th>
-						<th className={thClass}>CR$/M</th>
-						<th className={thClass}>CW$/M</th>
+						<th className={thClass}>Context</th>
+						<th className={thClass}>Max output</th>
+						<th className={thClass}>Input</th>
+						<th className={thClass}>Output</th>
+						<th className={thClass}>C Read</th>
+						<th className={thClass}>C Write</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -81,7 +81,8 @@ export const KiloModelInfoView = ({
 					doesNotSupportLabel={t("settings:modelInfo.noPromptCache")}
 				/>
 				<div>
-					<span className="font-medium">Context window:</span> {model.contextWindow.toLocaleString()}
+					<span className="font-medium">{t("kilocode:settings.modelInfo.contextWindow")}:</span>{" "}
+					{model.contextWindow.toLocaleString()}
 				</div>
 				<div>
 					<span className="font-medium">{t("settings:modelInfo.maxOutput")}:</span>{" "}
@@ -91,7 +92,7 @@ export const KiloModelInfoView = ({
 			<Collapsible open={isPricingExpanded} onOpenChange={setIsPricingExpanded}>
 				<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">
 					<span className={`codicon codicon-chevron-${isPricingExpanded ? "down" : "right"}`}></span>
-					<span className="font-medium">Pricing details</span>
+					<span className="font-medium">{t("kilocode:settings.modelInfo.pricingDetails")}</span>
 				</CollapsibleTrigger>
 				<CollapsibleContent className="space-y-3">
 					<PricingTable providers={providers} />
