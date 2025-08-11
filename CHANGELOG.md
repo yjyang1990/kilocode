@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.79.2
-
-### Patch Changes
+## [v4.79.2]
 
 - [#1892](https://github.com/Kilo-Org/kilocode/pull/1892) [`c5cfb6c`](https://github.com/Kilo-Org/kilocode/commit/c5cfb6cc0af6b7de2a33832b6b1b56b60b950edc) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Fixed not being able to set the Max Auto-Approve Cost
 
