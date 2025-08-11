@@ -35,7 +35,32 @@
 			"automaticFetch": "Los modelos más recientes están disponibles automáticamente en Kilo Code. Si no estás seguro de qué modelo elegir, Kilo Code funciona mejor con los modelos recomendados que aparecen en la parte superior en <strong>negrita</strong>.",
 			"providerRouting": {
 				"title": "Kilo Code - Enrutamiento de proveedores de OpenRouter",
-				"description": "Kilo Code enruta las solicitudes a los mejores proveedores disponibles para su modelo. De forma predeterminada, las solicitudes se equilibran en carga entre los principales proveedores para maximizar el tiempo de actividad. Sin embargo, puede elegir un proveedor específico para usar para este modelo."
+				"description": "Kilo Code enruta las solicitudes a los mejores proveedores disponibles para su modelo. De forma predeterminada, las solicitudes se equilibran en carga entre los principales proveedores para maximizar el tiempo de actividad. Sin embargo, puede elegir un proveedor específico para usar para este modelo.",
+				"sorting": {
+					"default": "Ordenación de proveedor predeterminada",
+					"price": "Preferir proveedores con precio más bajo",
+					"throughput": "Preferir proveedores con mayor rendimiento",
+					"latency": "Preferir proveedores con menor latencia"
+				},
+				"dataCollection": {
+					"default": "No se estableció política de datos",
+					"allow": "Permitir recolección de datos del proveedor",
+					"deny": "Denegar recolección de datos del proveedor"
+				}
+			}
+		},
+		"modelInfo": {
+			"contextWindow": "Ventana de contexto",
+			"pricingDetails": "Detalles de precios",
+			"averageKiloCodeCost": "Costo promedio de Kilo Code",
+			"table": {
+				"provider": "Proveedor",
+				"context": "El endpoint puede procesar este número de tokens (entrada + salida).",
+				"maxOutput": "El endpoint puede generar este número de tokens.",
+				"inputPrice": "Costo por millón de tokens para el prompt.",
+				"outputPrice": "Costo por millón de tokens para la completación.",
+				"cacheReadPrice": "Costo por millón de tokens para leer desde el caché.",
+				"cacheWritePrice": "Costo por millón de tokens para escribir al caché."
 			}
 		},
 		"contextManagement": {

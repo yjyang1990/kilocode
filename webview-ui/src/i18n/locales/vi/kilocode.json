@@ -40,9 +40,34 @@
 			"logout": "Đăng xuất khỏi Kilo Code",
 			"providerRouting": {
 				"title": "Kilo Code - Định tuyến nhà cung cấp OpenRouter",
-				"description": "Kilo Code định tuyến các yêu cầu đến các nhà cung cấp tốt nhất có sẵn cho mô hình của bạn. Theo mặc định, các yêu cầu được cân bằng tải trên các nhà cung cấp hàng đầu để tối đa hóa thời gian hoạt động. Tuy nhiên, bạn có thể chọn một nhà cung cấp cụ thể để sử dụng cho mô hình này."
+				"description": "Kilo Code định tuyến các yêu cầu đến các nhà cung cấp tốt nhất có sẵn cho mô hình của bạn. Theo mặc định, các yêu cầu được cân bằng tải trên các nhà cung cấp hàng đầu để tối đa hóa thời gian hoạt động. Tuy nhiên, bạn có thể chọn một nhà cung cấp cụ thể để sử dụng cho mô hình này.",
+				"sorting": {
+					"default": "Sắp xếp nhà cung cấp mặc định",
+					"price": "Ưu tiên nhà cung cấp có giá thấp hơn",
+					"throughput": "Ưu tiên nhà cung cấp có thông lượng cao hơn",
+					"latency": "Ưu tiên nhà cung cấp có độ trễ thấp hơn"
+				},
+				"dataCollection": {
+					"default": "Không thiết lập chính sách dữ liệu",
+					"allow": "Cho phép thu thập dữ liệu của nhà cung cấp",
+					"deny": "Từ chối thu thập dữ liệu của nhà cung cấp"
+				}
 			},
 			"automaticFetch": "Các mô hình mới nhất được tự động cung cấp trong Kilo Code. Nếu bạn không chắc chắn nên chọn mô hình nào, Kilo Code hoạt động tốt nhất với các mô hình được khuyến nghị được liệt kê ở đầu bằng <strong>chữ đậm</strong>."
+		},
+		"modelInfo": {
+			"contextWindow": "Cửa sổ ngữ cảnh",
+			"pricingDetails": "Chi tiết giá cả",
+			"averageKiloCodeCost": "Chi phí trung bình của Kilo Code",
+			"table": {
+				"provider": "Nhà cung cấp",
+				"context": "Điểm cuối có thể xử lý số lượng token này (đầu vào + đầu ra).",
+				"maxOutput": "Điểm cuối có thể tạo ra số lượng token này.",
+				"inputPrice": "Chi phí cho một triệu token đối với prompt.",
+				"outputPrice": "Chi phí cho một triệu token đối với completion.",
+				"cacheReadPrice": "Chi phí cho một triệu token để đọc từ bộ nhớ đệm.",
+				"cacheWritePrice": "Chi phí cho một triệu token để ghi vào bộ nhớ đệm."
+			}
 		},
 		"systemNotifications": {
 			"label": "Bật thông báo hệ thống",

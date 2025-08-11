@@ -48,7 +48,32 @@
 			"automaticFetch": "最新模型在 Kilo Code 中自动可用。如果您不确定选择哪个模型，Kilo Code 与顶部<strong>粗体</strong>显示的推荐模型配合最佳。",
 			"providerRouting": {
 				"title": "Kilo Code - OpenRouter 提供商路由",
-				"description": "Kilo Code 将请求路由到您模型的最佳可用提供商。默认情况下，请求会在顶级提供商之间进行负载均衡，以最大限度地延长正常运行时间。但是，您可以选择要用于此模型的特定提供商。"
+				"description": "Kilo Code 将请求路由到您模型的最佳可用提供商。默认情况下，请求会在顶级提供商之间进行负载均衡，以最大限度地延长正常运行时间。但是，您可以选择要用于此模型的特定提供商。",
+				"sorting": {
+					"default": "默认提供商排序",
+					"price": "优先选择低价格提供商",
+					"throughput": "优先选择高吞吐量提供商",
+					"latency": "优先选择低延迟提供商"
+				},
+				"dataCollection": {
+					"default": "未设置数据策略",
+					"allow": "允许提供商数据收集",
+					"deny": "拒绝提供商数据收集"
+				}
+			}
+		},
+		"modelInfo": {
+			"contextWindow": "上下文窗口",
+			"pricingDetails": "定价详情",
+			"averageKiloCodeCost": "Kilo Code 平均费用",
+			"table": {
+				"provider": "提供商",
+				"context": "端点可以处理的 Token 数（输入 + 输出）。",
+				"maxOutput": "端点可以生成的 Token 数。",
+				"inputPrice": "每百万提示 Token 的费用。",
+				"outputPrice": "每百万完成 Token 的费用。",
+				"cacheReadPrice": "每百万从缓存读取 Token 的费用。",
+				"cacheWritePrice": "每百万写入缓存 Token 的费用。"
 			}
 		},
 		"terminal": {

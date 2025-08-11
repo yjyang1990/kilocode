@@ -35,7 +35,32 @@
 			"automaticFetch": "Els models més recents estan disponibles automàticament a Kilo Code. Si no estàs segur de quin model triar, Kilo Code funciona millor amb els models recomanats que apareixen a la part superior en <strong>negreta</strong>.",
 			"providerRouting": {
 				"title": "Kilo Code - Encaminament de proveïdors OpenRouter",
-				"description": "Kilo Code encamina les sol·licituds als millors proveïdors disponibles per al vostre model. Per defecte, les sol·licituds es distribueixen entre els principals proveïdors per maximitzar el temps de funcionament. No obstant això, podeu triar un proveïdor específic per a aquest model."
+				"description": "Kilo Code encamina les sol·licituds als millors proveïdors disponibles per al vostre model. Per defecte, les sol·licituds es distribueixen entre els principals proveïdors per maximitzar el temps de funcionament. No obstant això, podeu triar un proveïdor específic per a aquest model.",
+				"sorting": {
+					"default": "Ordenació de proveïdors per defecte",
+					"price": "Preferir proveïdors amb preu més baix",
+					"throughput": "Preferir proveïdors amb major rendiment",
+					"latency": "Preferir proveïdors amb menor latència"
+				},
+				"dataCollection": {
+					"default": "No hi ha política de dades establerta",
+					"allow": "Permetre la recol·lecció de dades del proveïdor",
+					"deny": "Denegar la recol·lecció de dades del proveïdor"
+				}
+			}
+		},
+		"modelInfo": {
+			"contextWindow": "Finestra de context",
+			"pricingDetails": "Detalls de preus",
+			"averageKiloCodeCost": "Cost mitjà de Kilo Code",
+			"table": {
+				"provider": "Proveïdor",
+				"context": "L'endpoint pot processar aquest nombre de tokens (entrada + sortida).",
+				"maxOutput": "L'endpoint pot generar aquest nombre de tokens.",
+				"inputPrice": "Cost per milió de tokens per al prompt.",
+				"outputPrice": "Cost per milió de tokens per a la compleció.",
+				"cacheReadPrice": "Cost per milió de tokens per llegir de la memòria cau.",
+				"cacheWritePrice": "Cost per milió de tokens per escriure a la memòria cau."
 			}
 		},
 		"contextManagement": {

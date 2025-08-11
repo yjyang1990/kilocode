@@ -35,7 +35,32 @@
 			"automaticFetch": "Nejnovější modely jsou v Kilo Code automaticky dostupné. Pokud si nejste jisti, který model zvolit, Kilo Code funguje nejlépe s doporučenými modely uvedenými nahoře <strong>tučně</strong>.",
 			"providerRouting": {
 				"title": "Kilo Code - Směrování poskytovatelů OpenRouter",
-				"description": "Kilo Code směruje požadavky na nejlepší dostupné poskytovatele pro váš model. Ve výchozím nastavení jsou požadavky rozloženy mezi nejlepší poskytovatele, aby se maximalizovala doba provozu. Můžete si však vybrat konkrétního poskytovatele, kterého chcete pro tento model použít."
+				"description": "Kilo Code směruje požadavky na nejlepší dostupné poskytovatele pro váš model. Ve výchozím nastavení jsou požadavky rozloženy mezi nejlepší poskytovatele, aby se maximalizovala doba provozu. Můžete si však vybrat konkrétního poskytovatele, kterého chcete pro tento model použít.",
+				"sorting": {
+					"default": "Výchozí řazení poskytovatelů",
+					"price": "Upřednostnit poskytovatele s nižší cenou",
+					"throughput": "Upřednostnit poskytovatele s vyšší propustností",
+					"latency": "Upřednostnit poskytovatele s nižší latencí"
+				},
+				"dataCollection": {
+					"default": "Není nastavena zásada dat",
+					"allow": "Povolit shromažďování dat poskytovateli",
+					"deny": "Zakázat shromažďování dat poskytovateli"
+				}
+			}
+		},
+		"modelInfo": {
+			"contextWindow": "Kontextové okno",
+			"pricingDetails": "Podrobnosti o cenách",
+			"averageKiloCodeCost": "Průměrné náklady Kilo Code",
+			"table": {
+				"provider": "Poskytovatel",
+				"context": "Endpoint může zpracovat tento počet tokenů (vstup + výstup).",
+				"maxOutput": "Endpoint může vygenerovat tento počet tokenů.",
+				"inputPrice": "Náklady za milion tokenů pro prompt.",
+				"outputPrice": "Náklady za milion tokenů pro dokončení.",
+				"cacheReadPrice": "Náklady za milion tokenů pro čtení z cache.",
+				"cacheWritePrice": "Náklady za milion tokenů pro zápis do cache."
 			}
 		},
 		"contextManagement": {
