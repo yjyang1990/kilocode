@@ -737,7 +737,6 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							allowedCommands={allowedCommands}
 							allowedMaxRequests={allowedMaxRequests ?? undefined}
 							allowedMaxCost={allowedMaxCost ?? undefined}
-							allowedMaxRequests={allowedMaxRequests ?? undefined}
 							deniedCommands={deniedCommands}
 							setCachedStateField={setCachedStateField}
 						/>
