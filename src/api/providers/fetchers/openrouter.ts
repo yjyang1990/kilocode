@@ -194,7 +194,7 @@ export const parseOpenRouterModel = ({
 
 	const cacheReadsPrice = model.pricing?.input_cache_read ? parseApiPrice(model.pricing?.input_cache_read) : undefined
 
-	const supportsPromptCache = typeof cacheWritesPrice !== "undefined" && typeof cacheReadsPrice !== "undefined"
+	const supportsPromptCache = typeof cacheReadsPrice !== "undefined" // kilocode_change: some caching models don't list a cacheWritesPrice
 
 	const modelInfo: ModelInfo = {
 		maxTokens: maxTokens || Math.ceil(model.context_length * 0.2),
