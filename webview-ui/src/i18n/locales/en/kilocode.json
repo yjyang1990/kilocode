@@ -42,11 +42,12 @@
 			"pricingDetails": "Pricing details",
 			"averageKiloCodeCost": "Average Kilo Code cost",
 			"table": {
+				"provider": "Provider",
 				"context": "The endpoint can process this number of tokens (input + output).",
 				"maxOutput": "The endpoint can generate this number of tokens.",
 				"inputPrice": "Cost per million tokens for the prompt.",
 				"outputPrice": "Cost per million tokens for the completion.",
-				"cacheReadPrice": "Cost per million tokens for reading from to cache.",
+				"cacheReadPrice": "Cost per million tokens for reading from the cache.",
 				"cacheWritePrice": "Cost per million tokens for wrting to the cache."
 			}
 		},

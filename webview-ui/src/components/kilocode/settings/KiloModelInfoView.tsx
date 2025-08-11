@@ -6,9 +6,10 @@ import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { ModelDescriptionMarkdown } from "../../settings/ModelDescriptionMarkdown"
 import { ModelInfoSupportsItem } from "@/components/settings/ModelInfoView"
 import { useState } from "react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger, StandardTooltip } from "@/components/ui"
 
 const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string })[] }) => {
+	const { t } = useAppTranslation()
 	const thClass = "text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap"
 	const tdClass = "px-3 py-2 text-vscode-descriptionForeground whitespace-nowrap"
 	return (
@@ -16,13 +17,25 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 			<table className="w-full text-sm">
 				<thead>
 					<tr className="border-b border-vscode-widget-border bg-vscode-editor-background">
-						<th className={thClass}>Provider</th>
-						<th className={thClass}>Context</th>
-						<th className={thClass}>Max output</th>
-						<th className={thClass}>Input</th>
-						<th className={thClass}>Output</th>
-						<th className={thClass}>C Read</th>
-						<th className={thClass}>C Write</th>
+						<th className={thClass}>{t("kilocode:settings.modelInfo.table.provider")}</th>
+						<StandardTooltip content={t("kilocode:settings.modelInfo.table.context")}>
+							<th className={thClass}>Context</th>
+						</StandardTooltip>
+						<StandardTooltip content={t("kilocode:settings.modelInfo.table.maxOutput")}>
+							<th className={thClass}>Max output</th>
+						</StandardTooltip>
+						<StandardTooltip content={t("kilocode:settings.modelInfo.table.inputPrice")}>
+							<th className={thClass}>Input</th>
+						</StandardTooltip>
+						<StandardTooltip content={t("kilocode:settings.modelInfo.table.outputPrice")}>
+							<th className={thClass}>Output</th>
+						</StandardTooltip>
+						<StandardTooltip content={t("kilocode:settings.modelInfo.table.cacheReadPrice")}>
+							<th className={thClass}>C Read</th>
+						</StandardTooltip>
+						<StandardTooltip content={t("kilocode:settings.modelInfo.table.cacheWritePrice")}>
+							<th className={thClass}>C Write</th>
+						</StandardTooltip>
 					</tr>
 				</thead>
 				<tbody>
