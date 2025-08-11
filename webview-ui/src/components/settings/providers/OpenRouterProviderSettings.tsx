@@ -5,7 +5,7 @@ import {
 	openRouterProviderDataCollectionSchema,
 } from "@roo-code/types"
 
-//import { useAppTranslation } from "@src/i18n/TranslationContext"
+import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui"
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurationField }: Props) => {
-	//const { t } = useAppTranslation()
+	const { t } = useAppTranslation()
 
 	return (
 		<div className="flex flex-col gap-1">
@@ -33,15 +33,17 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="default">Default provider sorting</SelectItem>
+					<SelectItem value="default">
+						{t("kilocode:settings.provider.providerRouting.sorting.default")}
+					</SelectItem>
 					<SelectItem value={openRouterProviderSortSchema.Values.price}>
-						Prefer providers with lower price
+						{t("kilocode:settings.provider.providerRouting.sorting.price")}
 					</SelectItem>
 					<SelectItem value={openRouterProviderSortSchema.Values.throughput}>
-						Prefer providers with higher throughput
+						{t("kilocode:settings.provider.providerRouting.sorting.throughput")}
 					</SelectItem>
 					<SelectItem value={openRouterProviderSortSchema.Values.latency}>
-						Prefer providers with lower latency
+						{t("kilocode:settings.provider.providerRouting.sorting.latency")}
 					</SelectItem>
 				</SelectContent>
 			</Select>
@@ -57,12 +59,14 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="default">No data policy set</SelectItem>
+					<SelectItem value="default">
+						{t("kilocode:settings.provider.providerRouting.dataCollection.default")}
+					</SelectItem>
 					<SelectItem value={openRouterProviderDataCollectionSchema.Values.allow}>
-						Allow provider data collection
+						{t("kilocode:settings.provider.providerRouting.dataCollection.allow")}
 					</SelectItem>
 					<SelectItem value={openRouterProviderDataCollectionSchema.Values.deny}>
-						Deny provider data collection
+						{t("kilocode:settings.provider.providerRouting.dataCollection.deny")}
 					</SelectItem>
 				</SelectContent>
 			</Select>
