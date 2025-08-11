@@ -457,10 +457,11 @@ describe("VirtualQuotaFallbackProvider", () => {
 		})
 
 		describe("getModel", () => {
-			it("should delegate to the active handler", () => {
+			it("should delegate to the active handler", async () => {
 				const handler = new VirtualQuotaFallbackHandler({} as any)
 				const getModelMock = vitest.fn().mockReturnValue({ id: "test-model" })
 				;(handler as any).activeHandler = { getModel: getModelMock }
+				;(handler as any).isInitialized = true
 
 				const result = handler.getModel()
 
@@ -471,7 +472,16 @@ describe("VirtualQuotaFallbackProvider", () => {
 			it("should throw an error if no active handler", () => {
 				const handler = new VirtualQuotaFallbackHandler({} as any)
 				;(handler as any).activeHandler = undefined
+				;(handler as any).isInitialized = true
 				expect(() => handler.getModel()).toThrow("No active handler configured")
+			})
+
+			it("should throw an error if initialization not completed", () => {
+				const handler = new VirtualQuotaFallbackHandler({} as any)
+				;(handler as any).isInitialized = false
+				expect(() => handler.getModel()).toThrow(
+					"No active handler configured - initialization not completed yet",
+				)
 			})
 		})
 	})

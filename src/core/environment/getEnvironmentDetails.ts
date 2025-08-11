@@ -5,7 +5,7 @@ import * as vscode from "vscode"
 import pWaitFor from "p-wait-for"
 import delay from "delay"
 
-import type { ExperimentId } from "@roo-code/types"
+import type { ExperimentId, ModelInfo } from "@roo-code/types"
 import { DEFAULT_TERMINAL_OUTPUT_CHARACTER_LIMIT } from "@roo-code/types"
 
 import { EXPERIMENT_IDS, experiments as Experiments } from "../../shared/experiments"
@@ -226,7 +226,16 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 	}
 	// kilocode_change end
 
-	const { id: modelId, info: modelInfo } = cline.api.getModel()
+	let modelId: string
+	let modelInfo: ModelInfo
+
+	try {
+		;({ id: modelId, info: modelInfo } = cline.api.getModel())
+	} catch (error) {
+		// If we can't get the model info, wait a bit and try again
+		await new Promise((resolve) => setTimeout(resolve, 100))
+		;({ id: modelId, info: modelInfo } = cline.api.getModel())
+	}
 
 	details += `\n\n# Current Cost\n${totalCost !== null ? `$${totalCost.toFixed(2)}` : "(Not available)"}`
 

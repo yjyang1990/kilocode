@@ -41,7 +41,9 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 		this.settings = options
 		this.settingsManager = new ProviderSettingsManager(ContextProxy.instance.rawContext)
 		this.usage = UsageTracker.getInstance()
-		this.initialize()
+		this.initialize().catch((error) => {
+			console.error("Failed to initialize VirtualQuotaFallbackHandler:", error)
+		})
 	}
 
 	async initialize(): Promise<void> {
@@ -52,7 +54,7 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 	}
 
 	async countTokens(content: Array<Anthropic.Messages.ContentBlockParam>): Promise<number> {
-		await pWaitFor(() => this.isInitialized)
+		await this.initialize()
 		await this.adjustActiveHandler()
 		return this.activeHandler?.countTokens(content) ?? 0
 	}
@@ -62,7 +64,7 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 		messages: Anthropic.Messages.MessageParam[],
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
-		await pWaitFor(() => this.isInitialized)
+		await this.initialize()
 		await this.adjustActiveHandler()
 
 		if (!this.activeHandler || !this.activeProfileId) {
@@ -89,8 +91,15 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 	}
 
 	getModel(): { id: string; info: ModelInfo } {
+		// We can't use await here since this is a synchronous method
+		// But we need to ensure initialization has completed
+		if (!this.isInitialized) {
+			throw new Error("No active handler configured - initialization not completed yet")
+		}
+
+		// Check if we have an active handler
 		if (!this.activeHandler) {
-			throw new Error("No active handler configured - ensure initialize() was called and profiles are available")
+			throw new Error("No active handler configured - all providers may be unavailable or over limits")
 		}
 		return this.activeHandler.getModel()
 	}
