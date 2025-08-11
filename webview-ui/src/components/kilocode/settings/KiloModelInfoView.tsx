@@ -19,9 +19,6 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 						<StandardTooltip content={t("kilocode:settings.modelInfo.table.context")}>
 							<th className={thClass}>Context</th>
 						</StandardTooltip>
-						<StandardTooltip content={t("kilocode:settings.modelInfo.table.maxOutput")}>
-							<th className={thClass}>Max output</th>
-						</StandardTooltip>
 						<StandardTooltip content={t("kilocode:settings.modelInfo.table.inputPrice")}>
 							<th className={thClass}>Input</th>
 						</StandardTooltip>
@@ -43,7 +40,6 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 							className={`border-b border-vscode-widget-border last:border-b-0 ${index % 2 === 0 ? "bg-vscode-editor-background" : "bg-vscode-sideBar-background"} hover:bg-vscode-list-hoverBackground`}>
 							<td className="px-3 py-2 text-vscode-foreground whitespace-nowrap">{item.label}</td>
 							<td className={tdClass}>{item.contextWindow.toLocaleString()}</td>
-							<td className={tdClass}>{item.maxTokens?.toLocaleString() ?? 0}</td>
 							<td className={tdClass}>{formatPrice(item.inputPrice ?? 0)}</td>
 							<td className={tdClass}>{formatPrice(item.outputPrice ?? 0)}</td>
 							<td className={tdClass}>{item.cacheReadsPrice && formatPrice(item.cacheReadsPrice)}</td>
