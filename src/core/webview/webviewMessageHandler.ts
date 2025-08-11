@@ -575,7 +575,10 @@ export const webviewMessageHandler = async (
 				{ key: "unbound", options: { provider: "unbound", apiKey: apiConfiguration.unboundApiKey } },
 				{
 					key: "kilocode-openrouter",
-					options: { provider: "kilocode-openrouter", kilocodeToken: apiConfiguration.kilocodeToken },
+					options: {
+						provider: "kilocode-openrouter",
+						kilocodeToken: apiConfiguration.organizationToken || apiConfiguration.kilocodeToken,
+					},
 				},
 				{ key: "ollama", options: { provider: "ollama", baseUrl: apiConfiguration.ollamaBaseUrl } },
 			]
@@ -2131,7 +2134,9 @@ export const webviewMessageHandler = async (
 		case "fetchBalanceDataRequest": // New handler
 			try {
 				const { apiConfiguration } = await provider.getState()
-				const kilocodeToken = apiConfiguration?.kilocodeToken
+				// kilocode_change begin - Use organizationToken if available, otherwise use personal kilocodeToken
+				const kilocodeToken = apiConfiguration?.organizationToken || apiConfiguration?.kilocodeToken
+				// kilocode_change end
 
 				if (!kilocodeToken) {
 					provider.log("KiloCode token not found in extension state for balance data.")
@@ -2166,7 +2171,7 @@ export const webviewMessageHandler = async (
 		case "shopBuyCredits": // New handler
 			try {
 				const { apiConfiguration } = await provider.getState()
-				const kilocodeToken = apiConfiguration?.kilocodeToken
+				const kilocodeToken = apiConfiguration?.organizationToken || apiConfiguration?.kilocodeToken
 				if (!kilocodeToken) {
 					provider.log("KiloCode token not found in extension state for buy credits.")
 					break
