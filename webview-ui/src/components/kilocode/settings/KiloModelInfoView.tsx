@@ -54,28 +54,64 @@ export const KiloModelInfoView = ({
 					<span className="font-medium">Pricing details</span>
 				</CollapsibleTrigger>
 				<CollapsibleContent className="space-y-3">
-					<table>
-						<tr>
-							<th>Name</th>
-							<th>CW</th>
-							<th>MO</th>
-							<th>I$/M</th>
-							<th>O$/M</th>
-							<th>CR$/M</th>
-							<th>CW$/M</th>
-						</tr>
-						{providers.map((item) => (
-							<tr key={item.label}>
-								<td>{item.label}</td>
-								<td>{item.contextWindow.toLocaleString()}</td>
-								<td>{item.maxTokens?.toLocaleString() ?? 0}</td>
-								<td>{formatPrice(item.inputPrice ?? 0)}</td>
-								<td>{formatPrice(item.outputPrice ?? 0)}</td>
-								<td>{item.cacheReadsPrice && formatPrice(item.cacheReadsPrice)}</td>
-								<td>{item.cacheWritesPrice && formatPrice(item.cacheWritesPrice)}</td>
-							</tr>
-						))}
-					</table>
+					<div className="overflow-x-auto border border-vscode-widget-border rounded-md">
+						<table className="w-full text-sm">
+							<thead>
+								<tr className="border-b border-vscode-widget-border bg-vscode-editor-background">
+									<th className="text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap">
+										Provider
+									</th>
+									<th className="text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap">
+										CW
+									</th>
+									<th className="text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap">
+										MO
+									</th>
+									<th className="text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap">
+										I$/M
+									</th>
+									<th className="text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap">
+										O$/M
+									</th>
+									<th className="text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap">
+										CR$/M
+									</th>
+									<th className="text-left px-3 py-2 font-medium text-vscode-foreground whitespace-nowrap">
+										CW$/M
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{providers.map((item, index) => (
+									<tr
+										key={item.label}
+										className={`border-b border-vscode-widget-border last:border-b-0 ${index % 2 === 0 ? "bg-vscode-editor-background" : "bg-vscode-sideBar-background"} hover:bg-vscode-list-hoverBackground`}>
+										<td className="px-3 py-2 text-vscode-foreground whitespace-nowrap">
+											{item.label}
+										</td>
+										<td className="px-3 py-2 text-vscode-descriptionForeground whitespace-nowrap">
+											{item.contextWindow.toLocaleString()}
+										</td>
+										<td className="px-3 py-2 text-vscode-descriptionForeground whitespace-nowrap">
+											{item.maxTokens?.toLocaleString() ?? 0}
+										</td>
+										<td className="px-3 py-2 text-vscode-descriptionForeground whitespace-nowrap">
+											{formatPrice(item.inputPrice ?? 0)}
+										</td>
+										<td className="px-3 py-2 text-vscode-descriptionForeground whitespace-nowrap">
+											{formatPrice(item.outputPrice ?? 0)}
+										</td>
+										<td className="px-3 py-2 text-vscode-descriptionForeground whitespace-nowrap">
+											{item.cacheReadsPrice && formatPrice(item.cacheReadsPrice)}
+										</td>
+										<td className="px-3 py-2 text-vscode-descriptionForeground whitespace-nowrap">
+											{item.cacheWritesPrice && formatPrice(item.cacheWritesPrice)}
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				</CollapsibleContent>
 			</Collapsible>
 		</>
