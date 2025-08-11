@@ -74,7 +74,7 @@ export const ModelPicker = ({
 
 	// kilocode_change start
 	const modelIds = usePreferredModels(models)
-	const { data: providers } = useModelProviders(apiConfiguration)
+	const providers = Object.values(useModelProviders(apiConfiguration).data ?? {})
 	const [isPricingExpanded, setIsPricingExpanded] = useState(false)
 	// kilocode_change end
 
@@ -234,7 +234,7 @@ export const ModelPicker = ({
 			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
 			{selectedModelId &&
 				selectedModelInfo &&
-				(providers && Object.keys(providers).length > 1 ? (
+				(providers.length > 0 ? (
 					<KiloModelInfoView
 						modelId={selectedModelId}
 						model={selectedModelInfo}
