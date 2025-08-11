@@ -72,10 +72,13 @@ export const ModelPicker = ({
 	const selectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 	const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-	const modelIds = usePreferredModels(models) // kilocode_change
+	// kilocode_change start
+	const modelIds = usePreferredModels(models)
+	const { data: providers } = useModelProviders(apiConfiguration)
+	const [isPricingExpanded, setIsPricingExpanded] = useState(false)
+	// kilocode_change end
 
 	const { id: selectedModelId, info: selectedModelInfo } = useSelectedModel(apiConfiguration)
-	const { data: providers } = useModelProviders(apiConfiguration)
 
 	const [searchValue, setSearchValue] = useState("")
 
@@ -232,7 +235,12 @@ export const ModelPicker = ({
 			{selectedModelId &&
 				selectedModelInfo &&
 				(providers && Object.keys(providers).length > 1 ? (
-					<KiloModelInfoView model={selectedModelInfo} providers={Object.values(providers)} />
+					<KiloModelInfoView
+						model={selectedModelInfo}
+						providers={Object.values(providers)}
+						isPricingExpanded={isPricingExpanded}
+						setIsPricingExpanded={setIsPricingExpanded}
+					/>
 				) : (
 					<ModelInfoView
 						apiProvider={apiConfiguration.apiProvider}

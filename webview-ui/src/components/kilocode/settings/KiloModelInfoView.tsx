@@ -48,13 +48,16 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 export const KiloModelInfoView = ({
 	model,
 	providers,
+	isPricingExpanded,
+	setIsPricingExpanded,
 }: {
 	model: ModelInfo
 	providers: (ModelInfo & { label: string })[]
+	isPricingExpanded: boolean
+	setIsPricingExpanded: (isPricingExpanded: boolean) => void
 }) => {
 	const { t } = useAppTranslation()
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
-	const [isPricingExpanded, setIsPricingExpanded] = useState(false)
 
 	return (
 		<>
