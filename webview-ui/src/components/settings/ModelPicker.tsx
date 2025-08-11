@@ -236,6 +236,7 @@ export const ModelPicker = ({
 				selectedModelInfo &&
 				(providers && Object.keys(providers).length > 1 ? (
 					<KiloModelInfoView
+						modelId={selectedModelId}
 						model={selectedModelInfo}
 						providers={Object.values(providers)}
 						isPricingExpanded={isPricingExpanded}

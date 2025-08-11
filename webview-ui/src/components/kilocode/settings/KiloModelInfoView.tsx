@@ -7,6 +7,7 @@ import { ModelDescriptionMarkdown } from "../../settings/ModelDescriptionMarkdow
 import { ModelInfoSupportsItem } from "@/components/settings/ModelInfoView"
 import { useState } from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, StandardTooltip } from "@/components/ui"
+import { FreeModelsInfoView } from "../FreeModelsLink"
 
 const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string })[] }) => {
 	const { t } = useAppTranslation()
@@ -59,11 +60,13 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 }
 
 export const KiloModelInfoView = ({
+	modelId,
 	model,
 	providers,
 	isPricingExpanded,
 	setIsPricingExpanded,
 }: {
+	modelId: string
 	model: ModelInfo
 	providers: (ModelInfo & { label: string })[]
 	isPricingExpanded: boolean
@@ -82,6 +85,7 @@ export const KiloModelInfoView = ({
 					setIsExpanded={setIsDescriptionExpanded}
 				/>
 			)}
+			{modelId.endsWith(":free") && <FreeModelsInfoView modelId={modelId} origin="settings" />}
 			<div className="text-sm text-vscode-descriptionForeground">
 				<ModelInfoSupportsItem
 					isSupported={model.supportsImages ?? false}
