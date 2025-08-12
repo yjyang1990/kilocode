@@ -117,7 +117,7 @@ export const KiloModelInfoView = ({
 					<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCostDescription")}>
 						<div>
 							<span className="font-medium">{t("kilocode:settings.modelInfo.averageKiloCodeCost")}:</span>{" "}
-							{formatPrice(averageCost)}/M tokens
+							{formatPrice(averageCost)} / M tokens
 						</div>
 					</StandardTooltip>
 				)}
