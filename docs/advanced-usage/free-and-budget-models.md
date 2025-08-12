@@ -20,9 +20,10 @@ OpenRouter offers several models with generous free tiers. **Note:** You'll need
 
 **Available free models:**
 
-- **Meta Llama 3.1 8B Instruct (Free)** - Good for basic coding tasks
-- **Mistral 7B Instruct (Free)** - Solid performance for most development work
-- **Qwen 2.5 7B Instruct (Free)** - Strong reasoning capabilities
+- **Qwen3 Coder (free)** - Optimized for agentic coding tasks such as function calling, tool use, and long-context reasoning over repositories. 
+- **Z.AI: GLM 4.5 Air (free)** - Lightweight variant of the GLM-4.5 family, purpose-built for agent-centric applications. 
+- **DeepSeek: R1 0528 (free)** - Performance on par with OpenAI o1, but open-sourced and with fully open reasoning tokens.
+- **MoonshotAI: Kimi K2 (free)** - Optimized for agentic capabilities, including advanced tool use, reasoning, and code synthesis.
 
 ## Cost-Effective Premium Models
 
