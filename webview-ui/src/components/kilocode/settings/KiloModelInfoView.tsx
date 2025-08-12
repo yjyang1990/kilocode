@@ -113,7 +113,7 @@ export const KiloModelInfoView = ({
 					<span className="font-medium">{t("settings:modelInfo.maxOutput")}:</span>{" "}
 					{model.maxTokens?.toLocaleString() ?? 0}
 				</div>
-				{averageCost && (
+				{typeof averageCost === "number" && (
 					<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCostDescription")}>
 						<div>
 							<span className="font-medium">{t("kilocode:settings.modelInfo.averageKiloCodeCost")}:</span>{" "}
