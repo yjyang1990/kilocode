@@ -54,6 +54,7 @@
 			"contextWindow": "संदर्भ विंडो",
 			"pricingDetails": "मूल्य निर्धारण विवरण",
 			"averageKiloCodeCost": "औसत Kilo Code लागत",
+			"averageKiloCodeCostDescription": "यह इस मॉडल का उपयोग करते हुए Kilo Code के लिए औसत वास्तविक खर्च है। प्रॉम्प्ट कैश उपयोग के कारण यह सूचीबद्ध मूल्य से कम हो सकता है।",
 			"table": {
 				"provider": "प्रदाता",
 				"context": "एंडपॉइंट इस संख्या में टोकन्स (इनपुट + आउटपुट) को संसाधित कर सकता है।",

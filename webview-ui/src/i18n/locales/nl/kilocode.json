@@ -54,6 +54,7 @@
 			"contextWindow": "Context venster",
 			"pricingDetails": "Prijsinformatie",
 			"averageKiloCodeCost": "Gemiddelde Kilo Code kosten",
+			"averageKiloCodeCostDescription": "Dit zijn de gemiddelde daadwerkelijke kosten voor Kilo Code bij gebruik van dit model. Deze kunnen lager zijn dan de vermelde prijs door gebruik van prompt cache.",
 			"table": {
 				"provider": "Provider",
 				"context": "Het eindpunt kan dit aantal tokens verwerken (input + output).",

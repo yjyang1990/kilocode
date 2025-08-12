@@ -54,6 +54,7 @@
 			"contextWindow": "Jendela konteks",
 			"pricingDetails": "Detail harga",
 			"averageKiloCodeCost": "Rata-rata biaya Kilo Code",
+			"averageKiloCodeCostDescription": "Ini adalah rata-rata biaya aktual yang dihabiskan Kilo Code menggunakan model ini. Biaya ini mungkin lebih rendah dari harga yang tercantum karena pemanfaatan cache prompt.",
 			"table": {
 				"provider": "Penyedia",
 				"context": "Endpoint dapat memproses jumlah token ini (input + output).",

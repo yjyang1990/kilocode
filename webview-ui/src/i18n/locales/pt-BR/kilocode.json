@@ -54,6 +54,7 @@
 			"contextWindow": "Janela de contexto",
 			"pricingDetails": "Detalhes de preços",
 			"averageKiloCodeCost": "Custo médio do Kilo Code",
+			"averageKiloCodeCostDescription": "Este é o valor médio realmente gasto pelo Kilo Code usando este modelo. Pode ser menor que o preço listado devido à utilização do cache de prompts.",
 			"table": {
 				"provider": "Provedor",
 				"context": "O endpoint pode processar este número de tokens (entrada + saída).",

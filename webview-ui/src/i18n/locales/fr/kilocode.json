@@ -54,6 +54,7 @@
 			"contextWindow": "Fenêtre de contexte",
 			"pricingDetails": "Détails de tarification",
 			"averageKiloCodeCost": "Coût moyen Kilo Code",
+			"averageKiloCodeCostDescription": "Il s'agit de la dépense réelle moyenne pour Kilo Code utilisant ce modèle. Elle peut être inférieure au prix affiché en raison de l'utilisation du cache de prompts.",
 			"table": {
 				"provider": "Fournisseur",
 				"context": "Le point de terminaison peut traiter ce nombre de tokens (entrée + sortie).",

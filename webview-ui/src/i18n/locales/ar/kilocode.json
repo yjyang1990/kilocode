@@ -54,6 +54,7 @@
 			"contextWindow": "نافذة السياق",
 			"pricingDetails": "تفاصيل الأسعار",
 			"averageKiloCodeCost": "متوسط تكلفة Kilo Code",
+			"averageKiloCodeCostDescription": "هذا هو متوسط التكلفة الفعلية لـ Kilo Code عند استخدام هذا النموذج. قد تكون أقل من السعر المدرج بسبب استخدام تخزين الموجهات المؤقت.",
 			"table": {
 				"provider": "المزود",
 				"context": "يمكن للنقطة النهائية معالجة هذا العدد من الرموز (الإدخال + الإخراج).",

@@ -54,6 +54,7 @@
 			"contextWindow": "Kontextové okno",
 			"pricingDetails": "Podrobnosti o cenách",
 			"averageKiloCodeCost": "Průměrné náklady Kilo Code",
+			"averageKiloCodeCostDescription": "Toto jsou průměrné skutečné náklady za použití tohoto modelu v Kilo Code. Může být nižší než uvedená cena díky využití cache pro prompty.",
 			"table": {
 				"provider": "Poskytovatel",
 				"context": "Endpoint může zpracovat tento počet tokenů (vstup + výstup).",

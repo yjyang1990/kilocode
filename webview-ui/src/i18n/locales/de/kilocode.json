@@ -54,6 +54,7 @@
 			"contextWindow": "Kontextfenster",
 			"pricingDetails": "Preisdetails",
 			"averageKiloCodeCost": "Durchschnittliche Kilo Code Kosten",
+			"averageKiloCodeCostDescription": "Das sind die durchschnittlichen tatsächlichen Ausgaben für Kilo Code mit diesem Modell. Sie können niedriger sein als der angegebene Preis aufgrund der Nutzung des Prompt-Caches.",
 			"table": {
 				"provider": "Anbieter",
 				"context": "Der Endpunkt kann diese Anzahl von Token verarbeiten (Eingabe + Ausgabe).",

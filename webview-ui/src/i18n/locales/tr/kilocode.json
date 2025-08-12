@@ -60,6 +60,7 @@
 			"contextWindow": "Bağlam penceresi",
 			"pricingDetails": "Fiyatlandırma detayları",
 			"averageKiloCodeCost": "Ortalama Kilo Code maliyeti",
+			"averageKiloCodeCostDescription": "Bu, Kilo Code'un bu modeli kullanarak yaptığı ortalama gerçek harcamadır. Prompt önbellek kullanımı nedeniyle listelenen fiyattan daha düşük olabilir.",
 			"table": {
 				"provider": "Sağlayıcı",
 				"context": "Uç nokta bu sayıda token işleyebilir (giriş + çıkış).",

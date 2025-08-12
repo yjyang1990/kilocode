@@ -54,6 +54,7 @@
 			"contextWindow": "コンテキストウィンドウ",
 			"pricingDetails": "価格詳細",
 			"averageKiloCodeCost": "平均Kilo Codeコスト",
+			"averageKiloCodeCostDescription": "これは、このモデルを使用したKilo Codeの実際の平均支出です。プロンプトキャッシュの活用により、表示価格より安くなる場合があります。",
 			"table": {
 				"provider": "プロバイダー",
 				"context": "エンドポイントが処理できるトークン数（入力+出力）。",
