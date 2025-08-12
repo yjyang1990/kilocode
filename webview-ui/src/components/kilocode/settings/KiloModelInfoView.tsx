@@ -74,7 +74,7 @@ export const KiloModelInfoView = ({
 	setIsPricingExpanded: (isPricingExpanded: boolean) => void
 }) => {
 	const { t } = useAppTranslation()
-	const { data: modelStats } = useQuery<{ model: string; cost: number }[]>({
+	const { data: modelStats } = useQuery<{ model: string; cost: Intl.StringNumericLiteral | number }[]>({
 		queryKey: ["modelstats"],
 		queryFn: async () =>
 			(await fetch(`${getKiloBaseUriFromToken(apiConfiguration.kilocodeToken ?? "")}/api/modelstats`)).json(),
@@ -113,7 +113,7 @@ export const KiloModelInfoView = ({
 					<span className="font-medium">{t("settings:modelInfo.maxOutput")}:</span>{" "}
 					{model.maxTokens?.toLocaleString() ?? 0}
 				</div>
-				{typeof averageCost === "number" && (
+				{typeof averageCost !== "undefined" && (
 					<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCostDescription")}>
 						<div>
 							<span className="font-medium">{t("kilocode:settings.modelInfo.averageKiloCodeCost")}:</span>{" "}
