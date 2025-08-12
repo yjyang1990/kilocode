@@ -2135,7 +2135,8 @@ export const webviewMessageHandler = async (
 			try {
 				const { apiConfiguration } = await provider.getState()
 				// kilocode_change begin - Use organizationToken if available, otherwise use personal kilocodeToken
-				const kilocodeToken = apiConfiguration?.organizationToken || apiConfiguration?.kilocodeToken
+				const kilocodeToken =
+					message?.values?.apiKey || apiConfiguration?.organizationToken || apiConfiguration?.kilocodeToken
 				// kilocode_change end
 
 				if (!kilocodeToken) {

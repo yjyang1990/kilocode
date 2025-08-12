@@ -27,7 +27,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 	const [balance, setBalance] = React.useState<number | null>(null)
 	const [isLoadingBalance, setIsLoadingBalance] = React.useState(true)
 	const [isLoadingUser, setIsLoadingUser] = React.useState(true)
-	const [selectedOrgId, setSelectedOrgId] = useState<string>("personal")
+	const [selectedOrgId, setSelectedOrgId] = useState<string>(apiConfiguration?.organizationId ?? "personal")
 
 	useEffect(() => {
 		vscode.postMessage({
@@ -49,10 +49,14 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 					apiConfiguration: {
 						...apiConfiguration,
 						organizationToken: undefined,
+						organizationId: undefined,
 					},
 				})
 				vscode.postMessage({
 					type: "fetchBalanceDataRequest",
+					values: {
+						apiKey: apiConfiguration?.kilocodeToken,
+					},
 				})
 			} else {
 				const org = profileData.organizations?.find((o) => o.id === selectedOrgId)
@@ -63,6 +67,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 						apiConfiguration: {
 							...apiConfiguration,
 							organizationToken: org.apiKey,
+							organizationId: org.id,
 						},
 					})
 					vscode.postMessage({
@@ -92,12 +97,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 			} else if (message.type === "balanceDataResponse") {
 				const payload = message.payload as BalanceDataResponsePayload
 				if (payload.success) {
-					if (selectedOrgId !== "personal") {
-						const org = profileData?.organizations?.find((o) => o.id === selectedOrgId)
-						setBalance(org?.balance || payload.data?.balance || 0)
-					} else {
-						setBalance(payload.data?.balance || 0)
-					}
+					setBalance(payload.data?.balance || 0)
 				} else {
 					console.error("Error fetching balance data:", payload.error)
 					setBalance(null)
@@ -283,6 +283,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 																	},
 																})
 															} else {
+																// mayba pass kilocodeToken here in values
 																vscode.postMessage({ type: "fetchBalanceDataRequest" })
 															}
 														}}>
@@ -293,56 +294,58 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 										)}
 									</div>
 
-									{/* Buy Credits Section */}
-									<div className="w-full mt-8">
-										<div className="text-lg font-semibold text-[var(--vscode-foreground)] mb-4 text-center">
-											{t("kilocode:profile.shop.title")}
-										</div>
+									{/* Buy Credits Section - Only show for personal accounts */}
+									{selectedOrgId === "personal" && (
+										<div className="w-full mt-8">
+											<div className="text-lg font-semibold text-[var(--vscode-foreground)] mb-4 text-center">
+												{t("kilocode:profile.shop.title")}
+											</div>
 
-										<div className="grid grid-cols-1 min-[300px]:grid-cols-2 gap-3 mb-6">
-											{creditPackages.map((pkg) => (
-												<div
-													key={pkg.credits}
-													className={`relative border rounded-lg p-4 bg-[var(--vscode-editor-background)] transition-all hover:shadow-md ${
-														pkg.popular
-															? "border-[var(--vscode-button-background)] ring-1 ring-[var(--vscode-button-background)]"
-															: "border-[var(--vscode-input-border)]"
-													}`}>
-													{pkg.popular && (
-														<div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-															<span className="bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] text-xs px-2 py-1 rounded-full font-medium">
-																{t("kilocode:profile.shop.popular")}
-															</span>
-														</div>
-													)}
+											<div className="grid grid-cols-1 min-[300px]:grid-cols-2 gap-3 mb-6">
+												{creditPackages.map((pkg) => (
+													<div
+														key={pkg.credits}
+														className={`relative border rounded-lg p-4 bg-[var(--vscode-editor-background)] transition-all hover:shadow-md ${
+															pkg.popular
+																? "border-[var(--vscode-button-background)] ring-1 ring-[var(--vscode-button-background)]"
+																: "border-[var(--vscode-input-border)]"
+														}`}>
+														{pkg.popular && (
+															<div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+																<span className="bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] text-xs px-2 py-1 rounded-full font-medium">
+																	{t("kilocode:profile.shop.popular")}
+																</span>
+															</div>
+														)}
 
-													<div className="text-center">
-														<div className="text-2xl font-bold text-[var(--vscode-foreground)] mb-1">
-															${pkg.credits}
+														<div className="text-center">
+															<div className="text-2xl font-bold text-[var(--vscode-foreground)] mb-1">
+																${pkg.credits}
+															</div>
+															<div className="text-sm text-[var(--vscode-descriptionForeground)] mb-2">
+																{t("kilocode:profile.shop.credits")}
+															</div>
+															<VSCodeButton
+																appearance={pkg.popular ? "primary" : "secondary"}
+																className="w-full"
+																onClick={handleBuyCredits(pkg.credits)}>
+																{t("kilocode:profile.shop.action")}
+															</VSCodeButton>
 														</div>
-														<div className="text-sm text-[var(--vscode-descriptionForeground)] mb-2">
-															{t("kilocode:profile.shop.credits")}
-														</div>
-														<VSCodeButton
-															appearance={pkg.popular ? "primary" : "secondary"}
-															className="w-full"
-															onClick={handleBuyCredits(pkg.credits)}>
-															{t("kilocode:profile.shop.action")}
-														</VSCodeButton>
 													</div>
-												</div>
-											))}
-										</div>
+												))}
+											</div>
 
-										<div className="text-center">
-											<VSCodeButtonLink
-												href="https://kilocode.ai/profile"
-												appearance="secondary"
-												className="text-sm">
-												{t("kilocode:profile.shop.viewAll")}
-											</VSCodeButtonLink>
+											<div className="text-center">
+												<VSCodeButtonLink
+													href="https://kilocode.ai/profile"
+													appearance="secondary"
+													className="text-sm">
+													{t("kilocode:profile.shop.viewAll")}
+												</VSCodeButtonLink>
+											</div>
 										</div>
-									</div>
+									)}
 								</div>
 							</div>
 						) : (
