@@ -1,10 +1,12 @@
-import type { ModelInfo, ProviderName } from "@roo-code/types"
+import type { ModelInfo, ProviderSettings } from "@roo-code/types"
 import { formatPrice } from "@src/utils/formatPrice"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { ModelDescriptionMarkdown } from "../../settings/ModelDescriptionMarkdown"
 import { ModelInfoSupportsItem } from "@/components/settings/ModelInfoView"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, StandardTooltip } from "@/components/ui"
 import { FreeModelsInfoView } from "../FreeModelsLink"
+import { useQuery } from "@tanstack/react-query"
+import { getKiloBaseUriFromToken } from "@roo/kilocode/token"
 
 const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string })[] }) => {
 	const { t } = useAppTranslation()
@@ -53,7 +55,7 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 }
 
 export const KiloModelInfoView = ({
-	provider,
+	apiConfiguration,
 	modelId,
 	model,
 	providers,
@@ -62,7 +64,7 @@ export const KiloModelInfoView = ({
 	isPricingExpanded,
 	setIsPricingExpanded,
 }: {
-	provider?: ProviderName
+	apiConfiguration: ProviderSettings
 	modelId: string
 	model: ModelInfo
 	providers: (ModelInfo & { label: string })[]
@@ -72,6 +74,12 @@ export const KiloModelInfoView = ({
 	setIsPricingExpanded: (isPricingExpanded: boolean) => void
 }) => {
 	const { t } = useAppTranslation()
+	const { data: modelStats } = useQuery<{ model: string; cost: number }[]>({
+		queryKey: ["modelstats"],
+		queryFn: async () =>
+			(await fetch(`${getKiloBaseUriFromToken(apiConfiguration.kilocodeToken ?? "")}/api/modelstats`)).json(),
+	})
+	const averageCost = modelStats?.find((ms) => ms.model === modelId)?.cost
 
 	return (
 		<>
@@ -83,7 +91,7 @@ export const KiloModelInfoView = ({
 					setIsExpanded={setIsDescriptionExpanded}
 				/>
 			)}
-			{provider === "kilocode" && modelId.endsWith(":free") && (
+			{apiConfiguration.apiProvider === "kilocode" && modelId.endsWith(":free") && (
 				<FreeModelsInfoView modelId={modelId} origin="settings" />
 			)}
 			<div className="text-sm text-vscode-descriptionForeground">
@@ -105,6 +113,14 @@ export const KiloModelInfoView = ({
 					<span className="font-medium">{t("settings:modelInfo.maxOutput")}:</span>{" "}
 					{model.maxTokens?.toLocaleString() ?? 0}
 				</div>
+				{averageCost && (
+					<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCostDescription")}>
+						<div>
+							<span className="font-medium">{t("kilocode:settings.modelInfo.averageKiloCodeCost")}:</span>{" "}
+							{formatPrice(averageCost)}/M tokens
+						</div>
+					</StandardTooltip>
+				)}
 			</div>
 			<Collapsible open={isPricingExpanded} onOpenChange={setIsPricingExpanded}>
 				<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">

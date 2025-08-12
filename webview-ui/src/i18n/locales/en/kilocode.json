@@ -54,6 +54,7 @@
 			"contextWindow": "Context window",
 			"pricingDetails": "Pricing details",
 			"averageKiloCodeCost": "Average Kilo Code cost",
+			"averageKiloCodeCostDescription": "This is the average actual spent for Kilo Code using this model. It may be lower than the listed price due to prompt cache utilization.",
 			"table": {
 				"provider": "Provider",
 				"context": "The endpoint can process this number of tokens (input + output).",
