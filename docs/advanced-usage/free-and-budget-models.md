@@ -106,7 +106,7 @@ When you need more capability than free models provide, these options deliver ex
 
 **Start cheap, escalate when needed:**
 
-1. **Begin with free models** (Horizon Beta, Llama 3.1 8B)
+1. **Begin with free models** (Qwen3 Coder, GLM-4.5-Air)
 2. **Switch to budget models** if free models struggle
 3. **Escalate to premium models** only for complex tasks
 
@@ -136,7 +136,6 @@ When you need more capability than free models provide, these options deliver ex
 
 **Simple function creation:**
 
-- **Horizon Beta (Free):** 90% success rate
 - **Mistral Devstral Small:** 95% success rate
 - **GPT-4:** 98% success rate
 - **Cost difference:** Free vs $0.20 vs $30 per million tokens
@@ -167,7 +166,7 @@ When you need more capability than free models provide, these options deliver ex
 
 **Morning planning session:**
 
-- Use **Architect mode** with **Horizon Beta (free)**
+- Use **Architect mode** with **DeepSeek R1**
 - Plan features and architecture
 - Create task breakdowns
 
@@ -240,7 +239,6 @@ When you need more capability than free models provide, these options deliver ex
 1. **Create OpenRouter account** for free models
 2. **Configure multiple providers** in Kilo Code
 3. **Set up API Configuration Profiles** for easy switching
-4. **Start with Horizon Beta** for all tasks
 5. **Escalate to budget models** when needed
 6. **Reserve premium models** for complex work
 
