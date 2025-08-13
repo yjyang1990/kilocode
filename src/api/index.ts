@@ -28,7 +28,6 @@ import {
 	HumanRelayHandler,
 	FakeAIHandler,
 	XAIHandler,
-	BigModelHandler, // kilocode_change
 	GroqHandler,
 	HuggingFaceHandler,
 	ChutesHandler,
@@ -78,8 +77,14 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 	const { apiProvider, ...options } = configuration
 
 	switch (apiProvider) {
+		// kilocode_change start
 		case "kilocode":
 			return new KilocodeOpenrouterHandler(options)
+		case "gemini-cli":
+			return new GeminiCliHandler(options)
+		case "virtual-quota-fallback":
+			return new VirtualQuotaFallbackHandler(options)
+		// kilocode_change end
 		case "anthropic":
 			return new AnthropicHandler(options)
 		case "claude-code":
@@ -102,10 +107,6 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new LmStudioHandler(options)
 		case "gemini":
 			return new GeminiHandler(options)
-		// kilocode_change start
-		case "gemini-cli":
-			return new GeminiCliHandler(options)
-		// kilocode_change end
 		case "openai-native":
 			return new OpenAiNativeHandler(options)
 		case "deepseek":
@@ -126,12 +127,6 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new RequestyHandler(options)
 		case "human-relay":
 			return new HumanRelayHandler()
-		// kilocode_change start
-		case "virtual-quota-fallback":
-			return new VirtualQuotaFallbackHandler(options)
-		case "bigmodel":
-			return new BigModelHandler(options)
-		// kilocode_change end
 		case "fake-ai":
 			return new FakeAIHandler(options)
 		case "xai":
