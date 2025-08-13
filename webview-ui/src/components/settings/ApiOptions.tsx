@@ -392,6 +392,7 @@ const ApiOptions = ({
 			"virtual-quota-fallback",
 			"litellm",
 			"zai",
+			"qwen-code",
 		]
 
 		// Skip documentation link when the provider is excluded because documentation is not available
