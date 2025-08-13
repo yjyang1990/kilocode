@@ -84,6 +84,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 			apiConfiguration: {
 				...apiConfiguration,
 				kilocodeToken: "",
+				kilocodeOrganizationId: undefined,
 			},
 		})
 	}

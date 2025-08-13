@@ -2122,7 +2122,7 @@ export const webviewMessageHandler = async (
 				}
 
 				// Changed to /api/profile
-				const response = await axios.get("http://localhost:3000/api/profile", {
+				const response = await axios.get("https://kilocode.ai/api/profile", {
 					headers: {
 						Authorization: `Bearer ${kilocodeToken}`,
 						"Content-Type": "application/json",
@@ -2168,7 +2168,7 @@ export const webviewMessageHandler = async (
 					headers["X-KiloCode-OrganizationId"] = kilocodeOrganizationId
 				}
 
-				const response = await axios.get("http://localhost:3000/api/profile/balance", {
+				const response = await axios.get("https://kilocode.ai/api/profile/balance", {
 					// Original path for balance
 					headers,
 				})
