@@ -65,7 +65,7 @@
 		},
 		"modelInfo": {
 			"contextWindow": "上下文窗口",
-			"pricingDetails": "定价详情",
+			"providerBreakdown": "提供商价格和功能详情",
 			"averageKiloCodeCost": "Kilo Code 平均费用",
 			"averageKiloCodeCostDescription": "这是使用此模型时 Kilo Code 的实际平均费用。由于提示词缓存的使用，费用可能低于标准价格。",
 			"table": {

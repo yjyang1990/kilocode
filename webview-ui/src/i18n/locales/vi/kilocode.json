@@ -58,7 +58,7 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Cửa sổ ngữ cảnh",
-			"pricingDetails": "Chi tiết giá cả",
+			"providerBreakdown": "Phân tích Giá và Khả năng của Nhà cung cấp",
 			"averageKiloCodeCost": "Chi phí trung bình của Kilo Code",
 			"averageKiloCodeCostDescription": "Đây là chi phí thực tế trung bình cho Kilo Code khi sử dụng mô hình này. Chi phí này có thể thấp hơn giá niêm yết nhờ vào việc sử dụng bộ nhớ đệm prompt.",
 			"table": {
