@@ -1629,9 +1629,23 @@ export const webviewMessageHandler = async (
 			}
 			break
 		case "upsertApiConfiguration":
+			// kilocode_change start: check for kilocodeToken change to remove organizationId
 			if (message.text && message.apiConfiguration) {
-				await provider.upsertProviderProfile(message.text, message.apiConfiguration)
+				let configToSave = message.apiConfiguration
+				try {
+					const { ...currentConfig } = await provider.providerSettingsManager.getProfile({
+						name: message.text,
+					})
+					if (currentConfig.kilocodeToken !== message.apiConfiguration.kilocodeToken) {
+						configToSave = { ...message.apiConfiguration, kilocodeOrganizationId: undefined }
+					}
+				} catch (error) {
+					// Config might not exist yet, that's fine
+				}
+
+				await provider.upsertProviderProfile(message.text, configToSave)
 			}
+			// kilocode_change end
 			break
 		case "renameApiConfiguration":
 			if (message.values && message.apiConfiguration) {
@@ -2108,7 +2122,7 @@ export const webviewMessageHandler = async (
 				}
 
 				// Changed to /api/profile
-				const response = await axios.get("https://kilocode.ai/api/profile", {
+				const response = await axios.get("http://localhost:3000/api/profile", {
 					headers: {
 						Authorization: `Bearer ${kilocodeToken}`,
 						"Content-Type": "application/json",
@@ -2154,7 +2168,7 @@ export const webviewMessageHandler = async (
 					headers["X-KiloCode-OrganizationId"] = kilocodeOrganizationId
 				}
 
-				const response = await axios.get("https://kilocode.ai/api/profile/balance", {
+				const response = await axios.get("http://localhost:3000/api/profile/balance", {
 					// Original path for balance
 					headers,
 				})
