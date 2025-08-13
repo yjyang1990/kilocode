@@ -53,12 +53,9 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 		)
 	}
 
-	const selectedProvider = apiConfiguration.openRouterSpecificProvider
-	const selectedProviderIsInvalid =
-		selectedProvider &&
-		selectedProvider !== OPENROUTER_DEFAULT_PROVIDER_NAME &&
-		!providers.find((p) => p.label === selectedProvider)
-	const dataCollectionSelectDisabled = !selectedProvider
+	const specficProvider = apiConfiguration.openRouterSpecificProvider
+	const specificProviderIsSet = !!specficProvider && specficProvider !== OPENROUTER_DEFAULT_PROVIDER_NAME
+	const specificProviderIsInvalid = specificProviderIsSet && !providers.find((p) => p.label === specficProvider)
 
 	return (
 		<div className="flex flex-col gap-1">
@@ -66,7 +63,7 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 				<label className="block font-medium mb-1">Provider Routing</label>
 			</div>
 			<Select value={JSON.stringify(getProviderPreference(apiConfiguration))} onValueChange={onValueChange}>
-				<SelectTrigger className={cn("w-full", selectedProviderIsInvalid && "border-red-500 border-2")}>
+				<SelectTrigger className={cn("w-full", specificProviderIsInvalid && "border-destructive border-3")}>
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
@@ -83,9 +80,9 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 						{t("kilocode:settings.provider.providerRouting.sorting.latency")}
 					</ProviderSelectItem>
 					<SelectSeparator />
-					{selectedProviderIsInvalid && (
-						<ProviderSelectItem value={{ type: "specific", provider: selectedProvider }}>
-							{selectedProvider}
+					{specificProviderIsInvalid && (
+						<ProviderSelectItem value={{ type: "specific", provider: specficProvider }}>
+							{specficProvider}
 						</ProviderSelectItem>
 					)}
 					{providers.map((provider) => (
@@ -98,10 +95,11 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 				</SelectContent>
 			</Select>
 			<Select
-				value={selectedProvider ? "default" : (apiConfiguration.openRouterProviderDataCollection ?? "default")}
-				disabled={dataCollectionSelectDisabled}
+				value={
+					specificProviderIsSet ? "default" : (apiConfiguration.openRouterProviderDataCollection ?? "default")
+				}
 				onValueChange={(value) => {
-					if (dataCollectionSelectDisabled) {
+					if (specificProviderIsSet) {
 						return
 					}
 					setApiConfigurationField(
@@ -109,7 +107,7 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 						openRouterProviderDataCollectionSchema.safeParse(value).data,
 					)
 				}}>
-				<SelectTrigger className="w-full">
+				<SelectTrigger disabled={specificProviderIsSet} className="w-full">
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
