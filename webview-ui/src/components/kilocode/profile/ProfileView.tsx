@@ -1,5 +1,4 @@
-// import { useExtensionState } from "@/context/ExtensionStateContext" // No longer needed
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { vscode } from "@/utils/vscode"
 import {
 	BalanceDataResponsePayload,
@@ -8,13 +7,14 @@ import {
 	WebviewMessage,
 } from "@roo/WebviewMessage"
 import { VSCodeButtonLink } from "@/components/common/VSCodeButtonLink"
-import { VSCodeButton, VSCodeDivider, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeButton, VSCodeDivider } from "@vscode/webview-ui-toolkit/react"
 import CountUp from "react-countup"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { Tab, TabContent, TabHeader } from "@src/components/common/Tab"
 import { Button } from "@src/components/ui"
 import KiloCodeAuth from "../common/KiloCodeAuth"
+import { OrganizationSelector } from "../common/OrganizationSelector"
 
 interface ProfileViewProps {
 	onDone: () => void
@@ -27,7 +27,6 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 	const [balance, setBalance] = React.useState<number | null>(null)
 	const [isLoadingBalance, setIsLoadingBalance] = React.useState(true)
 	const [isLoadingUser, setIsLoadingUser] = React.useState(true)
-	const [selectedOrgId, setSelectedOrgId] = useState<string>(apiConfiguration?.organizationId ?? "personal")
 
 	useEffect(() => {
 		vscode.postMessage({
@@ -37,50 +36,6 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 			type: "fetchBalanceDataRequest",
 		})
 	}, [apiConfiguration?.kilocodeToken])
-
-	useEffect(() => {
-		if (profileData) {
-			setIsLoadingBalance(true)
-			if (selectedOrgId === "personal") {
-				// Switch back to personal account - clear organization token
-				vscode.postMessage({
-					type: "upsertApiConfiguration",
-					text: currentApiConfigName,
-					apiConfiguration: {
-						...apiConfiguration,
-						organizationToken: undefined,
-						organizationId: undefined,
-					},
-				})
-				vscode.postMessage({
-					type: "fetchBalanceDataRequest",
-					values: {
-						apiKey: apiConfiguration?.kilocodeToken,
-					},
-				})
-			} else {
-				const org = profileData.organizations?.find((o) => o.id === selectedOrgId)
-				if (org) {
-					vscode.postMessage({
-						type: "upsertApiConfiguration",
-						text: currentApiConfigName,
-						apiConfiguration: {
-							...apiConfiguration,
-							organizationToken: org.apiKey,
-							organizationId: org.id,
-						},
-					})
-					vscode.postMessage({
-						type: "fetchBalanceDataRequest",
-						values: {
-							apiKey: org.apiKey,
-						},
-					})
-				}
-			}
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedOrgId, profileData])
 
 	useEffect(() => {
 		const handleMessage = (event: MessageEvent<WebviewMessage>) => {
@@ -117,15 +72,9 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 		return () => {
 			window.removeEventListener("message", handleMessage)
 		}
-	}, [selectedOrgId, profileData])
+	}, [profileData])
 
 	const user = profileData?.user
-	const organizations = profileData?.organizations || []
-
-	const handleOrgChange = (e: any) => {
-		const newOrgId = e.target.value
-		setSelectedOrgId(newOrgId)
-	}
 
 	function handleLogout(): void {
 		console.info("Logging out...", apiConfiguration)
@@ -209,27 +158,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 										</div>
 									</div>
 
-									{/* Organization Dropdown */}
-									{organizations.length > 0 && (
-										<div className="mb-6">
-											<label className="text-sm text-[var(--vscode-descriptionForeground)] block mb-2">
-												{t("kilocode:profile.organization")}
-											</label>
-											<VSCodeDropdown
-												value={selectedOrgId}
-												onChange={handleOrgChange}
-												className="w-full">
-												<VSCodeOption value="personal">
-													{t("kilocode:profile.personal")}
-												</VSCodeOption>
-												{organizations.map((org) => (
-													<VSCodeOption key={org.id} value={org.id}>
-														{org.name} ({org.role.toUpperCase()})
-													</VSCodeOption>
-												))}
-											</VSCodeDropdown>
-										</div>
-									)}
+									<OrganizationSelector />
 								</div>
 
 								<div className="w-full flex gap-2 flex-col min-[225px]:flex-row">
@@ -271,21 +200,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 														className="mt-1"
 														onClick={() => {
 															setIsLoadingBalance(true)
-
-															if (selectedOrgId !== "personal") {
-																const org = profileData?.organizations?.find(
-																	(o) => o.id === selectedOrgId,
-																)
-																vscode.postMessage({
-																	type: "fetchBalanceDataRequest",
-																	values: {
-																		apiKey: org?.apiKey,
-																	},
-																})
-															} else {
-																// mayba pass kilocodeToken here in values
-																vscode.postMessage({ type: "fetchBalanceDataRequest" })
-															}
+															vscode.postMessage({ type: "fetchBalanceDataRequest" })
 														}}>
 														<span className="codicon codicon-refresh"></span>
 													</VSCodeButton>
@@ -295,7 +210,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 									</div>
 
 									{/* Buy Credits Section - Only show for personal accounts */}
-									{selectedOrgId === "personal" && (
+									{!apiConfiguration?.organizationId && (
 										<div className="w-full mt-8">
 											<div className="text-lg font-semibold text-[var(--vscode-foreground)] mb-4 text-center">
 												{t("kilocode:profile.shop.title")}
