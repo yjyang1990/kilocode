@@ -36,7 +36,6 @@ export const providerNames = [
 	// kilocode_change start
 	"kilocode",
 	"virtual-quota-fallback",
-	"bigmodel",
 	// kilocode_change end
 	"huggingface",
 	"cerebras",
@@ -338,7 +337,6 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	fakeAiSchema.merge(z.object({ apiProvider: z.literal("fake-ai") })),
 	xaiSchema.merge(z.object({ apiProvider: z.literal("xai") })),
 	// kilocode_change start
-	bigModelSchema.merge(z.object({ apiProvider: z.literal("bigmodel") })),
 	geminiCliSchema.merge(z.object({ apiProvider: z.literal("gemini-cli") })),
 	kilocodeSchema.merge(z.object({ apiProvider: z.literal("kilocode") })),
 	virtualQuotaFallbackSchema.merge(z.object({ apiProvider: z.literal("virtual-quota-fallback") })),
