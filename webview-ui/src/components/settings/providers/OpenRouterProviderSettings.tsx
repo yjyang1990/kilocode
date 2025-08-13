@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSe
 import { z } from "zod"
 import { safeJsonParse } from "@roo/safeJsonParse"
 import { useModelProviders } from "@/components/ui/hooks/useSelectedModel"
+import { cn } from "@/lib/utils"
 
 type ProviderPreference =
 	| {
@@ -65,7 +66,7 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 				<label className="block font-medium mb-1">Provider Routing</label>
 			</div>
 			<Select value={JSON.stringify(getProviderPreference(apiConfiguration))} onValueChange={onValueChange}>
-				<SelectTrigger className="w-full">
+				<SelectTrigger className={cn("w-full", selectedProviderIsInvalid && "border-red-500 border-2")}>
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
