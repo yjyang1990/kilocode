@@ -17,7 +17,7 @@
 		"costUnknown": "cost unknown",
 		"costUnknownDescription": "The API Provider did not provide any cost data or the request was canceled.",
 		"freeModelsDescription": "Free models may have rate limits. Use the link below to optimize your free model usage!",
-		"freeModelsLink": "Discover free model options"
+		"freeModelsLink": "Discover free and budget model options"
 	},
 	"notifications": {
 		"toolRequest": "Tool request waiting for approval",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Context window",
-			"pricingDetails": "Pricing details",
+			"providerBreakdown": "Provider Price and Capability Breakdown",
 			"averageKiloCodeCost": "Average Kilo Code cost",
-			"averageKiloCodeCostDescription": "This is the average actual spent for Kilo Code using this model. It may be lower than the listed price due to prompt cache utilization.",
+			"averageKiloCodeCostDescription": "This is the average actual spent for Kilo Code using this model over the last week. It may be lower than the listed price due to prompt cache utilization.",
 			"table": {
 				"provider": "Provider",
 				"context": "The endpoint can process this number of tokens (input + output).",

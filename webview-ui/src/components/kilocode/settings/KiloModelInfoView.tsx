@@ -125,7 +125,7 @@ export const KiloModelInfoView = ({
 			<Collapsible open={isPricingExpanded} onOpenChange={setIsPricingExpanded}>
 				<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">
 					<span className={`codicon codicon-chevron-${isPricingExpanded ? "down" : "right"}`}></span>
-					<span className="font-medium">{t("kilocode:settings.modelInfo.pricingDetails")}</span>
+					<span className="font-medium">{t("kilocode:settings.modelInfo.providerBreakdown")}</span>
 				</CollapsibleTrigger>
 				<CollapsibleContent className="space-y-3">
 					<PricingTable providers={providers} />
