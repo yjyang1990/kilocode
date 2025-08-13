@@ -274,8 +274,8 @@ async function getMorphConfiguration(
 		}
 	}
 
-	if (apiConfig.apiProvider === "kilocode" && (apiConfig.organizationToken || apiConfig.kilocodeToken)) {
-		const token = apiConfig.organizationToken || apiConfig.kilocodeToken
+	if (apiConfig.apiProvider === "kilocode" && apiConfig.kilocodeToken) {
+		const token = apiConfig.kilocodeToken
 		if (!token) {
 			return { available: false, error: "No KiloCode token available" }
 		}

@@ -25,7 +25,7 @@ export class KilocodeOpenrouterHandler extends OpenRouterHandler {
 		options = {
 			...options,
 			openRouterBaseUrl: `${baseUri}/api/openrouter/`,
-			openRouterApiKey: options.organizationToken || options.kilocodeToken,
+			openRouterApiKey: options.kilocodeToken,
 		}
 
 		super(options)
