@@ -8,6 +8,7 @@ import { FreeModelsInfoView } from "../FreeModelsLink"
 import { useQuery } from "@tanstack/react-query"
 import { getKiloBaseUriFromToken } from "@roo/kilocode/token"
 import { telemetryClient } from "@/utils/TelemetryClient"
+import { useModelProviders } from "@/components/ui/hooks/useSelectedModel"
 
 const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string })[] }) => {
 	const { t } = useAppTranslation()
@@ -59,7 +60,6 @@ export const KiloModelInfoView = ({
 	apiConfiguration,
 	modelId,
 	model,
-	providers,
 	isDescriptionExpanded,
 	setIsDescriptionExpanded,
 	isPricingExpanded,
@@ -68,13 +68,13 @@ export const KiloModelInfoView = ({
 	apiConfiguration: ProviderSettings
 	modelId: string
 	model: ModelInfo
-	providers: (ModelInfo & { label: string })[]
 	isDescriptionExpanded: boolean
 	setIsDescriptionExpanded: (isExpanded: boolean) => void
 	isPricingExpanded: boolean
 	setIsPricingExpanded: (isPricingExpanded: boolean) => void
 }) => {
 	const { t } = useAppTranslation()
+	const providers = Object.values(useModelProviders(apiConfiguration).data ?? {})
 	const { data: modelStats } = useQuery<{ model: string; cost: Intl.StringNumericLiteral | number }[]>({
 		queryKey: ["modelstats"],
 		queryFn: async () => {

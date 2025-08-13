@@ -6,7 +6,7 @@ import { ChevronsUpDown, Check, X } from "lucide-react"
 import type { ProviderSettings, ModelInfo, OrganizationAllowList } from "@roo-code/types"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
-import { useModelProviders, useSelectedModel } from "@/components/ui/hooks/useSelectedModel"
+import { useSelectedModel } from "@/components/ui/hooks/useSelectedModel"
 import { usePreferredModels } from "@/components/ui/hooks/kilocode/usePreferredModels" // kilocode_change
 // import { filterModels } from "./utils/organizationFilters" // kilocode_change: not doing this
 import { cn } from "@src/lib/utils"
@@ -74,7 +74,6 @@ export const ModelPicker = ({
 
 	// kilocode_change start
 	const modelIds = usePreferredModels(models)
-	const providers = Object.values(useModelProviders(apiConfiguration).data ?? {})
 	const [isPricingExpanded, setIsPricingExpanded] = useState(false)
 	// kilocode_change end
 
@@ -234,12 +233,11 @@ export const ModelPicker = ({
 			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
 			{selectedModelId &&
 				selectedModelInfo &&
-				(providers.length > 0 ? (
+				(apiConfiguration.apiProvider === "kilocode" || apiConfiguration.apiProvider === "openrouter" ? (
 					<KiloModelInfoView
 						apiConfiguration={apiConfiguration}
 						modelId={selectedModelId}
 						model={selectedModelInfo}
-						providers={Object.values(providers)}
 						isDescriptionExpanded={isDescriptionExpanded}
 						setIsDescriptionExpanded={setIsDescriptionExpanded}
 						isPricingExpanded={isPricingExpanded}
