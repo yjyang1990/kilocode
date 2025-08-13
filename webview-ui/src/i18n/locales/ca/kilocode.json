@@ -17,7 +17,7 @@
 		"costUnknown": "cost desconegut",
 		"costUnknownDescription": "El proveïdor de l'API no va proporcionar cap dada de cost o la sol·licitud va ser cancel·lada.",
 		"freeModelsDescription": "Els models gratuïts poden tenir límits de velocitat. Utilitza l'enllaç de sota per optimitzar l'ús dels models gratuïts!",
-		"freeModelsLink": "Descobreix les opcions de models gratuïts"
+		"freeModelsLink": "Descobreix les opcions de models gratuïts i econòmics"
 	},
 	"notifications": {
 		"toolRequest": "Sol·licitud d'eina pendent d'aprovació",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Finestra de context",
-			"pricingDetails": "Detalls de preus",
+			"providerBreakdown": "Desglossament de preus i capacitats del proveïdor",
 			"averageKiloCodeCost": "Cost mitjà de Kilo Code",
-			"averageKiloCodeCostDescription": "Aquest és el cost real mitjà gastat per Kilo Code utilitzant aquest model. Pot ser inferior al preu llistat a causa de la utilització de la memòria cau de prompts.",
+			"averageKiloCodeCostDescription": "Aquest és el cost real mitjà gastat per Kilo Code utilitzant aquest model durant la darrera setmana. Pot ser inferior al preu llistat a causa de la utilització de la memòria cau de prompts.",
 			"table": {
 				"provider": "Proveïdor",
 				"context": "L'endpoint pot processar aquest nombre de tokens (entrada + sortida).",

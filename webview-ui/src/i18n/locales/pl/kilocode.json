@@ -17,7 +17,7 @@
 		"costUnknown": "koszt nieznany",
 		"costUnknownDescription": "Dostawca API nie podał żadnych danych o kosztach lub żądanie zostało anulowane.",
 		"freeModelsDescription": "Darmowe modele mogą mieć limity użycia. Użyj poniższego linku, aby zoptymalizować wykorzystanie darmowych modeli!",
-		"freeModelsLink": "Odkryj opcje darmowych modeli"
+		"freeModelsLink": "Odkryj opcje darmowych modeli i modeli budżetowych"
 	},
 	"notifications": {
 		"toolRequest": "Żądanie narzędzia oczekuje na zatwierdzenie",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Okno kontekstu",
-			"pricingDetails": "Szczegóły cenowe",
+			"providerBreakdown": "Zestawienie Cen i Możliwości Dostawcy",
 			"averageKiloCodeCost": "Średni koszt Kilo Code",
-			"averageKiloCodeCostDescription": "To jest średni rzeczywisty koszt za korzystanie z Kilo Code z tym modelem. Może być niższy niż podana cena ze względu na wykorzystanie pamięci podręcznej promptów.",
+			"averageKiloCodeCostDescription": "To jest średni rzeczywisty koszt za korzystanie z Kilo Code z tym modelem w ciągu ostatniego tygodnia. Może być niższy niż podana cena ze względu na wykorzystanie pamięci podręcznej promptów.",
 			"table": {
 				"provider": "Dostawca",
 				"context": "Punkt końcowy może przetworzyć tę liczbę tokenów (wejście + wyjście).",

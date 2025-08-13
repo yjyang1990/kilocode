@@ -17,7 +17,7 @@
 		"costUnknown": "kosten onbekend",
 		"costUnknownDescription": "De API-provider heeft geen kostengegevens verstrekt of het verzoek is geannuleerd.",
 		"freeModelsDescription": "Gratis modellen kunnen snelheidslimieten hebben. Gebruik de link hieronder om je gebruik van gratis modellen te optimaliseren!",
-		"freeModelsLink": "Ontdek gratis modelopties"
+		"freeModelsLink": "Ontdek gratis en budget modelopties"
 	},
 	"notifications": {
 		"toolRequest": "Toolverzoek wacht op goedkeuring",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Context venster",
-			"pricingDetails": "Prijsinformatie",
+			"providerBreakdown": "Provider Prijs en Capaciteit Overzicht",
 			"averageKiloCodeCost": "Gemiddelde Kilo Code kosten",
-			"averageKiloCodeCostDescription": "Dit zijn de gemiddelde daadwerkelijke kosten voor Kilo Code bij gebruik van dit model. Deze kunnen lager zijn dan de vermelde prijs door gebruik van prompt cache.",
+			"averageKiloCodeCostDescription": "Dit zijn de gemiddelde daadwerkelijke kosten voor Kilo Code bij gebruik van dit model over de afgelopen week. Deze kunnen lager zijn dan de vermelde prijs door gebruik van prompt cache.",
 			"table": {
 				"provider": "Provider",
 				"context": "Het eindpunt kan dit aantal tokens verwerken (input + output).",

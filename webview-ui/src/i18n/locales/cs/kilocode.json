@@ -17,7 +17,7 @@
 		"costUnknown": "neznámé náklady",
 		"costUnknownDescription": "Poskytovatel API neposkytl žádné údaje o nákladech nebo byl požadavek zrušen.",
 		"freeModelsDescription": "Bezplatné modely mohou mít limity na počet požadavků. Použij odkaz níže pro optimalizaci využití bezplatných modelů!",
-		"freeModelsLink": "Objevte možnosti bezplatných modelů"
+		"freeModelsLink": "Objevte možnosti bezplatných a rozpočtových modelů"
 	},
 	"notifications": {
 		"toolRequest": "Požadavek na nástroj čeká na schválení",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Kontextové okno",
-			"pricingDetails": "Podrobnosti o cenách",
+			"providerBreakdown": "Rozpis cen a schopností poskytovatelů",
 			"averageKiloCodeCost": "Průměrné náklady Kilo Code",
-			"averageKiloCodeCostDescription": "Toto jsou průměrné skutečné náklady za použití tohoto modelu v Kilo Code. Může být nižší než uvedená cena díky využití cache pro prompty.",
+			"averageKiloCodeCostDescription": "Toto jsou průměrné skutečné náklady za použití tohoto modelu v Kilo Code za poslední týden. Může být nižší než uvedená cena díky využití cache pro prompty.",
 			"table": {
 				"provider": "Poskytovatel",
 				"context": "Endpoint může zpracovat tento počet tokenů (vstup + výstup).",

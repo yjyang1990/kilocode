@@ -17,7 +17,7 @@
 		"costUnknown": "コスト不明",
 		"costUnknownDescription": "APIプロバイダーがコストデータを提供しなかったか、リクエストがキャンセルされました。",
 		"freeModelsDescription": "無料モデルにはレート制限がある場合があります。下のリンクを使って無料モデルの使用を最適化しよう！",
-		"freeModelsLink": "無料モデルのオプションを見る"
+		"freeModelsLink": "無料・格安モデルのオプションを見る"
 	},
 	"notifications": {
 		"toolRequest": "ツールのリクエストが承認待ちです",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "コンテキストウィンドウ",
-			"pricingDetails": "価格詳細",
+			"providerBreakdown": "プロバイダー価格・機能詳細",
 			"averageKiloCodeCost": "平均Kilo Codeコスト",
-			"averageKiloCodeCostDescription": "これは、このモデルを使用したKilo Codeの実際の平均支出です。プロンプトキャッシュの活用により、表示価格より安くなる場合があります。",
+			"averageKiloCodeCostDescription": "これは、過去1週間のこのモデルを使用したKilo Codeの実際の平均支出です。プロンプトキャッシュの活用により、表示価格より安くなる場合があります。",
 			"table": {
 				"provider": "プロバイダー",
 				"context": "エンドポイントが処理できるトークン数（入力+出力）。",

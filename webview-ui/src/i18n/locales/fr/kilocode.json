@@ -17,7 +17,7 @@
 		"costUnknown": "coût inconnu",
 		"costUnknownDescription": "Le fournisseur d'API n'a pas fourni de données de coût ou la demande a été annulée.",
 		"freeModelsDescription": "Les modèles gratuits peuvent avoir des limites de débit. Utilisez le lien ci-dessous pour optimiser votre utilisation des modèles gratuits !",
-		"freeModelsLink": "Découvrir les options de modèles gratuits"
+		"freeModelsLink": "Découvrir les options de modèles gratuits et économiques"
 	},
 	"notifications": {
 		"toolRequest": "Demande d'outil en attente d'approbation",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Fenêtre de contexte",
-			"pricingDetails": "Détails de tarification",
+			"providerBreakdown": "Répartition des prix et capacités par fournisseur",
 			"averageKiloCodeCost": "Coût moyen Kilo Code",
-			"averageKiloCodeCostDescription": "Il s'agit de la dépense réelle moyenne pour Kilo Code utilisant ce modèle. Elle peut être inférieure au prix affiché en raison de l'utilisation du cache de prompts.",
+			"averageKiloCodeCostDescription": "Il s'agit de la dépense réelle moyenne pour Kilo Code utilisant ce modèle au cours de la semaine dernière. Elle peut être inférieure au prix affiché en raison de l'utilisation du cache de prompts.",
 			"table": {
 				"provider": "Fournisseur",
 				"context": "Le point de terminaison peut traiter ce nombre de tokens (entrée + sortie).",

@@ -17,7 +17,7 @@
 		"costUnknown": "costo sconosciuto",
 		"costUnknownDescription": "Il Provider API non ha fornito dati sui costi o la richiesta è stata annullata.",
 		"freeModelsDescription": "I modelli gratuiti potrebbero avere limiti di utilizzo. Usa il link qui sotto per ottimizzare l'uso dei modelli gratuiti!",
-		"freeModelsLink": "Scopri le opzioni dei modelli gratuiti"
+		"freeModelsLink": "Scopri le opzioni dei modelli gratuiti e a budget"
 	},
 	"notifications": {
 		"toolRequest": "Richiesta strumento in attesa di approvazione",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Finestra di contesto",
-			"pricingDetails": "Dettagli dei prezzi",
+			"providerBreakdown": "Ripartizione Prezzi e Funzionalità dei Provider",
 			"averageKiloCodeCost": "Costo medio Kilo Code",
-			"averageKiloCodeCostDescription": "Questo è il costo medio effettivo sostenuto da Kilo Code utilizzando questo modello. Potrebbe essere inferiore al prezzo indicato grazie all'utilizzo della cache dei prompt.",
+			"averageKiloCodeCostDescription": "Questo è il costo medio effettivo sostenuto da Kilo Code utilizzando questo modello nell'ultima settimana. Potrebbe essere inferiore al prezzo indicato grazie all'utilizzo della cache dei prompt.",
 			"table": {
 				"provider": "Provider",
 				"context": "L'endpoint può elaborare questo numero di token (input + output).",

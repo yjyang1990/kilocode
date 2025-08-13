@@ -17,7 +17,7 @@
 		"costUnknown": "maliyet bilinmiyor",
 		"costUnknownDescription": "API Sağlayıcısı herhangi bir maliyet verisi sağlamadı veya istek iptal edildi.",
 		"freeModelsDescription": "Ücretsiz modellerin hız limitleri olabilir. Ücretsiz model kullanımını optimize etmek için aşağıdaki bağlantıyı kullan!",
-		"freeModelsLink": "Ücretsiz model seçeneklerini keşfet"
+		"freeModelsLink": "Ücretsiz ve bütçe dostu model seçeneklerini keşfet"
 	},
 	"notifications": {
 		"toolRequest": "Araç isteği onay bekliyor",
@@ -58,9 +58,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Bağlam penceresi",
-			"pricingDetails": "Fiyatlandırma detayları",
+			"providerBreakdown": "Sağlayıcı Fiyat ve Yetenek Dökümü",
 			"averageKiloCodeCost": "Ortalama Kilo Code maliyeti",
-			"averageKiloCodeCostDescription": "Bu, Kilo Code'un bu modeli kullanarak yaptığı ortalama gerçek harcamadır. Prompt önbellek kullanımı nedeniyle listelenen fiyattan daha düşük olabilir.",
+			"averageKiloCodeCostDescription": "Bu, Kilo Code'un bu modeli kullanarak geçtiğimiz hafta boyunca yaptığı ortalama gerçek harcamadır. Prompt önbellek kullanımı nedeniyle listelenen fiyattan daha düşük olabilir.",
 			"table": {
 				"provider": "Sağlayıcı",
 				"context": "Uç nokta bu sayıda token işleyebilir (giriş + çıkış).",

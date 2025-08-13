@@ -17,7 +17,7 @@
 		"costUnknown": "biaya tidak diketahui",
 		"costUnknownDescription": "Penyedia API tidak memberikan data biaya atau permintaan dibatalkan.",
 		"freeModelsDescription": "Model gratis mungkin memiliki batas penggunaan. Gunakan tautan di bawah ini untuk mengoptimalkan penggunaan model gratis kamu!",
-		"freeModelsLink": "Temukan opsi model gratis"
+		"freeModelsLink": "Temukan opsi model gratis dan hemat biaya"
 	},
 	"notifications": {
 		"toolRequest": "Permintaan tool menunggu persetujuan",
@@ -52,9 +52,9 @@
 		},
 		"modelInfo": {
 			"contextWindow": "Jendela konteks",
-			"pricingDetails": "Detail harga",
+			"providerBreakdown": "Rincian Harga dan Kemampuan Penyedia",
 			"averageKiloCodeCost": "Rata-rata biaya Kilo Code",
-			"averageKiloCodeCostDescription": "Ini adalah rata-rata biaya aktual yang dihabiskan Kilo Code menggunakan model ini. Biaya ini mungkin lebih rendah dari harga yang tercantum karena pemanfaatan cache prompt.",
+			"averageKiloCodeCostDescription": "Ini adalah rata-rata biaya aktual yang dihabiskan Kilo Code menggunakan model ini selama seminggu terakhir. Biaya ini mungkin lebih rendah dari harga yang tercantum karena pemanfaatan cache prompt.",
 			"table": {
 				"provider": "Penyedia",
 				"context": "Endpoint dapat memproses jumlah token ini (input + output).",
