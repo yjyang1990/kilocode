@@ -7,6 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger, StandardTooltip } 
 import { FreeModelsInfoView } from "../FreeModelsLink"
 import { useQuery } from "@tanstack/react-query"
 import { getKiloBaseUriFromToken } from "@roo/kilocode/token"
+import { telemetryClient } from "@/utils/TelemetryClient"
 
 const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string })[] }) => {
 	const { t } = useAppTranslation()
@@ -76,8 +77,18 @@ export const KiloModelInfoView = ({
 	const { t } = useAppTranslation()
 	const { data: modelStats } = useQuery<{ model: string; cost: Intl.StringNumericLiteral | number }[]>({
 		queryKey: ["modelstats"],
-		queryFn: async () =>
-			(await fetch(`${getKiloBaseUriFromToken(apiConfiguration.kilocodeToken ?? "")}/api/modelstats`)).json(),
+		queryFn: async () => {
+			try {
+				return (
+					await fetch(`${getKiloBaseUriFromToken(apiConfiguration.kilocodeToken ?? "")}/api/modelstats`)
+				).json()
+			} catch (err) {
+				if (err instanceof Error) {
+					telemetryClient.captureException(err, { context: "modelstats" })
+				}
+				throw err
+			}
+		},
 	})
 	const averageCost = modelStats?.find((ms) => ms.model === modelId)?.cost
 
