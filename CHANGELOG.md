@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.25.14
+
+### Patch Changes
+
+-   - Fix: Only include verbosity parameter for models that support it (#7054 by @eastonmeth, PR by @app/roomote)
+
 ## [3.25.13] - 2025-08-12
 
 - Add Sonnet 1M context checkbox to Bedrock
