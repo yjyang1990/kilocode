@@ -66,9 +66,9 @@ export const useModelProviders = (apiConfiguration?: ProviderSettings) => {
 	const provider = apiConfiguration?.apiProvider
 	return useOpenRouterModelProviders(
 		provider === "kilocode"
-			? apiConfiguration?.kilocodeModel
+			? (apiConfiguration?.kilocodeModel ?? kilocodeDefaultModelId)
 			: provider === "openrouter"
-				? apiConfiguration?.openRouterModelId
+				? (apiConfiguration?.openRouterModelId ?? openRouterDefaultModelId)
 				: undefined,
 		provider === "openrouter" ? apiConfiguration?.openRouterBaseUrl : undefined,
 	)

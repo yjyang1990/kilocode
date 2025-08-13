@@ -6,7 +6,28 @@ import {
 } from "@roo-code/types"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from "@src/components/ui"
+import { z } from "zod"
+import { safeJsonParse } from "@roo/safeJsonParse"
+import { useModelProviders } from "@/components/ui/hooks/useSelectedModel"
+
+type ProviderPreference =
+	| {
+			type: "default" | z.infer<typeof openRouterProviderSortSchema>
+	  }
+	| {
+			type: "specific"
+			provider: string
+	  }
+
+const ProviderSelectItem = ({ value, children }: { value: ProviderPreference; children: React.ReactNode }) => {
+	return <SelectItem value={JSON.stringify(value)}>{children}</SelectItem>
+}
+
+const getProviderPreference = (apiConfiguration: ProviderSettings): ProviderPreference =>
+	apiConfiguration.openRouterSpecificProvider
+		? { type: "specific", provider: apiConfiguration.openRouterSpecificProvider }
+		: { type: apiConfiguration.openRouterProviderSort ?? "default" }
 
 interface Props {
 	apiConfiguration: ProviderSettings
@@ -15,36 +36,50 @@ interface Props {
 
 export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurationField }: Props) => {
 	const { t } = useAppTranslation()
+	const providers = Object.values(useModelProviders(apiConfiguration).data ?? {})
+
+	const onValueChange = (value: string) => {
+		const preference = safeJsonParse<ProviderPreference>(value)
+		setApiConfigurationField(
+			"openRouterProviderSort",
+			openRouterProviderSortSchema.safeParse(preference?.type).data,
+		)
+		setApiConfigurationField(
+			"openRouterSpecificProvider",
+			preference?.type === "specific" ? preference.provider : undefined,
+		)
+	}
 
 	return (
 		<div className="flex flex-col gap-1">
 			<div className="flex justify-between items-center">
 				<label className="block font-medium mb-1">Provider Routing</label>
 			</div>
-			<Select
-				value={apiConfiguration.openRouterProviderSort ?? "default"}
-				onValueChange={(value) =>
-					setApiConfigurationField(
-						"openRouterProviderSort",
-						openRouterProviderSortSchema.safeParse(value).data,
-					)
-				}>
+			<Select value={JSON.stringify(getProviderPreference(apiConfiguration))} onValueChange={onValueChange}>
 				<SelectTrigger className="w-full">
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="default">
+					<ProviderSelectItem value={{ type: "default" }}>
 						{t("kilocode:settings.provider.providerRouting.sorting.default")}
-					</SelectItem>
-					<SelectItem value={openRouterProviderSortSchema.Values.price}>
+					</ProviderSelectItem>
+					<ProviderSelectItem value={{ type: openRouterProviderSortSchema.Values.price }}>
 						{t("kilocode:settings.provider.providerRouting.sorting.price")}
-					</SelectItem>
-					<SelectItem value={openRouterProviderSortSchema.Values.throughput}>
+					</ProviderSelectItem>
+					<ProviderSelectItem value={{ type: openRouterProviderSortSchema.Values.throughput }}>
 						{t("kilocode:settings.provider.providerRouting.sorting.throughput")}
-					</SelectItem>
-					<SelectItem value={openRouterProviderSortSchema.Values.latency}>
+					</ProviderSelectItem>
+					<ProviderSelectItem value={{ type: openRouterProviderSortSchema.Values.latency }}>
 						{t("kilocode:settings.provider.providerRouting.sorting.latency")}
-					</SelectItem>
+					</ProviderSelectItem>
+					<SelectSeparator />
+					{providers.map((provider) => (
+						<ProviderSelectItem
+							key={`specific:${provider.label}`}
+							value={{ type: "specific", provider: provider.label }}>
+							{provider.label}
+						</ProviderSelectItem>
+					))}
 				</SelectContent>
 			</Select>
 			<Select
