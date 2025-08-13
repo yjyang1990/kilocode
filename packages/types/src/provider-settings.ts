@@ -241,12 +241,6 @@ const xaiSchema = apiModelIdProviderModelSchema.extend({
 	xaiApiKey: z.string().optional(),
 })
 
-// kilocode_change start
-const bigModelSchema = apiModelIdProviderModelSchema.extend({
-	bigModelApiKey: z.string().optional(),
-})
-// kilocode_change end
-
 const groqSchema = apiModelIdProviderModelSchema.extend({
 	groqApiKey: z.string().optional(),
 })
@@ -368,7 +362,6 @@ export const providerSettingsSchema = z.object({
 	// kilocode_change start
 	...geminiCliSchema.shape,
 	...kilocodeSchema.shape,
-	...bigModelSchema.shape,
 	...virtualQuotaFallbackSchema.shape,
 	// kilocode_change end
 	...openAiNativeSchema.shape,
