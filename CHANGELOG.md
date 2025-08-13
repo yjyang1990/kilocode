@@ -1,10 +1,10 @@
 # Roo Code Changelog
 
-## 3.25.14
+## [3.25.14] - 2025-08-13
 
-### Patch Changes
-
--   - Fix: Only include verbosity parameter for models that support it (#7054 by @eastonmeth, PR by @app/roomote)
+- Fix: Only include verbosity parameter for models that support it (#7054 by @eastonmeth, PR by @app/roomote)
+- Fix: AWS Bedrock 1M context - Move anthropic_beta to additionalModelRequestFields (thanks @daniel-lxs!)
+- Fix: Make cancelling requests more responsive by reverting recent changes
 
 ## [3.25.13] - 2025-08-12
 
