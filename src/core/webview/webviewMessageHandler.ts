@@ -2134,7 +2134,7 @@ export const webviewMessageHandler = async (
 		case "fetchBalanceDataRequest": // New handler
 			try {
 				const { apiConfiguration } = await provider.getState()
-				const { kilocodeToken, organizationId } = apiConfiguration ?? {}
+				const { kilocodeToken, kilocodeOrganizationId } = apiConfiguration ?? {}
 
 				if (!kilocodeToken) {
 					provider.log("KiloCode token not found in extension state for balance data.")
@@ -2150,8 +2150,8 @@ export const webviewMessageHandler = async (
 					"Content-Type": "application/json",
 				}
 
-				if (organizationId) {
-					headers["X-KiloCode-OrganizationId"] = organizationId
+				if (kilocodeOrganizationId) {
+					headers["X-KiloCode-OrganizationId"] = kilocodeOrganizationId
 				}
 
 				const response = await axios.get("https://kilocode.ai/api/profile/balance", {

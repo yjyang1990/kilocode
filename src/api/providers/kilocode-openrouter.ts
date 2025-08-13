@@ -39,10 +39,10 @@ export class KilocodeOpenrouterHandler extends OpenRouterHandler {
 		}
 
 		// Cast to access kilocode-specific properties
-		const kilocodeOptions = this.options as ApiHandlerOptions & { organizationId?: string }
+		const kilocodeOptions = this.options as ApiHandlerOptions
 
-		if (kilocodeOptions.organizationId) {
-			headers["X-KiloCode-OrganizationId"] = kilocodeOptions.organizationId
+		if (kilocodeOptions.kilocodeOrganizationId) {
+			headers["X-KiloCode-OrganizationId"] = kilocodeOptions.kilocodeOrganizationId
 		}
 
 		return Object.keys(headers).length > 0 ? { headers } : undefined

@@ -8,7 +8,7 @@ import { ProfileDataResponsePayload, WebviewMessage, UserOrganizationWithApiKey 
 export const OrganizationSelector = () => {
 	const [organizations, setOrganizations] = useState<UserOrganizationWithApiKey[]>([])
 	const { apiConfiguration, currentApiConfigName } = useExtensionState()
-	const [selectedOrgId, setSelectedOrgId] = useState<string>(apiConfiguration?.organizationId ?? "personal")
+	const [selectedOrgId, setSelectedOrgId] = useState<string>(apiConfiguration?.kilocodeOrganizationId ?? "personal")
 	const { t } = useAppTranslation()
 
 	useEffect(() => {
@@ -51,7 +51,7 @@ export const OrganizationSelector = () => {
 				text: currentApiConfigName,
 				apiConfiguration: {
 					...apiConfiguration,
-					organizationId: undefined,
+					kilocodeOrganizationId: undefined,
 				},
 			})
 			vscode.postMessage({
@@ -68,7 +68,7 @@ export const OrganizationSelector = () => {
 					text: currentApiConfigName,
 					apiConfiguration: {
 						...apiConfiguration,
-						organizationId: org.id,
+						kilocodeOrganizationId: org.id,
 					},
 				})
 				vscode.postMessage({

@@ -35,7 +35,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 		vscode.postMessage({
 			type: "fetchBalanceDataRequest",
 		})
-	}, [apiConfiguration?.kilocodeToken, apiConfiguration?.organizationId])
+	}, [apiConfiguration?.kilocodeToken, apiConfiguration?.kilocodeOrganizationId])
 
 	useEffect(() => {
 		const handleMessage = (event: MessageEvent<WebviewMessage>) => {
@@ -210,7 +210,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ onDone }) => {
 									</div>
 
 									{/* Buy Credits Section - Only show for personal accounts */}
-									{!apiConfiguration?.organizationId && (
+									{!apiConfiguration?.kilocodeOrganizationId && (
 										<div className="w-full mt-8">
 											<div className="text-lg font-semibold text-[var(--vscode-foreground)] mb-4 text-center">
 												{t("kilocode:profile.shop.title")}
