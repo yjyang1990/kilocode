@@ -6,6 +6,7 @@ import pWaitFor from "p-wait-for"
 import * as vscode from "vscode"
 import axios from "axios" // kilocode_change
 import * as yaml from "yaml"
+import { getKiloBaseUriFromToken } from "../../utils/kilocode-token"
 
 import {
 	type Language,
@@ -2122,7 +2123,7 @@ export const webviewMessageHandler = async (
 				}
 
 				// Changed to /api/profile
-				const response = await axios.get("https://kilocode.ai/api/profile", {
+				const response = await axios.get(`${getKiloBaseUriFromToken(kilocodeToken)}/api/profile`, {
 					headers: {
 						Authorization: `Bearer ${kilocodeToken}`,
 						"Content-Type": "application/json",
@@ -2168,7 +2169,7 @@ export const webviewMessageHandler = async (
 					headers["X-KiloCode-OrganizationId"] = kilocodeOrganizationId
 				}
 
-				const response = await axios.get("https://kilocode.ai/api/profile/balance", {
+				const response = await axios.get(`${getKiloBaseUriFromToken(kilocodeToken)}/api/profile/balance`, {
 					// Original path for balance
 					headers,
 				})
