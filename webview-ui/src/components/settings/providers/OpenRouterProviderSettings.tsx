@@ -3,6 +3,7 @@ import {
 	type ProviderSettings,
 	openRouterProviderSortSchema,
 	openRouterProviderDataCollectionSchema,
+	OPENROUTER_DEFAULT_PROVIDER_NAME,
 } from "@roo-code/types"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
@@ -25,7 +26,8 @@ const ProviderSelectItem = ({ value, children }: { value: ProviderPreference; ch
 }
 
 const getProviderPreference = (apiConfiguration: ProviderSettings): ProviderPreference =>
-	apiConfiguration.openRouterSpecificProvider
+	apiConfiguration.openRouterSpecificProvider &&
+	apiConfiguration.openRouterSpecificProvider !== OPENROUTER_DEFAULT_PROVIDER_NAME
 		? { type: "specific", provider: apiConfiguration.openRouterSpecificProvider }
 		: { type: apiConfiguration.openRouterProviderSort ?? "default" }
 
@@ -46,9 +48,16 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 		)
 		setApiConfigurationField(
 			"openRouterSpecificProvider",
-			preference?.type === "specific" ? preference.provider : undefined,
+			preference?.type === "specific" ? preference.provider : OPENROUTER_DEFAULT_PROVIDER_NAME,
 		)
 	}
+
+	const selectedProvider = apiConfiguration.openRouterSpecificProvider
+	const selectedProviderIsInvalid =
+		selectedProvider &&
+		selectedProvider !== OPENROUTER_DEFAULT_PROVIDER_NAME &&
+		!providers.find((p) => p.label === selectedProvider)
+	const dataCollectionSelectDisabled = !selectedProvider
 
 	return (
 		<div className="flex flex-col gap-1">
@@ -73,6 +82,11 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 						{t("kilocode:settings.provider.providerRouting.sorting.latency")}
 					</ProviderSelectItem>
 					<SelectSeparator />
+					{selectedProviderIsInvalid && (
+						<ProviderSelectItem value={{ type: "specific", provider: selectedProvider }}>
+							{selectedProvider}
+						</ProviderSelectItem>
+					)}
 					{providers.map((provider) => (
 						<ProviderSelectItem
 							key={`specific:${provider.label}`}
@@ -83,13 +97,17 @@ export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurati
 				</SelectContent>
 			</Select>
 			<Select
-				value={apiConfiguration.openRouterProviderDataCollection ?? "default"}
-				onValueChange={(value) =>
+				value={selectedProvider ? "default" : (apiConfiguration.openRouterProviderDataCollection ?? "default")}
+				disabled={dataCollectionSelectDisabled}
+				onValueChange={(value) => {
+					if (dataCollectionSelectDisabled) {
+						return
+					}
 					setApiConfigurationField(
 						"openRouterProviderDataCollection",
 						openRouterProviderDataCollectionSchema.safeParse(value).data,
 					)
-				}>
+				}}>
 				<SelectTrigger className="w-full">
 					<SelectValue />
 				</SelectTrigger>
