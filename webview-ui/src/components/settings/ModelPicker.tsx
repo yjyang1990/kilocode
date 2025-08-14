@@ -231,27 +231,31 @@ export const ModelPicker = ({
 				</Popover>
 			</div>
 			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
-			{selectedModelId &&
-				selectedModelInfo &&
-				(apiConfiguration.apiProvider === "kilocode" || apiConfiguration.apiProvider === "openrouter" ? (
-					<KiloModelInfoView
-						apiConfiguration={apiConfiguration}
-						modelId={selectedModelId}
-						model={selectedModelInfo}
-						isDescriptionExpanded={isDescriptionExpanded}
-						setIsDescriptionExpanded={setIsDescriptionExpanded}
-						isPricingExpanded={isPricingExpanded}
-						setIsPricingExpanded={setIsPricingExpanded}
-					/>
-				) : (
-					<ModelInfoView
-						apiProvider={apiConfiguration.apiProvider}
-						selectedModelId={selectedModelId}
-						modelInfo={selectedModelInfo}
-						isDescriptionExpanded={isDescriptionExpanded}
-						setIsDescriptionExpanded={setIsDescriptionExpanded}
-					/>
-				))}
+			{
+				// kilocode_change start
+				selectedModelId &&
+					selectedModelInfo &&
+					(apiConfiguration.apiProvider === "kilocode" || apiConfiguration.apiProvider === "openrouter" ? (
+						<KiloModelInfoView
+							apiConfiguration={apiConfiguration}
+							modelId={selectedModelId}
+							model={selectedModelInfo}
+							isDescriptionExpanded={isDescriptionExpanded}
+							setIsDescriptionExpanded={setIsDescriptionExpanded}
+							isPricingExpanded={isPricingExpanded}
+							setIsPricingExpanded={setIsPricingExpanded}
+						/>
+					) : (
+						<ModelInfoView
+							apiProvider={apiConfiguration.apiProvider}
+							selectedModelId={selectedModelId}
+							modelInfo={selectedModelInfo}
+							isDescriptionExpanded={isDescriptionExpanded}
+							setIsDescriptionExpanded={setIsDescriptionExpanded}
+						/>
+					))
+				// kilocode_change end
+			}
 			<div className="text-sm text-vscode-descriptionForeground">
 				{
 					/*kilocode_change start*/
