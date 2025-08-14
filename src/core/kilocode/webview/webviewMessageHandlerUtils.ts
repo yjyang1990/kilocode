@@ -5,7 +5,7 @@ import { t } from "../../../i18n"
 import { WebviewMessage } from "../../../shared/WebviewMessage"
 import { Task } from "../../task/Task"
 import axios from "axios"
-import { getKiloBaseUriFromToken } from "../../../utils/kilocode-token"
+import { getKiloBaseUriFromToken } from "../../../shared/kilocode/token"
 
 // Helper function to delete messages for resending
 const deleteMessagesForResend = async (cline: Task, originalMessageIndex: number, originalMessageTs: number) => {

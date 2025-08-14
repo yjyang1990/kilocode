@@ -6,7 +6,7 @@ import pWaitFor from "p-wait-for"
 import * as vscode from "vscode"
 import axios from "axios" // kilocode_change
 import * as yaml from "yaml"
-import { getKiloBaseUriFromToken } from "../../utils/kilocode-token"
+import { getKiloBaseUriFromToken } from "../../shared/kilocode/token" // kilocode_change
 
 import {
 	type Language,
