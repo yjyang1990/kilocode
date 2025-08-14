@@ -36,7 +36,6 @@ export const providerNames = [
 	// kilocode_change start
 	"kilocode",
 	"virtual-quota-fallback",
-	"bigmodel",
 	// kilocode_change end
 	"huggingface",
 	"cerebras",
@@ -112,12 +111,21 @@ const glamaSchema = baseProviderSettingsSchema.extend({
 	glamaApiKey: z.string().optional(),
 })
 
+// kilocode_change start
+export const openRouterProviderDataCollectionSchema = z.enum(["allow", "deny"])
+export const openRouterProviderSortSchema = z.enum(["price", "throughput", "latency"])
+// kilocode_change end
+
 const openRouterSchema = baseProviderSettingsSchema.extend({
 	openRouterApiKey: z.string().optional(),
 	openRouterModelId: z.string().optional(),
 	openRouterBaseUrl: z.string().optional(),
 	openRouterSpecificProvider: z.string().optional(),
 	openRouterUseMiddleOutTransform: z.boolean().optional(),
+	// kilocode_change start
+	openRouterProviderDataCollection: openRouterProviderDataCollectionSchema.optional(),
+	openRouterProviderSort: openRouterProviderSortSchema.optional(),
+	// kilocode_change end
 })
 
 const bedrockSchema = apiModelIdProviderModelSchema.extend({
@@ -242,12 +250,6 @@ const xaiSchema = apiModelIdProviderModelSchema.extend({
 	xaiApiKey: z.string().optional(),
 })
 
-// kilocode_change start
-const bigModelSchema = apiModelIdProviderModelSchema.extend({
-	bigModelApiKey: z.string().optional(),
-})
-// kilocode_change end
-
 const groqSchema = apiModelIdProviderModelSchema.extend({
 	groqApiKey: z.string().optional(),
 })
@@ -282,7 +284,6 @@ const kilocodeSchema = baseProviderSettingsSchema.extend({
 	kilocodeToken: z.string().optional(),
 	kilocodeOrganizationId: z.string().optional(),
 	kilocodeModel: z.string().optional(),
-	openRouterSpecificProvider: z.string().optional(),
 })
 
 export const virtualQuotaFallbackProfileDataSchema = z.object({
@@ -339,7 +340,6 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	fakeAiSchema.merge(z.object({ apiProvider: z.literal("fake-ai") })),
 	xaiSchema.merge(z.object({ apiProvider: z.literal("xai") })),
 	// kilocode_change start
-	bigModelSchema.merge(z.object({ apiProvider: z.literal("bigmodel") })),
 	geminiCliSchema.merge(z.object({ apiProvider: z.literal("gemini-cli") })),
 	kilocodeSchema.merge(z.object({ apiProvider: z.literal("kilocode") })),
 	virtualQuotaFallbackSchema.merge(z.object({ apiProvider: z.literal("virtual-quota-fallback") })),
@@ -371,7 +371,6 @@ export const providerSettingsSchema = z.object({
 	// kilocode_change start
 	...geminiCliSchema.shape,
 	...kilocodeSchema.shape,
-	...bigModelSchema.shape,
 	...virtualQuotaFallbackSchema.shape,
 	// kilocode_change end
 	...openAiNativeSchema.shape,

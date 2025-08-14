@@ -24,6 +24,7 @@ describe("OpenRouter API", () => {
 			const models = await getOpenRouterModels()
 
 			const openRouterSupportedCaching = Object.entries(models)
+				.filter(([id, _]) => id.startsWith("anthropic/claude") || id.startsWith("google/gemini")) // kilocode_change: only these support manual caching
 				.filter(([_, model]) => model.supportsPromptCache)
 				.map(([id, _]) => id)
 
