@@ -12,19 +12,16 @@ Kilo Code provides its own built-in API provider that gives you access to the la
 
 When you sign up for Kilo Code, you'll receive free credits to help you get started:
 
-1. **Initial Registration:** Complete the registration process to receive an initial amount of free credits immediately
-2. **Unlock Additional Credits:** To access more free credits:
-   - Add a payment method for identity verification
-   - Authorize a temporary $0.10 hold on your card (not a charge)
-3. **Start Coding:** Once verified, enjoy your free tokens and start using Kilo Code right away
+1. **Sign up:** Complete the registration process to receive $5 in credits immediately after verification (we might require a hold to verify identity)
+2. **First top-up:**: Add funds to your account (min $5) and get $20 bonus credits
+3. **Start Coding:** Enjoy your $25 in total free credits
 
 :::note About the temporary hold
 The $0.10 hold is for identity verification only:
 
 - **Not a charge** - This is a temporary authorization that will not be charged
-- **Released immediately** - Kilo Code releases the hold automatically
-- **Bank processing** - After release, it may take 5-10 business days for funds to return (varies by bank)
-- **Tracking available** - We can provide a STAN number to help track with your bank if needed
+- **Instant release** - Kilo Code releases the hold immediately after verification
+- **Bank processing** - While we release instantly, it may take a few business days for funds to return (varies by bank)
   :::
 
 ## Registration Process
