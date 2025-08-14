@@ -12,8 +12,8 @@ const defaultsSchema = z.object({
 
 const fetcher = fetchWithTimeout(5000)
 
-async function fetchKilocodeDefaultModel(kilocodeToken: string): Promise<string> {
-	const url = `${getKiloBaseUriFromToken(kilocodeToken)}/api/defaults`
+async function fetchKilocodeDefaultModel(kilocodeToken?: string): Promise<string> {
+	const url = `${getKiloBaseUriFromToken(kilocodeToken ?? "")}/api/defaults`
 	const response = await fetcher(
 		url,
 		kilocodeToken
@@ -35,17 +35,17 @@ async function fetchKilocodeDefaultModel(kilocodeToken: string): Promise<string>
 	return defaultModel
 }
 
-export async function getKilocodeDefaultModel(kilocodeToken: string): Promise<string> {
+export async function getKilocodeDefaultModel(kilocodeToken?: string): Promise<string> {
 	try {
-		let defaultModelPromise = cache.get(kilocodeToken)
+		let defaultModelPromise = cache.get(kilocodeToken ?? "")
 		if (!defaultModelPromise) {
 			defaultModelPromise = fetchKilocodeDefaultModel(kilocodeToken)
-			cache.set(kilocodeToken, defaultModelPromise)
+			cache.set(kilocodeToken ?? "", defaultModelPromise)
 		}
 		return await defaultModelPromise
 	} catch (err) {
 		console.error("Failed to get default model", err)
-		cache.delete(kilocodeToken)
+		cache.delete(kilocodeToken ?? "")
 		TelemetryService.instance.captureException(err, { context: "getKilocodeDefaultModel" })
 		return openRouterDefaultModelId
 	}

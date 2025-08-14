@@ -3,7 +3,6 @@ import {
 	openRouterProviderSortSchema,
 	openRouterProviderDataCollectionSchema,
 	OPENROUTER_DEFAULT_PROVIDER_NAME,
-	openRouterDefaultModelId,
 } from "@roo-code/types"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
@@ -35,14 +34,12 @@ const getProviderPreference = (apiConfiguration: ProviderSettings): ProviderPref
 interface Props {
 	apiConfiguration: ProviderSettings
 	setApiConfigurationField: <K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => void
-	kilocodeDefaultModel?: string
+	kilocodeDefaultModel: string
 }
 
 export const KiloProviderRouting = ({ apiConfiguration, setApiConfigurationField, kilocodeDefaultModel }: Props) => {
 	const { t } = useAppTranslation()
-	const providers = Object.values(
-		useModelProviders(kilocodeDefaultModel ?? openRouterDefaultModelId, apiConfiguration).data ?? {},
-	)
+	const providers = Object.values(useModelProviders(kilocodeDefaultModel, apiConfiguration).data ?? {})
 
 	const onValueChange = (value: string) => {
 		const preference = safeJsonParse<ProviderPreference>(value)

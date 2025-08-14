@@ -96,7 +96,7 @@ export class KilocodeOpenrouterHandler extends OpenRouterHandler {
 				modelId: this.options.kilocodeModel,
 				endpoint: this.options.openRouterSpecificProvider,
 			}),
-			getKilocodeDefaultModel(this.options.kilocodeToken ?? ""),
+			getKilocodeDefaultModel(this.options.kilocodeToken),
 		])
 
 		this.models = models

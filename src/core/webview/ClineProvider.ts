@@ -1737,7 +1737,7 @@ export class ClineProvider
 			autoCondenseContextPercent: autoCondenseContextPercent ?? 100,
 			uriScheme: vscode.env.uriScheme,
 			uiKind: vscode.UIKind[vscode.env.uiKind], // kilocode_change
-			kilocodeDefaultModel: await getKilocodeDefaultModel(apiConfiguration.kilocodeToken ?? ""),
+			kilocodeDefaultModel: await getKilocodeDefaultModel(apiConfiguration.kilocodeToken),
 			currentTaskItem: this.getCurrentCline()?.taskId
 				? (taskHistory || []).find((item: HistoryItem) => item.id === this.getCurrentCline()?.taskId)
 				: undefined,

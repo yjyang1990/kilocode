@@ -524,6 +524,7 @@ describe("ClineProvider", () => {
 				kilocodeToken: "kilocode-token",
 				// kilocode_change end
 			},
+			kilocodeDefaultModel: openRouterDefaultModelId,
 			customInstructions: undefined,
 			alwaysAllowReadOnly: false,
 			alwaysAllowReadOnlyOutsideWorkspace: false,

@@ -74,7 +74,7 @@ export const useModelProviders = (kilocodeDefaultModel: string, apiConfiguration
 export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 	const provider = apiConfiguration?.apiProvider || "anthropic"
 	// kilocode_change start
-	const kilocodeDefaultModel = useExtensionState().kilocodeDefaultModel ?? openRouterDefaultModelId
+	const { kilocodeDefaultModel } = useExtensionState()
 	const routerModels = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.apiKey,
