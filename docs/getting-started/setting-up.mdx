@@ -2,11 +2,11 @@
 sidebar_label: Getting Set up
 ---
 
-import { DISCORD_URL } from '@site/src/constants.ts'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { DISCORD_URL } from "@site/src/constants.ts";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 export const FreeTierAmount = () => {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   return siteConfig.customFields.freeTierAmount;
 };
 
@@ -16,18 +16,18 @@ When you sign up for Kilo Code, you'll receive **free credits** to help you get 
 
 1. Complete the registration process - you'll receive an initial amount of free credits to use immediately
 2. To unlock additional credits (up to <FreeTierAmount /> total):
-    * add a payment method for identity verification
-    * authorize Kilo Code to place a _temporary_ $10 hold on your card
+   - add a payment method for identity verification
+   - authorize Kilo Code to place a _temporary_ $0.10 hold on your card
 3. As long as this payment method hasn't been used to claim free credits through a different Kilo Code account before, you can enjoy your free tokens and start coding right away!
 
 :::note About the temporary hold
-To keep our service reliable and prevent misuse, we place a _temporary_ $10 hold on your credit card during verification. Here's what you need to know:
+To keep our service reliable and prevent misuse, we place a _temporary_ $0.10 hold on your credit card during verification. Here's what you need to know:
 
 - **It's not a charge** - This is a temporary authorization that will not be charged to your account
-- **Bank processing time** - Kilo Code releases the hold after 7 days. After release, it may take **several weeks** (5-10 business days on average) for the funds to return to your account. The exact timeline depends on your bank.
+- **Bank processing time** - Kilo Code releases the hold immediately. After release, it may take **several weeks** (5-10 business days on average) for the funds to return to your account. The exact timeline depends on your bank.
 - **How it's displayed** - Some banks may show this as a regular transaction, but it remains a temporary hold
-- **Tracking available** - After the hold is released (7 days), we can provide a STAN number to help you track the transaction with your bank if needed.
-:::
+- **Tracking available** - After the hold is released, we can provide a STAN number to help you track the transaction with your bank if needed.
+  :::
 
 ## Registration process
 
@@ -36,10 +36,13 @@ Kilo Code provides a simple registration process that gives you access to the la
 1. Click on "Try Kilo Code for Free" in the extension
 1. Sign in with your Google account to kilocode.ai
 1. kilocode.ai will prompt you to open Visual Studio Code
-    * When using an IDE in a web browser, you will be asked to copy the API key manually instead
+   - When using an IDE in a web browser, you will be asked to copy the API key manually instead
 1. Once you allow it to Open VS Code, you must also allow VS Code to open the authorization URL
 
-<img src="/docs/img/setting-up/signupflow.gif" alt="Sign up and registration flow with Kilo Code"  />
+<img
+  src="/docs/img/setting-up/signupflow.gif"
+  alt="Sign up and registration flow with Kilo Code"
+/>
 
 That's it - you're all set! Now you can start with [your first task](/getting-started/your-first-task)
 
