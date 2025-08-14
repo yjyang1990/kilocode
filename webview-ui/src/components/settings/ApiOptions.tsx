@@ -2,7 +2,7 @@ import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from
 import { convertHeadersToObject } from "./utils/headers"
 import { useDebounce } from "react-use"
 import { VSCodeLink } from "@vscode/webview-ui-toolkit/react"
-import { ExternalLinkIcon } from "@radix-ui/react-icons"
+// import { ExternalLinkIcon } from "@radix-ui/react-icons" // kilocode_change
 
 import {
 	type ProviderName,
@@ -23,9 +23,6 @@ import {
 	moonshotDefaultModelId,
 	mistralDefaultModelId,
 	xaiDefaultModelId,
-	// kilocode_change start
-	bigModelDefaultModelId,
-	// kilocode_change end
 	groqDefaultModelId,
 	cerebrasDefaultModelId,
 	chutesDefaultModelId,
@@ -44,10 +41,12 @@ import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { useRouterModels } from "@src/components/ui/hooks/useRouterModels"
 import { useSelectedModel } from "@src/components/ui/hooks/useSelectedModel"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
-import {
-	useOpenRouterModelProviders,
-	OPENROUTER_DEFAULT_PROVIDER_NAME,
-} from "@src/components/ui/hooks/useOpenRouterModelProviders"
+// kilocode_change start
+//import {
+//	useOpenRouterModelProviders,
+//	OPENROUTER_DEFAULT_PROVIDER_NAME,
+//} from "@src/components/ui/hooks/useOpenRouterModelProviders"
+// kilocode_change start
 import { filterModels } from "./utils/organizationFilters"
 import {
 	Select,
@@ -90,7 +89,6 @@ import {
 	VSCodeLM,
 	XAI,
 	// kilocode_change start
-	BigModel,
 	VirtualQuotaFallbackProvider,
 	// kilocode_change end
 	ZAi,
@@ -111,8 +109,8 @@ import { RateLimitSecondsControl } from "./RateLimitSecondsControl"
 import { ConsecutiveMistakeLimitControl } from "./ConsecutiveMistakeLimitControl"
 import { BedrockCustomArn } from "./providers/BedrockCustomArn"
 import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_change
-import { KiloCodeAdvanced } from "../kilocode/settings/providers/KiloCodeAdvanced" // kilocode_change
 import { buildDocLink } from "@src/utils/docLinks"
+import { KiloProviderRouting } from "./providers/KiloProviderRouting"
 
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
@@ -196,20 +194,20 @@ const ApiOptions = ({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.openRouterApiKey,
 	})
-	// kilocode_change end
 
-	const { data: openRouterModelProviders } = useOpenRouterModelProviders(
-		apiConfiguration?.openRouterModelId,
-		apiConfiguration?.openRouterBaseUrl,
-		apiConfiguration?.openRouterApiKey,
-		{
-			enabled:
-				!!apiConfiguration?.openRouterModelId &&
-				routerModels?.openrouter &&
-				Object.keys(routerModels.openrouter).length > 1 &&
-				apiConfiguration.openRouterModelId in routerModels.openrouter,
-		},
-	)
+	//const { data: openRouterModelProviders } = useOpenRouterModelProviders(
+	//	apiConfiguration?.openRouterModelId,
+	//	apiConfiguration?.openRouterBaseUrl,
+	//	apiConfiguration?.openRouterApiKey,
+	//	{
+	//		enabled:
+	//			!!apiConfiguration?.openRouterModelId &&
+	//			routerModels?.openrouter &&
+	//			Object.keys(routerModels.openrouter).length > 1 &&
+	//			apiConfiguration.openRouterModelId in routerModels.openrouter,
+	//	},
+	//)
+	// kilocode_change end
 
 	// Update `apiModelId` whenever `selectedModelId` changes.
 	useEffect(() => {
@@ -332,7 +330,6 @@ const ApiOptions = ({
 				"claude-code": { field: "apiModelId", default: claudeCodeDefaultModelId },
 				"openai-native": { field: "apiModelId", default: openAiNativeDefaultModelId },
 				gemini: { field: "apiModelId", default: geminiDefaultModelId },
-				"gemini-cli": { field: "apiModelId", default: geminiCliDefaultModelId },
 				deepseek: { field: "apiModelId", default: deepSeekDefaultModelId },
 				doubao: { field: "apiModelId", default: doubaoDefaultModelId },
 				moonshot: { field: "apiModelId", default: moonshotDefaultModelId },
@@ -355,8 +352,8 @@ const ApiOptions = ({
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
 				// kilocode_change start
-				bigmodel: { field: "apiModelId", default: bigModelDefaultModelId },
 				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId },
+				"gemini-cli": { field: "apiModelId", default: geminiCliDefaultModelId },
 				// kilocode_change end
 			}
 
@@ -394,7 +391,6 @@ const ApiOptions = ({
 			"virtual-quota-fallback",
 			"litellm",
 			"zai",
-			"bigmodel",
 		]
 
 		// Skip documentation link when the provider is excluded because documentation is not available
@@ -544,10 +540,6 @@ const ApiOptions = ({
 				/>
 			)}
 
-			{selectedProvider === "gemini-cli" && (
-				<GeminiCli apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
-			)}
-
 			{selectedProvider === "openai" && (
 				<OpenAICompatible
 					apiConfiguration={apiConfiguration}
@@ -603,8 +595,8 @@ const ApiOptions = ({
 
 			{/* kilocode_change start */}
 
-			{selectedProvider === "bigmodel" && (
-				<BigModel apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			{selectedProvider === "gemini-cli" && (
+				<GeminiCli apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "virtual-quota-fallback" && (
@@ -707,6 +699,17 @@ const ApiOptions = ({
 				modelInfo={selectedModelInfo}
 			/>
 
+			{
+				// kilocode_change start
+				(selectedProvider === "kilocode" || selectedProvider === "openrouter") && (
+					<KiloProviderRouting
+						apiConfiguration={apiConfiguration}
+						setApiConfigurationField={setApiConfigurationField}
+					/>
+				)
+				// kilocode_change end
+			}
+
 			{!fromWelcomeView && (
 				<Collapsible open={isAdvancedSettingsOpen} onOpenChange={setIsAdvancedSettingsOpen}>
 					<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">
@@ -740,16 +743,8 @@ const ApiOptions = ({
 							}
 							onChange={(value) => setApiConfigurationField("consecutiveMistakeLimit", value)}
 						/>
-						{/* kilocode_change start */}
-						{selectedProvider === "kilocode" && (
-							<KiloCodeAdvanced
-								apiConfiguration={apiConfiguration}
-								setApiConfigurationField={setApiConfigurationField}
-								routerModels={routerModels}
-							/>
-						)}
-						{/* kilocode_change end */}
-						{selectedProvider === "openrouter" &&
+						{/* kilocode_change start
+						selectedProvider === "openrouter" &&
 							openRouterModelProviders &&
 							Object.keys(openRouterModelProviders).length > 0 && (
 								<div>
@@ -790,7 +785,8 @@ const ApiOptions = ({
 										</a>
 									</div>
 								</div>
-							)}
+							)
+							kilocode_change end */}
 					</CollapsibleContent>
 				</Collapsible>
 			)}

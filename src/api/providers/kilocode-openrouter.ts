@@ -8,7 +8,7 @@ import {
 	openRouterDefaultModelId,
 	openRouterDefaultModelInfo,
 } from "@roo-code/types"
-import { getKiloBaseUriFromToken } from "../../utils/kilocode-token"
+import { getKiloBaseUriFromToken } from "../../shared/kilocode/token"
 import { ApiHandlerCreateMessageMetadata } from ".."
 import OpenAI from "openai"
 import { getModelEndpoints } from "./fetchers/modelEndpointCache"

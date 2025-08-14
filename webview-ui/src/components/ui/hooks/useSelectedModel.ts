@@ -25,10 +25,6 @@ import {
 	vertexModels,
 	xaiDefaultModelId,
 	xaiModels,
-	// kilocode_change start
-	bigModelModels,
-	bigModelDefaultModelId,
-	// kilocode_change end
 	groqModels,
 	groqDefaultModelId,
 	chutesModels,
@@ -61,23 +57,28 @@ import { useRouterModels } from "./useRouterModels"
 import { useOpenRouterModelProviders } from "./useOpenRouterModelProviders"
 import { useLmStudioModels } from "./useLmStudioModels"
 
+// kilocode_change start
+export const useModelProviders = (apiConfiguration?: ProviderSettings) => {
+	const provider = apiConfiguration?.apiProvider
+	return useOpenRouterModelProviders(
+		provider === "kilocode"
+			? (apiConfiguration?.kilocodeModel ?? kilocodeDefaultModelId)
+			: provider === "openrouter"
+				? (apiConfiguration?.openRouterModelId ?? openRouterDefaultModelId)
+				: undefined,
+		provider === "openrouter" ? apiConfiguration?.openRouterBaseUrl : undefined,
+	)
+}
+// kilocode_change end
+
 export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 	const provider = apiConfiguration?.apiProvider || "anthropic"
 	// kilocode_change start
-	let openRouterModelId = provider === "openrouter" ? apiConfiguration?.openRouterModelId : undefined
-	if (provider === "kilocode") {
-		openRouterModelId = apiConfiguration?.kilocodeModel || undefined
-	}
-
 	const routerModels = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.apiKey,
 	})
-	const openRouterModelProviders = useOpenRouterModelProviders(
-		openRouterModelId,
-		apiConfiguration?.openRouterBaseUrl,
-		apiConfiguration?.apiKey,
-	)
+	const openRouterModelProviders = useModelProviders(apiConfiguration)
 	// kilocode_change end
 	const lmStudioModelId = provider === "lmstudio" ? apiConfiguration?.lmStudioModelId : undefined
 	const lmStudioModels = useLmStudioModels(lmStudioModelId)
@@ -169,13 +170,6 @@ function getSelectedModel({
 			const info = xaiModels[id as keyof typeof xaiModels]
 			return info ? { id, info } : { id, info: undefined }
 		}
-		// kilocode_change start
-		case "bigmodel": {
-			const id = apiConfiguration.apiModelId ?? bigModelDefaultModelId
-			const info = bigModelModels[id as keyof typeof bigModelModels]
-			return { id, info }
-		}
-		// kilocode_change end
 		case "groq": {
 			const id = apiConfiguration.apiModelId ?? groqDefaultModelId
 			const info = groqModels[id as keyof typeof groqModels]
