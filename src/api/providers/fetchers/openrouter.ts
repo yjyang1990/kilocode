@@ -67,8 +67,9 @@ export type OpenRouterModelEndpoint = z.infer<typeof openRouterModelEndpointSche
  * OpenRouterModelsResponse
  */
 
-const openRouterModelsResponseSchema = z.object({
+export /* kilocode_change: export */ const openRouterModelsResponseSchema = z.object({
 	data: z.array(openRouterModelSchema),
+	defaultModel: z.string().nullish(), // kilocode_change
 })
 
 type OpenRouterModelsResponse = z.infer<typeof openRouterModelsResponseSchema>

@@ -8,7 +8,7 @@ import {
 	type ProviderSettingsEntry,
 	type ClineMessage,
 	ORGANIZATION_ALLOW_ALL,
-	kilocodeDefaultModelId,
+	openRouterDefaultModelId,
 } from "@roo-code/types"
 import { TelemetryService } from "@roo-code/telemetry"
 
@@ -520,7 +520,7 @@ describe("ClineProvider", () => {
 			apiConfiguration: {
 				// kilocode_change start
 				apiProvider: "kilocode",
-				kilocodeModel: kilocodeDefaultModelId,
+				kilocodeModel: openRouterDefaultModelId,
 				kilocodeToken: "kilocode-token",
 				// kilocode_change end
 			},
