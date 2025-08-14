@@ -22,7 +22,7 @@ When you sign up for Kilo Code, you'll receive free credits to help you get star
 The $0.10 hold is for identity verification only:
 
 - **Not a charge** - This is a temporary authorization that will not be charged
-- **Released after immediately** - Kilo Code releases the hold automatically
+- **Released immediately** - Kilo Code releases the hold automatically
 - **Bank processing** - After release, it may take 5-10 business days for funds to return (varies by bank)
 - **Tracking available** - We can provide a STAN number to help track with your bank if needed
   :::
