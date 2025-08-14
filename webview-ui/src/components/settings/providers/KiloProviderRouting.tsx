@@ -1,4 +1,3 @@
-// kilocode_change: file added
 import {
 	type ProviderSettings,
 	openRouterProviderSortSchema,
@@ -37,7 +36,7 @@ interface Props {
 	setApiConfigurationField: <K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => void
 }
 
-export const OpenRouterProviderSettings = ({ apiConfiguration, setApiConfigurationField }: Props) => {
+export const KiloProviderRouting = ({ apiConfiguration, setApiConfigurationField }: Props) => {
 	const { t } = useAppTranslation()
 	const providers = Object.values(useModelProviders(apiConfiguration).data ?? {})
 
