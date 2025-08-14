@@ -2,6 +2,7 @@ import { openRouterDefaultModelId } from "@roo-code/types"
 import { getKiloBaseUriFromToken } from "../../../shared/kilocode/token"
 import { TelemetryService } from "@roo-code/telemetry"
 import { z } from "zod"
+import { fetchWithTimeout } from "./fetchWithTimeout"
 
 const cache = new Map<string, Promise<string>>()
 
@@ -9,9 +10,11 @@ const defaultsSchema = z.object({
 	defaultModel: z.string().nullish(),
 })
 
+const fetcher = fetchWithTimeout(5000)
+
 async function fetchKilocodeDefaultModel(kilocodeToken: string): Promise<string> {
 	const url = `${getKiloBaseUriFromToken(kilocodeToken)}/api/defaults`
-	const response = await fetch(
+	const response = await fetcher(
 		url,
 		kilocodeToken
 			? {
