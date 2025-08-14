@@ -103,6 +103,8 @@
 		"logOut": "登出",
 		"currentBalance": "目前餘額",
 		"loading": "載入中...",
+		"organization": "組織",
+		"personal": "個人",
 		"shop": {
 			"title": "購買點數",
 			"popular": "熱門",

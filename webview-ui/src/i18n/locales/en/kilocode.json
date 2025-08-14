@@ -103,6 +103,8 @@
 		"logOut": "Log out",
 		"currentBalance": "CURRENT BALANCE",
 		"loading": "Loading...",
+		"organization": "Organization",
+		"personal": "Personal",
 		"shop": {
 			"title": "Buy Credits",
 			"popular": "Popular",

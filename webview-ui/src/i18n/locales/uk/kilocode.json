@@ -103,6 +103,8 @@
 		"logOut": "Вийти",
 		"currentBalance": "ПОТОЧНИЙ БАЛАНС",
 		"loading": "Завантаження...",
+		"organization": "Організація",
+		"personal": "Особистий",
 		"shop": {
 			"title": "Купити кредити",
 			"popular": "Популярно",

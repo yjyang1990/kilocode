@@ -282,6 +282,7 @@ const sambaNovaSchema = apiModelIdProviderModelSchema.extend({
 // kilocode_change start
 const kilocodeSchema = baseProviderSettingsSchema.extend({
 	kilocodeToken: z.string().optional(),
+	kilocodeOrganizationId: z.string().optional(),
 	kilocodeModel: z.string().optional(),
 })
 

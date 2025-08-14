@@ -103,6 +103,8 @@
 		"logOut": "로그아웃",
 		"currentBalance": "현재 잔액",
 		"loading": "로딩 중...",
+		"organization": "조직",
+		"personal": "개인",
 		"shop": {
 			"title": "크레딧 구매",
 			"popular": "인기",

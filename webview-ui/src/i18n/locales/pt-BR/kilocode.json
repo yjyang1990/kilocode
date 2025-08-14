@@ -103,6 +103,8 @@
 		"logOut": "Sair",
 		"currentBalance": "SALDO ATUAL",
 		"loading": "Carregando...",
+		"organization": "Organização",
+		"personal": "Pessoal",
 		"shop": {
 			"title": "Comprar Créditos",
 			"popular": "Popular",

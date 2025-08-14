@@ -103,6 +103,8 @@
 		"logOut": "Abmelden",
 		"currentBalance": "AKTUELLES GUTHABEN",
 		"loading": "Lädt...",
+		"organization": "Organisation",
+		"personal": "Persönlich",
 		"shop": {
 			"title": "Credits kaufen",
 			"popular": "Beliebt",

@@ -94,6 +94,8 @@
 		"logOut": "Tancar sessió",
 		"currentBalance": "SALDO ACTUAL",
 		"loading": "Carregant...",
+		"organization": "Organització",
+		"personal": "Personal",
 		"shop": {
 			"title": "Comprar Crèdits",
 			"popular": "Popular",
