@@ -36,16 +36,12 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 	private activeProfileId: string | undefined
 	private usage: UsageTracker
 	private isInitialized: boolean = false
-	private initializationPromise: Promise<void> | undefined = undefined
 
 	constructor(options: ProviderSettings) {
 		this.settings = options
 		this.settingsManager = new ProviderSettingsManager(ContextProxy.instance.rawContext)
 		this.usage = UsageTracker.getInstance()
-		// Create a lazy initialization promise that will be resolved when needed
-		this.initializationPromise = new Promise((resolve, reject) => {
-			this.initialize().then(resolve).catch(reject)
-		})
+		this.initialize()
 	}
 
 	async initialize(): Promise<void> {
@@ -62,7 +58,6 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 
 	async countTokens(content: Array<Anthropic.Messages.ContentBlockParam>): Promise<number> {
 		try {
-			await this.initializationPromise
 			await this.adjustActiveHandler()
 
 			if (!this.activeHandler) {
@@ -82,7 +77,6 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
 		try {
-			await this.initializationPromise
 			await this.adjustActiveHandler()
 
 			if (!this.activeHandler || !this.activeProfileId) {
@@ -180,11 +174,6 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 			} catch (error) {
 				console.error(`❌ Failed to load profile ${i + 1} (${profile.profileName}):`, error)
 			}
-
-			// Small delay between profiles to reduce system load
-			if (i < profiles.length - 1) {
-				await new Promise((resolve) => setTimeout(resolve, 50))
-			}
 		}
 
 		this.handlerConfigs = handlerConfigs
@@ -254,11 +243,6 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 		} else {
 			message = "No active provider available. All configured providers are unavailable or over limits."
 		}
-
-		// Use setTimeout to avoid blocking the main thread
-		setTimeout(() => {
-			vscode.window.showInformationMessage(message)
-		}, 0)
 	}
 
 	underLimit(profileData: VirtualQuotaFallbackProfile): boolean {
