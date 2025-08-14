@@ -707,6 +707,7 @@ const ApiOptions = ({
 					<KiloProviderRouting
 						apiConfiguration={apiConfiguration}
 						setApiConfigurationField={setApiConfigurationField}
+						kilocodeDefaultModel={kilocodeDefaultModel}
 					/>
 				)
 				// kilocode_change end
