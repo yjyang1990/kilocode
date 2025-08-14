@@ -39,7 +39,7 @@ Can you check if my website at https://kilocode.ai is displaying correctly?
 Browse http://localhost:3000, scroll down to the bottom of the page and check if the footer information is displaying correctly.
 ```
 
-<img src="/docs/img/browser-use/browser-use-1.png" alt="Browser use example" width="300" />
+<img src="/docs/features/KiloCodeBrowser.png" alt="Browser use example" width="300" />
 
 ## How Browser Actions Work
 
