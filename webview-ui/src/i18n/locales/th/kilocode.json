@@ -103,6 +103,8 @@
 		"logOut": "ออกจากระบบ",
 		"currentBalance": "ยอดเงินปัจจุบัน",
 		"loading": "กำลังโหลด...",
+		"organization": "องค์กร",
+		"personal": "ส่วนตัว",
 		"shop": {
 			"title": "ซื้อเครดิต",
 			"popular": "ยอดนิยม",

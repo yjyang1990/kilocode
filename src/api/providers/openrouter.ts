@@ -95,10 +95,7 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 	}
 
 	getProviderParams(): { provider?: OpenRouterProviderParams } {
-		if (
-			this.options.openRouterSpecificProvider &&
-			this.options.openRouterSpecificProvider !== OPENROUTER_DEFAULT_PROVIDER_NAME
-		) {
+		if (this.options.openRouterSpecificProvider && this.endpoints[this.options.openRouterSpecificProvider]) {
 			return {
 				provider: {
 					order: [this.options.openRouterSpecificProvider],

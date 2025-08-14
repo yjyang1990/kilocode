@@ -103,6 +103,8 @@
 		"logOut": "Uitloggen",
 		"currentBalance": "HUIDIG SALDO",
 		"loading": "Laden...",
+		"organization": "Organisatie",
+		"personal": "Persoonlijk",
 		"shop": {
 			"title": "Credits Kopen",
 			"popular": "Populair",

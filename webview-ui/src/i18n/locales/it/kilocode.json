@@ -103,6 +103,8 @@
 		"logOut": "Disconnetti",
 		"currentBalance": "SALDO ATTUALE",
 		"loading": "Caricamento...",
+		"organization": "Organizzazione",
+		"personal": "Personale",
 		"shop": {
 			"title": "Acquista Crediti",
 			"popular": "Popolare",

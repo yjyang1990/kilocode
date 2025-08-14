@@ -103,6 +103,8 @@
 		"logOut": "退出登录",
 		"currentBalance": "当前余额",
 		"loading": "加载中...",
+		"organization": "组织",
+		"personal": "个人",
 		"shop": {
 			"title": "购买 Credits",
 			"popular": "热门",

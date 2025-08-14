@@ -103,6 +103,8 @@
 		"logOut": "Se déconnecter",
 		"currentBalance": "SOLDE ACTUEL",
 		"loading": "Chargement...",
+		"organization": "Organisation",
+		"personal": "Personnel",
 		"shop": {
 			"title": "Acheter des Crédits",
 			"popular": "Populaire",

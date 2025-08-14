@@ -103,6 +103,8 @@
 		"logOut": "Wyloguj się",
 		"currentBalance": "AKTUALNY STAN KONTA",
 		"loading": "Ładowanie...",
+		"organization": "Organizacja",
+		"personal": "Osobiste",
 		"shop": {
 			"title": "Kup Kredyty",
 			"popular": "Popularne",

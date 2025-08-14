@@ -65,6 +65,7 @@ export const KiloCode = ({
 									apiConfiguration: {
 										...apiConfiguration,
 										kilocodeToken: "",
+										kilocodeOrganizationId: undefined,
 									},
 								})
 							}}>

@@ -103,6 +103,8 @@
 		"logOut": "Keluar",
 		"currentBalance": "SALDO SAAT INI",
 		"loading": "Memuat...",
+		"organization": "Organisasi",
+		"personal": "Pribadi",
 		"shop": {
 			"title": "Beli Kredit",
 			"popular": "Populer",

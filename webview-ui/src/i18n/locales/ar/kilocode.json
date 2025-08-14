@@ -103,6 +103,8 @@
 		"logOut": "تسجيل الخروج",
 		"currentBalance": "الرصيد الحالي",
 		"loading": "جاري التحميل...",
+		"organization": "المؤسسة",
+		"personal": "شخصي",
 		"shop": {
 			"title": "شراء الرصيد",
 			"popular": "الأكثر شعبية",
