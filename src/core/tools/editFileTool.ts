@@ -135,7 +135,7 @@ export async function editFileTool(
 		if (!morphApplyResult.success) {
 			cline.consecutiveMistakeCount++
 			cline.recordToolError("edit_file")
-			pushToolResult(formatResponse.toolError(`Failed to apply edit using Morph: ${morphApplyResult.error}..`))
+			pushToolResult(formatResponse.toolError(`Failed to apply edit using Morph: ${morphApplyResult.error}`))
 			return
 		}
 
