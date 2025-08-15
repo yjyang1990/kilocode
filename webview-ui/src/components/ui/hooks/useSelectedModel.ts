@@ -14,8 +14,12 @@ import {
 	moonshotModels,
 	geminiDefaultModelId,
 	geminiModels,
+	// kilocode_change start
 	geminiCliDefaultModelId,
 	geminiCliModels,
+	qwenCodeModels,
+	qwenCodeDefaultModelId,
+	// kilocode_change end
 	mistralDefaultModelId,
 	mistralModels,
 	openAiModelInfoSaneDefaults,
@@ -38,7 +42,6 @@ import {
 	litellmDefaultModelId,
 	claudeCodeDefaultModelId,
 	claudeCodeModels,
-	kilocodeDefaultModelId,
 	sambaNovaModels,
 	sambaNovaDefaultModelId,
 	doubaoModels,
@@ -56,24 +59,31 @@ import type { ModelRecord, RouterModels } from "@roo/api"
 import { useRouterModels } from "./useRouterModels"
 import { useOpenRouterModelProviders } from "./useOpenRouterModelProviders"
 import { useLmStudioModels } from "./useLmStudioModels"
+import { useExtensionState } from "@/context/ExtensionStateContext" // kilocode_change
+
+// kilocode_change start
+export const useModelProviders = (kilocodeDefaultModel: string, apiConfiguration?: ProviderSettings) => {
+	const provider = apiConfiguration?.apiProvider
+	return useOpenRouterModelProviders(
+		provider === "kilocode"
+			? (apiConfiguration?.kilocodeModel ?? kilocodeDefaultModel)
+			: provider === "openrouter"
+				? (apiConfiguration?.openRouterModelId ?? openRouterDefaultModelId)
+				: undefined,
+		provider === "openrouter" ? apiConfiguration?.openRouterBaseUrl : undefined,
+	)
+}
+// kilocode_change end
 
 export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 	const provider = apiConfiguration?.apiProvider || "anthropic"
 	// kilocode_change start
-	let openRouterModelId = provider === "openrouter" ? apiConfiguration?.openRouterModelId : undefined
-	if (provider === "kilocode") {
-		openRouterModelId = apiConfiguration?.kilocodeModel || undefined
-	}
-
+	const { kilocodeDefaultModel } = useExtensionState()
 	const routerModels = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.apiKey,
 	})
-	const openRouterModelProviders = useOpenRouterModelProviders(
-		openRouterModelId,
-		apiConfiguration?.openRouterBaseUrl,
-		apiConfiguration?.apiKey,
-	)
+	const openRouterModelProviders = useModelProviders(kilocodeDefaultModel, apiConfiguration)
 	// kilocode_change end
 	const lmStudioModelId = provider === "lmstudio" ? apiConfiguration?.lmStudioModelId : undefined
 	const lmStudioModels = useLmStudioModels(lmStudioModelId)
@@ -89,6 +99,7 @@ export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 					routerModels: routerModels.data,
 					openRouterModelProviders: openRouterModelProviders.data,
 					lmStudioModels: lmStudioModels.data,
+					kilocodeDefaultModel,
 				})
 			: { id: anthropicDefaultModelId, info: undefined }
 
@@ -113,12 +124,14 @@ function getSelectedModel({
 	routerModels,
 	openRouterModelProviders,
 	lmStudioModels,
+	kilocodeDefaultModel,
 }: {
 	provider: ProviderName
 	apiConfiguration: ProviderSettings
 	routerModels: RouterModels
 	openRouterModelProviders: Record<string, ModelInfo>
 	lmStudioModels: ModelRecord | undefined
+	kilocodeDefaultModel: string
 }): { id: string; info: ModelInfo | undefined } {
 	// the `undefined` case are used to show the invalid selection to prevent
 	// users from seeing the default model if their selection is invalid
@@ -207,11 +220,6 @@ function getSelectedModel({
 		case "gemini": {
 			const id = apiConfiguration.apiModelId ?? geminiDefaultModelId
 			const info = geminiModels[id as keyof typeof geminiModels]
-			return { id, info }
-		}
-		case "gemini-cli": {
-			const id = apiConfiguration.apiModelId ?? geminiCliDefaultModelId
-			const info = geminiCliModels[id as keyof typeof geminiCliModels]
 			return { id, info }
 		}
 		case "deepseek": {
@@ -306,9 +314,14 @@ function getSelectedModel({
 
 			// Fallback to anthropic model if no match found
 			return {
-				id: kilocodeDefaultModelId,
-				info: routerModels["kilocode-openrouter"][kilocodeDefaultModelId],
+				id: kilocodeDefaultModel,
+				info: routerModels["kilocode-openrouter"][kilocodeDefaultModel],
 			}
+		}
+		case "gemini-cli": {
+			const id = apiConfiguration.apiModelId ?? geminiCliDefaultModelId
+			const info = geminiCliModels[id as keyof typeof geminiCliModels]
+			return { id, info }
 		}
 		case "fireworks": {
 			const id = apiConfiguration.apiModelId ?? fireworksDefaultModelId
@@ -322,6 +335,11 @@ function getSelectedModel({
 					(apiConfiguration.apiModelId ?? anthropicDefaultModelId) as keyof typeof anthropicModels
 				],
 			}
+		}
+		case "qwen-code": {
+			const id = apiConfiguration.apiModelId ?? qwenCodeDefaultModelId
+			const info = qwenCodeModels[id as keyof typeof qwenCodeModels]
+			return { id, info }
 		}
 		// kilocode_change end
 

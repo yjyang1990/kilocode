@@ -2,7 +2,7 @@ import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from
 import { convertHeadersToObject } from "./utils/headers"
 import { useDebounce } from "react-use"
 import { VSCodeLink } from "@vscode/webview-ui-toolkit/react"
-import { ExternalLinkIcon } from "@radix-ui/react-icons"
+// import { ExternalLinkIcon } from "@radix-ui/react-icons" // kilocode_change
 
 import {
 	type ProviderName,
@@ -28,11 +28,11 @@ import {
 	chutesDefaultModelId,
 	bedrockDefaultModelId,
 	vertexDefaultModelId,
-	kilocodeDefaultModelId,
 	sambaNovaDefaultModelId,
 	internationalZAiDefaultModelId,
 	mainlandZAiDefaultModelId,
 	fireworksDefaultModelId,
+	qwenCodeDefaultModelId,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -41,10 +41,12 @@ import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { useRouterModels } from "@src/components/ui/hooks/useRouterModels"
 import { useSelectedModel } from "@src/components/ui/hooks/useSelectedModel"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
-import {
-	useOpenRouterModelProviders,
-	OPENROUTER_DEFAULT_PROVIDER_NAME,
-} from "@src/components/ui/hooks/useOpenRouterModelProviders"
+// kilocode_change start
+//import {
+//	useOpenRouterModelProviders,
+//	OPENROUTER_DEFAULT_PROVIDER_NAME,
+//} from "@src/components/ui/hooks/useOpenRouterModelProviders"
+// kilocode_change start
 import { filterModels } from "./utils/organizationFilters"
 import {
 	Select,
@@ -68,7 +70,6 @@ import {
 	DeepSeek,
 	Doubao,
 	Gemini,
-	GeminiCli,
 	Glama,
 	Groq,
 	HuggingFace,
@@ -87,7 +88,9 @@ import {
 	VSCodeLM,
 	XAI,
 	// kilocode_change start
+	GeminiCli,
 	VirtualQuotaFallbackProvider,
+	QwenCode,
 	// kilocode_change end
 	ZAi,
 	Fireworks,
@@ -107,12 +110,11 @@ import { RateLimitSecondsControl } from "./RateLimitSecondsControl"
 import { ConsecutiveMistakeLimitControl } from "./ConsecutiveMistakeLimitControl"
 import { BedrockCustomArn } from "./providers/BedrockCustomArn"
 import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_change
-import { KiloCodeAdvanced } from "../kilocode/settings/providers/KiloCodeAdvanced" // kilocode_change
 import { buildDocLink } from "@src/utils/docLinks"
+import { KiloProviderRouting } from "./providers/KiloProviderRouting"
 
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
-	uiKind: string | undefined // kilocode_change
 	apiConfiguration: ProviderSettings
 	setApiConfigurationField: <K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => void
 	fromWelcomeView?: boolean
@@ -124,7 +126,6 @@ export interface ApiOptionsProps {
 
 const ApiOptions = ({
 	uriScheme,
-	uiKind, // kilocode_change
 	apiConfiguration,
 	setApiConfigurationField,
 	fromWelcomeView,
@@ -134,7 +135,11 @@ const ApiOptions = ({
 	currentApiConfigName, // kilocode_change
 }: ApiOptionsProps) => {
 	const { t } = useAppTranslation()
-	const { organizationAllowList } = useExtensionState()
+	const {
+		organizationAllowList,
+		uiKind, // kilocode_change
+		kilocodeDefaultModel,
+	} = useExtensionState()
 
 	const [customHeaders, setCustomHeaders] = useState<[string, string][]>(() => {
 		const headers = apiConfiguration?.openAiHeaders || {}
@@ -192,20 +197,20 @@ const ApiOptions = ({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.openRouterApiKey,
 	})
-	// kilocode_change end
 
-	const { data: openRouterModelProviders } = useOpenRouterModelProviders(
-		apiConfiguration?.openRouterModelId,
-		apiConfiguration?.openRouterBaseUrl,
-		apiConfiguration?.openRouterApiKey,
-		{
-			enabled:
-				!!apiConfiguration?.openRouterModelId &&
-				routerModels?.openrouter &&
-				Object.keys(routerModels.openrouter).length > 1 &&
-				apiConfiguration.openRouterModelId in routerModels.openrouter,
-		},
-	)
+	//const { data: openRouterModelProviders } = useOpenRouterModelProviders(
+	//	apiConfiguration?.openRouterModelId,
+	//	apiConfiguration?.openRouterBaseUrl,
+	//	apiConfiguration?.openRouterApiKey,
+	//	{
+	//		enabled:
+	//			!!apiConfiguration?.openRouterModelId &&
+	//			routerModels?.openrouter &&
+	//			Object.keys(routerModels.openrouter).length > 1 &&
+	//			apiConfiguration.openRouterModelId in routerModels.openrouter,
+	//	},
+	//)
+	// kilocode_change end
 
 	// Update `apiModelId` whenever `selectedModelId` changes.
 	useEffect(() => {
@@ -350,8 +355,9 @@ const ApiOptions = ({
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
 				// kilocode_change start
-				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId },
+				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModel },
 				"gemini-cli": { field: "apiModelId", default: geminiCliDefaultModelId },
+				"qwen-code": { field: "apiModelId", default: qwenCodeDefaultModelId },
 				// kilocode_change end
 			}
 
@@ -364,7 +370,7 @@ const ApiOptions = ({
 				)
 			}
 		},
-		[setApiConfigurationField, apiConfiguration],
+		[setApiConfigurationField, apiConfiguration, kilocodeDefaultModel],
 	)
 
 	const modelValidationError = useMemo(() => {
@@ -389,6 +395,7 @@ const ApiOptions = ({
 			"virtual-quota-fallback",
 			"litellm",
 			"zai",
+			"qwen-code",
 		]
 
 		// Skip documentation link when the provider is excluded because documentation is not available
@@ -453,6 +460,7 @@ const ApiOptions = ({
 					organizationAllowList={organizationAllowList}
 					uriScheme={uriScheme}
 					uiKind={uiKind}
+					kilocodeDefaultModel={kilocodeDefaultModel}
 				/>
 			)}
 			{/* kilocode_change end */}
@@ -603,6 +611,10 @@ const ApiOptions = ({
 					setApiConfigurationField={setApiConfigurationField}
 				/>
 			)}
+
+			{selectedProvider === "qwen-code" && (
+				<QwenCode apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
 			{/* kilocode_change end */}
 
 			{selectedProvider === "litellm" && (
@@ -697,6 +709,18 @@ const ApiOptions = ({
 				modelInfo={selectedModelInfo}
 			/>
 
+			{
+				// kilocode_change start
+				(selectedProvider === "kilocode" || selectedProvider === "openrouter") && (
+					<KiloProviderRouting
+						apiConfiguration={apiConfiguration}
+						setApiConfigurationField={setApiConfigurationField}
+						kilocodeDefaultModel={kilocodeDefaultModel}
+					/>
+				)
+				// kilocode_change end
+			}
+
 			{!fromWelcomeView && (
 				<Collapsible open={isAdvancedSettingsOpen} onOpenChange={setIsAdvancedSettingsOpen}>
 					<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">
@@ -730,16 +754,8 @@ const ApiOptions = ({
 							}
 							onChange={(value) => setApiConfigurationField("consecutiveMistakeLimit", value)}
 						/>
-						{/* kilocode_change start */}
-						{selectedProvider === "kilocode" && (
-							<KiloCodeAdvanced
-								apiConfiguration={apiConfiguration}
-								setApiConfigurationField={setApiConfigurationField}
-								routerModels={routerModels}
-							/>
-						)}
-						{/* kilocode_change end */}
-						{selectedProvider === "openrouter" &&
+						{/* kilocode_change start
+						selectedProvider === "openrouter" &&
 							openRouterModelProviders &&
 							Object.keys(openRouterModelProviders).length > 0 && (
 								<div>
@@ -780,7 +796,8 @@ const ApiOptions = ({
 										</a>
 									</div>
 								</div>
-							)}
+							)
+							kilocode_change end */}
 					</CollapsibleContent>
 				</Collapsible>
 			)}

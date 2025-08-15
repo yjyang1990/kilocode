@@ -8,7 +8,7 @@ import {
 	type ProviderSettingsEntry,
 	type ClineMessage,
 	ORGANIZATION_ALLOW_ALL,
-	kilocodeDefaultModelId,
+	openRouterDefaultModelId,
 } from "@roo-code/types"
 import { TelemetryService } from "@roo-code/telemetry"
 
@@ -496,7 +496,8 @@ describe("ClineProvider", () => {
 
 		// Verify Content Security Policy contains the necessary PostHog domains
 		expect(mockWebviewView.webview.html).toContain(
-			"connect-src vscode-webview://test-csp-source https://* https://openrouter.ai https://api.requesty.ai https://us.i.posthog.com https://us-assets.i.posthog.com",
+			// kilocode_change: added localhost:3000
+			"connect-src vscode-webview://test-csp-source https://* http://localhost:3000 https://openrouter.ai https://api.requesty.ai https://us.i.posthog.com https://us-assets.i.posthog.com",
 		)
 
 		// Extract the script-src directive section and verify required security elements
@@ -519,10 +520,11 @@ describe("ClineProvider", () => {
 			apiConfiguration: {
 				// kilocode_change start
 				apiProvider: "kilocode",
-				kilocodeModel: kilocodeDefaultModelId,
+				kilocodeModel: openRouterDefaultModelId,
 				kilocodeToken: "kilocode-token",
 				// kilocode_change end
 			},
+			kilocodeDefaultModel: openRouterDefaultModelId,
 			customInstructions: undefined,
 			alwaysAllowReadOnly: false,
 			alwaysAllowReadOnlyOutsideWorkspace: false,
