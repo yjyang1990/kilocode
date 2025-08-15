@@ -4,7 +4,9 @@ import { TelemetryService } from "@roo-code/telemetry"
 import { z } from "zod"
 import { fetchWithTimeout } from "./fetchWithTimeout"
 
-const cache = new Map<string, Promise<string>>()
+type KilocodeToken = string
+
+const cache = new Map<KilocodeToken, Promise<string>>()
 
 const defaultsSchema = z.object({
 	defaultModel: z.string().nullish(),
@@ -12,7 +14,7 @@ const defaultsSchema = z.object({
 
 const fetcher = fetchWithTimeout(5000)
 
-async function fetchKilocodeDefaultModel(kilocodeToken?: string): Promise<string> {
+async function fetchKilocodeDefaultModel(kilocodeToken?: KilocodeToken): Promise<string> {
 	const url = `${getKiloBaseUriFromToken(kilocodeToken ?? "")}/api/defaults`
 	const response = await fetcher(
 		url,
@@ -35,7 +37,7 @@ async function fetchKilocodeDefaultModel(kilocodeToken?: string): Promise<string
 	return defaultModel
 }
 
-export async function getKilocodeDefaultModel(kilocodeToken?: string): Promise<string> {
+export async function getKilocodeDefaultModel(kilocodeToken?: KilocodeToken): Promise<string> {
 	try {
 		let defaultModelPromise = cache.get(kilocodeToken ?? "")
 		if (!defaultModelPromise) {
