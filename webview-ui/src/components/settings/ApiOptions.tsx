@@ -28,7 +28,6 @@ import {
 	chutesDefaultModelId,
 	bedrockDefaultModelId,
 	vertexDefaultModelId,
-	kilocodeDefaultModelId,
 	sambaNovaDefaultModelId,
 	internationalZAiDefaultModelId,
 	mainlandZAiDefaultModelId,
@@ -116,7 +115,6 @@ import { KiloProviderRouting } from "./providers/KiloProviderRouting"
 
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
-	uiKind: string | undefined // kilocode_change
 	apiConfiguration: ProviderSettings
 	setApiConfigurationField: <K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => void
 	fromWelcomeView?: boolean
@@ -128,7 +126,6 @@ export interface ApiOptionsProps {
 
 const ApiOptions = ({
 	uriScheme,
-	uiKind, // kilocode_change
 	apiConfiguration,
 	setApiConfigurationField,
 	fromWelcomeView,
@@ -138,7 +135,11 @@ const ApiOptions = ({
 	currentApiConfigName, // kilocode_change
 }: ApiOptionsProps) => {
 	const { t } = useAppTranslation()
-	const { organizationAllowList } = useExtensionState()
+	const {
+		organizationAllowList,
+		uiKind, // kilocode_change
+		kilocodeDefaultModel,
+	} = useExtensionState()
 
 	const [customHeaders, setCustomHeaders] = useState<[string, string][]>(() => {
 		const headers = apiConfiguration?.openAiHeaders || {}
@@ -354,7 +355,7 @@ const ApiOptions = ({
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
 				// kilocode_change start
-				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId },
+				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModel },
 				"gemini-cli": { field: "apiModelId", default: geminiCliDefaultModelId },
 				// kilocode_change end
 				"qwen-code": { field: "apiModelId", default: qwenCodeDefaultModelId },
@@ -369,7 +370,7 @@ const ApiOptions = ({
 				)
 			}
 		},
-		[setApiConfigurationField, apiConfiguration],
+		[setApiConfigurationField, apiConfiguration, kilocodeDefaultModel],
 	)
 
 	const modelValidationError = useMemo(() => {
@@ -459,6 +460,7 @@ const ApiOptions = ({
 					organizationAllowList={organizationAllowList}
 					uriScheme={uriScheme}
 					uiKind={uiKind}
+					kilocodeDefaultModel={kilocodeDefaultModel}
 				/>
 			)}
 			{/* kilocode_change end */}
@@ -713,6 +715,7 @@ const ApiOptions = ({
 					<KiloProviderRouting
 						apiConfiguration={apiConfiguration}
 						setApiConfigurationField={setApiConfigurationField}
+						kilocodeDefaultModel={kilocodeDefaultModel}
 					/>
 				)
 				// kilocode_change end
