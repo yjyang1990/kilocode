@@ -1,3 +1,5 @@
+// kilocode_change -- file added
+
 import type { ModelInfo } from "../model.js"
 import type { ProviderName } from "../provider-settings.js"
 

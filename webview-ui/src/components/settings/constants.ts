@@ -8,7 +8,10 @@ import {
 	deepSeekModels,
 	moonshotModels,
 	geminiModels,
+	// kilocode_change start
 	geminiCliModels,
+	qwenCodeModels,
+	// kilocode_change end
 	mistralModels,
 	openAiNativeModels,
 	vertexModels,
@@ -19,7 +22,6 @@ import {
 	doubaoModels,
 	internationalZAiModels,
 	fireworksModels,
-	qwenCodeModels,
 } from "@roo-code/types"
 
 export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, ModelInfo>>> = {
@@ -33,6 +35,7 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	gemini: geminiModels,
 	// kilocode_change start
 	"gemini-cli": geminiCliModels,
+	"qwen-code": qwenCodeModels,
 	// kilocode_change end
 	mistral: mistralModels,
 	"openai-native": openAiNativeModels,
@@ -43,7 +46,6 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	sambanova: sambaNovaModels,
 	zai: internationalZAiModels,
 	fireworks: fireworksModels,
-	"qwen-code": qwenCodeModels,
 }
 
 export const PROVIDERS = [
@@ -57,6 +59,7 @@ export const PROVIDERS = [
 	// kilocode_change start
 	{ value: "gemini-cli", label: "Gemini CLI" },
 	{ value: "virtual-quota-fallback", label: "Virtual Quota Fallback" },
+	{ value: "qwen-code", label: "Qwen Code" },
 	// kilocode_change end
 	{ value: "deepseek", label: "DeepSeek" },
 	{ value: "moonshot", label: "Moonshot" },
@@ -79,6 +82,5 @@ export const PROVIDERS = [
 	{ value: "litellm", label: "LiteLLM" },
 	{ value: "sambanova", label: "SambaNova" },
 	{ value: "zai", label: "Z AI" },
-	{ value: "qwen-code", label: "Qwen Code" },
 	{ value: "fireworks", label: "Fireworks AI" },
 ] // .sort((a, b) => a.label.localeCompare(b.label)) // kilocode_change: Sort providers with kilocode first
