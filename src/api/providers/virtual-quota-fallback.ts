@@ -130,7 +130,7 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 			return
 		}
 
-		console.log(`Loading ${profiles.length} profiles for VirtualQuotaFallbackHandler`)
+		console.warn(`Loading ${profiles.length} profiles for VirtualQuotaFallbackHandler`)
 
 		// Process profiles sequentially to avoid overwhelming the system with concurrent operations
 		const handlerConfigs: HandlerConfig[] = []
@@ -143,7 +143,7 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 			}
 
 			try {
-				console.log(
+				console.info(
 					`Loading profile ${i + 1}/${profiles.length}: ${profile.profileName} (${profile.profileId})`,
 				)
 
@@ -167,7 +167,7 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 						config: profile,
 					})
 
-					console.log(`Successfully loaded profile: ${profile.profileName}`)
+					console.info(`Successfully loaded profile: ${profile.profileName}`)
 				} else {
 					console.warn(`Failed to create API handler for profile: ${profile.profileName}`)
 				}
