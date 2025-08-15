@@ -393,5 +393,10 @@
 	},
 	"editMessage": {
 		"placeholder": "Upravit tvou zprávu..."
+	},
+	"generateCommitMessage": "Vygenerovat commit zprávu",
+	"task": {
+		"expand": "Rozbalit úkol",
+		"collapse": "Sbalit úkol"
 	}
 }

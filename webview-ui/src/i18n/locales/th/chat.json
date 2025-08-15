@@ -386,5 +386,10 @@
 	"queuedMessages": {
 		"title": "ข้อความในคิว:",
 		"clickToEdit": "คลิกเพื่อแก้ไขข้อความ"
+	},
+	"generateCommitMessage": "สร้างข้อความ Commit",
+	"task": {
+		"expand": "ขยายงาน",
+		"collapse": "ย่องาน"
 	}
 }

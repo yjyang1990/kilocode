@@ -394,5 +394,10 @@
 	"queuedMessages": {
 		"title": "الرسائل في الطابور:",
 		"clickToEdit": "انقر لتعديل الرسالة"
+	},
+	"generateCommitMessage": "إنشاء رسالة الالتزام",
+	"task": {
+		"expand": "توسيع المهمة",
+		"collapse": "طي المهمة"
 	}
 }

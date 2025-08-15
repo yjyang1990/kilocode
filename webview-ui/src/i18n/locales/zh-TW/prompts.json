@@ -210,5 +210,9 @@
 		"descriptionNoRules": "您確定要刪除此自訂模式嗎？",
 		"confirm": "刪除",
 		"cancel": "取消"
+	},
+	"generateCommitMessage": {
+		"name": "產生 Commit 訊息",
+		"description": "根據暫存的變更建立描述性的 commit 訊息"
 	}
 }
