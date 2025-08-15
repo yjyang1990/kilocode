@@ -42,15 +42,16 @@
 [![Watch the video](https://img.youtube.com/vi/pqGfYXgrhig/maxresdefault.jpg)](https://youtu.be/pqGfYXgrhig)
 
 ## Difference between Kilo Code, Roo Code and Cline
-
 Kilo Code started as a fork of Roo Code, which itself is a fork of Cline. We frequently merge features from these open-source projects and contribute improvements back. Built on these foundations, Kilo Code is independently developed with our own vision for AI coding agents.
 
-No need to fiddle with API keys, Kilo Code ships with the latest AI models plugged in, including Gemini 2.5 Pro, Claude 4 Sonnet & Opus, and GPT-5
+- No need to fiddle with API keys, Kilo Code ships with the latest AI models plugged in, including Gemini 2.5 Pro, Claude 4 Sonnet & Opus, and GPT-5
+- MCP Server Marketplace: Easily find, and use MCP servers to extend the agent capabilities.
 
 Kilo Code is a direct fork from Roo Code, and also includes the following features from Cline (and our own features):
-
 - System notifications: Get notified when the agent is done with a task.
 - Easy model connection: with bigger free tier.
+- Editing previous messages
+- Assisted commit messages: we write git commit messages for you based on what changed
 
 ## Extension Development
 
