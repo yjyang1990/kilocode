@@ -299,7 +299,7 @@ export const ChatRowContent = ({
 					</div>
 				)
 
-				// Check if this is a Morph request
+				// kilocode_change start: Morph Fast Apply
 				const isMorphRequest = (() => {
 					try {
 						return (
@@ -310,6 +310,7 @@ export const ChatRowContent = ({
 						return false
 					}
 				})()
+				// kilocode_change end
 
 				return [
 					apiReqCancelReason !== null && apiReqCancelReason !== undefined ? (
@@ -319,12 +320,14 @@ export const ChatRowContent = ({
 							getIconSpan("error", errorColor)
 						)
 					) : cost !== null && cost !== undefined ? (
+						// kilocode_change start: Morph Fast Apply
 						isMorphRequest ? (
 							getIconSpan("rocket", successColor)
 						) : (
 							getIconSpan("check", successColor)
 						)
-					) : apiRequestFailedMessage ? (
+					) : // kilocode_change end
+					apiRequestFailedMessage ? (
 						getIconSpan("error", errorColor)
 					) : (
 						<ProgressIndicator />
@@ -341,13 +344,17 @@ export const ChatRowContent = ({
 						)
 					) : cost !== null && cost !== undefined ? (
 						<span style={{ color: normalColor, fontWeight: "bold" }}>
-							{isMorphRequest ? "Edited with Morph" : t("chat:apiRequest.title")}
+							{
+								isMorphRequest ? "Edited with Morph" : t("chat:apiRequest.title") // kilocode_change: Morph Fast Apply
+							}
 						</span>
 					) : apiRequestFailedMessage ? (
 						<span style={{ color: errorColor, fontWeight: "bold" }}>{t("chat:apiRequest.failed")}</span>
 					) : (
 						<span style={{ color: normalColor, fontWeight: "bold" }}>
-							{isMorphRequest ? "Editing with Morph..." : t("chat:apiRequest.streaming")}
+							{
+								isMorphRequest ? "Editing with Morph..." : t("chat:apiRequest.streaming") // kilocode_change: Morph Fast Apply
+							}
 						</span>
 					),
 				]
