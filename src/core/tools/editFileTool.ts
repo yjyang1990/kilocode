@@ -113,24 +113,17 @@ export async function editFileTool(
 		const absolutePath = path.resolve(cline.cwd, targetFile)
 		const relPath = getReadablePath(cline.cwd, absolutePath)
 
-		// Check if file exists
-		if (!(await fileExistsAtPath(absolutePath))) {
-			cline.consecutiveMistakeCount++
-			cline.recordToolError("edit_file")
-			pushToolResult(
-				formatResponse.toolError(
-					`The file ${relPath} does not exist. Use write_to_file to create new files, or make sure the file path is correct.`,
-				),
-			)
-			return
-		}
-
 		// Check if file access is allowed
 		const accessAllowed = cline.rooIgnoreController?.validateAccess(relPath)
 		if (!accessAllowed) {
 			await cline.say("rooignore_error", relPath)
 			pushToolResult(formatResponse.rooIgnoreError(relPath))
 			return
+		}
+
+		// Check if file exists
+		if (!(await fileExistsAtPath(absolutePath))) {
+			await fs.writeFile(absolutePath, "")
 		}
 
 		// Read the original file content
@@ -142,11 +135,7 @@ export async function editFileTool(
 		if (!morphApplyResult.success) {
 			cline.consecutiveMistakeCount++
 			cline.recordToolError("edit_file")
-			pushToolResult(
-				formatResponse.toolError(
-					`Failed to apply edit using Morph: ${morphApplyResult.error}. Consider using apply_diff tool instead.`,
-				),
-			)
+			pushToolResult(formatResponse.toolError(`Failed to apply edit using Morph: ${morphApplyResult.error}..`))
 			return
 		}
 
