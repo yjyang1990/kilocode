@@ -1,3 +1,5 @@
+// kilocode_change -- file added
+
 import type { Anthropic } from "@anthropic-ai/sdk"
 import { promises as fs } from "node:fs"
 import * as os from "os"

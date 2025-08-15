@@ -14,8 +14,12 @@ import {
 	moonshotModels,
 	geminiDefaultModelId,
 	geminiModels,
+	// kilocode_change start
 	geminiCliDefaultModelId,
 	geminiCliModels,
+	qwenCodeModels,
+	qwenCodeDefaultModelId,
+	// kilocode_change end
 	mistralDefaultModelId,
 	mistralModels,
 	openAiModelInfoSaneDefaults,
@@ -49,8 +53,6 @@ import {
 	mainlandZAiModels,
 	fireworksModels,
 	fireworksDefaultModelId,
-	qwenCodeModels,
-	qwenCodeDefaultModelId,
 } from "@roo-code/types"
 
 import type { ModelRecord, RouterModels } from "@roo/api"
@@ -216,11 +218,6 @@ function getSelectedModel({
 			const info = geminiModels[id as keyof typeof geminiModels]
 			return { id, info }
 		}
-		case "gemini-cli": {
-			const id = apiConfiguration.apiModelId ?? geminiCliDefaultModelId
-			const info = geminiCliModels[id as keyof typeof geminiCliModels]
-			return { id, info }
-		}
 		case "deepseek": {
 			const id = apiConfiguration.apiModelId ?? deepSeekDefaultModelId
 			const info = deepSeekModels[id as keyof typeof deepSeekModels]
@@ -317,6 +314,11 @@ function getSelectedModel({
 				info: routerModels["kilocode-openrouter"][kilocodeDefaultModelId],
 			}
 		}
+		case "gemini-cli": {
+			const id = apiConfiguration.apiModelId ?? geminiCliDefaultModelId
+			const info = geminiCliModels[id as keyof typeof geminiCliModels]
+			return { id, info }
+		}
 		case "fireworks": {
 			const id = apiConfiguration.apiModelId ?? fireworksDefaultModelId
 			const info = fireworksModels[id as keyof typeof fireworksModels]
@@ -329,6 +331,11 @@ function getSelectedModel({
 					(apiConfiguration.apiModelId ?? anthropicDefaultModelId) as keyof typeof anthropicModels
 				],
 			}
+		}
+		case "qwen-code": {
+			const id = apiConfiguration.apiModelId ?? qwenCodeDefaultModelId
+			const info = qwenCodeModels[id as keyof typeof qwenCodeModels]
+			return { id, info }
 		}
 		// kilocode_change end
 
@@ -351,11 +358,6 @@ function getSelectedModel({
 		// case "anthropic":
 		// case "human-relay":
 		// case "fake-ai":
-		case "qwen-code": {
-			const id = apiConfiguration.apiModelId ?? qwenCodeDefaultModelId
-			const info = qwenCodeModels[id as keyof typeof qwenCodeModels]
-			return { id, info }
-		}
 		default: {
 			provider satisfies "anthropic" | "human-relay" | "fake-ai"
 			const id = apiConfiguration.apiModelId ?? anthropicDefaultModelId

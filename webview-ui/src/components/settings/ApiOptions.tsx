@@ -71,7 +71,6 @@ import {
 	DeepSeek,
 	Doubao,
 	Gemini,
-	GeminiCli,
 	Glama,
 	Groq,
 	HuggingFace,
@@ -84,14 +83,15 @@ import {
 	OpenAICompatible,
 	OpenRouter,
 	Requesty,
-	QwenCode,
 	SambaNova,
 	Unbound,
 	Vertex,
 	VSCodeLM,
 	XAI,
 	// kilocode_change start
+	GeminiCli,
 	VirtualQuotaFallbackProvider,
+	QwenCode,
 	// kilocode_change end
 	ZAi,
 	Fireworks,
@@ -356,8 +356,8 @@ const ApiOptions = ({
 				// kilocode_change start
 				kilocode: { field: "kilocodeModel", default: kilocodeDefaultModelId },
 				"gemini-cli": { field: "apiModelId", default: geminiCliDefaultModelId },
-				// kilocode_change end
 				"qwen-code": { field: "apiModelId", default: qwenCodeDefaultModelId },
+				// kilocode_change end
 			}
 
 			const config = PROVIDER_MODEL_CONFIG[value]
@@ -597,10 +597,6 @@ const ApiOptions = ({
 				<Chutes apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
-			{selectedProvider === "qwen-code" && (
-				<QwenCode apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
-			)}
-
 			{/* kilocode_change start */}
 
 			{selectedProvider === "gemini-cli" && (
@@ -612,6 +608,10 @@ const ApiOptions = ({
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
 				/>
+			)}
+
+			{selectedProvider === "qwen-code" && (
+				<QwenCode apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 			{/* kilocode_change end */}
 

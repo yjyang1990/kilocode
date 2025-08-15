@@ -76,10 +76,10 @@ function validateModelsAndKeysProvided(apiConfiguration: ProviderSettings): stri
 		case "gemini-cli":
 			// OAuth-based provider, no API key validation needed
 			break
-		// kilocode_change end
 		case "qwen-code":
 			// OAuth-based provider, no API key validation needed
 			break
+		// kilocode_change end
 		case "openai-native":
 			if (!apiConfiguration.openAiNativeApiKey) {
 				return i18next.t("settings:validation.apiKey")
