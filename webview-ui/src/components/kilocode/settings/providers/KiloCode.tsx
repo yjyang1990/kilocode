@@ -2,7 +2,7 @@ import { useCallback } from "react"
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { getKiloCodeBackendSignInUrl } from "../../helpers"
 import { Button } from "@src/components/ui"
-import { type ProviderSettings, kilocodeDefaultModelId } from "@roo-code/types"
+import { type ProviderSettings } from "@roo-code/types"
 import { type OrganizationAllowList } from "@roo/cloud"
 import type { RouterModels } from "@roo/api"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
@@ -20,6 +20,7 @@ type KiloCodeProps = {
 	organizationAllowList: OrganizationAllowList
 	uriScheme: string | undefined
 	uiKind: string | undefined
+	kilocodeDefaultModel: string
 }
 
 export const KiloCode = ({
@@ -31,6 +32,7 @@ export const KiloCode = ({
 	organizationAllowList,
 	uriScheme,
 	uiKind,
+	kilocodeDefaultModel,
 }: KiloCodeProps) => {
 	const { t } = useAppTranslation()
 
@@ -91,7 +93,7 @@ export const KiloCode = ({
 			<ModelPicker
 				apiConfiguration={apiConfiguration}
 				setApiConfigurationField={setApiConfigurationField}
-				defaultModelId={kilocodeDefaultModelId}
+				defaultModelId={kilocodeDefaultModel}
 				models={routerModels?.["kilocode-openrouter"] ?? {}}
 				modelIdKey="kilocodeModel"
 				serviceName="Kilo Code"

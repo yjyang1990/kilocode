@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import * as vscode from "vscode"
 import axios from "axios"
 
-import { type ProviderSettingsEntry, type ClineMessage, kilocodeDefaultModelId } from "@roo-code/types"
+import { type ProviderSettingsEntry, type ClineMessage, openRouterDefaultModelId } from "@roo-code/types"
 import { TelemetryService } from "@roo-code/telemetry"
 import { ORGANIZATION_ALLOW_ALL } from "@roo-code/cloud"
 
@@ -517,10 +517,11 @@ describe("ClineProvider", () => {
 			apiConfiguration: {
 				// kilocode_change start
 				apiProvider: "kilocode",
-				kilocodeModel: kilocodeDefaultModelId,
+				kilocodeModel: openRouterDefaultModelId,
 				kilocodeToken: "kilocode-token",
 				// kilocode_change end
 			},
+			kilocodeDefaultModel: openRouterDefaultModelId,
 			customInstructions: undefined,
 			alwaysAllowReadOnly: false,
 			alwaysAllowReadOnlyOutsideWorkspace: false,

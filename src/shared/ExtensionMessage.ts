@@ -331,6 +331,7 @@ export type ExtensionState = Pick<
 	apiConfiguration?: ProviderSettings
 	uriScheme?: string
 	uiKind?: string // kilocode_change
+	kilocodeDefaultModel: string
 	shouldShowAnnouncement: boolean
 
 	taskHistory: HistoryItem[]

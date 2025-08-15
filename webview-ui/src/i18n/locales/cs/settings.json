@@ -503,6 +503,13 @@
 		},
 		"kilo_code_openrouter": {
 			"description": "Přístup k 200+ modelům přes OpenRouter s 1M kontextovým oknem"
+		},
+		"qwenCode": {
+			"oauthPath": "Cesta k OAuth přihlašovacím údajům (volitelné)",
+			"oauthPathDescription": "Cesta k souboru přihlašovacích údajů OAuth. Ponechte prázdné pro použití výchozího umístění (~/.qwen/oauth_creds.json).",
+			"description": "Tento poskytovatel používá OAuth autentizaci ze služby Qwen a nevyžaduje klíče API.",
+			"instructions": "Postupujte prosím podle oficiální dokumentace pro získání autorizačního souboru a umístěte jej do zadané cesty.",
+			"setupLink": "Oficiální dokumentace Qwen"
 		}
 	},
 	"contextWindow": {

@@ -503,6 +503,13 @@
 		},
 		"kilo_code_openrouter": {
 			"description": "الوصول لأكثر من 200 نموذج عبر OpenRouter بنافذة سياق 1 مليون"
+		},
+		"qwenCode": {
+			"oauthPath": "مسار بيانات OAuth (اختياري)",
+			"oauthPathDescription": "مسار ملف بيانات OAuth. اتركه فاضي لاستخدام المسار الافتراضي (~/.qwen/oauth_creds.json).",
+			"description": "يستخدم هذا المزوّد مصادقة OAuth من خدمة Qwen ولا يحتاج مفاتيح API.",
+			"instructions": "يرجى اتباع التوثيق الرسمي للحصول على ملف التخويل ووضعه في المسار المحدد.",
+			"setupLink": "توثيق Qwen الرسمي"
 		}
 	},
 	"contextWindow": {
