@@ -285,6 +285,9 @@ const kilocodeSchema = baseProviderSettingsSchema.extend({
 	kilocodeToken: z.string().optional(),
 	kilocodeOrganizationId: z.string().optional(),
 	kilocodeModel: z.string().optional(),
+	openRouterSpecificProvider: z.string().optional(),
+	openRouterProviderDataCollection: openRouterProviderDataCollectionSchema.optional(),
+	openRouterProviderSort: openRouterProviderSortSchema.optional(),
 })
 
 export const virtualQuotaFallbackProfileDataSchema = z.object({
