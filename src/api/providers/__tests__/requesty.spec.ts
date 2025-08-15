@@ -74,9 +74,10 @@ describe("RequestyHandler", () => {
 			baseURL: "some-base-url",
 			apiKey: mockOptions.requestyApiKey,
 			defaultHeaders: {
-				"HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline",
-				"X-Title": "Roo Code",
-				"User-Agent": `RooCode/${Package.version}`,
+				"HTTP-Referer": "https://kilocode.ai",
+				"X-Title": "Kilo Code",
+				"X-KiloCode-Version": Package.version,
+				"User-Agent": `Kilo-Code/${Package.version}`,
 			},
 		})
 	})

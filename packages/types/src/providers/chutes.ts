@@ -228,6 +228,15 @@ export const chutesModels = {
 		description:
 			"GLM-4.5-FP8 model with 98,304 token context window, optimized for agent-based applications with MoE architecture.",
 	},
+	"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8": {
+		maxTokens: 32768,
+		contextWindow: 262144,
+		supportsImages: false,
+		supportsPromptCache: false,
+		inputPrice: 0,
+		outputPrice: 0,
+		description: "Qwen3 Coder 480B A35B Instruct FP8 model, optimized for coding tasks.",
+	},
 	"Qwen/Qwen3-235B-A22B-Thinking-2507": {
 		maxTokens: 32768,
 		contextWindow: 262144,
@@ -263,15 +272,6 @@ export const chutesModels = {
 		inputPrice: 0.06663960000000001,
 		outputPrice: 0.266688,
 		description: "Moonshot AI Kimi Dev 72B model with 131K context window.",
-	},
-	"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8": {
-		maxTokens: 32768,
-		contextWindow: 262144,
-		supportsImages: false,
-		supportsPromptCache: false,
-		inputPrice: 0.1999188,
-		outputPrice: 0.800064,
-		description: "Qwen3 Coder 480B A35B Instruct FP8 model with 262K context window.",
 	},
 	"chutesai/Devstral-Small-2505": {
 		maxTokens: 32768,
