@@ -26,6 +26,9 @@
 		"shareSuccessOrganization": "組織連結已複製到剪貼簿",
 		"shareSuccessPublic": "公開連結已複製到剪貼簿"
 	},
+	"history": {
+		"title": "歷史記錄"
+	},
 	"unpin": "取消釘選",
 	"pin": "釘選",
 	"retry": {
@@ -119,6 +122,7 @@
 	},
 	"selectMode": "選擇互動模式",
 	"selectApiConfig": "選取 API 設定",
+	"selectModelConfig": "選擇模型",
 	"enhancePrompt": "使用額外內容強化提示詞",
 	"modeSelector": {
 		"title": "模式",
