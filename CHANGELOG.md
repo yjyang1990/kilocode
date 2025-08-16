@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.81.0
-
-### Minor Changes
+## [v4.81.0]
 
 - [#1868](https://github.com/Kilo-Org/kilocode/pull/1868) [`50638b4`](https://github.com/Kilo-Org/kilocode/commit/50638b4226aa3de24f5a9b825a8ef7f1e4d376f6) Thanks [@Toukaiteio](https://github.com/Toukaiteio)! - Add Support For Qwen Code
 
