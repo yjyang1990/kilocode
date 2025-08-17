@@ -109,7 +109,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const mdmService = await MdmService.createInstance(cloudLogger)
 
 	// Initialize i18n for internationalization support
-	initializeI18n(context.globalState.get("language") ?? formatLanguage(vscode.env.language)) // kilocode_change
+	initializeI18n(context.globalState.get("language") ?? formatLanguage(vscode.env.language))
 
 	// Initialize terminal shell execution handlers.
 	TerminalRegistry.initialize()
