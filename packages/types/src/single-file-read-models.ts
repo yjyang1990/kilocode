@@ -5,7 +5,9 @@
  */
 
 // List of model IDs (or patterns) that should use single file reads only
-export const SINGLE_FILE_READ_MODELS = new Set<string>(["roo/sonic"])
+export const SINGLE_FILE_READ_MODELS = new Set<string>([
+	"sonic", // kilocode_change
+])
 
 /**
  * Check if a model should use single file read format
