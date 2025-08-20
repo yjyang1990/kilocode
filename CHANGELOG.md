@@ -1,10 +1,8 @@
 # Roo Code Changelog
 
-## 3.25.20
+## [3.25.20] - 2025-08-19
 
-### Patch Changes
-
--   - Add announcement for Sonic model (thanks @mrubens!)
+- Add announcement for Sonic model
 
 ## [3.25.19] - 2025-08-19
 
