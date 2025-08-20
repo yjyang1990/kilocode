@@ -13,6 +13,7 @@ import {
 import { TelemetryService } from "@roo-code/telemetry"
 
 import { Mode, modes } from "../../shared/modes"
+import { migrateMorphApiKey } from "./kilocode/migrateMorphApiKey"
 
 export interface SyncCloudProfilesResult {
 	hasChanges: boolean
@@ -159,11 +160,13 @@ export class ProviderSettingsManager {
 					isDirty = true
 				}
 
+				// kilocode_change start
 				if (!providerProfiles.migrations.morphApiKeyMigrated) {
-					await this.migrateMorphApiKey(providerProfiles)
+					await migrateMorphApiKey(this.context, providerProfiles)
 					providerProfiles.migrations.morphApiKeyMigrated = true
 					isDirty = true
 				}
+				// kilocode_change end
 
 				if (isDirty) {
 					await this.store(providerProfiles)
@@ -279,36 +282,6 @@ export class ProviderSettingsManager {
 			}
 		} catch (error) {
 			console.error(`[MigrateTodoListEnabled] Failed to migrate todo list enabled setting:`, error)
-		}
-	}
-
-	private async migrateMorphApiKey(providerProfiles: ProviderProfiles) {
-		try {
-			// Find any provider profile with morphApiKey set
-			let morphApiKeyToMigrate: string | undefined
-
-			for (const [_name, apiConfig] of Object.entries(providerProfiles.apiConfigs)) {
-				// Check if this config has morphApiKey (using type assertion since it's no longer in the schema)
-				const configAny = apiConfig as any
-				if (configAny.morphApiKey) {
-					morphApiKeyToMigrate = configAny.morphApiKey
-					// Clear it from the provider config
-					configAny.morphApiKey = undefined
-					break // Use the first one found
-				}
-			}
-
-			// If we found a morphApiKey, migrate it to global settings
-			if (morphApiKeyToMigrate) {
-				try {
-					await this.context.globalState.update("morphApiKey", morphApiKeyToMigrate)
-					console.log("[MigrateMorphApiKey] Successfully migrated morphApiKey to global settings")
-				} catch (error) {
-					console.error("[MigrateMorphApiKey] Error setting global morphApiKey:", error)
-				}
-			}
-		} catch (error) {
-			console.error(`[MigrateMorphApiKey] Failed to migrate morphApiKey:`, error)
 		}
 	}
 
