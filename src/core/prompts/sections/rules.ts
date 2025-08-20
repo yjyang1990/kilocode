@@ -1,6 +1,6 @@
 import { DiffStrategy } from "../../../shared/tools"
 import { CodeIndexManager } from "../../../services/code-index/manager"
-import { getMorphEditingInstructions } from "../tools/edit-file"
+import { getMorphEditingInstructions } from "../tools/edit-file" // kilocode_change
 
 function getEditingInstructions(diffStrategy?: DiffStrategy): string {
 	const instructions: string[] = []

@@ -9,10 +9,10 @@ import { formatResponse } from "../prompts/responses"
 import { ToolUse, AskApproval, HandleError, PushToolResult, RemoveClosingTag } from "../../shared/tools"
 import { fileExistsAtPath } from "../../utils/fs"
 import { getReadablePath } from "../../utils/path"
-import { Experiments, ProviderSettings } from "@roo-code/types"
 import { getKiloBaseUriFromToken } from "../../shared/kilocode/token"
 import { DEFAULT_HEADERS } from "../../api/providers/constants"
 import { TelemetryService } from "@roo-code/telemetry"
+import { type ClineProvider } from "../webview/ClineProvider"
 
 // Morph model pricing per 1M tokens
 const MORPH_MODEL_PRICING = {
@@ -211,7 +211,7 @@ async function applyMorphEdit(
 		const state = await provider.getState()
 
 		// Check if user has Morph enabled via OpenRouter or direct API
-		const morphConfig = await getMorphConfiguration(state.experiments, state.apiConfiguration, state)
+		const morphConfig = await getMorphConfiguration(state)
 		if (!morphConfig.available) {
 			return { success: false, error: morphConfig.error || "Morph is not available" }
 		}
@@ -311,12 +311,10 @@ interface MorphConfiguration {
 }
 
 async function getMorphConfiguration(
-	experiments: Experiments,
-	apiConfig: ProviderSettings,
-	globalState: any, // kilocode_change: Added to access global morphApiKey
+	state: Awaited<ReturnType<ClineProvider["getState"]>>,
 ): Promise<MorphConfiguration> {
 	// Check if Morph is enabled in API configuration
-	if (experiments.morphFastApply !== true) {
+	if (state.experiments.morphFastApply !== true) {
 		return {
 			available: false,
 			error: "Morph is disabled. Enable it in API Options > Enable Editing with Morph FastApply",
@@ -324,10 +322,11 @@ async function getMorphConfiguration(
 	}
 
 	// Check if user has direct Morph API key in global settings
-	const hasGlobalMorphApiKey = Boolean(globalState.morphApiKey)
+	const hasGlobalMorphApiKey = Boolean(state.morphApiKey)
 
 	// Check if provider supports Morph natively (openrouter only for now)
-	const isOpenRouterProvider = apiConfig.apiProvider === "openrouter" && Boolean(apiConfig.openRouterApiKey)
+	const isOpenRouterProvider =
+		state.apiConfiguration?.apiProvider === "openrouter" && Boolean(state.apiConfiguration.openRouterApiKey)
 	const hasNativeMorphSupport = isOpenRouterProvider
 
 	// Morph is available if: (provider supports it natively) OR (has global morph API key)
@@ -343,15 +342,15 @@ async function getMorphConfiguration(
 	if (hasGlobalMorphApiKey) {
 		return {
 			available: true,
-			apiKey: globalState.morphApiKey,
+			apiKey: state.morphApiKey,
 			baseUrl: "https://api.morphllm.com/v1",
 			model: "auto",
 		}
 	}
 
 	// Priority 2: Use KiloCode provider
-	if (apiConfig.apiProvider === "kilocode") {
-		const token = apiConfig.kilocodeToken
+	if (state.apiConfiguration?.apiProvider === "kilocode") {
+		const token = state.apiConfiguration.kilocodeToken
 		if (!token) {
 			return { available: false, error: "No KiloCode token available to use Morph" }
 		}
@@ -364,15 +363,15 @@ async function getMorphConfiguration(
 	}
 
 	// Priority 3: Use OpenRouter provider
-	if (apiConfig.apiProvider === "openrouter") {
-		const token = apiConfig.openRouterApiKey
+	if (state.apiConfiguration?.apiProvider === "openrouter") {
+		const token = state.apiConfiguration.openRouterApiKey
 		if (!token) {
 			return { available: false, error: "No OpenRouter API token available to use Morph" }
 		}
 		return {
 			available: true,
 			apiKey: token,
-			baseUrl: apiConfig.openRouterBaseUrl || "https://openrouter.ai/api/v1",
+			baseUrl: state.apiConfiguration.openRouterBaseUrl || "https://openrouter.ai/api/v1",
 			model: "morph/morph-v3-large", // Morph model via OpenRouter
 		}
 	}

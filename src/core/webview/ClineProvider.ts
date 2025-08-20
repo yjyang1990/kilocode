@@ -2077,6 +2077,7 @@ export class ClineProvider
 			allowVeryLargeReads: stateValues.allowVeryLargeReads ?? false, // kilocode_change
 			systemNotificationsEnabled: stateValues.systemNotificationsEnabled ?? true, // kilocode_change
 			dismissedNotificationIds: stateValues.dismissedNotificationIds ?? [], // kilocode_change
+			morphApiKey: stateValues.morphApiKey, // kilocode_change
 			historyPreviewCollapsed: stateValues.historyPreviewCollapsed ?? false,
 			cloudUserInfo,
 			cloudIsAuthenticated,
