@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.25.20
+
+### Patch Changes
+
+-   - Add announcement for Sonic model (thanks @mrubens!)
+
 ## [3.25.19] - 2025-08-19
 
 - Fix issue where new users couldn't select the Roo Code Cloud provider (thanks @daniel-lxs!)
