@@ -57,7 +57,6 @@ export class VirtualQuotaFallbackHandler implements ApiHandler {
 
 	async countTokens(content: Array<Anthropic.Messages.ContentBlockParam>): Promise<number> {
 		try {
-			await this.initialize()
 			await this.adjustActiveHandler()
 
 			if (!this.activeHandler) {
