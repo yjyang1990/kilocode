@@ -1659,6 +1659,7 @@ describe("Cline", () => {
 				apiConfiguration: mockApiConfig,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			// Spy on emit method
@@ -1683,6 +1684,7 @@ describe("Cline", () => {
 				apiConfiguration: mockApiConfig,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			// Mock the dispose method to track cleanup
@@ -1702,6 +1704,7 @@ describe("Cline", () => {
 				apiConfiguration: mockApiConfig,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			// Cast to TaskLike to ensure interface compliance
@@ -1726,6 +1729,7 @@ describe("Cline", () => {
 				apiConfiguration: mockApiConfig,
 				task: "test task",
 				startTask: false,
+				context: mockExtensionContext, // kilocode_change
 			})
 
 			// Mock dispose to throw an error

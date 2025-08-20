@@ -43,11 +43,30 @@ describe("Task dispose method", () => {
 		// Reset all mocks
 		vi.clearAllMocks()
 
+		// kilocode_change start: mock context
+		const mockContext = {
+			globalStorageUri: { fsPath: "/test/path" },
+			subscriptions: [],
+			workspaceState: {
+				get: vi.fn(),
+				update: vi.fn(),
+			},
+			globalState: {
+				get: vi.fn(),
+				update: vi.fn(),
+			},
+			extensionUri: { fsPath: "/test/extension" },
+			extensionPath: "/test/extension",
+			asAbsolutePath: vi.fn((path: string) => `/test/extension/${path}`),
+			storagePath: "/test/storage",
+			globalStoragePath: "/test/global-storage",
+			logPath: "/test/logs",
+		} as any
+		// kilocode_change_end
+
 		// Mock provider
 		mockProvider = {
-			context: {
-				globalStorageUri: { fsPath: "/test/path" },
-			},
+			context: mockContext, // kilocode_change
 			getState: vi.fn().mockResolvedValue({ mode: "code" }),
 			log: vi.fn(),
 		}
@@ -60,6 +79,7 @@ describe("Task dispose method", () => {
 
 		// Create task instance without starting it
 		task = new Task({
+			context: mockContext, // kilocode_change
 			provider: mockProvider as ClineProvider,
 			apiConfiguration: mockApiConfiguration,
 			startTask: false,

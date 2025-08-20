@@ -308,7 +308,7 @@ export const webviewMessageHandler = async (
 			break
 		// kilocode_change start
 		case "condense":
-			provider.getCurrentCline()?.handleWebviewAskResponse("yesButtonClicked")
+			provider.getCurrentTask()?.handleWebviewAskResponse("yesButtonClicked")
 			break
 		// kilocode_change end
 		case "customInstructions":
@@ -2339,7 +2339,7 @@ export const webviewMessageHandler = async (
 		}
 
 		case "reportBug":
-			provider.getCurrentCline()?.handleWebviewAskResponse("yesButtonClicked")
+			provider.getCurrentTask()?.handleWebviewAskResponse("yesButtonClicked")
 			break
 		// end kilocode_change
 		case "telemetrySetting": {
