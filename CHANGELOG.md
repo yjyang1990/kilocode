@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.82.2
-
-### Patch Changes
+## [v4.82.2]
 
 - [#1811](https://github.com/Kilo-Org/kilocode/pull/1811) [`5f7afe6`](https://github.com/Kilo-Org/kilocode/commit/5f7afe6ffeb1078428b0b43c6d9a4e9252e78bc8) Thanks [@gerardbalaoro](https://github.com/gerardbalaoro)! - Adjust position within context menus to be below default items
 
