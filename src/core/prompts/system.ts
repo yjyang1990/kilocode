@@ -67,6 +67,7 @@ async function generatePrompt(
 	partialReadsEnabled?: boolean,
 	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
+	modelId?: string,
 ): Promise<string> {
 	if (!context) {
 		throw new Error("Extension context is required for generating system prompt")
@@ -112,6 +113,7 @@ ${getToolDescriptionsForMode(
 	partialReadsEnabled,
 	settings,
 	enableMcpServerCreation,
+	modelId,
 )}
 
 ${getToolUseGuidelinesSection(codeIndexManager)}
@@ -158,6 +160,7 @@ export const SYSTEM_PROMPT = async (
 	partialReadsEnabled?: boolean,
 	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
+	modelId?: string,
 ): Promise<string> => {
 	if (!context) {
 		throw new Error("Extension context is required for generating system prompt")
@@ -232,5 +235,6 @@ ${customInstructions}`
 		partialReadsEnabled,
 		settings,
 		todoList,
+		modelId,
 	)
 }
