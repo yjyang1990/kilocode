@@ -2367,7 +2367,7 @@ export class ClineProvider
 				return {
 					fastApply: {
 						morphFastApply: Boolean(experiments.morphFastApply),
-						morphApiKey: Boolean(this.contextProxy.getValue("morphApiKey")), // kilocode_change: Use global morphApiKey
+						morphApiKey: Boolean(this.contextProxy.getValue("morphApiKey")),
 					},
 				}
 			} catch (error) {
