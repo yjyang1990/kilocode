@@ -48,10 +48,16 @@ export /*kilocode_change*/ async function readModels(router: RouterName): Promis
  */
 export const getModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
 	const { provider } = options
-	let models = getModelsFromCache(provider)
-	if (models) {
-		return models
+	// kilocode_change: skip cache for kilocode-openrouter with organization ID
+	let models
+	if (!(options.provider === "kilocode-openrouter" && options.kilocodeOrganizationId)) {
+		// Skipping cache for kilocode-openrouter with organization ID, as it requires a specific endpoint
+		models = getModelsFromCache(provider)
+		if (models) {
+			return models
+		}
 	}
+	// kilocode_change: end
 
 	try {
 		switch (provider) {
@@ -81,10 +87,12 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 			// kilocode_change start
 			case "kilocode-openrouter":
 				models = await getOpenRouterModels({
-					openRouterBaseUrl: getKiloBaseUriFromToken(options.kilocodeToken ?? "") + "/api/openrouter",
-					headers: options.kilocodeOrganizationId
-						? { "X-KiloCode-OrganizationId": options.kilocodeOrganizationId }
-						: undefined,
+					openRouterBaseUrl:
+						getKiloBaseUriFromToken(options.kilocodeToken ?? "") +
+						(options.kilocodeOrganizationId
+							? `/api/organizations/${options.kilocodeOrganizationId}`
+							: "/api/openrouter"),
+					headers: options.kilocodeToken ? { Authorization: `Bearer ${options.kilocodeToken}` } : undefined,
 				})
 				break
 			case "cerebras":
@@ -108,7 +116,10 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 		}
 
 		// Cache the fetched models (even if empty, to signify a successful fetch with no models)
-		memoryCache.set(provider, models)
+		if (!(options.provider === "kilocode-openrouter" && options.kilocodeOrganizationId)) {
+			// kilocode_change: skip cache for kilocode-openrouter with organization ID
+			memoryCache.set(provider, models)
+		}
 
 		/* kilocode_change: skip useless file IO
 		await writeModels(provider, models).catch((err) =>
