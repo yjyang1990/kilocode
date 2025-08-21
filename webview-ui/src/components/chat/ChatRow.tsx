@@ -299,19 +299,6 @@ export const ChatRowContent = ({
 					</div>
 				)
 
-				// kilocode_change start: Morph Fast Apply
-				const isMorphRequest = (() => {
-					try {
-						return (
-							message.text &&
-							JSON.parse(message.text || "{}")?.request?.includes?.("Morph FastApply Edit")
-						)
-					} catch {
-						return false
-					}
-				})()
-				// kilocode_change end
-
 				return [
 					apiReqCancelReason !== null && apiReqCancelReason !== undefined ? (
 						apiReqCancelReason === "user_cancelled" ? (
@@ -320,14 +307,8 @@ export const ChatRowContent = ({
 							getIconSpan("error", errorColor)
 						)
 					) : cost !== null && cost !== undefined ? (
-						// kilocode_change start: Morph Fast Apply
-						isMorphRequest ? (
-							getIconSpan("rocket", successColor)
-						) : (
-							getIconSpan("check", successColor)
-						)
-					) : // kilocode_change end
-					apiRequestFailedMessage ? (
+						getIconSpan("check", successColor)
+					) : apiRequestFailedMessage ? (
 						getIconSpan("error", errorColor)
 					) : (
 						<ProgressIndicator />
@@ -343,19 +324,11 @@ export const ChatRowContent = ({
 							</span>
 						)
 					) : cost !== null && cost !== undefined ? (
-						<span style={{ color: normalColor, fontWeight: "bold" }}>
-							{
-								isMorphRequest ? t("kilocode:morph.edited") : t("chat:apiRequest.title") // kilocode_change: Morph Fast Apply
-							}
-						</span>
+						<span style={{ color: normalColor, fontWeight: "bold" }}>{t("chat:apiRequest.title")}</span>
 					) : apiRequestFailedMessage ? (
 						<span style={{ color: errorColor, fontWeight: "bold" }}>{t("chat:apiRequest.failed")}</span>
 					) : (
-						<span style={{ color: normalColor, fontWeight: "bold" }}>
-							{
-								isMorphRequest ? t("kilocode:morph.editing") : t("chat:apiRequest.streaming") // kilocode_change: Morph Fast Apply
-							}
-						</span>
+						<span style={{ color: normalColor, fontWeight: "bold" }}>{t("chat:apiRequest.streaming")}</span>
 					),
 				]
 			case "followup":
