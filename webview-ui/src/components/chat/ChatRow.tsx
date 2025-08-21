@@ -345,7 +345,7 @@ export const ChatRowContent = ({
 					) : cost !== null && cost !== undefined ? (
 						<span style={{ color: normalColor, fontWeight: "bold" }}>
 							{
-								isMorphRequest ? "Edited with Morph" : t("chat:apiRequest.title") // kilocode_change: Morph Fast Apply
+								isMorphRequest ? t("kilocode:morph.edited") : t("chat:apiRequest.title") // kilocode_change: Morph Fast Apply
 							}
 						</span>
 					) : apiRequestFailedMessage ? (
@@ -353,7 +353,7 @@ export const ChatRowContent = ({
 					) : (
 						<span style={{ color: normalColor, fontWeight: "bold" }}>
 							{
-								isMorphRequest ? "Editing with Morph..." : t("chat:apiRequest.streaming") // kilocode_change: Morph Fast Apply
+								isMorphRequest ? t("kilocode:morph.editing") : t("chat:apiRequest.streaming") // kilocode_change: Morph Fast Apply
 							}
 						</span>
 					),
