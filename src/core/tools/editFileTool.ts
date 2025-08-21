@@ -12,7 +12,7 @@ import { getReadablePath } from "../../utils/path"
 import { getKiloBaseUriFromToken } from "../../shared/kilocode/token"
 import { DEFAULT_HEADERS } from "../../api/providers/constants"
 import { TelemetryService } from "@roo-code/telemetry"
-import { type ClineProvider } from "../webview/ClineProvider"
+import { type ClineProviderState } from "../webview/ClineProvider"
 
 // Morph model pricing per 1M tokens
 const MORPH_MODEL_PRICING = {
@@ -310,9 +310,7 @@ interface MorphConfiguration {
 	error?: string
 }
 
-async function getMorphConfiguration(
-	state: Awaited<ReturnType<ClineProvider["getState"]>>,
-): Promise<MorphConfiguration> {
+function getMorphConfiguration(state: ClineProviderState): MorphConfiguration {
 	// Check if Morph is enabled in API configuration
 	if (state.experiments.morphFastApply !== true) {
 		return {
@@ -326,12 +324,12 @@ async function getMorphConfiguration(
 
 	// Check if provider supports Morph natively (openrouter only for now)
 	const isOpenRouterProvider =
-		state.apiConfiguration?.apiProvider === "openrouter" && Boolean(state.apiConfiguration.openRouterApiKey)
-	const hasNativeMorphSupport = isOpenRouterProvider
+		(state.apiConfiguration?.apiProvider === "kilocode" && Boolean(state.apiConfiguration.kilocodeToken)) ||
+		(state.apiConfiguration?.apiProvider === "openrouter" && Boolean(state.apiConfiguration.openRouterApiKey))
 
 	// Morph is available if: (provider supports it natively) OR (has global morph API key)
 	// If neither condition is met, behave as if Morph is disabled entirely
-	if (!hasNativeMorphSupport && !hasGlobalMorphApiKey) {
+	if (!isOpenRouterProvider && !hasGlobalMorphApiKey) {
 		return {
 			available: false,
 			error: "Morph is disabled. Enable it in API Options > Enable Editing with Morph FastApply",
@@ -381,4 +379,8 @@ async function getMorphConfiguration(
 		available: false,
 		error: "Morph configuration error. Please check your settings.",
 	}
+}
+
+export function isMorphAvailable(state?: ClineProviderState): boolean {
+	return (state && getMorphConfiguration(state).available) || false
 }

@@ -15,7 +15,6 @@ import { getSearchFilesDescription } from "./search-files"
 import { getListFilesDescription } from "./list-files"
 import { getInsertContentDescription } from "./insert-content"
 import { getSearchAndReplaceDescription } from "./search-and-replace"
-import { getEditFileDescription } from "./edit-file" // kilocode_change: Morph fast apply
 import { getListCodeDefinitionNamesDescription } from "./list-code-definition-names"
 import { getBrowserActionDescription } from "./browser-action"
 import { getAskFollowupQuestionDescription } from "./ask-followup-question"
@@ -27,6 +26,12 @@ import { getNewTaskDescription } from "./new-task"
 import { getCodebaseSearchDescription } from "./codebase-search"
 import { getUpdateTodoListDescription } from "./update-todo-list"
 import { CodeIndexManager } from "../../../services/code-index/manager"
+import { isMorphAvailable } from "../../tools/editFileTool"
+
+// kilocode_change start: Morph fast apply
+import { getEditFileDescription } from "./edit-file"
+import { type ClineProviderState } from "../../webview/ClineProvider"
+// kilocode_change end
 
 // Map of tool names to their description functions
 const toolDescriptionMap: Record<string, (args: ToolArgs) => string | undefined> = {
@@ -74,6 +79,7 @@ export function getToolDescriptionsForMode(
 	settings?: Record<string, any>,
 	enableMcpServerCreation?: boolean,
 	modelId?: string,
+	clineProviderState?: ClineProviderState, // kilocode_change
 ): string {
 	const config = getModeConfig(mode, customModes)
 	const args: ToolArgs = {
@@ -127,12 +133,12 @@ export function getToolDescriptionsForMode(
 	}
 
 	// kilocode_change start: Morph fast apply
-	if (experiments?.morphFastApply !== true) {
-		tools.delete("edit_file")
-	} else {
+	if (isMorphAvailable(clineProviderState)) {
 		// When Morph is enabled, disable traditional editing tools
 		const traditionalEditingTools = ["apply_diff", "write_to_file", "insert_content", "search_and_replace"]
 		traditionalEditingTools.forEach((tool) => tools.delete(tool))
+	} else {
+		tools.delete("edit_file")
 	}
 	// kilocode_change end
 

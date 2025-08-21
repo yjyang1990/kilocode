@@ -34,6 +34,7 @@ import {
 	addCustomInstructions,
 	markdownFormattingSection,
 } from "./sections"
+import { type ClineProviderState } from "../webview/ClineProvider" // kilocode_change
 
 // Helper function to get prompt component, filtering out empty objects
 export function getPromptComponent(
@@ -68,6 +69,7 @@ async function generatePrompt(
 	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
 	modelId?: string,
+	clineProviderState?: ClineProviderState, // kilocode_change
 ): Promise<string> {
 	if (!context) {
 		throw new Error("Extension context is required for generating system prompt")
@@ -114,6 +116,7 @@ ${getToolDescriptionsForMode(
 	settings,
 	enableMcpServerCreation,
 	modelId,
+	clineProviderState, // kilocode_change
 )}
 
 ${getToolUseGuidelinesSection(codeIndexManager)}
@@ -124,7 +127,7 @@ ${getCapabilitiesSection(cwd, supportsComputerUse, shouldIncludeMcp ? mcpHub : u
 
 ${modesSection}
 
-${getRulesSection(cwd, supportsComputerUse, effectiveDiffStrategy, codeIndexManager, experiments /* kilocode_change */)}
+${getRulesSection(cwd, supportsComputerUse, effectiveDiffStrategy, codeIndexManager, clineProviderState /* kilocode_change */)}
 
 ${getSystemInfoSection(cwd)}
 
@@ -161,6 +164,7 @@ export const SYSTEM_PROMPT = async (
 	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
 	modelId?: string,
+	clineProviderState?: ClineProviderState, // kilocode_change
 ): Promise<string> => {
 	if (!context) {
 		throw new Error("Extension context is required for generating system prompt")
@@ -236,5 +240,6 @@ ${customInstructions}`
 		settings,
 		todoList,
 		modelId,
+		clineProviderState, // kilocode_change
 	)
 }
