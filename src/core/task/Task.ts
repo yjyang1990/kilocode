@@ -1689,6 +1689,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				let inputTokens = 0
 				let outputTokens = 0
 				let totalCost: number | undefined
+				let usageMissing = false // kilocode_change
 
 				// We can't use `api_req_finished` anymore since it's a unique case
 				// where it could come after a streaming message (i.e. in the middle
@@ -1718,6 +1719,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 								cacheWriteTokens,
 								cacheReadTokens,
 							),
+						usageMissing, // kilocode_change
 						cancelReason,
 						streamingFailedMessage,
 					} satisfies ClineApiReqInfo)
@@ -1892,6 +1894,20 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 						let bgCacheReadTokens = currentTokens.cacheRead
 						let bgTotalCost = currentTokens.total
 
+						// kilocode_change start
+						const refreshApiReqMsg = async (messageIndex: number) => {
+							// Update the API request message with the latest usage data
+							updateApiReqMsg()
+							await this.saveClineMessages()
+
+							// Update the specific message in the webview
+							const apiReqMessage = this.clineMessages[messageIndex]
+							if (apiReqMessage) {
+								await this.updateClineMessage(apiReqMessage)
+							}
+						}
+						// kilocode_change end
+
 						// Helper function to capture telemetry and update messages
 						const captureUsageData = async (
 							tokens: {
@@ -2000,6 +2016,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 								console.warn(
 									`[Background Usage Collection] Suspicious: request ${apiReqIndex} is complete, but no usage info was found. Model: ${modelId}`,
 								)
+								// kilocode_change start
+								usageMissing = true
+								await refreshApiReqMsg(apiReqIndex)
+								// kilocode_change end
 							}
 						} catch (error) {
 							console.error("Error draining stream for usage data:", error)
@@ -2020,6 +2040,11 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 									},
 									lastApiReqIndex,
 								)
+								// kilocode_change start
+							} else {
+								usageMissing = true
+								await refreshApiReqMsg(apiReqIndex)
+								// kilocode_change end
 							}
 						}
 					}
