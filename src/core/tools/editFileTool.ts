@@ -13,6 +13,7 @@ import { getKiloBaseUriFromToken } from "../../shared/kilocode/token"
 import { DEFAULT_HEADERS } from "../../api/providers/constants"
 import { TelemetryService } from "@roo-code/telemetry"
 import { type ClineProviderState } from "../webview/ClineProvider"
+import { ClineSayTool } from "../../shared/ExtensionMessage"
 
 // Morph model pricing per 1M tokens
 const MORPH_MODEL_PRICING = {
@@ -84,15 +85,21 @@ export async function editFileTool(
 	const instructions: string | undefined = block.params.instructions
 	const code_edit: string | undefined = block.params.code_edit
 
+	let fileExists = true
 	try {
+		if (block.partial && (!target_file || instructions === undefined)) {
+			// wait so we can determine if it's a new file or editing an existing file
+			return
+		}
+		fileExists = await fileExistsAtPath(path.resolve(cline.cwd, target_file ?? ""))
+
 		// Handle partial tool use
 		if (block.partial) {
 			const partialMessageProps = {
-				tool: "editFile" as const,
+				tool: fileExists ? "editedExistingFile" : "newFileCreated",
 				path: getReadablePath(cline.cwd, removeClosingTag("target_file", target_file)),
-				instructions: removeClosingTag("instructions", instructions),
-				codeEdit: removeClosingTag("code_edit", code_edit),
-			}
+				content: removeClosingTag("code_edit", code_edit),
+			} satisfies ClineSayTool
 			await cline.ask("tool", JSON.stringify(partialMessageProps), block.partial).catch(() => {
 				// Roo tools ignore exceptions as well here
 			})
@@ -122,7 +129,7 @@ export async function editFileTool(
 		}
 
 		// Check if file exists
-		if (!(await fileExistsAtPath(absolutePath))) {
+		if (!fileExists) {
 			await fs.writeFile(absolutePath, "")
 		}
 
@@ -153,11 +160,17 @@ export async function editFileTool(
 		const approved = await askApproval(
 			"tool",
 			JSON.stringify({
-				tool: "editedExistingFile",
+				tool: fileExists ? "editedExistingFile" : "newFileCreated",
 				path: relPath,
 				isProtected: cline.rooProtectedController?.isWriteProtected(relPath) || false,
-				instructions: editInstructions,
-			}),
+				content: editCode,
+				fastApplyResult: {
+					description: morphApplyResult.description,
+					tokensIn: morphApplyResult.tokensIn,
+					tokensOut: morphApplyResult.tokensOut,
+					cost: morphApplyResult.cost,
+				},
+			} satisfies ClineSayTool),
 			undefined,
 			cline.rooProtectedController?.isWriteProtected(relPath) || false,
 		)
@@ -192,6 +205,10 @@ interface MorphApplyResult {
 	success: boolean
 	result?: string
 	error?: string
+	description?: string
+	tokensIn?: number
+	tokensOut?: number
+	cost?: number
 }
 
 async function applyMorphEdit(
@@ -199,7 +216,7 @@ async function applyMorphEdit(
 	instructions: string,
 	codeEdit: string,
 	cline: Task,
-	filePath?: string,
+	filePath: string,
 ): Promise<MorphApplyResult> {
 	try {
 		// Get the current API configuration
@@ -216,13 +233,10 @@ async function applyMorphEdit(
 			return { success: false, error: morphConfig.error || "Morph is not available" }
 		}
 
-		// Create api_req_started message for tracking
-		const morphApiReqIndex = cline.clineMessages.length
-
 		// Create a verbose request description similar to regular API requests
 		const fileName = filePath ? path.basename(filePath) : "unknown file"
 		const truncatedCodeEdit = codeEdit.length > 500 ? codeEdit.substring(0, 500) + "\n...(truncated)" : codeEdit
-		const morphRequestDescription = [
+		const description = [
 			`Morph FastApply Edit (${morphConfig.model})`,
 			``,
 			`File: ${fileName}`,
@@ -235,14 +249,6 @@ async function applyMorphEdit(
 			``,
 			`Original Content: ${originalContent.length} characters`,
 		].join("\n")
-
-		await cline.say(
-			"api_req_started",
-			JSON.stringify({
-				request: morphRequestDescription,
-				apiProtocol: "openai",
-			}),
-		)
 
 		// Create OpenAI client for Morph API
 		const client = new OpenAI({
@@ -279,20 +285,18 @@ async function applyMorphEdit(
 
 		// Extract usage information from response
 		const usage = response.usage
-		const inputTokens = usage?.prompt_tokens || 0
-		const outputTokens = usage?.completion_tokens || 0
-		const cost = calculateMorphCost(inputTokens, outputTokens, morphConfig.model!)
+		const tokensIn = usage?.prompt_tokens || 0
+		const tokensOut = usage?.completion_tokens || 0
+		const cost = calculateMorphCost(tokensIn, tokensOut, morphConfig.model!)
 
-		// Update the api_req_started message with usage and cost data
-		const existingData = JSON.parse(cline.clineMessages[morphApiReqIndex].text || "{}")
-		cline.clineMessages[morphApiReqIndex].text = JSON.stringify({
-			...existingData,
-			tokensIn: inputTokens,
-			tokensOut: outputTokens,
-			cost: cost,
-		})
-
-		return { success: true, result: mergedCode }
+		return {
+			success: true,
+			result: mergedCode,
+			description,
+			tokensIn,
+			tokensOut,
+			cost,
+		}
 	} catch (error) {
 		TelemetryService.instance.captureException(error, { context: "applyMorphEdit" })
 		return {

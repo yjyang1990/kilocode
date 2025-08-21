@@ -436,6 +436,14 @@ export interface ClineSayTool {
 		}>
 	}>
 	question?: string
+	// kilocode_change start
+	fastApplyResult?: {
+		description?: string
+		tokensIn?: number
+		tokensOut?: number
+		cost?: number
+	}
+	// kilocode_change end
 }
 
 // Must keep in sync with system prompt.
