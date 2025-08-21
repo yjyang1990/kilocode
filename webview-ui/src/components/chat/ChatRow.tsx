@@ -452,6 +452,13 @@ export const ChatRowContent = ({
 							isExpanded={isExpanded}
 							onToggleExpand={handleToggleExpand}
 						/>
+						{
+							/*TODO styling*/ tool.fastApplyResult ? (
+								<div>{JSON.stringify(tool.fastApplyResult)}</div>
+							) : (
+								<></>
+							)
+						}
 					</>
 				)
 			case "insertContent":
@@ -584,6 +591,13 @@ export const ChatRowContent = ({
 							onToggleExpand={handleToggleExpand}
 							onJumpToFile={() => vscode.postMessage({ type: "openFile", text: "./" + tool.path })}
 						/>
+						{
+							/*TODO styling*/ tool.fastApplyResult ? (
+								<div>{JSON.stringify(tool.fastApplyResult)}</div>
+							) : (
+								<></>
+							)
+						}
 					</>
 				)
 			case "readFile":
