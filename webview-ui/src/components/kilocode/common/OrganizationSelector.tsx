@@ -39,7 +39,6 @@ export const OrganizationSelector = ({ className, showLabel = false }: { classNa
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") setIsOpen(false)
 		}
-		window.addEventListener("keydown", onKeyDown)
 
 		const onMouseDown = (e: MouseEvent) => {
 			if (!containerRef.current) return
@@ -48,6 +47,7 @@ export const OrganizationSelector = ({ className, showLabel = false }: { classNa
 			}
 		}
 
+		window.addEventListener("keydown", onKeyDown)
 		window.addEventListener("mousedown", onMouseDown)
 		window.addEventListener("message", handleMessage)
 
