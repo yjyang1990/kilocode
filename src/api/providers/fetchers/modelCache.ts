@@ -48,16 +48,11 @@ export /*kilocode_change*/ async function readModels(router: RouterName): Promis
  */
 export const getModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
 	const { provider } = options
-	// kilocode_change: skip cache for kilocode-openrouter with organization ID
-	let models
-	if (!(options.provider === "kilocode-openrouter" && options.kilocodeOrganizationId)) {
-		// Skipping cache for kilocode-openrouter with organization ID, as it requires a specific endpoint
-		models = getModelsFromCache(provider)
-		if (models) {
-			return models
-		}
+
+	let models = getModelsFromCache(provider)
+	if (models) {
+		return models
 	}
-	// kilocode_change: end
 
 	try {
 		switch (provider) {
@@ -116,10 +111,7 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 		}
 
 		// Cache the fetched models (even if empty, to signify a successful fetch with no models)
-		if (!(options.provider === "kilocode-openrouter" && options.kilocodeOrganizationId)) {
-			// kilocode_change: skip cache for kilocode-openrouter with organization ID
-			memoryCache.set(provider, models)
-		}
+		memoryCache.set(provider, models)
 
 		/* kilocode_change: skip useless file IO
 		await writeModels(provider, models).catch((err) =>
