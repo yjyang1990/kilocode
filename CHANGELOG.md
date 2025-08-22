@@ -1,10 +1,10 @@
 # Roo Code Changelog
 
-## 3.25.23
+## [3.25.23] - 2025-08-22
 
-### Patch Changes
-
--   - feat: add custom base URL support for Requesty provider (#7274 by @requesty-JohnCosta27, PR by @daniel-lxs)
+- feat: add custom base URL support for Requesty provider (thanks @requesty-JohnCosta27!)
+- feat: add DeepSeek V3.1 model to Chutes AI provider (#7294 by @dmarkey, PR by @app/roomote)
+- Revert "feat: enable loading Roo modes from multiple files in .roo/modes directory" temporarily to fix a bug with mode installation
 
 ## [3.25.22] - 2025-08-22
 
