@@ -298,7 +298,6 @@ export const ChatRowContent = ({
 						/>
 					</div>
 				)
-
 				return [
 					apiReqCancelReason !== null && apiReqCancelReason !== undefined ? (
 						apiReqCancelReason === "user_cancelled" ? (
