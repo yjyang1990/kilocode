@@ -4,7 +4,7 @@ import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { vscode } from "@/utils/vscode"
 
-export const GlobalMorphSettings = ({ morphApiKey }: { morphApiKey?: string }) => {
+export const MorphSettings = ({ morphApiKey }: { morphApiKey?: string }) => {
 	const { t } = useAppTranslation()
 
 	const handleMorphApiKeyChange = (value: string) => {

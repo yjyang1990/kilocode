@@ -12,7 +12,7 @@ import { SetExperimentEnabled } from "./types"
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
 import { ExperimentalFeature } from "./ExperimentalFeature"
-import { GlobalMorphSettings } from "./GlobalMorphSettings" // kilocode_change: Use global version
+import { MorphSettings } from "./MorphSettings" // kilocode_change: Use global version
 
 type ExperimentalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	experiments: Experiments
@@ -72,7 +72,7 @@ export const ExperimentalSettings = ({
 											)
 										}
 									/>
-									{enabled && <GlobalMorphSettings morphApiKey={morphApiKey} />}
+									{enabled && <MorphSettings morphApiKey={morphApiKey} />}
 								</>
 							)
 						}
