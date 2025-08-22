@@ -197,7 +197,7 @@ const ApiOptions = ({
 	const { data: routerModels, refetch: refetchRouterModels } = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.openRouterApiKey,
-		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId,
+		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId ?? "personal",
 	})
 
 	//const { data: openRouterModelProviders } = useOpenRouterModelProviders(
