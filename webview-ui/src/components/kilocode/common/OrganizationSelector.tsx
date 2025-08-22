@@ -3,7 +3,6 @@ import { vscode } from "@/utils/vscode"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { ProfileDataResponsePayload, WebviewMessage, UserOrganizationWithApiKey } from "@roo/WebviewMessage"
-import { useRouterModels } from "@/components/ui/hooks/useRouterModels"
 
 export const OrganizationSelector = ({ className, showLabel = false }: { className?: string; showLabel?: boolean }) => {
 	const [organizations, setOrganizations] = useState<UserOrganizationWithApiKey[]>([])
@@ -12,11 +11,6 @@ export const OrganizationSelector = ({ className, showLabel = false }: { classNa
 	const [isOpen, setIsOpen] = useState(false)
 	const selectedOrg = organizations.find((o) => o.id === apiConfiguration?.kilocodeOrganizationId)
 	const containerRef = useRef<HTMLDivElement>(null)
-	//useRouterModels()
-	const { data: _routerModels, refetch: _refetchRouterModels } = useRouterModels({
-		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
-		openRouterApiKey: apiConfiguration?.openRouterApiKey,
-	})
 
 	const handleMessage = (event: MessageEvent<WebviewMessage>) => {
 		const message = event.data
