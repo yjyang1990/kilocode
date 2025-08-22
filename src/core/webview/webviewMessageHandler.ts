@@ -1106,10 +1106,12 @@ export const webviewMessageHandler = async (
 			await updateGlobalState("fuzzyMatchThreshold", message.value)
 			await provider.postStateToWebview()
 			break
+		// kilocode_change start
 		case "morphApiKey":
 			await updateGlobalState("morphApiKey", message.text)
 			await provider.postStateToWebview()
 			break
+		// kilocode_change end
 		case "updateVSCodeSetting": {
 			const { setting, value } = message
 
