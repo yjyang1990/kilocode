@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.83.1
-
-### Patch Changes
+## [v4.83.1]
 
 - [#2073](https://github.com/Kilo-Org/kilocode/pull/2073) [`a4b8770`](https://github.com/Kilo-Org/kilocode/commit/a4b8770ba82cbb366bb986a36026b6860129f799) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Ensured free model usage is reported as free
 
