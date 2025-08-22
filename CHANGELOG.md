@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.25.23
+
+### Patch Changes
+
+-   - feat: add custom base URL support for Requesty provider (#7274 by @requesty-JohnCosta27, PR by @daniel-lxs)
+
 ## [3.25.22] - 2025-08-22
 
 - Add prompt caching support for Kimi K2 on Groq (thanks @daniel-lxs and @benank!)
