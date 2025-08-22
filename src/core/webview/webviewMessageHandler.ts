@@ -1666,10 +1666,6 @@ export const webviewMessageHandler = async (
 				}
 
 				await provider.upsertProviderProfile(message.text, configToSave)
-
-				// provider.postMessageToWebview({
-				// 	type: "requestRouterModels",
-				// })
 			}
 			// kilocode_change end
 			break

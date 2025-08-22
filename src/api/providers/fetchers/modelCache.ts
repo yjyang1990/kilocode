@@ -48,7 +48,6 @@ export /*kilocode_change*/ async function readModels(router: RouterName): Promis
  */
 export const getModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
 	const { provider } = options
-
 	let models = getModelsFromCache(provider)
 	if (models) {
 		return models
