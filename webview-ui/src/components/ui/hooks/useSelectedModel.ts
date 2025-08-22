@@ -86,8 +86,8 @@ export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 	const { kilocodeDefaultModel } = useExtensionState()
 	const routerModels = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
-		openRouterApiKey: apiConfiguration?.apiKey,
-		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId,
+		openRouterApiKey: apiConfiguration?.apiKey, // kilocode_change
+		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId, // kilocode_change
 	})
 	const openRouterModelProviders = useModelProviders(kilocodeDefaultModel, apiConfiguration)
 	// kilocode_change end

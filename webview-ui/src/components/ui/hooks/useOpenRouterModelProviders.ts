@@ -137,7 +137,7 @@ type UseOpenRouterModelProvidersOptions = Omit<
 	"queryKey" | "queryFn"
 >
 
-// kilocode_change start: baseUrl, apiKey
+// kilocode_change start: baseUrl, apiKey, organizationId
 export const useOpenRouterModelProviders = (
 	modelId?: string,
 	baseUrl?: string,
