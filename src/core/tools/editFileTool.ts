@@ -318,26 +318,9 @@ function getMorphConfiguration(state: ClineProviderState): MorphConfiguration {
 		}
 	}
 
-	// Check if user has direct Morph API key in global settings
-	const hasGlobalMorphApiKey = Boolean(state.morphApiKey)
-
-	// Check if provider supports Morph natively (openrouter only for now)
-	const isOpenRouterProvider =
-		(state.apiConfiguration?.apiProvider === "kilocode" && Boolean(state.apiConfiguration.kilocodeToken)) ||
-		(state.apiConfiguration?.apiProvider === "openrouter" && Boolean(state.apiConfiguration.openRouterApiKey)) ||
-		state.apiConfiguration?.apiProvider === "human-relay"
-
-	// Morph is available if: (provider supports it natively) OR (has global morph API key)
-	// If neither condition is met, behave as if Morph is disabled entirely
-	if (!isOpenRouterProvider && !hasGlobalMorphApiKey) {
-		return {
-			available: false,
-			error: "Morph is disabled. Enable it in API Options > Enable Editing with Morph FastApply",
-		}
-	}
-
 	// Priority 1: Use direct Morph API key if available
-	if (hasGlobalMorphApiKey) {
+	// Allow human-relay for debugging
+	if (state.morphApiKey || state.apiConfiguration?.apiProvider === "human-relay") {
 		return {
 			available: true,
 			apiKey: state.morphApiKey,
@@ -374,7 +357,6 @@ function getMorphConfiguration(state: ClineProviderState): MorphConfiguration {
 		}
 	}
 
-	// This should not be reached due to the check above, but included for completeness
 	return {
 		available: false,
 		error: "Morph configuration error. Please check your settings.",
