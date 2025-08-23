@@ -327,7 +327,8 @@ function getMorphConfiguration(state: ClineProviderState): MorphConfiguration {
 	// Check if provider supports Morph natively (openrouter only for now)
 	const isOpenRouterProvider =
 		(state.apiConfiguration?.apiProvider === "kilocode" && Boolean(state.apiConfiguration.kilocodeToken)) ||
-		(state.apiConfiguration?.apiProvider === "openrouter" && Boolean(state.apiConfiguration.openRouterApiKey))
+		(state.apiConfiguration?.apiProvider === "openrouter" && Boolean(state.apiConfiguration.openRouterApiKey)) ||
+		state.apiConfiguration?.apiProvider === "human-relay"
 
 	// Morph is available if: (provider supports it natively) OR (has global morph API key)
 	// If neither condition is met, behave as if Morph is disabled entirely
