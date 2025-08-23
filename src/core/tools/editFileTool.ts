@@ -132,16 +132,18 @@ export async function editFileTool(
 		const originalContent = fileExists ? await fs.readFile(absolutePath, "utf-8") : ""
 
 		// Check if Morph is available
-		const morphApplyResult = await applyMorphEdit(originalContent, editInstructions, editCode, cline, relPath)
+		const morphApplyResult = fileExists
+			? await applyMorphEdit(originalContent, editInstructions, editCode, cline, relPath)
+			: undefined
 
-		if (!morphApplyResult.success) {
+		if (morphApplyResult && !morphApplyResult.success) {
 			cline.consecutiveMistakeCount++
 			cline.recordToolError("edit_file")
 			pushToolResult(formatResponse.toolError(`Failed to apply edit using Morph: ${morphApplyResult.error}`))
 			return
 		}
 
-		const newContent = morphApplyResult.result!
+		const newContent = morphApplyResult?.result ?? code_edit ?? ""
 
 		// Show the diff and ask for approval
 		cline.diffViewProvider.editType = fileExists ? "modify" : "create"
@@ -159,12 +161,14 @@ export async function editFileTool(
 				path: relPath,
 				isProtected: cline.rooProtectedController?.isWriteProtected(relPath) || false,
 				content: editCode,
-				fastApplyResult: {
-					description: morphApplyResult.description,
-					tokensIn: morphApplyResult.tokensIn,
-					tokensOut: morphApplyResult.tokensOut,
-					cost: morphApplyResult.cost,
-				},
+				fastApplyResult: morphApplyResult
+					? {
+							description: morphApplyResult.description,
+							tokensIn: morphApplyResult.tokensIn,
+							tokensOut: morphApplyResult.tokensOut,
+							cost: morphApplyResult.cost,
+						}
+					: undefined,
 			} satisfies ClineSayTool),
 			undefined,
 			cline.rooProtectedController?.isWriteProtected(relPath) || false,
