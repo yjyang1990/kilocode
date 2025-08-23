@@ -143,6 +143,14 @@ export async function editFileTool(
 
 		const newContent = morphApplyResult.result!
 
+		// Show the diff and ask for approval
+		cline.diffViewProvider.editType = fileExists ? "modify" : "create"
+		await cline.diffViewProvider.open(relPath)
+
+		// Stream the content to show the diff
+		await cline.diffViewProvider.update(newContent, true)
+		cline.diffViewProvider.scrollToFirstDiff()
+
 		// Ask for user approval
 		const approved = await askApproval(
 			"tool",
@@ -163,21 +171,10 @@ export async function editFileTool(
 		)
 
 		if (!approved) {
+			await cline.diffViewProvider.revertChanges()
+			pushToolResult(formatResponse.toolResult("Edit cancelled by user."))
 			return
 		}
-
-		// Check if file exists
-		if (!fileExists) {
-			await fs.writeFile(absolutePath, "")
-		}
-
-		// Show the diff and ask for approval
-		cline.diffViewProvider.editType = "modify"
-		await cline.diffViewProvider.open(relPath)
-
-		// Stream the content to show the diff
-		await cline.diffViewProvider.update(newContent, true)
-		cline.diffViewProvider.scrollToFirstDiff()
 
 		// Apply the changes
 		await cline.diffViewProvider.saveChanges()
