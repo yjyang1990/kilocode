@@ -186,10 +186,6 @@
 			"idea7": "Create a calming interactive starfield that moves with mouse gestures"
 		}
 	},
-	"morph": {
-		"editing": "Editing with Morph",
-		"edited": "Edited with Morph"
-	},
 	"ghost": {
 		"title": "Inline Assist",
 		"settings": {
