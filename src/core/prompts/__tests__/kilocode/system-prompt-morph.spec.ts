@@ -47,11 +47,11 @@ import * as vscode from "vscode"
 
 import { SYSTEM_PROMPT } from "../../system"
 import { defaultModeSlug, modes, Mode } from "../../../../shared/modes"
-import "../../../utils/path"
+import "../../../../utils/path"
 import { MultiSearchReplaceDiffStrategy } from "../../../diff/strategies/multi-search-replace"
 
 // Mock the sections
-vi.mock("../sections/modes", () => ({
+vi.mock("../../sections/modes", () => ({
 	getModesSection: vi.fn().mockImplementation(async () => `====\n\nMODES\n\n- Test modes section`),
 }))
 
