@@ -22,10 +22,6 @@ export const MorphSettings = ({
 				className="w-full">
 				{t("settings:experimental.MORPH_FAST_APPLY.apiKey")}
 			</VSCodeTextField>
-			<div className="text-xs px-1 py-1 mt-2 flex gap-2">
-				<span className="codicon codicon-warning" />
-				<span>{t("settings:experimental.MORPH_FAST_APPLY.warning")}</span>
-			</div>
 		</div>
 	)
 }
