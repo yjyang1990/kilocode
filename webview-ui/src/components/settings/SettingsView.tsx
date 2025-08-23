@@ -165,7 +165,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		enableCheckpoints,
 		diffEnabled,
 		experiments,
-		morphApiKey,
+		morphApiKey, // kilocode_change
 		fuzzyMatchThreshold,
 		maxOpenTabsContext,
 		maxWorkspaceFiles,
@@ -410,6 +410,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			vscode.postMessage({ type: "profileThresholds", values: profileThresholds })
 			vscode.postMessage({ type: "systemNotificationsEnabled", bool: systemNotificationsEnabled }) // kilocode_change
 			vscode.postMessage({ type: "ghostServiceSettings", values: ghostServiceSettings }) // kilocode_change
+			vscode.postMessage({ type: "morphApiKey", text: morphApiKey }) // kilocode_change
 
 			// Update cachedState to match the current state to prevent isChangeDetected from being set back to true
 			setCachedState((prevState) => ({ ...prevState, ...extensionState }))
@@ -847,7 +848,10 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 						<ExperimentalSettings
 							setExperimentEnabled={setExperimentEnabled}
 							experiments={experiments}
-							morphApiKey={morphApiKey} // kilocode_change: Use global morphApiKey
+							// kilocode_change start
+							setCachedStateField={setCachedStateField}
+							morphApiKey={morphApiKey}
+							// kilocode_change end
 						/>
 					)}
 

@@ -2,25 +2,23 @@
 
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { useAppTranslation } from "@/i18n/TranslationContext"
-import { vscode } from "@/utils/vscode"
+import { SetCachedStateField } from "./types"
 
-export const MorphSettings = ({ morphApiKey }: { morphApiKey?: string }) => {
+export const MorphSettings = ({
+	morphApiKey,
+	setCachedStateField,
+}: {
+	morphApiKey?: string
+	setCachedStateField: SetCachedStateField<"morphApiKey">
+}) => {
 	const { t } = useAppTranslation()
-
-	const handleMorphApiKeyChange = (value: string) => {
-		vscode.postMessage({
-			type: "morphApiKey",
-			text: value || "",
-		})
-	}
-
 	return (
 		<div>
 			<VSCodeTextField
 				type="password"
 				value={morphApiKey || ""}
 				placeholder={t("settings:experimental.MORPH_FAST_APPLY.placeholder")}
-				onChange={(e) => handleMorphApiKeyChange((e.target as any)?.value || "")}
+				onChange={(e) => setCachedStateField("morphApiKey", (e.target as any)?.value || "")}
 				className="w-full">
 				{t("settings:experimental.MORPH_FAST_APPLY.apiKey")}
 			</VSCodeTextField>

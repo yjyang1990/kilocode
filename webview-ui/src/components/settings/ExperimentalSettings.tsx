@@ -8,7 +8,10 @@ import { EXPERIMENT_IDS, experimentConfigsMap } from "@roo/experiments"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { cn } from "@src/lib/utils"
 
-import { SetExperimentEnabled } from "./types"
+import {
+	SetCachedStateField, // kilocode_change
+	SetExperimentEnabled,
+} from "./types"
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
 import { ExperimentalFeature } from "./ExperimentalFeature"
@@ -17,14 +20,20 @@ import { MorphSettings } from "./MorphSettings" // kilocode_change: Use global v
 type ExperimentalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	experiments: Experiments
 	setExperimentEnabled: SetExperimentEnabled
-	morphApiKey?: string // kilocode_change: Use global morphApiKey
+	// kilocode_change start
+	morphApiKey?: string
+	setCachedStateField: SetCachedStateField<"morphApiKey">
+	// kilocode_change end
 }
 
 export const ExperimentalSettings = ({
 	experiments,
 	setExperimentEnabled,
 	className,
-	morphApiKey, // kilocode_change: Use global morphApiKey
+	// kilocode_change start
+	morphApiKey,
+	setCachedStateField,
+	// kilocode_change end
 	...props
 }: ExperimentalSettingsProps) => {
 	const { t } = useAppTranslation()
@@ -72,7 +81,12 @@ export const ExperimentalSettings = ({
 											)
 										}
 									/>
-									{enabled && <MorphSettings morphApiKey={morphApiKey} />}
+									{enabled && (
+										<MorphSettings
+											setCachedStateField={setCachedStateField}
+											morphApiKey={morphApiKey}
+										/>
+									)}
 								</>
 							)
 						}
