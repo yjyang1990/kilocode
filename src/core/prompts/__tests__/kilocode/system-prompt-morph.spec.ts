@@ -56,20 +56,16 @@ vi.mock("../../sections/modes", () => ({
 }))
 
 // Mock the custom instructions
-vi.mock("../sections/custom-instructions", () => {
+vi.mock("../../sections/custom-instructions", () => {
 	const addCustomInstructions = vi.fn()
 	return {
 		addCustomInstructions,
-		__setMockImplementation: (impl: any) => {
-			addCustomInstructions.mockImplementation(impl)
-		},
 	}
 })
 
 // Set up default mock implementation
 const customInstructionsMock = vi.mocked(await import("../../sections/custom-instructions"))
-const { __setMockImplementation } = customInstructionsMock as any
-__setMockImplementation(
+customInstructionsMock.addCustomInstructions.mockImplementation(
 	async (
 		modeCustomInstructions: string,
 		globalCustomInstructions: string,
@@ -137,6 +133,11 @@ vi.mock("../../../utils/shell", () => ({
 	getShell: () => "/bin/zsh",
 }))
 
+// Mock the isMorphAvailable function
+vi.mock("../../../tools/editFileTool", () => ({
+	isMorphAvailable: vi.fn(),
+}))
+
 // Create a mock ExtensionContext
 const mockContext = {
 	extensionPath: "/mock/extension/path",
@@ -171,11 +172,18 @@ describe("SYSTEM_PROMPT", () => {
 		experiments = {}
 	})
 
-	beforeEach(() => {
+	beforeEach(async () => {
 		vi.clearAllMocks()
+		// Reset the mock to return false by default
+		const { isMorphAvailable } = await import("../../../tools/editFileTool")
+		vi.mocked(isMorphAvailable).mockReturnValue(false)
 	})
 
 	it("should exclude traditional editing tools and include Morph instructions when morphFastApply is enabled", async () => {
+		// Mock isMorphAvailable to return true for this test
+		const { isMorphAvailable } = await import("../../../tools/editFileTool")
+		vi.mocked(isMorphAvailable).mockReturnValue(true)
+
 		const experimentsWithMorph = {
 			morphFastApply: true,
 		}
@@ -260,6 +268,10 @@ describe("SYSTEM_PROMPT", () => {
 	})
 
 	it("should use Morph editing instructions in rules section when morphFastApply is enabled", async () => {
+		// Mock isMorphAvailable to return true for this test
+		const { isMorphAvailable } = await import("../../../tools/editFileTool")
+		vi.mocked(isMorphAvailable).mockReturnValue(true)
+
 		const experimentsWithMorph = {
 			morphFastApply: true,
 		}
@@ -285,11 +297,10 @@ describe("SYSTEM_PROMPT", () => {
 
 		// Should contain Morph-specific editing instructions in rules section
 		expect(prompt).toContain(
-			"For editing files, you have access to the `edit_file` tool which uses Morph FastApply",
+			"**Morph FastApply is enabled.** You have access to the `edit_file` tool which uses a specialized model optimized for intelligent code understanding and modification.",
 		)
-		expect(prompt).toContain("ONLY use the edit_file tool for file modifications")
 		expect(prompt).toContain(
-			"Traditional editing tools (apply_diff, write_to_file, insert_content, search_and_replace) are disabled in Morph mode",
+			"**ONLY use the edit_file tool for file modifications.** Traditional editing tools (apply_diff, write_to_file, insert_content, search_and_replace) are disabled in Morph mode.",
 		)
 		expect(prompt).toContain("// ... existing code ...")
 	})
