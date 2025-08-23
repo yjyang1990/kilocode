@@ -172,7 +172,6 @@ export async function editFileTool(
 
 		if (!approved) {
 			await cline.diffViewProvider.revertChanges()
-			pushToolResult(formatResponse.toolResult("Edit cancelled by user."))
 			return
 		}
 
