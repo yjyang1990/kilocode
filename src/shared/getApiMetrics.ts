@@ -1,5 +1,10 @@
 import type { TokenUsage, ClineMessage } from "@roo-code/types"
 
+// kilocode_change start
+import { type ClineSayTool } from "./ExtensionMessage"
+import { safeJsonParse } from "./safeJsonParse"
+// kilocode_change end
+
 export type ParsedApiReqStartedTextType = {
 	tokensIn: number
 	tokensOut: number
@@ -63,6 +68,21 @@ export function getApiMetrics(messages: ClineMessage[]) {
 			}
 		} else if (message.type === "say" && message.say === "condense_context") {
 			result.totalCost += message.contextCondense?.cost ?? 0
+		} else {
+			// kilocode_change start
+			if (message.type === "ask" && message.ask === "tool" && message.text) {
+				const fastApplyResult = safeJsonParse<ClineSayTool>(message.text)?.fastApplyResult
+				if (fastApplyResult?.tokensIn) {
+					result.totalTokensIn += fastApplyResult.tokensIn
+				}
+				if (fastApplyResult?.tokensOut) {
+					result.totalTokensIn += fastApplyResult.tokensOut
+				}
+				if (fastApplyResult?.cost) {
+					result.totalTokensIn += fastApplyResult.cost
+				}
+			}
+			// kilocode_change end
 		}
 	})
 
