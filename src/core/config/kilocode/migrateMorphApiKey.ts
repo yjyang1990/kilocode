@@ -2,6 +2,7 @@ import { ExtensionContext } from "vscode"
 import { ProviderProfiles } from "../ProviderSettingsManager"
 
 export async function migrateMorphApiKey(context: ExtensionContext, providerProfiles: ProviderProfiles) {
+	let isDirty = false
 	try {
 		// Find any provider profile with morphApiKey set
 		let morphApiKeyToMigrate: string | undefined
@@ -12,7 +13,7 @@ export async function migrateMorphApiKey(context: ExtensionContext, providerProf
 			if (configAny.morphApiKey) {
 				morphApiKeyToMigrate = configAny.morphApiKey
 				// Clear it from the provider config
-				configAny.morphApiKey = undefined
+				delete configAny.morphApiKey
 				break // Use the first one found
 			}
 		}
@@ -21,6 +22,7 @@ export async function migrateMorphApiKey(context: ExtensionContext, providerProf
 		if (morphApiKeyToMigrate) {
 			try {
 				await context.globalState.update("morphApiKey", morphApiKeyToMigrate)
+				isDirty = true
 				console.log("[MigrateMorphApiKey] Successfully migrated morphApiKey to global settings")
 			} catch (error) {
 				console.error("[MigrateMorphApiKey] Error setting global morphApiKey:", error)
@@ -29,4 +31,5 @@ export async function migrateMorphApiKey(context: ExtensionContext, providerProf
 	} catch (error) {
 		console.error(`[MigrateMorphApiKey] Failed to migrate morphApiKey:`, error)
 	}
+	return isDirty
 }

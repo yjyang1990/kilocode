@@ -162,9 +162,9 @@ export class ProviderSettingsManager {
 
 				// kilocode_change start
 				if (!providerProfiles.migrations.morphApiKeyMigrated) {
-					await migrateMorphApiKey(this.context, providerProfiles)
+					const result = await migrateMorphApiKey(this.context, providerProfiles)
 					providerProfiles.migrations.morphApiKeyMigrated = true
-					isDirty = true
+					isDirty ||= result
 				}
 				// kilocode_change end
 
