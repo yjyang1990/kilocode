@@ -138,22 +138,17 @@ export const KiloModelInfoView = ({
 					<span className="font-medium">{t("settings:modelInfo.maxOutput")}:</span>{" "}
 					{model.maxTokens?.toLocaleString() ?? 0}
 				</div>
-				{typeof stats !== "undefined" &&
-					typeof stats.cost !== "undefined" &&
-					typeof stats.costPerRequest !== "undefined" && (
-						<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCostDescription")}>
-							<div>
-								<div>
-									<span className="font-medium">
-										{t("kilocode:settings.modelInfo.averageKiloCodeCost")}:
-									</span>
-								</div>
-								<div>{formatPrice(stats.cost)} / M tokens</div>
-								<div>{formatPrice(stats.costPerRequest, 4)} / request</div>
-							</div>
-						</StandardTooltip>
-					)}
 			</div>
+			{stats && stats.cost && stats.costPerRequest && model.inputPrice && model.outputPrice && (
+				<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCost")}>
+					<div className="text-sm text-vscode-descriptionForeground font-medium flex flex-wrap gap-2">
+						<div className="rounded-full border px-2.5 py-1">{formatPrice(stats.cost)} / M tokens</div>
+						<div className="rounded-full border px-2.5 py-1">
+							{formatPrice(stats.costPerRequest, 4)} / request
+						</div>
+					</div>
+				</StandardTooltip>
+			)}
 			<Collapsible open={isPricingExpanded} onOpenChange={setIsPricingExpanded}>
 				<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">
 					<span className={`codicon codicon-chevron-${isPricingExpanded ? "down" : "right"}`}></span>
