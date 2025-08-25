@@ -72,15 +72,9 @@ export function getApiMetrics(messages: ClineMessage[]) {
 			// kilocode_change start
 			if (message.type === "ask" && message.ask === "tool" && message.text) {
 				const fastApplyResult = safeJsonParse<ClineSayTool>(message.text)?.fastApplyResult
-				if (fastApplyResult?.tokensIn) {
-					result.totalTokensIn += fastApplyResult.tokensIn
-				}
-				if (fastApplyResult?.tokensOut) {
-					result.totalTokensIn += fastApplyResult.tokensOut
-				}
-				if (fastApplyResult?.cost) {
-					result.totalTokensIn += fastApplyResult.cost
-				}
+				result.totalTokensIn += fastApplyResult?.tokensIn ?? 0
+				result.totalTokensOut += fastApplyResult?.tokensOut ?? 0
+				result.totalCost += fastApplyResult?.cost ?? 0
 			}
 			// kilocode_change end
 		}
