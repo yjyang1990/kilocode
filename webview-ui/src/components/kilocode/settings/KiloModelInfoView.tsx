@@ -11,8 +11,8 @@ import { useModelProviders } from "@/components/ui/hooks/useSelectedModel"
 
 type ModelStats = {
 	model: string
-	cost: Intl.StringNumericLiteral
-	costPerRequest: Intl.StringNumericLiteral
+	cost?: Intl.StringNumericLiteral
+	costPerRequest?: Intl.StringNumericLiteral
 }
 
 export const formatPrice = (price: number | Intl.StringNumericLiteral, digits: number = 2) => {
@@ -138,19 +138,21 @@ export const KiloModelInfoView = ({
 					<span className="font-medium">{t("settings:modelInfo.maxOutput")}:</span>{" "}
 					{model.maxTokens?.toLocaleString() ?? 0}
 				</div>
-				{typeof stats !== "undefined" && (
-					<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCostDescription")}>
-						<div>
+				{typeof stats !== "undefined" &&
+					typeof stats.cost !== "undefined" &&
+					typeof stats.costPerRequest !== "undefined" && (
+						<StandardTooltip content={t("kilocode:settings.modelInfo.averageKiloCodeCostDescription")}>
 							<div>
-								<span className="font-medium">
-									{t("kilocode:settings.modelInfo.averageKiloCodeCost")}:
-								</span>
+								<div>
+									<span className="font-medium">
+										{t("kilocode:settings.modelInfo.averageKiloCodeCost")}:
+									</span>
+								</div>
+								<div>{formatPrice(stats.cost)} / M tokens</div>
+								<div>{formatPrice(stats.costPerRequest, 4)} / request</div>
 							</div>
-							<div>{formatPrice(stats.cost)} / M tokens</div>
-							<div>{formatPrice(stats.costPerRequest, 4)} / request</div>
-						</div>
-					</StandardTooltip>
-				)}
+						</StandardTooltip>
+					)}
 			</div>
 			<Collapsible open={isPricingExpanded} onOpenChange={setIsPricingExpanded}>
 				<CollapsibleTrigger className="flex items-center gap-1 w-full cursor-pointer hover:opacity-80 mb-2">
