@@ -84,7 +84,7 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 					openRouterBaseUrl:
 						getKiloBaseUriFromToken(options.kilocodeToken ?? "") +
 						(options.kilocodeOrganizationId
-							? `/api/teams/${options.kilocodeOrganizationId}`
+							? `/api/organizations/${options.kilocodeOrganizationId}`
 							: "/api/openrouter"),
 					headers: options.kilocodeToken ? { Authorization: `Bearer ${options.kilocodeToken}` } : undefined,
 				})
