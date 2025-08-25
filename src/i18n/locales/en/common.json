@@ -105,6 +105,9 @@
 			"apiError": "Gemini CLI API error: {{error}}",
 			"completionError": "Gemini CLI completion error: {{error}}"
 		},
+		"qwenCode": {
+			"oauthLoadFailed": "Failed to load OAuth credentials. Please authenticate first: {{error}}"
+		},
 		"gemini": {
 			"generate_stream": "Gemini generate context stream error: {{error}}",
 			"generate_complete_prompt": "Gemini completion error: {{error}}",
@@ -118,6 +121,9 @@
 			"genericError": "Cerebras API Error ({{status}}): {{message}}",
 			"noResponseBody": "Cerebras API Error: No response body",
 			"completionError": "Cerebras completion error: {{error}}"
+		},
+		"roo": {
+			"authenticationRequired": "Roo provider requires cloud authentication. Please sign in to Roo Code Cloud."
 		}
 	},
 	"warnings": {

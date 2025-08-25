@@ -37,14 +37,17 @@ import {
 	// kilocode_change end
 	ClaudeCodeHandler,
 	SambaNovaHandler,
+	IOIntelligenceHandler,
 	DoubaoHandler,
 	ZAiHandler,
 	FireworksHandler,
+	RooHandler,
 } from "./providers"
 // kilocode_change start
 import { KilocodeOpenrouterHandler } from "./providers/kilocode-openrouter"
 import { KilocodeOllamaHandler } from "./providers/kilocode-ollama"
 // kilocode_change end
+import { NativeOllamaHandler } from "./providers/native-ollama"
 
 export interface SingleCompletionHandler {
 	completePrompt(prompt: string): Promise<string>
@@ -53,6 +56,13 @@ export interface SingleCompletionHandler {
 export interface ApiHandlerCreateMessageMetadata {
 	mode?: string
 	taskId: string
+	previousResponseId?: string
+	/**
+	 * When true, the provider must NOT fall back to internal continuity state
+	 * (e.g., lastResponseId) if previousResponseId is absent.
+	 * Used to enforce "skip once" after a condense operation.
+	 */
+	suppressPreviousResponseId?: boolean
 }
 
 export interface ApiHandler {
@@ -149,6 +159,10 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new ZAiHandler(options)
 		case "fireworks":
 			return new FireworksHandler(options)
+		case "io-intelligence":
+			return new IOIntelligenceHandler(options)
+		case "roo":
+			return new RooHandler(options)
 		default:
 			apiProvider satisfies "gemini-cli" | undefined
 			return new AnthropicHandler(options)

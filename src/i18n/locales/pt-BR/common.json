@@ -122,6 +122,12 @@
 			"genericError": "Erro da API Cerebras ({{status}}): {{message}}",
 			"noResponseBody": "Erro da API Cerebras: Sem corpo de resposta",
 			"completionError": "Erro de conclusão do Cerebras: {{error}}"
+		},
+		"qwenCode": {
+			"oauthLoadFailed": "Falha ao carregar credenciais OAuth. Por favor, autentique-se primeiro: {{error}}"
+		},
+		"roo": {
+			"authenticationRequired": "O provedor Roo requer autenticação na nuvem. Faça login no Roo Code Cloud."
 		}
 	},
 	"warnings": {

@@ -1,7 +1,7 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from "react" // kilocode_change Fragment
 import { convertHeadersToObject } from "./utils/headers"
 import { useDebounce } from "react-use"
-import { VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeLink, VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 // import { ExternalLinkIcon } from "@radix-ui/react-icons" // kilocode_change
 
 import {
@@ -32,7 +32,9 @@ import {
 	internationalZAiDefaultModelId,
 	mainlandZAiDefaultModelId,
 	fireworksDefaultModelId,
+	ioIntelligenceDefaultModelId,
 	qwenCodeDefaultModelId,
+	rooDefaultModelId,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -54,8 +56,7 @@ import {
 	SelectValue,
 	SelectContent,
 	SelectItem,
-	// SearchableSelect, // kilocode_change
-	SelectSeparator,
+	SearchableSelect,
 	Collapsible,
 	CollapsibleTrigger,
 	CollapsibleContent,
@@ -73,6 +74,7 @@ import {
 	Glama,
 	Groq,
 	HuggingFace,
+	IOIntelligence,
 	LMStudio,
 	LiteLLM,
 	Mistral,
@@ -116,7 +118,11 @@ import { KiloProviderRouting } from "./providers/KiloProviderRouting"
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
 	apiConfiguration: ProviderSettings
-	setApiConfigurationField: <K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => void
+	setApiConfigurationField: <K extends keyof ProviderSettings>(
+		field: K,
+		value: ProviderSettings[K],
+		isUserAction?: boolean,
+	) => void
 	fromWelcomeView?: boolean
 	errorMessage: string | undefined
 	setErrorMessage: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -139,6 +145,7 @@ const ApiOptions = ({
 		organizationAllowList,
 		uiKind, // kilocode_change
 		kilocodeDefaultModel,
+		cloudIsAuthenticated,
 	} = useExtensionState()
 
 	const [customHeaders, setCustomHeaders] = useState<[string, string][]>(() => {
@@ -309,7 +316,7 @@ const ApiOptions = ({
 				const shouldSetDefault = !modelId
 
 				if (shouldSetDefault) {
-					setApiConfigurationField(field, defaultValue)
+					setApiConfigurationField(field, defaultValue, false)
 				}
 			}
 
@@ -351,6 +358,8 @@ const ApiOptions = ({
 							: internationalZAiDefaultModelId,
 				},
 				fireworks: { field: "apiModelId", default: fireworksDefaultModelId },
+				"io-intelligence": { field: "ioIntelligenceModelId", default: ioIntelligenceDefaultModelId },
+				roo: { field: "apiModelId", default: rooDefaultModelId },
 				openai: { field: "openAiModelId" },
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
@@ -417,6 +426,17 @@ const ApiOptions = ({
 		}
 	}, [selectedProvider])
 
+	// Convert providers to SearchableSelect options
+	// kilocode_change start: no organizationAllowList yet
+	const providerOptions = useMemo(
+		() =>
+			PROVIDERS.map(({ value, label }) => {
+				return { value, label }
+			}),
+		[],
+	)
+	// kilocode_change end
+
 	return (
 		<div className="flex flex-col gap-3">
 			<div className="flex flex-col gap-1 relative">
@@ -430,21 +450,16 @@ const ApiOptions = ({
 						</div>
 					)}
 				</div>
-				<Select value={selectedProvider} onValueChange={(value) => onProviderChange(value as ProviderName)}>
-					<SelectTrigger className="w-full">
-						<SelectValue placeholder={t("settings:common.select")} />
-					</SelectTrigger>
-					<SelectContent>
-						{/*  kilocode_change start: separator */}
-						{PROVIDERS.map(({ value, label }, i) => (
-							<Fragment key={value}>
-								<SelectItem value={value}>{label}</SelectItem>
-								{i === 0 ? <SelectSeparator /> : null}
-							</Fragment>
-						))}
-						{/*  kilocode_change end */}
-					</SelectContent>
-				</Select>
+				<SearchableSelect
+					value={selectedProvider}
+					onValueChange={(value) => onProviderChange(value as ProviderName)}
+					options={providerOptions}
+					placeholder={t("settings:common.select")}
+					searchPlaceholder={t("settings:providers.searchProviderPlaceholder")}
+					emptyMessage={t("settings:providers.noProviderMatchFound")}
+					className="w-full"
+					data-testid="provider-select"
+				/>
 			</div>
 
 			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
@@ -634,6 +649,15 @@ const ApiOptions = ({
 				<ZAi apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
+			{selectedProvider === "io-intelligence" && (
+				<IOIntelligence
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					organizationAllowList={organizationAllowList}
+					modelValidationError={modelValidationError}
+				/>
+			)}
+
 			{selectedProvider === "human-relay" && (
 				<>
 					<div className="text-sm text-vscode-descriptionForeground">
@@ -649,6 +673,25 @@ const ApiOptions = ({
 				<Fireworks apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
+			{selectedProvider === "roo" && (
+				<div className="flex flex-col gap-3">
+					{cloudIsAuthenticated ? (
+						<div className="text-sm text-vscode-descriptionForeground">
+							{t("settings:providers.roo.authenticatedMessage")}
+						</div>
+					) : (
+						<div className="flex flex-col gap-2">
+							<VSCodeButton
+								appearance="primary"
+								onClick={() => vscode.postMessage({ type: "rooCloudSignIn" })}
+								className="w-fit">
+								{t("settings:providers.roo.connectButton")}
+							</VSCodeButton>
+						</div>
+					)}
+				</div>
+			)}
+
 			{selectedProviderModels.length > 0 && (
 				<>
 					<div>
@@ -661,6 +704,12 @@ const ApiOptions = ({
 								// Clear custom ARN if not using custom ARN option.
 								if (value !== "custom-arn" && selectedProvider === "bedrock") {
 									setApiConfigurationField("awsCustomArn", "")
+								}
+
+								// Clear reasoning effort when switching models to allow the new model's default to take effect
+								// This is especially important for GPT-5 models which default to "medium"
+								if (selectedProvider === "openai-native") {
+									setApiConfigurationField("reasoningEffort", undefined)
 								}
 							}}>
 							<SelectTrigger className="w-full">
@@ -703,11 +752,14 @@ const ApiOptions = ({
 				modelInfo={selectedModelInfo}
 			/>
 
-			<Verbosity
-				apiConfiguration={apiConfiguration}
-				setApiConfigurationField={setApiConfigurationField}
-				modelInfo={selectedModelInfo}
-			/>
+			{/* Gate Verbosity UI by capability flag */}
+			{selectedModelInfo?.supportsVerbosity && (
+				<Verbosity
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					modelInfo={selectedModelInfo}
+				/>
+			)}
 
 			{
 				// kilocode_change start
