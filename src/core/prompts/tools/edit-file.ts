@@ -14,7 +14,7 @@ export function getMorphEditingInstructions(): string {
 export function getEditFileDescription(): string {
 	return `## edit_file
 
-**Description**: Use this tool to make an edit to an existing file.
+**Description**: Use this tool to make an edit to a file.
 
 This will be read by a less intelligent model, which will quickly apply the edit. You should make it clear what the edit is, while also minimizing the unchanged code you write.
 
