@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.84.0
-
-### Minor Changes
+## [v4.84.0]
 
 - [#1961](https://github.com/Kilo-Org/kilocode/pull/1961) [`d4a7cb6`](https://github.com/Kilo-Org/kilocode/commit/d4a7cb6300d8e00d5889e1079057e43de19ff95e) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Updates to the experimental Morph FastApply support
 
