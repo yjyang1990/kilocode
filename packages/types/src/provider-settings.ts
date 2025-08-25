@@ -53,6 +53,7 @@ export const providerNames = [
 	"fake-ai",
 	"xai",
 	"groq",
+	"deepinfra",
 	"chutes",
 	"litellm",
 	// kilocode_change start
@@ -248,6 +249,12 @@ const deepSeekSchema = apiModelIdProviderModelSchema.extend({
 	deepSeekApiKey: z.string().optional(),
 })
 
+const deepInfraSchema = apiModelIdProviderModelSchema.extend({
+	deepInfraBaseUrl: z.string().optional(),
+	deepInfraApiKey: z.string().optional(),
+	deepInfraModelId: z.string().optional(),
+})
+
 const doubaoSchema = apiModelIdProviderModelSchema.extend({
 	doubaoBaseUrl: z.string().optional(),
 	doubaoApiKey: z.string().optional(),
@@ -385,6 +392,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	openAiNativeSchema.merge(z.object({ apiProvider: z.literal("openai-native") })),
 	mistralSchema.merge(z.object({ apiProvider: z.literal("mistral") })),
 	deepSeekSchema.merge(z.object({ apiProvider: z.literal("deepseek") })),
+	deepInfraSchema.merge(z.object({ apiProvider: z.literal("deepinfra") })),
 	doubaoSchema.merge(z.object({ apiProvider: z.literal("doubao") })),
 	moonshotSchema.merge(z.object({ apiProvider: z.literal("moonshot") })),
 	unboundSchema.merge(z.object({ apiProvider: z.literal("unbound") })),
@@ -434,6 +442,7 @@ export const providerSettingsSchema = z.object({
 	...openAiNativeSchema.shape,
 	...mistralSchema.shape,
 	...deepSeekSchema.shape,
+	...deepInfraSchema.shape,
 	...doubaoSchema.shape,
 	...moonshotSchema.shape,
 	...unboundSchema.shape,
@@ -478,6 +487,7 @@ export const MODEL_ID_KEYS: Partial<keyof ProviderSettings>[] = [
 	"litellmModelId",
 	"huggingFaceModelId",
 	"ioIntelligenceModelId",
+	"deepInfraModelId",
 ]
 
 export const getModelId = (settings: ProviderSettings): string | undefined => {
@@ -593,6 +603,7 @@ export const MODELS_BY_PROVIDER: Record<
 	openrouter: { id: "openrouter", label: "OpenRouter", models: [] },
 	requesty: { id: "requesty", label: "Requesty", models: [] },
 	unbound: { id: "unbound", label: "Unbound", models: [] },
+	deepinfra: { id: "deepinfra", label: "DeepInfra", models: [] },
 
 	// kilocode_change start
 	kilocode: { id: "kilocode", label: "Kilocode", models: [] },
@@ -608,6 +619,7 @@ export const dynamicProviders = [
 	"openrouter",
 	"requesty",
 	"unbound",
+	"deepinfra",
 	// kilocode_change start
 	"kilocode",
 	"virtual-quota-fallback",

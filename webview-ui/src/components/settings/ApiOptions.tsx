@@ -36,6 +36,7 @@ import {
 	ioIntelligenceDefaultModelId,
 	qwenCodeDefaultModelId,
 	rooDefaultModelId,
+	deepInfraDefaultModelId,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -98,6 +99,7 @@ import {
 	ZAi,
 	Fireworks,
 	Featherless,
+	DeepInfra,
 } from "./providers"
 
 import { MODELS_BY_PROVIDER, PROVIDERS } from "./constants"
@@ -206,6 +208,7 @@ const ApiOptions = ({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.openRouterApiKey,
 		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId ?? "personal",
+		deepInfraApiKey: apiConfiguration?.deepInfraApiKey,
 	})
 
 	//const { data: openRouterModelProviders } = useOpenRouterModelProviders(
@@ -364,6 +367,7 @@ const ApiOptions = ({
 				featherless: { field: "apiModelId", default: featherlessDefaultModelId },
 				"io-intelligence": { field: "ioIntelligenceModelId", default: ioIntelligenceDefaultModelId },
 				roo: { field: "apiModelId", default: rooDefaultModelId },
+				deepinfra: { field: "deepInfraModelId", default: deepInfraDefaultModelId },
 				openai: { field: "openAiModelId" },
 				ollama: { field: "ollamaModelId" },
 				lmstudio: { field: "lmStudioModelId" },
@@ -662,6 +666,17 @@ const ApiOptions = ({
 				<IOIntelligence
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
+					organizationAllowList={organizationAllowList}
+					modelValidationError={modelValidationError}
+				/>
+			)}
+
+			{selectedProvider === "deepinfra" && (
+				<DeepInfra
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					routerModels={routerModels}
+					refetchRouterModels={() => refetchRouterModels()}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
 				/>

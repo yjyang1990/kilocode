@@ -43,6 +43,7 @@ import {
 	FireworksHandler,
 	RooHandler,
 	FeatherlessHandler,
+	DeepInfraHandler,
 } from "./providers"
 // kilocode_change start
 import { KilocodeOpenrouterHandler } from "./providers/kilocode-openrouter"
@@ -145,6 +146,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new XAIHandler(options)
 		case "groq":
 			return new GroqHandler(options)
+		case "deepinfra":
+			return new DeepInfraHandler(options)
 		case "huggingface":
 			return new HuggingFaceHandler(options)
 		case "chutes":

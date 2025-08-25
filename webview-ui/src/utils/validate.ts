@@ -53,6 +53,11 @@ function validateModelsAndKeysProvided(apiConfiguration: ProviderSettings): stri
 				return i18next.t("settings:validation.apiKey")
 			}
 			break
+		case "deepinfra":
+			if (!apiConfiguration.deepInfraApiKey) {
+				return i18next.t("settings:validation.apiKey")
+			}
+			break
 		case "anthropic":
 			if (!apiConfiguration.apiKey) {
 				return i18next.t("settings:validation.apiKey")
@@ -214,6 +219,8 @@ function getModelIdForProvider(apiConfiguration: ProviderSettings, provider: str
 			return apiConfiguration.huggingFaceModelId
 		case "io-intelligence":
 			return apiConfiguration.ioIntelligenceModelId
+		case "deepinfra":
+			return apiConfiguration.deepInfraModelId
 		default:
 			return apiConfiguration.apiModelId
 	}
@@ -283,6 +290,9 @@ export function validateModelId(apiConfiguration: ProviderSettings, routerModels
 			break
 		case "litellm":
 			modelId = apiConfiguration.litellmModelId
+			break
+		case "deepinfra":
+			modelId = apiConfiguration.deepInfraModelId
 			break
 		case "io-intelligence":
 			modelId = apiConfiguration.ioIntelligenceModelId
