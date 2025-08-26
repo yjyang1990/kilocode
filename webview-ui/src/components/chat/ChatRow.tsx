@@ -1147,19 +1147,29 @@ export const ChatRowContent = ({
 							<div style={{ color: "var(--vscode-charts-green)", paddingTop: 10 }}>
 								<Markdown markdown={message.text} />
 							</div>
-							<div>
-								<VSCodeButton
-									onClick={() => {
-										vscode.postMessage({
-											type: "showNewChanges",
-											payload: {
-												ts: message.ts,
-											} as any,
-										})
-									}}>
-									Show New Changes
-								</VSCodeButton>
-							</div>
+							{
+								// kilocode_change start
+								// todo: localize, hide when irrelevant
+								!message.partial ? (
+									<div>
+										<VSCodeButton
+											className="w-full mt-2 bg-red-500"
+											onClick={() => {
+												vscode.postMessage({
+													type: "showNewChanges",
+													payload: {
+														ts: message.ts,
+													} as any,
+												})
+											}}>
+											Show New Changes
+										</VSCodeButton>
+									</div>
+								) : (
+									<></>
+								)
+								// kilocode_change end
+							}
 						</>
 					)
 				case "shell_integration_warning":
