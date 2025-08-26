@@ -254,6 +254,7 @@ export const useProviderModels = (apiConfiguration?: ProviderSettings) => {
 	const routerModels = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.apiKey,
+		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId ?? "personal",
 	})
 
 	const { models, defaultModel } =
