@@ -377,6 +377,10 @@ export interface BalanceDataResponsePayload {
 	data?: any // Replace 'any' with a more specific type if known for balance
 	error?: string
 }
+
+export interface ShowNewChangesPayload {
+	ts: number
+}
 // kilocode_change end
 
 export const checkoutDiffPayloadSchema = z.object({
@@ -416,11 +420,14 @@ export type InstallMarketplaceItemWithParametersPayload = z.infer<
 >
 
 export type WebViewMessagePayload =
+	// kilocode_change start
+	| ProfileDataResponsePayload
+	| BalanceDataResponsePayload
+	| ShowNewChangesPayload
+	// kilocode_change end
 	| CheckpointDiffPayload
 	| CheckpointRestorePayload
 	| IndexingStatusPayload
 	| IndexClearedPayload
-	| ProfileDataResponsePayload // kilocode_change
-	| BalanceDataResponsePayload // kilocode_change
 	| InstallMarketplaceItemWithParametersPayload
 	| UpdateTodoListPayload

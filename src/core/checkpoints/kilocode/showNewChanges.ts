@@ -2,6 +2,7 @@ import { TelemetryService } from "@roo-code/telemetry"
 import { getCheckpointService } from ".."
 import { DIFF_VIEW_URI_SCHEME } from "../../../integrations/editor/DiffViewProvider"
 import { Task } from "../../task/Task"
+import { t } from "../../../i18n"
 import * as vscode from "vscode"
 
 function findLast<T>(array: Array<T>, predicate: (value: T, index: number, obj: T[]) => boolean): number {
@@ -47,13 +48,13 @@ export async function showNewChanges(cline: Task, { ts }: { ts: number }) {
 			to: clineMessages[currentCheckpointIndex]?.text,
 		})
 		if (!changes?.length) {
-			vscode.window.showInformationMessage("No changes found.")
+			vscode.window.showWarningMessage(t("kilocode:showNewChanges.noChanges"))
 			return
 		}
 
 		await vscode.commands.executeCommand(
 			"vscode.changes",
-			"Showing new changes",
+			t("kilocode:showNewChanges.title"),
 			changes.map((change) => [
 				vscode.Uri.file(change.paths.absolute),
 				vscode.Uri.parse(`${DIFF_VIEW_URI_SCHEME}:${change.paths.relative}`).with({
@@ -65,7 +66,7 @@ export async function showNewChanges(cline: Task, { ts }: { ts: number }) {
 			]),
 		)
 	} catch (err) {
-		console.error("showNewChanges", err)
+		vscode.window.showErrorMessage(t("kilocode:showNewChanges.error"))
 		TelemetryService.instance.captureException(err, { context: "showNewChanges" })
 	}
 }

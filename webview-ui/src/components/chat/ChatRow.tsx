@@ -71,6 +71,7 @@ interface ChatRowProps {
 	onFollowUpUnmount?: () => void
 	isFollowUpAnswered?: boolean
 	editable?: boolean
+	hasCheckpoints?: boolean // kilocode_change
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -131,6 +132,7 @@ export const ChatRowContent = ({
 	onChatReset, // kilocode_change
 	isFollowUpAnswered,
 	editable,
+	hasCheckpoints, // kilocode_change
 }: ChatRowContentProps) => {
 	const { t } = useTranslation()
 	const { mcpServers, alwaysAllowMcp, currentCheckpoint } = useExtensionState()
@@ -1149,20 +1151,19 @@ export const ChatRowContent = ({
 							</div>
 							{
 								// kilocode_change start
-								// todo: localize, hide when irrelevant
-								!message.partial ? (
+								!message.partial && hasCheckpoints ? (
 									<div>
 										<VSCodeButton
-											className="w-full mt-2 bg-red-500"
+											className="w-full mt-2 bg-red-400"
 											onClick={() => {
 												vscode.postMessage({
 													type: "showNewChanges",
 													payload: {
 														ts: message.ts,
-													} as any,
+													},
 												})
 											}}>
-											Show New Changes
+											{t("kilocode:chat.showNewChanges")}
 										</VSCodeButton>
 									</div>
 								) : (

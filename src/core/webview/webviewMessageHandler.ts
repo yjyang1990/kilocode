@@ -7,7 +7,7 @@ import * as vscode from "vscode"
 import axios from "axios" // kilocode_change
 import * as yaml from "yaml"
 import { getKiloBaseUriFromToken } from "../../shared/kilocode/token" // kilocode_change
-import { ProfileData } from "../../shared/WebviewMessage" // kilocode_change
+import { ProfileData, ShowNewChangesPayload } from "../../shared/WebviewMessage" // kilocode_change
 
 import {
 	type Language,
@@ -776,7 +776,7 @@ export const webviewMessageHandler = async (
 		case "showNewChanges":
 			const task = provider.getCurrentTask()
 			if (task && message.payload) {
-				await showNewChanges(task, message.payload as any)
+				await showNewChanges(task, message.payload as ShowNewChangesPayload)
 			}
 			break
 		// kilocode_change end
