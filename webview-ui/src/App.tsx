@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState, useMemo } from "react"
 import { useEvent } from "react-use"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClient, QueryClientProvider as TanStackQueryClientProvider } from "@tanstack/react-query" // kilocode_change TanStackQueryClientProvider
 
 import { ExtensionMessage } from "@roo/ExtensionMessage"
 import TranslationProvider from "./i18n/TranslationContext"
@@ -330,7 +330,17 @@ const App = () => {
 	)
 }
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient() // kilocode_change exported
+
+// kilocode_change start
+// Shared QueryClient provider component that can be used by both WebView and Storybook
+export const QueryClientProvider: React.FC<{ client: QueryClient; children: React.ReactNode }> = ({
+	client,
+	children,
+}) => {
+	return <TanStackQueryClientProvider client={client}>{children}</TanStackQueryClientProvider>
+}
+// kilocode_change end
 
 const AppWithProviders = () => (
 	<ErrorBoundary>
