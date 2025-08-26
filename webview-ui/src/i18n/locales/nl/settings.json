@@ -371,6 +371,9 @@
 		"ollama": {
 			"baseUrl": "Basis-URL (optioneel)",
 			"modelId": "Model-ID",
+			"apiKey": "API-sleutel",
+			"apiKeyPlaceholder": "Voer je API-sleutel in",
+			"apiKeyInfo": "API-sleutel wordt verzonden als Authorization-header",
 			"description": "Ollama laat je modellen lokaal op je computer draaien. Zie hun quickstart-gids voor instructies.",
 			"warning": "Let op: Kilo Code gebruikt complexe prompts en werkt het beste met Claude-modellen. Minder krachtige modellen werken mogelijk niet zoals verwacht."
 		},
@@ -381,6 +384,10 @@
 		"humanRelay": {
 			"description": "Geen API-sleutel vereist, maar de gebruiker moet helpen met kopiëren en plakken naar de webchat-AI.",
 			"instructions": "Tijdens gebruik verschijnt een dialoogvenster en wordt het huidige bericht automatisch naar het klembord gekopieerd. Je moet deze plakken in webversies van AI (zoals ChatGPT of Claude), vervolgens het antwoord van de AI terugkopiëren naar het dialoogvenster en op bevestigen klikken."
+		},
+		"roo": {
+			"authenticatedMessage": "Veilig geauthenticeerd via je Roo Code Cloud-account.",
+			"connectButton": "Verbinden met Roo Code Cloud"
 		},
 		"openRouter": {
 			"providerRouting": {
@@ -736,10 +743,9 @@
 		},
 		"MORPH_FAST_APPLY": {
 			"name": "Morph Fast Apply inschakelen",
-			"description": "Wanneer ingeschakeld, kan Kilo Code bestanden bewerken met Morph Fast Apply.",
+			"description": "Wanneer ingeschakeld, kan Kilo Code bestanden bewerken met Morph Fast Apply. Vereist de Kilo Code API Provider, OpenRouter of een Morph API-sleutel.",
 			"apiKey": "Morph API-sleutel (optioneel)",
-			"placeholder": "Voer je Morph API-sleutel in (optioneel)",
-			"warning": "Als je geen Morph API-sleutel configureert, kun je Fast Apply nog steeds gebruiken met Kilo Code of OpenRouter. Je account wordt gefactureerd voor modelgebruik, dit wordt momenteel niet weergegeven in de extensie-UI."
+			"placeholder": "Voer je Morph API-sleutel in (optioneel)"
 		},
 		"INLINE_ASSIST": {
 			"name": "Inline Ondersteuning",
