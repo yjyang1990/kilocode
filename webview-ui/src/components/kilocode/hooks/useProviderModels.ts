@@ -168,7 +168,7 @@ export const getModelsByProvider = ({
 		}
 		case "lmstudio": {
 			return {
-				models: routerModels.glama,
+				models: routerModels.lmstudio,
 				defaultModel: "",
 			}
 		}
