@@ -69,6 +69,9 @@ export abstract class RouterProvider extends BaseProvider {
 	}
 
 	protected supportsTemperature(modelId: string): boolean {
-		return !modelId.startsWith("openai/o3-mini")
+		if (modelId.startsWith("openai/o3") || modelId.startsWith("openai/gpt5") || modelId.startsWith("gpt-5")) {
+			return false
+		}
+		return true
 	}
 }
