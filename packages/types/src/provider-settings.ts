@@ -611,7 +611,6 @@ export const dynamicProviders = [
 	// kilocode_change start
 	"kilocode",
 	"virtual-quota-fallback",
-	"qwen-code",
 	// kilocode_change end
 ] as const satisfies readonly ProviderName[]
 
