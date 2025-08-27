@@ -592,7 +592,7 @@ export const webviewMessageHandler = async (
 			const modelFetchPromises: Array<{ key: RouterName; options: GetModelsOptions }> = [
 				{
 					key: "openrouter",
-					options: { provider: "openrouter", apiKey: openRouterApiKey, baseUrl: openRouterBaseUrl }, // kilocode_change
+					options: { provider: "openrouter", apiKey: openRouterApiKey, baseUrl: openRouterBaseUrl },
 				},
 				{
 					key: "requesty",
