@@ -64,6 +64,7 @@ import QueuedMessages from "./QueuedMessages"
 import { getLatestTodo } from "@roo/todo"
 import { QueuedMessage } from "@roo-code/types"
 import { buildDocLink } from "@/utils/docLinks"
+import { getCommitRangesForCompletions } from "./kilocode/getCommitRangesForCompletions"
 
 export interface ChatViewProps {
 	isHidden: boolean
@@ -174,8 +175,8 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	// Has to be after api_req_finished are all reduced into api_req_started messages.
 	const apiMetrics = useMemo(() => getApiMetrics(modifiedMessages), [modifiedMessages])
 
-	const hasCheckpoints =
-		modifiedMessages.findIndex((msg) => msg.type === "say" && msg.say === "checkpoint_saved") >= 0 // kilocode_change
+	const completionCommitRanges = getCommitRangesForCompletions(modifiedMessages) // kilocode_change
+	console.log(completionCommitRanges)
 
 	const [inputValue, setInputValue] = useState("")
 	const textAreaRef = useRef<HTMLTextAreaElement>(null)
@@ -1688,14 +1689,14 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							return tool.tool === "updateTodoList" && enableButtons && !!primaryButtonText
 						})()
 					}
-					hasCheckpoints={hasCheckpoints} // kilocode_change
+					completionCommitRanges={completionCommitRanges} // kilocode_change
 				/>
 			)
 		},
 		[
 			// kilocode_change start
 			highlightedMessageIndex,
-			hasCheckpoints,
+			completionCommitRanges,
 			// kilocode_change end
 			expandedRows,
 			toggleRowExpansion,
