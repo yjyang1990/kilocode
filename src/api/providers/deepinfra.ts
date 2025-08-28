@@ -61,6 +61,10 @@ export class DeepInfraHandler extends RouterProvider implements SingleCompletion
 		_metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
 		const { id: modelId, info, reasoningEffort: reasoning_effort } = await this.fetchModel()
+		let prompt_cache_key = undefined;
+		if (info.supportsPromptCache && _metadata?.taskId) {
+			prompt_cache_key = _metadata.taskId;
+		}
 
 		const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming = {
 			model: modelId,
@@ -68,6 +72,7 @@ export class DeepInfraHandler extends RouterProvider implements SingleCompletion
 			stream: true,
 			stream_options: { include_usage: true },
 			reasoning_effort,
+			prompt_cache_key,
 		}
 
 		if (this.supportsTemperature(modelId)) {
