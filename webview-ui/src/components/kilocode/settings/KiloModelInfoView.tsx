@@ -3,7 +3,7 @@ import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { ModelDescriptionMarkdown } from "../../settings/ModelDescriptionMarkdown"
 import { ModelInfoSupportsItem } from "@/components/settings/ModelInfoView"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, StandardTooltip } from "@/components/ui"
-import { FreeModelsInfoView } from "../FreeModelsLink"
+import { FreeModelsInfoView, OpenRouterMarkupInfoView } from "../FreeModelsLink"
 import { useQuery } from "@tanstack/react-query"
 import { getKiloBaseUriFromToken } from "@roo/kilocode/token"
 import { telemetryClient } from "@/utils/TelemetryClient"
@@ -72,6 +72,7 @@ const PricingTable = ({ providers }: { providers: (ModelInfo & { label: string }
 
 export const KiloModelInfoView = ({
 	apiConfiguration,
+	setApiConfigurationField,
 	modelId,
 	model,
 	isDescriptionExpanded,
@@ -80,6 +81,7 @@ export const KiloModelInfoView = ({
 	setIsPricingExpanded,
 }: {
 	apiConfiguration: ProviderSettings
+	setApiConfigurationField: (field: keyof ProviderSettings, value: ProviderSettings[keyof ProviderSettings]) => void
 	modelId: string
 	model: ModelInfo
 	isDescriptionExpanded: boolean
@@ -115,6 +117,9 @@ export const KiloModelInfoView = ({
 					isExpanded={isDescriptionExpanded}
 					setIsExpanded={setIsDescriptionExpanded}
 				/>
+			)}
+			{apiConfiguration.apiProvider === "openrouter" && !modelId.endsWith(":free") && (
+				<OpenRouterMarkupInfoView setApiConfigurationField={setApiConfigurationField} modelId={modelId} />
 			)}
 			{apiConfiguration.apiProvider === "kilocode" && modelId.endsWith(":free") && (
 				<FreeModelsInfoView modelId={modelId} origin="settings" />
