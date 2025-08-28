@@ -155,7 +155,7 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		if (this.isInitialized) {
 			return
 		}
-		await this.fetchModels()
+		await this.fetchModel()
 		this.isInitialized = true
 	}
 
@@ -287,7 +287,7 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		}
 	}
 
-	async fetchModels() {
+	async fetchModel() {
 		this.models = await getOllamaModels(this.options.ollamaBaseUrl)
 		return this.models
 	}

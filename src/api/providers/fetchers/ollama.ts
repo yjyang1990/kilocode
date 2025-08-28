@@ -48,7 +48,11 @@ export const parseOllamaModel = (rawModel: OllamaModelInfoResponse): ModelInfo =
 	const contextLengthFromModelInfo =
 		contextKey && typeof rawModel.model_info[contextKey] === "number" ? rawModel.model_info[contextKey] : undefined
 
-	const contextWindow = contextLengthFromModelParameters ?? contextLengthFromModelInfo
+	let contextWindow = contextLengthFromModelParameters ?? contextLengthFromModelInfo
+
+	if (contextWindow == 40960 && !contextLengthFromModelParameters) {
+		contextWindow = 4096 // For some unknown reason, Ollama returns an undefind context as "40960" rather than 4096, which is what it actually enforces.
+	}
 	// kilocode_change end
 
 	const modelInfo: ModelInfo = Object.assign({}, ollamaDefaultModelInfo, {
