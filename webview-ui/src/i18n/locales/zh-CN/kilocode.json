@@ -17,7 +17,9 @@
 		"costUnknown": "费用未知",
 		"costUnknownDescription": "API 提供商未提供任何费用数据或请求已取消。",
 		"freeModelsDescription": "免费模型可能有请求频率限制。使用下方链接优化你的免费模型使用！",
-		"freeModelsLink": "探索免费模型选项"
+		"freeModelsLink": "探索免费模型选项",
+		"openRouterMarkup": "<faqLink>你知道 OpenRouter 收取额外费用吗？</faqLink>Kilo Code 提供商提供相同模型且无加价！",
+		"switchToKiloCode": "切换到 Kilo Code"
 	},
 	"notifications": {
 		"toolRequest": "工具请求等待批准",

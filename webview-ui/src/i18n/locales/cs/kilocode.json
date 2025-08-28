@@ -17,7 +17,9 @@
 		"costUnknown": "neznámé náklady",
 		"costUnknownDescription": "Poskytovatel API neposkytl žádné údaje o nákladech nebo byl požadavek zrušen.",
 		"freeModelsDescription": "Bezplatné modely mohou mít limity na počet požadavků. Použij odkaz níže pro optimalizaci využití bezplatných modelů!",
-		"freeModelsLink": "Objevte možnosti bezplatných a rozpočtových modelů"
+		"freeModelsLink": "Objevte možnosti bezplatných a rozpočtových modelů",
+		"openRouterMarkup": "<faqLink>Věděl jsi, že OpenRouter účtuje dodatečné poplatky?</faqLink> Poskytovatel Kilo Code nabízí stejné modely bez přirážky!",
+		"switchToKiloCode": "Přepnout na Kilo Code"
 	},
 	"notifications": {
 		"toolRequest": "Požadavek na nástroj čeká na schválení",

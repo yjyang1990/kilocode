@@ -17,7 +17,9 @@
 		"costUnknown": "custo desconhecido",
 		"costUnknownDescription": "O Provedor de API não forneceu dados de custo ou a solicitação foi cancelada.",
 		"freeModelsDescription": "Modelos gratuitos podem ter limites de taxa. Use o link abaixo para otimizar seu uso de modelos gratuitos!",
-		"freeModelsLink": "Descubra opções de modelos gratuitos e econômicos"
+		"freeModelsLink": "Descubra opções de modelos gratuitos e econômicos",
+		"openRouterMarkup": "<faqLink>Você sabia que o OpenRouter cobra taxas extras?</faqLink> O provedor Kilo Code oferece os mesmos modelos sem markup!",
+		"switchToKiloCode": "Mudar para Kilo Code"
 	},
 	"notifications": {
 		"toolRequest": "Solicitação de ferramenta aguardando aprovação",
