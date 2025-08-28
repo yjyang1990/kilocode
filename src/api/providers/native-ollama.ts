@@ -11,6 +11,13 @@ import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from ".
 // kilocode_change start
 import { fetchWithTimeout } from "./kilocode/fetchWithTimeout"
 const OLLAMA_TIMEOUT_MS = 3_600_000
+
+const TOKEN_ESTIMATION_FACTOR = 4 //Industry standard technique for estimating token counts without actually implementing a parser/tokenizer
+
+function estimateOllamaTokenCount(messages: Message[]): number {
+	const totalChars = messages.reduce((acc, msg) => acc + (msg.content?.length || 0), 0)
+	return Math.ceil(totalChars / TOKEN_ESTIMATION_FACTOR)
+}
 // kilocode_change end
 
 function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessageParam[]): Message[] {
@@ -136,10 +143,20 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 	protected options: ApiHandlerOptions
 	private client: Ollama | undefined
 	protected models: Record<string, ModelInfo> = {}
+	private isInitialized = false
 
 	constructor(options: ApiHandlerOptions) {
 		super()
 		this.options = options
+		this.initialize()
+	}
+
+	private async initialize(): Promise<void> {
+		if (this.isInitialized) {
+			return
+		}
+		await this.fetchModels()
+		this.isInitialized = true
 	}
 
 	private ensureClient(): Ollama {
@@ -147,7 +164,7 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 			try {
 				// kilocode_change start
 				const headers = this.options.ollamaApiKey
-					? { Authorization: this.options.ollamaApiKey } //Yes, this is weird, its not a Bearer token
+					? { Authorization: this.options.ollamaApiKey } // Yes, this is weird, its not a Bearer token
 					: undefined
 				// kilocode_change end
 
@@ -170,14 +187,25 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		messages: Anthropic.Messages.MessageParam[],
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
+		if (!this.isInitialized) {
+			await this.initialize()
+		}
+
 		const client = this.ensureClient()
-		const { id: modelId, info: modelInfo } = await this.fetchModel()
+		const { id: modelId, info: modelInfo } = this.getModel()
 		const useR1Format = modelId.toLowerCase().includes("deepseek-r1")
 
 		const ollamaMessages: Message[] = [
 			{ role: "system", content: systemPrompt },
 			...convertToOllamaMessages(messages),
 		]
+
+		const estimatedTokenCount = estimateOllamaTokenCount(ollamaMessages)
+		if (modelInfo.maxTokens && estimatedTokenCount > modelInfo.maxTokens) {
+			throw new Error(
+				`Input message is too long for the selected model. Estimated tokens: ${estimatedTokenCount}, Max tokens: ${modelInfo.maxTokens}`,
+			)
+		}
 
 		const matcher = new XmlMatcher(
 			"think",
@@ -259,23 +287,37 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		}
 	}
 
-	async fetchModel() {
+	async fetchModels() {
 		this.models = await getOllamaModels(this.options.ollamaBaseUrl)
-		return this.getModel()
+		return this.models
 	}
 
 	override getModel(): { id: string; info: ModelInfo } {
 		const modelId = this.options.ollamaModelId || ""
+		const modelInfo = this.models[modelId]
+
+		if (!modelInfo) {
+			const availableModels = Object.keys(this.models)
+			const errorMessage =
+				availableModels.length > 0
+					? `Model ${modelId} not found. Available models: ${availableModels.join(", ")}`
+					: `Model ${modelId} not found. No models available.`
+			throw new Error(errorMessage)
+		}
+
 		return {
 			id: modelId,
-			info: this.models[modelId] || openAiModelInfoSaneDefaults,
+			info: modelInfo,
 		}
 	}
 
 	async completePrompt(prompt: string): Promise<string> {
 		try {
+			if (!this.isInitialized) {
+				await this.initialize()
+			}
 			const client = this.ensureClient()
-			const { id: modelId } = await this.fetchModel()
+			const { id: modelId } = this.getModel()
 			const useR1Format = modelId.toLowerCase().includes("deepseek-r1")
 
 			const response = await client.chat({
