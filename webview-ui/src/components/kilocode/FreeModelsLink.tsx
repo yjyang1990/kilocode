@@ -7,12 +7,7 @@ import { Trans } from "react-i18next"
 
 const WarningBox = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div
-			className="p-3 text-center"
-			style={{
-				color: "var(--vscode-activityWarningBadge-foreground)",
-				backgroundColor: "var(--vscode-activityWarningBadge-background)",
-			}}>
+		<div className="bg-vscode-editor-background text-vscode-descriptionForeground border p-3 text-center">
 			{children}
 		</div>
 	)
