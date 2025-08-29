@@ -306,6 +306,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			.mockRejectedValueOnce(new Error("Unbound API error")) // unbound
 			.mockResolvedValueOnce(mockModels) // kilocode-openrouter
 			.mockRejectedValueOnce(new Error("Ollama API error")) // kilocode_change
+			.mockResolvedValueOnce(mockModels) // kilocode_change deepinfra
 			.mockRejectedValueOnce(new Error("LiteLLM connection failed")) // litellm
 
 		await webviewMessageHandler(mockClineProvider, {
@@ -323,6 +324,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 				litellm: {},
 				"kilocode-openrouter": mockModels,
 				ollama: {},
+				deepinfra: mockModels,
 				lmstudio: {},
 			},
 		})

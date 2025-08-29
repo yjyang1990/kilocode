@@ -1,3 +1,5 @@
+// kilocode_change - provider added
+
 import { Anthropic } from "@anthropic-ai/sdk" // for message param types
 import OpenAI from "openai"
 
@@ -61,19 +63,19 @@ export class DeepInfraHandler extends RouterProvider implements SingleCompletion
 		_metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
 		const { id: modelId, info, reasoningEffort: reasoning_effort } = await this.fetchModel()
-		let prompt_cache_key = undefined;
+		let prompt_cache_key = undefined
 		if (info.supportsPromptCache && _metadata?.taskId) {
-			prompt_cache_key = _metadata.taskId;
+			prompt_cache_key = _metadata.taskId
 		}
 
-		const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming = {
+		const requestOptions = {
 			model: modelId,
 			messages: [{ role: "system", content: systemPrompt }, ...convertToOpenAiMessages(messages)],
 			stream: true,
 			stream_options: { include_usage: true },
 			reasoning_effort,
 			prompt_cache_key,
-		}
+		} as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming
 
 		if (this.supportsTemperature(modelId)) {
 			requestOptions.temperature = this.options.modelTemperature ?? 0

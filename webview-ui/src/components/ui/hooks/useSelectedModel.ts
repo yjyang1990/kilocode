@@ -19,6 +19,7 @@ import {
 	geminiCliModels,
 	qwenCodeModels,
 	qwenCodeDefaultModelId,
+	deepInfraDefaultModelId,
 	// kilocode_change end
 	mistralDefaultModelId,
 	mistralModels,
@@ -58,7 +59,6 @@ import {
 	ioIntelligenceModels,
 	rooDefaultModelId,
 	rooModels,
-	deepInfraDefaultModelId,
 	BEDROCK_CLAUDE_SONNET_4_MODEL_ID,
 } from "@roo-code/types"
 

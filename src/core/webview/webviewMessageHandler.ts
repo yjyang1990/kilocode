@@ -571,7 +571,7 @@ export const webviewMessageHandler = async (
 				"kilocode-openrouter": {}, // kilocode_change
 				ollama: {},
 				lmstudio: {},
-				deepinfra: {},
+				deepinfra: {}, // kilocode_change
 			}
 
 			const safeGetModels = async (options: GetModelsOptions): Promise<ModelRecord> => {

@@ -53,11 +53,11 @@ export const providerNames = [
 	"fake-ai",
 	"xai",
 	"groq",
-	"deepinfra",
 	"chutes",
 	"litellm",
 	// kilocode_change start
 	"kilocode",
+	"deepinfra",
 	"gemini-cli",
 	"virtual-quota-fallback",
 	"qwen-code",
@@ -249,12 +249,6 @@ const deepSeekSchema = apiModelIdProviderModelSchema.extend({
 	deepSeekApiKey: z.string().optional(),
 })
 
-const deepInfraSchema = apiModelIdProviderModelSchema.extend({
-	deepInfraBaseUrl: z.string().optional(),
-	deepInfraApiKey: z.string().optional(),
-	deepInfraModelId: z.string().optional(),
-})
-
 const doubaoSchema = apiModelIdProviderModelSchema.extend({
 	doubaoBaseUrl: z.string().optional(),
 	doubaoApiKey: z.string().optional(),
@@ -327,6 +321,12 @@ const kilocodeSchema = baseProviderSettingsSchema.extend({
 	openRouterProviderSort: openRouterProviderSortSchema.optional(),
 })
 
+const deepInfraSchema = apiModelIdProviderModelSchema.extend({
+	deepInfraBaseUrl: z.string().optional(),
+	deepInfraApiKey: z.string().optional(),
+	deepInfraModelId: z.string().optional(),
+})
+
 export const virtualQuotaFallbackProfileDataSchema = z.object({
 	profileName: z.string().optional(),
 	profileId: z.string().optional(),
@@ -392,7 +392,6 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	openAiNativeSchema.merge(z.object({ apiProvider: z.literal("openai-native") })),
 	mistralSchema.merge(z.object({ apiProvider: z.literal("mistral") })),
 	deepSeekSchema.merge(z.object({ apiProvider: z.literal("deepseek") })),
-	deepInfraSchema.merge(z.object({ apiProvider: z.literal("deepinfra") })),
 	doubaoSchema.merge(z.object({ apiProvider: z.literal("doubao") })),
 	moonshotSchema.merge(z.object({ apiProvider: z.literal("moonshot") })),
 	unboundSchema.merge(z.object({ apiProvider: z.literal("unbound") })),
@@ -401,6 +400,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	fakeAiSchema.merge(z.object({ apiProvider: z.literal("fake-ai") })),
 	xaiSchema.merge(z.object({ apiProvider: z.literal("xai") })),
 	// kilocode_change start
+	deepInfraSchema.merge(z.object({ apiProvider: z.literal("deepinfra") })),
 	geminiCliSchema.merge(z.object({ apiProvider: z.literal("gemini-cli") })),
 	kilocodeSchema.merge(z.object({ apiProvider: z.literal("kilocode") })),
 	virtualQuotaFallbackSchema.merge(z.object({ apiProvider: z.literal("virtual-quota-fallback") })),
@@ -438,11 +438,11 @@ export const providerSettingsSchema = z.object({
 	...kilocodeSchema.shape,
 	...virtualQuotaFallbackSchema.shape,
 	...qwenCodeSchema.shape,
+	...deepInfraSchema.shape,
 	// kilocode_change end
 	...openAiNativeSchema.shape,
 	...mistralSchema.shape,
 	...deepSeekSchema.shape,
-	...deepInfraSchema.shape,
 	...doubaoSchema.shape,
 	...moonshotSchema.shape,
 	...unboundSchema.shape,
@@ -487,7 +487,7 @@ export const MODEL_ID_KEYS: Partial<keyof ProviderSettings>[] = [
 	"litellmModelId",
 	"huggingFaceModelId",
 	"ioIntelligenceModelId",
-	"deepInfraModelId",
+	"deepInfraModelId", // kilocode_change
 ]
 
 export const getModelId = (settings: ProviderSettings): string | undefined => {
@@ -603,12 +603,12 @@ export const MODELS_BY_PROVIDER: Record<
 	openrouter: { id: "openrouter", label: "OpenRouter", models: [] },
 	requesty: { id: "requesty", label: "Requesty", models: [] },
 	unbound: { id: "unbound", label: "Unbound", models: [] },
-	deepinfra: { id: "deepinfra", label: "DeepInfra", models: [] },
 
 	// kilocode_change start
 	kilocode: { id: "kilocode", label: "Kilocode", models: [] },
 	"virtual-quota-fallback": { id: "virtual-quota-fallback", label: "Virtual Quota Fallback", models: [] },
 	"qwen-code": { id: "qwen-code", label: "Qwen Code", models: [] },
+	deepinfra: { id: "deepinfra", label: "DeepInfra", models: [] },
 	// kilocode_change end
 }
 
@@ -619,10 +619,10 @@ export const dynamicProviders = [
 	"openrouter",
 	"requesty",
 	"unbound",
-	"deepinfra",
 	// kilocode_change start
 	"kilocode",
 	"virtual-quota-fallback",
+	"deepinfra",
 	// kilocode_change end
 ] as const satisfies readonly ProviderName[]
 

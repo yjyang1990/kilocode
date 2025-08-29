@@ -132,7 +132,7 @@ const routerNames = [
 	"ollama",
 	"lmstudio",
 	"io-intelligence",
-	"deepinfra",
+	"deepinfra", // kilocode_change
 ] as const
 
 export type RouterName = (typeof routerNames)[number]
