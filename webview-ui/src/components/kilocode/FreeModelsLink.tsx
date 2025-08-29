@@ -11,27 +11,20 @@ const InfoView = ({ children }: { children: React.ReactNode }) => {
 
 export const OpenRouterMarkupInfoView = ({
 	setApiConfigurationField,
-	modelId,
 }: {
 	setApiConfigurationField: (field: keyof ProviderSettings, value: ProviderSettings[keyof ProviderSettings]) => void
-	modelId: string
 }) => {
 	return (
 		<InfoView>
 			<div className="text-vscode-descriptionForeground">
-				<Trans
-					i18nKey="kilocode:pricing.openRouterMarkup"
-					components={{ faqLink: <a href="https://openrouter.ai/docs/faq#pricing-and-fees"></a> }}
-				/>
+				<Trans i18nKey="kilocode:pricing.openRouterMarkup" />
 			</div>
 			<VSCodeButton
 				appearance="primary"
 				className="mt-3 w-full"
 				onClick={() => {
 					setApiConfigurationField("apiProvider", "kilocode")
-					telemetryClient.capture(TelemetryEventName.SWITCH_TO_KILO_CODE_CLICKED, {
-						modelId,
-					})
+					telemetryClient.capture(TelemetryEventName.SWITCH_TO_KILO_CODE_CLICKED)
 				}}>
 				<Trans i18nKey="kilocode:pricing.switchToKiloCode" />
 			</VSCodeButton>

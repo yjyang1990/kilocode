@@ -245,7 +245,6 @@ export const ModelPicker = ({
 					(apiConfiguration.apiProvider === "kilocode" || apiConfiguration.apiProvider === "openrouter" ? (
 						<KiloModelInfoView
 							apiConfiguration={apiConfiguration}
-							setApiConfigurationField={setApiConfigurationField}
 							modelId={selectedModelId}
 							model={selectedModelInfo}
 							isDescriptionExpanded={isDescriptionExpanded}
