@@ -18,7 +18,7 @@
 		"costUnknownDescription": "Poskytovatel API neposkytl žádné údaje o nákladech nebo byl požadavek zrušen.",
 		"freeModelsDescription": "Bezplatné modely mohou mít limity na počet požadavků. Použij odkaz níže pro optimalizaci využití bezplatných modelů!",
 		"freeModelsLink": "Objevte možnosti bezplatných a rozpočtových modelů",
-		"openRouterMarkup": "<faqLink>Věděl jsi, že OpenRouter účtuje dodatečné poplatky?</faqLink> Poskytovatel Kilo Code nabízí stejné modely bez přirážky!",
+		"openRouterMarkup": "Poskytovatel Kilo Code zahrnuje všechny modely OpenRouter, bez přirážky a s 0% provizí!",
 		"switchToKiloCode": "Přepnout na Kilo Code"
 	},
 	"notifications": {

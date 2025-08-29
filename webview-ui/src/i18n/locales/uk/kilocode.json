@@ -18,7 +18,7 @@
 		"costUnknownDescription": "API провайдер не надав дані про вартість або запит було скасовано.",
 		"freeModelsDescription": "Безкоштовні моделі можуть мати обмеження швидкості. Використовуй посилання нижче, щоб оптимізувати використання безкоштовних моделей!",
 		"freeModelsLink": "Дізнатися про безкоштовні та бюджетні моделі",
-		"openRouterMarkup": "<faqLink>Чи знаєш ти, що OpenRouter стягує додаткові комісії?</faqLink> Провайдер Kilo Code пропонує ті ж моделі без наценки!",
+		"openRouterMarkup": "Провайдер Kilo Code включає всі моделі OpenRouter, без наценки та з 0% комісії!",
 		"switchToKiloCode": "Перейти на Kilo Code"
 	},
 	"notifications": {
