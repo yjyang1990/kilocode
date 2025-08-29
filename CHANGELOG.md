@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.86.0
-
-### Minor Changes
+## [v4.86.0]
 
 - [#2012](https://github.com/Kilo-Org/kilocode/pull/2012) [`1fd698a`](https://github.com/Kilo-Org/kilocode/commit/1fd698ad2025946519a0ce2d516ec528ea92eea4) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Improve Inline Assist model compatibility and performance
 
