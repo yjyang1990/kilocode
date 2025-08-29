@@ -2,21 +2,22 @@
 
 import { ChatCompletionToolMessageParam } from "openai/resources/chat/completions.mjs";
 
-import { checkToolPermission } from "./permissions/permissionChecker.js";
-import { toolPermissionManager } from "./permissions/permissionManager.js";
-import { ToolCallRequest } from "./permissions/types.js";
-import { StreamCallbacks } from "./streamChatResponse.types.js";
-import { telemetryService } from "./telemetry/telemetryService.js";
-import { calculateTokenCost } from "./telemetry/utils.js";
+import { checkToolPermission } from "../permissions/permissionChecker.js";
+import { toolPermissionManager } from "../permissions/permissionManager.js";
+import { ToolCallRequest } from "../permissions/types.js";
+import { telemetryService } from "../telemetry/telemetryService.js";
+import { calculateTokenCost } from "../telemetry/utils.js";
 import {
   executeToolCall,
   getAllBuiltinTools,
   getAvailableTools,
   Tool,
   validateToolCallArgsPresent,
-} from "./tools/index.js";
-import { PreprocessedToolCall, ToolCall } from "./tools/types.js";
-import { logger } from "./util/logger.js";
+} from "../tools/index.js";
+import { PreprocessedToolCall, ToolCall } from "../tools/types.js";
+import { logger } from "../util/logger.js";
+
+import { StreamCallbacks } from "./streamChatResponse.types.js";
 
 // Helper function to handle permission denied
 export function handlePermissionDenied(
@@ -36,7 +37,7 @@ export function handlePermissionDenied(
     content: deniedMessage,
   });
 
-  callbacks?.onToolResult?.(deniedMessage, toolCall.name);
+  callbacks?.onToolResult?.(deniedMessage, toolCall.name, "canceled");
   logger.debug("Tool call rejected - stopping stream");
 }
 
@@ -327,9 +328,8 @@ export async function preprocessStreamedToolCalls(
       // Notify the UI about the tool start, even though it failed
       callbacks?.onToolStart?.(toolCall.name, toolCall.arguments);
 
-      const errorMessage = `Error processing tool call: ${
-        error instanceof Error ? error.message : String(error)
-      }`;
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
 
       logger.error("Invalid tool call", {
         name: toolCall.name,
@@ -386,7 +386,7 @@ export async function executeStreamedToolCalls(
         content: cancelledMessage,
       });
 
-      callbacks?.onToolResult?.(cancelledMessage, toolCall.name);
+      callbacks?.onToolResult?.(cancelledMessage, toolCall.name, "canceled");
       continue;
     }
 
@@ -427,7 +427,7 @@ export async function executeStreamedToolCalls(
         content: toolResult,
       });
 
-      callbacks?.onToolResult?.(toolResult, toolCall.name);
+      callbacks?.onToolResult?.(toolResult, toolCall.name, "done");
     } catch (error) {
       const errorMessage = `Error executing tool ${toolCall.name}: ${
         error instanceof Error ? error.message : String(error)

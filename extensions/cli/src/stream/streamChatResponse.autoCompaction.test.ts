@@ -1,27 +1,35 @@
-import { ChatCompletionMessageParam } from "openai/resources.mjs";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { ChatHistoryItem } from "core/index.js";
+import { convertToUnifiedHistory } from "core/util/messageConversion.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { handleAutoCompaction } from "./streamChatResponse.autoCompaction.js";
 
 // Mock dependencies
-vi.mock("./compaction.js", () => ({
+vi.mock("../compaction.js", () => ({
   compactChatHistory: vi.fn(),
 }));
 
-vi.mock("./session.js", () => ({
+vi.mock("../session.js", () => ({
+  createSession: vi.fn((history) => ({
+    sessionId: "test",
+    title: "Test",
+    workspaceDirectory: "/test",
+    history,
+  })),
   saveSession: vi.fn(),
+  updateSessionHistory: vi.fn(),
 }));
 
-vi.mock("./util/tokenizer.js", () => ({
+vi.mock("../util/tokenizer.js", () => ({
   shouldAutoCompact: vi.fn(),
   getAutoCompactMessage: vi.fn(),
 }));
 
-vi.mock("./util/formatError.js", () => ({
+vi.mock("../util/formatError.js", () => ({
   formatError: vi.fn((error) => error.message || String(error)),
 }));
 
-vi.mock("./util/logger.js", () => ({
+vi.mock("../util/logger.js", () => ({
   logger: {
     info: vi.fn(),
     debug: vi.fn(),
@@ -29,6 +37,14 @@ vi.mock("./util/logger.js", () => ({
     warn: vi.fn(),
   },
 }));
+
+vi.mock("os", async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
+  return {
+    ...actual,
+    homedir: vi.fn(() => "/home/test"),
+  };
+});
 
 describe("handleAutoCompaction", () => {
   const mockModel = {
@@ -42,19 +58,20 @@ describe("handleAutoCompaction", () => {
   } as any;
 
   const mockLlmApi = {} as any;
-  const mockChatHistory: ChatCompletionMessageParam[] = [
+  const mockChatHistory: ChatHistoryItem[] = convertToUnifiedHistory([
     { role: "system", content: "You are a helpful assistant." },
     { role: "user", content: "Hello" },
     { role: "assistant", content: "Hi there!" },
-  ];
+  ]);
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("should return original history when auto-compaction is not needed", async () => {
-    const { shouldAutoCompact } = await import("./util/tokenizer.js");
-    vi.mocked(shouldAutoCompact).mockReturnValue(false);
+    const { shouldAutoCompact } = await import("../util/tokenizer.js");
+    const mockedShouldAutoCompact = shouldAutoCompact as any;
+    mockedShouldAutoCompact.mockReturnValue(false);
 
     const result = await handleAutoCompaction(
       mockChatHistory,
@@ -66,6 +83,7 @@ describe("handleAutoCompaction", () => {
     expect(result).toEqual({
       chatHistory: mockChatHistory,
       compactionIndex: null,
+      wasCompacted: false,
     });
 
     expect(shouldAutoCompact).toHaveBeenCalledWith(mockChatHistory, mockModel);
@@ -73,30 +91,31 @@ describe("handleAutoCompaction", () => {
 
   it("should perform auto-compaction when context limit is approaching", async () => {
     const { shouldAutoCompact, getAutoCompactMessage } = await import(
-      "./util/tokenizer.js"
+      "../util/tokenizer.js"
     );
-    const { compactChatHistory } = await import("./compaction.js");
-    const { saveSession } = await import("./session.js");
+    const { compactChatHistory } = await import("../compaction.js");
+    const { updateSessionHistory } = await import("../session.js");
 
     vi.mocked(shouldAutoCompact).mockReturnValue(true);
     vi.mocked(getAutoCompactMessage).mockReturnValue("Auto-compacting...");
 
     const mockCompactionResult = {
-      compactedHistory: [
+      compactedHistory: convertToUnifiedHistory([
         {
           role: "system",
           content: "You are a helpful assistant.",
-        } as ChatCompletionMessageParam,
+        },
         {
           role: "assistant",
           content: "[COMPACTED HISTORY]\nConversation summary...",
-        } as ChatCompletionMessageParam,
-      ],
+        },
+      ]),
       compactionIndex: 1,
       compactionContent: "Conversation summary...",
     };
 
-    vi.mocked(compactChatHistory).mockResolvedValue(mockCompactionResult);
+    const mockedCompactChatHistory = compactChatHistory as any;
+    mockedCompactChatHistory.mockResolvedValue(mockCompactionResult);
 
     const mockCallbacks = {
       onSystemMessage: vi.fn(),
@@ -120,7 +139,7 @@ describe("handleAutoCompaction", () => {
       mockLlmApi,
       expect.any(Object),
     );
-    expect(saveSession).toHaveBeenCalledWith(
+    expect(updateSessionHistory).toHaveBeenCalledWith(
       mockCompactionResult.compactedHistory,
     );
 
@@ -134,15 +153,16 @@ describe("handleAutoCompaction", () => {
     expect(result).toEqual({
       chatHistory: mockCompactionResult.compactedHistory,
       compactionIndex: mockCompactionResult.compactionIndex,
+      wasCompacted: true,
     });
   });
 
   it("should handle compaction errors gracefully", async () => {
     const { shouldAutoCompact, getAutoCompactMessage } = await import(
-      "./util/tokenizer.js"
+      "../util/tokenizer.js"
     );
-    const { compactChatHistory } = await import("./compaction.js");
-    const { logger } = await import("./util/logger.js");
+    const { compactChatHistory } = await import("../compaction.js");
+    const { logger } = await import("../util/logger.js");
 
     vi.mocked(shouldAutoCompact).mockReturnValue(true);
     vi.mocked(getAutoCompactMessage).mockReturnValue("Auto-compacting...");
@@ -172,30 +192,33 @@ describe("handleAutoCompaction", () => {
     );
 
     // Should return original history on error
+    expect(result.wasCompacted).toBe(false);
     expect(result).toEqual({
       chatHistory: mockChatHistory,
       compactionIndex: null,
+      wasCompacted: false,
     });
   });
 
   it("should not call system message callback in headless mode", async () => {
     const { shouldAutoCompact, getAutoCompactMessage } = await import(
-      "./util/tokenizer.js"
+      "../util/tokenizer.js"
     );
-    const { compactChatHistory } = await import("./compaction.js");
+    const { compactChatHistory } = await import("../compaction.js");
 
     vi.mocked(shouldAutoCompact).mockReturnValue(true);
     vi.mocked(getAutoCompactMessage).mockReturnValue("Auto-compacting...");
 
     const mockCompactionResult = {
-      compactedHistory: [
-        { role: "system", content: "System" } as ChatCompletionMessageParam,
-      ],
+      compactedHistory: convertToUnifiedHistory([
+        { role: "system", content: "System" },
+      ]),
       compactionIndex: 0,
       compactionContent: "Summary",
     };
 
-    vi.mocked(compactChatHistory).mockResolvedValue(mockCompactionResult);
+    const mockedCompactChatHistory = compactChatHistory as any;
+    mockedCompactChatHistory.mockResolvedValue(mockCompactionResult);
 
     const mockCallbacks = {
       onSystemMessage: vi.fn(),
@@ -220,6 +243,7 @@ describe("handleAutoCompaction", () => {
     expect(result).toEqual({
       chatHistory: mockChatHistory,
       compactionIndex: null,
+      wasCompacted: false,
     });
   });
 });

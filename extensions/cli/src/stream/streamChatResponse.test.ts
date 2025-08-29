@@ -1,22 +1,21 @@
 import { ModelConfig } from "@continuedev/config-yaml";
 import { BaseLlmApi } from "@continuedev/openai-adapters";
-import type {
-  ChatCompletionChunk,
-  ChatCompletionMessageParam,
-} from "openai/resources/chat/completions.mjs";
+import type { ChatHistoryItem } from "core/index.js";
+import type { ChatCompletionChunk } from "openai/resources/chat/completions.mjs";
 import { vi } from "vitest";
 
-import { toolPermissionManager } from "./permissions/permissionManager.js";
+import { toolPermissionManager } from "../permissions/permissionManager.js";
+import { ToolCall } from "../tools/index.js";
+import { readFileTool } from "../tools/readFile.js";
+import { searchCodeTool } from "../tools/searchCode.js";
+import { PreprocessedToolCall } from "../tools/types.js";
+import { writeFileTool } from "../tools/writeFile.js";
+
 import {
-  preprocessStreamedToolCalls,
   executeStreamedToolCalls,
+  preprocessStreamedToolCalls,
 } from "./streamChatResponse.helpers.js";
 import { processStreamingResponse } from "./streamChatResponse.js";
-import { ToolCall } from "./tools/index.js";
-import { readFileTool } from "./tools/readFile.js";
-import { searchCodeTool } from "./tools/searchCode.js";
-import { PreprocessedToolCall } from "./tools/types.js";
-import { writeFileTool } from "./tools/writeFile.js";
 
 // Test the chunk processing logic that was identified as buggy
 describe("processStreamingResponse - content preservation", () => {
@@ -25,7 +24,7 @@ describe("processStreamingResponse - content preservation", () => {
   let mockAbortController: AbortController;
   let mockModel: ModelConfig;
   let chunks: ChatCompletionChunk[];
-  let chatHistory: ChatCompletionMessageParam[];
+  let chatHistory: ChatHistoryItem[];
 
   // Helper to create a content chunk
   function contentChunk(content: string): ChatCompletionChunk {
@@ -112,7 +111,12 @@ describe("processStreamingResponse - content preservation", () => {
   beforeEach(() => {
     // Reset chunks for each test
     chunks = [];
-    chatHistory = [{ role: "user", content: "Test prompt" }];
+    chatHistory = [
+      {
+        message: { role: "user", content: "Test prompt" },
+        contextItems: [],
+      },
+    ];
 
     // Create a mock LLM API that returns our predefined chunks
     mockLlmApi = {
@@ -435,7 +439,7 @@ describe.skip("preprocessStreamedToolCalls", () => {
 
   it("handles tool preprocessing errors correctly", async () => {
     // Set the spy to throw an error
-    const toolsModule = await import("./tools/index.js");
+    const toolsModule = await import("../tools/index.js");
     vi.spyOn(toolsModule, "validateToolCallArgsPresent").mockImplementationOnce(
       () => {
         throw new Error("Missing required argument");
@@ -507,12 +511,12 @@ describe.skip("executeStreamedToolCalls", () => {
 
   it("executes tool calls with allowed permissions", async () => {
     // Setup spies instead of mocks
-    const permissionsModule = await import("./permissions/index.js");
+    const permissionsModule = await import("../permissions/index.js");
     vi.spyOn(permissionsModule, "checkToolPermission").mockReturnValue({
       permission: "allow",
     });
 
-    const toolsModule = await import("./tools/index.js");
+    const toolsModule = await import("../tools/index.js");
     const mockedExecuteToolCall = vi
       .spyOn(toolsModule, "executeToolCall")
       .mockResolvedValue("Tool execution successful");
@@ -549,13 +553,14 @@ describe.skip("executeStreamedToolCalls", () => {
     expect(callbacks.onToolResult).toHaveBeenCalledWith(
       "Tool execution successful",
       "Read",
+      "done",
     );
     expect(mockedExecuteToolCall).toHaveBeenCalledWith(preprocessedCalls[0]);
   });
 
   it("handles permission denied correctly", async () => {
     // Setup permission to ask
-    const permissionsModule = await import("./permissions/index.js");
+    const permissionsModule = await import("../permissions/index.js");
     vi.spyOn(permissionsModule, "checkToolPermission").mockReturnValue({
       permission: "ask",
     });
@@ -630,6 +635,7 @@ describe.skip("executeStreamedToolCalls", () => {
     expect(callbacks.onToolResult).toHaveBeenCalledWith(
       "Permission denied by user",
       "Write",
+      "canceled",
     );
     expect(callbacks.onToolPermissionRequest).toHaveBeenCalledWith(
       "Write",
@@ -641,12 +647,12 @@ describe.skip("executeStreamedToolCalls", () => {
 
   it("handles tool execution errors", async () => {
     // Setup spies
-    const permissionsModule = await import("./permissions/index.js");
+    const permissionsModule = await import("../permissions/index.js");
     vi.spyOn(permissionsModule, "checkToolPermission").mockReturnValue({
       permission: "allow",
     });
 
-    const toolsModule = await import("./tools/index.js");
+    const toolsModule = await import("../tools/index.js");
     vi.spyOn(toolsModule, "executeToolCall").mockRejectedValue(
       new Error("Execution failed"),
     );

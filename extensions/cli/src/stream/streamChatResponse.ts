@@ -1,24 +1,27 @@
 import { ModelConfig } from "@continuedev/config-yaml";
 import { BaseLlmApi } from "@continuedev/openai-adapters";
+import type { ChatHistoryItem } from "core/index.js";
+import { convertFromUnifiedHistoryWithSystemMessage } from "core/util/messageConversion.js";
 import * as dotenv from "dotenv";
 import type {
   ChatCompletionMessageParam,
-  ChatCompletionMessageToolCall,
   ChatCompletionTool,
 } from "openai/resources.mjs";
 
-import { filterExcludedTools } from "./permissions/index.js";
+import { getServiceSync, SERVICE_NAMES } from "../services/index.js";
+import { systemMessageService } from "../services/SystemMessageService.js";
+import type { ToolPermissionServiceState } from "../services/ToolPermissionService.js";
+import { telemetryService } from "../telemetry/telemetryService.js";
+import { ToolCall } from "../tools/index.js";
 import {
-  getServiceSync,
-  MCPServiceState,
-  MCPTool,
-  SERVICE_NAMES,
-} from "./services/index.js";
-import type { ToolPermissionServiceState } from "./services/ToolPermissionService.js";
+  chatCompletionStreamWithBackoff,
+  withExponentialBackoff,
+} from "../util/exponentialBackoff.js";
+import { logger } from "../util/logger.js";
+
+import { getAllTools, handleToolCalls } from "./handleToolCalls.js";
 import { handleAutoCompaction } from "./streamChatResponse.autoCompaction.js";
 import {
-  executeStreamedToolCalls,
-  preprocessStreamedToolCalls,
   processChunkContent,
   processToolCallDelta,
   recordStreamTelemetry,
@@ -28,13 +31,6 @@ import {
   getDefaultCompletionOptions,
   StreamCallbacks,
 } from "./streamChatResponse.types.js";
-import { telemetryService } from "./telemetry/telemetryService.js";
-import { getAllBuiltinTools, ToolCall } from "./tools/index.js";
-import {
-  chatCompletionStreamWithBackoff,
-  withExponentialBackoff,
-} from "./util/exponentialBackoff.js";
-import { logger } from "./util/logger.js";
 
 dotenv.config();
 
@@ -68,153 +64,6 @@ function handleContentDisplay(
   }
 }
 
-async function handleToolCalls(
-  toolCalls: ToolCall[],
-  chatHistory: ChatCompletionMessageParam[],
-  content: string,
-  callbacks: StreamCallbacks | undefined,
-  isHeadless: boolean,
-): Promise<boolean> {
-  if (toolCalls.length === 0) {
-    if (content) {
-      chatHistory.push({ role: "assistant", content });
-    }
-    return false;
-  }
-
-  const toolCallsForHistory: ChatCompletionMessageToolCall[] = toolCalls.map(
-    (tc) => ({
-      id: tc.id,
-      type: "function",
-      function: {
-        name: tc.name,
-        arguments: JSON.stringify(tc.arguments),
-      },
-    }),
-  );
-
-  chatHistory.push({
-    role: "assistant",
-    content: content || null,
-    tool_calls: toolCallsForHistory,
-  });
-
-  // First preprocess the tool calls
-  const { preprocessedCalls, errorChatEntries } =
-    await preprocessStreamedToolCalls(toolCalls, callbacks);
-
-  // Add any preprocessing errors to chat history
-  chatHistory.push(...errorChatEntries);
-
-  // Execute the valid preprocessed tool calls
-  const { chatHistoryEntries: toolResults, hasRejection } =
-    await executeStreamedToolCalls(preprocessedCalls, callbacks, isHeadless);
-
-  if (isHeadless && hasRejection) {
-    logger.debug(
-      "Tool call rejected in headless mode - returning current content",
-    );
-    return true; // Signal early return needed
-  }
-
-  chatHistory.push(...toolResults);
-  return false;
-}
-
-export async function getAllTools() {
-  // Get all available tool names
-  const allBuiltinTools = getAllBuiltinTools();
-  const builtinToolNames = allBuiltinTools.map((tool) => tool.name);
-
-  let mcpTools: MCPTool[] = [];
-  let mcpToolNames: string[] = [];
-  const mcpServiceResult = getServiceSync<MCPServiceState>(SERVICE_NAMES.MCP);
-  if (mcpServiceResult.state === "ready") {
-    mcpTools = mcpServiceResult?.value?.tools ?? [];
-    mcpToolNames = mcpTools.map((t) => t.name);
-  } else {
-    // MCP is lazy
-    // throw new Error("MCP Service not initialized");
-  }
-
-  const allToolNames = [...builtinToolNames, ...mcpToolNames];
-
-  // Check if the ToolPermissionService is ready
-  const permissionsServiceResult = getServiceSync<ToolPermissionServiceState>(
-    SERVICE_NAMES.TOOL_PERMISSIONS,
-  );
-
-  let allowedToolNames: string[];
-  if (
-    permissionsServiceResult.state === "ready" &&
-    permissionsServiceResult.value
-  ) {
-    // Filter out excluded tools based on permissions
-    allowedToolNames = filterExcludedTools(
-      allToolNames,
-      permissionsServiceResult.value.permissions,
-    );
-  } else {
-    // Service not ready - this is a critical error since tools should only be
-    // requested after services are properly initialized
-    logger.error(
-      "ToolPermissionService not ready in getAllTools - this indicates a service initialization timing issue",
-    );
-    throw new Error(
-      "ToolPermissionService not initialized. Services must be initialized before requesting tools.",
-    );
-  }
-
-  const allowedToolNamesSet = new Set(allowedToolNames);
-
-  // Filter builtin tools
-  const allowedBuiltinTools = allBuiltinTools.filter((tool) =>
-    allowedToolNamesSet.has(tool.name),
-  );
-
-  const allTools: ChatCompletionTool[] = allowedBuiltinTools.map((tool) => ({
-    type: "function" as const,
-    function: {
-      name: tool.name,
-      description: tool.description,
-      parameters: {
-        type: "object",
-        properties: Object.fromEntries(
-          Object.entries(tool.parameters).map(([key, param]) => [
-            key,
-            {
-              type: param.type,
-              description: param.description,
-              items: param.items,
-            },
-          ]),
-        ),
-        required: Object.entries(tool.parameters)
-          .filter(([_, param]) => param.required)
-          .map(([key, _]) => key),
-      },
-    },
-  }));
-
-  // Add filtered MCP tools
-  const allowedMcpTools = mcpTools.filter((tool) =>
-    allowedToolNamesSet.has(tool.name),
-  );
-
-  allTools.push(
-    ...allowedMcpTools.map((tool) => ({
-      type: "function" as const,
-      function: {
-        name: tool.name,
-        description: tool.description,
-        parameters: tool.inputSchema,
-      },
-    })),
-  );
-
-  return allTools;
-}
-
 // Helper function to process a single chunk
 interface ProcessChunkOptions {
   chunk: any;
@@ -239,13 +88,11 @@ function processChunk(options: ProcessChunkOptions): {
   } = options;
   // Safety check: ensure chunk has the expected structure
   if (!chunk.choices || !chunk.choices[0]) {
-    logger.warn("Malformed chunk received - missing choices", { chunk });
     return { aiResponse, shouldContinue: true };
   }
 
   const choice = chunk.choices[0];
   if (!choice.delta) {
-    logger.warn("Malformed chunk received - missing delta", { chunk });
     return { aiResponse, shouldContinue: true };
   }
 
@@ -272,7 +119,7 @@ function processChunk(options: ProcessChunkOptions): {
 }
 
 interface ProcessStreamingResponseOptions {
-  chatHistory: ChatCompletionMessageParam[];
+  chatHistory: ChatHistoryItem[];
   model: ModelConfig;
   llmApi: BaseLlmApi;
   abortController: AbortController;
@@ -299,6 +146,13 @@ export async function processStreamingResponse(
     isHeadless,
     tools,
   } = options;
+
+  // Get fresh system message and inject it
+  const systemMessage = await systemMessageService.getSystemMessage();
+  const openaiChatHistory = convertFromUnifiedHistoryWithSystemMessage(
+    chatHistory,
+    systemMessage,
+  ) as ChatCompletionMessageParam[];
   const requestStartTime = Date.now();
 
   const streamFactory = async (retryAbortSignal: AbortSignal) => {
@@ -311,7 +165,7 @@ export async function processStreamingResponse(
       llmApi,
       {
         model: model.model,
-        messages: chatHistory,
+        messages: openaiChatHistory,
         stream: true,
         tools,
         ...getDefaultCompletionOptions(model.defaultCompletionOptions),
@@ -445,7 +299,7 @@ export async function processStreamingResponse(
 
 // Main function that handles the conversation loop
 export async function streamChatResponse(
-  chatHistory: ChatCompletionMessageParam[],
+  chatHistory: ChatHistoryItem[],
   model: ModelConfig,
   llmApi: BaseLlmApi,
   abortController: AbortController,
@@ -516,7 +370,7 @@ export async function streamChatResponse(
 
     // Check for auto-compaction after tool execution
     if (shouldContinue) {
-      const { chatHistory: updatedChatHistory, compactionIndex } =
+      const { wasCompacted, chatHistory: updatedChatHistory } =
         await handleAutoCompaction(chatHistory, model, llmApi, {
           isHeadless,
           callbacks: {
@@ -526,9 +380,8 @@ export async function streamChatResponse(
         });
 
       // Only update chat history if compaction actually occurred
-      if (compactionIndex !== null && updatedChatHistory !== chatHistory) {
-        chatHistory.length = 0;
-        chatHistory.push(...updatedChatHistory);
+      if (wasCompacted) {
+        chatHistory = [...updatedChatHistory];
       }
     }
 
@@ -547,3 +400,4 @@ export async function streamChatResponse(
   // Otherwise, return the full response
   return isHeadless ? finalResponse : fullResponse;
 }
+export { getAllTools };
