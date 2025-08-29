@@ -143,14 +143,15 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 	protected options: ApiHandlerOptions
 	private client: Ollama | undefined
 	protected models: Record<string, ModelInfo> = {}
-	private isInitialized = false
+	private isInitialized = false // kilocode_change
 
 	constructor(options: ApiHandlerOptions) {
 		super()
 		this.options = options
-		this.initialize()
+		this.initialize() // kilocode_change
 	}
 
+	// kilocode_change start
 	private async initialize(): Promise<void> {
 		if (this.isInitialized) {
 			return
@@ -158,6 +159,7 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		await this.fetchModel()
 		this.isInitialized = true
 	}
+	// kilocode_change end
 
 	private ensureClient(): Ollama {
 		if (!this.client) {
@@ -187,12 +189,14 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		messages: Anthropic.Messages.MessageParam[],
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
+		// kilocode_change start
 		if (!this.isInitialized) {
 			await this.initialize()
 		}
+		// kilocode_change end
 
 		const client = this.ensureClient()
-		const { id: modelId, info: modelInfo } = this.getModel()
+		const { id: modelId, info: modelInfo } = this.getModel() // kilocode_change: fetchModel => getModel
 		const useR1Format = modelId.toLowerCase().includes("deepseek-r1")
 
 		const ollamaMessages: Message[] = [
@@ -200,12 +204,14 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 			...convertToOllamaMessages(messages),
 		]
 
+		// kilocode_change start
 		const estimatedTokenCount = estimateOllamaTokenCount(ollamaMessages)
 		if (modelInfo.maxTokens && estimatedTokenCount > modelInfo.maxTokens) {
 			throw new Error(
-				`Input message is too long for the selected model. Estimated tokens: ${estimatedTokenCount}, Max tokens: ${modelInfo.maxTokens}`,
+				`Input message is too long for the selected model. Estimated tokens: ${estimatedTokenCount}, Max tokens: ${modelInfo.maxTokens}. To increase the context window size, see: http://localhost:3000/docs/providers/ollama#preventing-prompt-truncation`,
 			)
 		}
+		// kilocode_change end
 
 		const matcher = new XmlMatcher(
 			"think",
@@ -289,13 +295,14 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 
 	async fetchModel() {
 		this.models = await getOllamaModels(this.options.ollamaBaseUrl)
-		return this.models
+		return this.models // kilocode_change
 	}
 
 	override getModel(): { id: string; info: ModelInfo } {
 		const modelId = this.options.ollamaModelId || ""
-		const modelInfo = this.models[modelId]
 
+		// kilocode_change start
+		const modelInfo = this.models[modelId]
 		if (!modelInfo) {
 			const availableModels = Object.keys(this.models)
 			const errorMessage =
@@ -304,20 +311,24 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 					: `Model ${modelId} not found. No models available.`
 			throw new Error(errorMessage)
 		}
+		// kilocode_change end
 
 		return {
 			id: modelId,
-			info: modelInfo,
+			info: modelInfo, // kilocode_change
 		}
 	}
 
 	async completePrompt(prompt: string): Promise<string> {
 		try {
+			// kilocode_change start
 			if (!this.isInitialized) {
 				await this.initialize()
 			}
+			// kilocode_change end
+
 			const client = this.ensureClient()
-			const { id: modelId } = this.getModel()
+			const { id: modelId } = this.getModel() // kilocode_change: fetchModel => getModel
 			const useR1Format = modelId.toLowerCase().includes("deepseek-r1")
 
 			const response = await client.chat({
