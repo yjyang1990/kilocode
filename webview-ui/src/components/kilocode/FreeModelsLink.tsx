@@ -5,8 +5,17 @@ import { ProviderSettings, TelemetryEventName } from "@roo-code/types"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { Trans } from "react-i18next"
 
-const InfoView = ({ children }: { children: React.ReactNode }) => {
-	return <div className="bg-vscode-editor-background border p-3 shadow-sm text-center">{children}</div>
+const WarningBox = ({ children }: { children: React.ReactNode }) => {
+	return (
+		<div
+			className="p-3 text-center"
+			style={{
+				color: "var(--vscode-activityWarningBadge-foreground)",
+				backgroundColor: "var(--vscode-activityWarningBadge-background)",
+			}}>
+			{children}
+		</div>
+	)
 }
 
 export const OpenRouterMarkupInfoView = ({
@@ -15,8 +24,8 @@ export const OpenRouterMarkupInfoView = ({
 	setApiConfigurationField: (field: keyof ProviderSettings, value: ProviderSettings[keyof ProviderSettings]) => void
 }) => {
 	return (
-		<InfoView>
-			<div className="text-vscode-descriptionForeground">
+		<WarningBox>
+			<div>
 				<Trans i18nKey="kilocode:pricing.openRouterMarkup" />
 			</div>
 			<VSCodeButton
@@ -28,17 +37,17 @@ export const OpenRouterMarkupInfoView = ({
 				}}>
 				<Trans i18nKey="kilocode:pricing.switchToKiloCode" />
 			</VSCodeButton>
-		</InfoView>
+		</WarningBox>
 	)
 }
 
 export const FreeModelsInfoView = ({ origin, modelId }: { origin: "chat" | "settings"; modelId?: string }) => {
 	const { t } = useAppTranslation()
 	return (
-		<InfoView>
-			<div className="text-vscode-descriptionForeground">{t("kilocode:pricing.freeModelsDescription")}</div>
+		<WarningBox>
+			<div>{t("kilocode:pricing.freeModelsDescription")}</div>
 			<FreeModelsLink className="mt-3 w-full" origin={origin} modelId={modelId} />
-		</InfoView>
+		</WarningBox>
 	)
 }
 
