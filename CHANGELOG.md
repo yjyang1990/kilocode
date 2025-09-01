@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.26.4
+
+### Patch Changes
+
+- ![3.26.4 Release - Memory Optimization](/releases/3.26.4-release.png)
+
 ## [3.26.3] - 2025-08-29
 
 ![3.26.3 Release - Kangaroo Photo Editor](/releases/3.26.3-release.png)
