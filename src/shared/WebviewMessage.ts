@@ -217,6 +217,7 @@ export interface WebviewMessage {
 		| "condenseTaskContextRequest"
 		| "requestIndexingStatus"
 		| "startIndexing"
+		| "cancelIndexing"
 		| "clearIndexData"
 		| "indexingStatusUpdate"
 		| "indexCleared"
