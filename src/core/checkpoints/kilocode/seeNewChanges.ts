@@ -20,30 +20,35 @@ export async function getCommitRangeForNewCompletion(task: Task): Promise<Commit
 	try {
 		const service = await getCheckpointService(task)
 		if (!service) {
+			console.warn("getCommitRangeForNewCompletion: no checkpoint service")
 			return
 		}
 
-		const messages = task.clineMessages
+		const messages =
+			task.clineMessages.at(-1)?.say === "completion_result"
+				? task.clineMessages.slice(0, -1)
+				: task.clineMessages
 
 		const firstCompletionIndex = messages.findIndex((msg) => msg.type === "say" && msg.say === "completion_result")
-		const firstCommit =
-			firstCompletionIndex >= 0
-				? messages
-						.slice(0, firstCompletionIndex)
-						.find((msg) => msg.type === "say" && msg.say === "checkpoint_saved")?.text
-				: undefined
+		const firstCommit = messages
+			.slice(0, firstCompletionIndex >= 0 ? firstCompletionIndex : messages.length)
+			.find((msg) => msg.type === "say" && msg.say === "checkpoint_saved")?.text
+
+		const previousCompletionIndex = findLast(
+			messages,
+			(msg) => msg.type === "say" && msg.say === "completion_result",
+		)
 
 		const lastCheckpointIndex = findLast(messages, (msg) => msg.type === "say" && msg.say === "checkpoint_saved")
 
-		const previousCompletionIndex =
-			lastCheckpointIndex >= 0
-				? findLast(
-						messages.slice(0, lastCheckpointIndex),
-						(msg) => msg.type === "say" && msg.say === "completion_result",
-					)
-				: -1
+		if (lastCheckpointIndex >= 0 && previousCompletionIndex >= 0 && lastCheckpointIndex < previousCompletionIndex) {
+			console.warn(
+				`getCommitRangeForNewCompletion: last checkpoint ${lastCheckpointIndex} is older than previous completion ${previousCompletionIndex}.`,
+			)
+			return undefined
+		}
 
-		const previousCheckpointIndexFromEnd =
+		const previousCheckpointIndex =
 			previousCompletionIndex >= 0
 				? findLast(
 						messages.slice(0, previousCompletionIndex),
@@ -52,16 +57,22 @@ export async function getCommitRangeForNewCompletion(task: Task): Promise<Commit
 				: -1
 
 		const toCommit = lastCheckpointIndex >= 0 ? messages[lastCheckpointIndex].text : undefined
-		const fromCommit =
-			previousCheckpointIndexFromEnd >= 0 ? messages[previousCheckpointIndexFromEnd].text : firstCommit
+		const fromCommit = previousCheckpointIndex >= 0 ? messages[previousCheckpointIndex].text : firstCommit
 
 		if (!toCommit || !fromCommit || fromCommit === toCommit) {
+			console.warn(`getCommitRangeForNewCompletion: invalid commit range '${fromCommit}' to '${toCommit}'.`)
 			return undefined
 		}
 
 		const result = { to: toCommit, from: fromCommit }
-		return (await service.getDiff(result)).length > 0 ? result : undefined
+		if ((await service.getDiff(result)).length === 0) {
+			console.warn(`getCommitRangeForNewCompletion: no changes in commit range '${fromCommit}' to '${toCommit}'.`)
+			return undefined
+		}
+
+		return result
 	} catch (err) {
+		console.error("getCommitRangeForNewCompletion: exception", err)
 		TelemetryService.instance.captureException(err, { context: "getCommitRangeForNewCompletion" })
 		return undefined
 	}
