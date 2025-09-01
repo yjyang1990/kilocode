@@ -4,6 +4,7 @@ import { DIFF_VIEW_URI_SCHEME } from "../../../integrations/editor/DiffViewProvi
 import { Task } from "../../task/Task"
 import { t } from "../../../i18n"
 import * as vscode from "vscode"
+import { CommitRange } from "@roo-code/types"
 
 function findLast<T>(array: Array<T>, predicate: (value: T, index: number, obj: T[]) => boolean): number {
 	let index = array.length - 1
@@ -15,39 +16,69 @@ function findLast<T>(array: Array<T>, predicate: (value: T, index: number, obj: 
 	return index
 }
 
-export async function showNewChanges(cline: Task, { ts }: { ts: number }) {
+export async function getCommitRangeForNewCompletion(task: Task): Promise<CommitRange | undefined> {
 	try {
-		const service = await getCheckpointService(cline)
+		const service = await getCheckpointService(task)
 		if (!service) {
 			return
 		}
 
-		const clineMessages = cline.clineMessages
-		const currentCompletionResultIndex = clineMessages.findIndex(
-			(msg) => msg.type === "say" && msg.say === "completion_result" && msg.ts === ts,
-		)
-		const currentCheckpointIndex = findLast(
-			clineMessages.slice(0, currentCompletionResultIndex),
-			(msg) => msg.type === "say" && msg.say === "checkpoint_saved",
-		)
+		const messages = task.clineMessages
 
-		const previousCompletionResultIndex = findLast(
-			clineMessages.slice(0, currentCheckpointIndex),
+		const firstCompletionIndexFromStart = messages.findIndex(
 			(msg) => msg.type === "say" && msg.say === "completion_result",
 		)
-		const previousCheckpointIndex =
-			previousCompletionResultIndex >= 0
+		const firstCommit =
+			firstCompletionIndexFromStart >= 0
+				? messages
+						.slice(0, firstCompletionIndexFromStart)
+						.find((msg) => msg.type === "say" && msg.say === "checkpoint_saved")?.text
+				: undefined
+
+		const lastCheckpointIndex = findLast(messages, (msg) => msg.type === "say" && msg.say === "checkpoint_saved")
+
+		const previousCompletionIndex =
+			lastCheckpointIndex >= 0
 				? findLast(
-						clineMessages.slice(0, previousCompletionResultIndex),
+						messages.slice(0, lastCheckpointIndex),
+						(msg) => msg.type === "say" && msg.say === "completion_result",
+					)
+				: -1
+
+		const previousCheckpointIndexFromEnd =
+			previousCompletionIndex >= 0
+				? findLast(
+						messages.slice(0, previousCompletionIndex),
 						(msg) => msg.type === "say" && msg.say === "checkpoint_saved",
 					)
-				: clineMessages.findIndex((msg) => msg.type === "say" && msg.say === "checkpoint_saved")
+				: -1
 
-		const changes = await service.getDiff({
-			from: clineMessages[previousCheckpointIndex]?.text,
-			to: clineMessages[currentCheckpointIndex]?.text,
-		})
-		if (!changes?.length) {
+		const toCommit = lastCheckpointIndex >= 0 ? messages[lastCheckpointIndex].text : undefined
+		const fromCommit =
+			previousCheckpointIndexFromEnd >= 0 ? messages[previousCheckpointIndexFromEnd].text : firstCommit
+
+		if (!toCommit || !fromCommit || fromCommit === toCommit) {
+			return undefined
+		}
+
+		const result = { to: toCommit, from: fromCommit }
+		return (await service.getDiff(result)).length > 0 ? result : undefined
+	} catch (err) {
+		TelemetryService.instance.captureException(err, { context: "getCommitRangeForNewCompletion" })
+		return undefined
+	}
+}
+
+export async function showNewChanges(task: Task, commitRange: CommitRange) {
+	try {
+		const service = await getCheckpointService(task)
+		if (!service) {
+			vscode.window.showWarningMessage(t("kilocode:showNewChanges.checkpointsUnavailable"))
+			return
+		}
+
+		const changes = await service.getDiff(commitRange)
+		if (changes.length === 0) {
 			vscode.window.showWarningMessage(t("kilocode:showNewChanges.noChanges"))
 			return
 		}
@@ -68,5 +99,6 @@ export async function showNewChanges(cline: Task, { ts }: { ts: number }) {
 	} catch (err) {
 		vscode.window.showErrorMessage(t("kilocode:showNewChanges.error"))
 		TelemetryService.instance.captureException(err, { context: "showNewChanges" })
+		return undefined
 	}
 }

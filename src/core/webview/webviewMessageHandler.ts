@@ -801,8 +801,8 @@ export const webviewMessageHandler = async (
 		// kilocode_change start
 		case "showNewChanges":
 			const task = provider.getCurrentTask()
-			if (task && message.payload) {
-				await showNewChanges(task, message.payload as ShowNewChangesPayload)
+			if (task && message.payload && message.payload) {
+				await showNewChanges(task, (message.payload as ShowNewChangesPayload).commitRange)
 			}
 			break
 		// kilocode_change end

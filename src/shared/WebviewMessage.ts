@@ -7,6 +7,7 @@ import {
 	type InstallMarketplaceItemOptions,
 	type MarketplaceItem,
 	marketplaceItemSchema,
+	CommitRange, // kilocode_change
 } from "@roo-code/types"
 import type { ShareVisibility } from "@roo-code/cloud"
 
@@ -380,7 +381,7 @@ export interface BalanceDataResponsePayload {
 }
 
 export interface ShowNewChangesPayload {
-	ts: number
+	commitRange: CommitRange
 }
 // kilocode_change end
 

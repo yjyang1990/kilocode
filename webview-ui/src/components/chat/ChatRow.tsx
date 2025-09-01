@@ -55,7 +55,6 @@ import { cn } from "@/lib/utils"
 import { KiloChatRowUserFeedback } from "../kilocode/chat/KiloChatRowUserFeedback" // kilocode_change
 import { StandardTooltip } from "../ui" // kilocode_change
 import { FastApplyChatDisplay } from "./kilocode/FastApplyChatDisplay" // kilocode_change
-import { CommitRange } from "./kilocode/getCommitRangesForCompletions" // kilocode_change
 
 interface ChatRowProps {
 	message: ClineMessage
@@ -72,7 +71,6 @@ interface ChatRowProps {
 	onFollowUpUnmount?: () => void
 	isFollowUpAnswered?: boolean
 	editable?: boolean
-	completionCommitRanges?: Map<number, CommitRange> // kilocode_change
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -133,7 +131,6 @@ export const ChatRowContent = ({
 	onChatReset, // kilocode_change
 	isFollowUpAnswered,
 	editable,
-	completionCommitRanges, // kilocode_change
 }: ChatRowContentProps) => {
 	const { t } = useTranslation()
 	const { mcpServers, alwaysAllowMcp, currentCheckpoint } = useExtensionState()
@@ -1141,6 +1138,7 @@ export const ChatRowContent = ({
 						</>
 					)
 				case "completion_result":
+					const commitRange = message.metadata?.kiloCode?.commitRange
 					return (
 						<>
 							<div style={headerStyle}>
@@ -1152,15 +1150,16 @@ export const ChatRowContent = ({
 							</div>
 							{
 								// kilocode_change start
-								!message.partial && completionCommitRanges?.has(message.ts) ? (
+								!message.partial && commitRange ? (
 									<div>
 										<VSCodeButton
-											className="w-full mt-2 bg-red-400"
+											className="w-full mt-2"
+											appearance="secondary"
 											onClick={() => {
 												vscode.postMessage({
 													type: "showNewChanges",
 													payload: {
-														ts: message.ts,
+														commitRange,
 													},
 												})
 											}}>
