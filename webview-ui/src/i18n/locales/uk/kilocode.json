@@ -92,7 +92,7 @@
 			"wantsToCondense": "Kilo Code хоче стиснути твою розмову",
 			"condenseConversation": "Стиснути розмову"
 		},
-		"showNewChanges": "Показати нові зміни"
+		"seeNewChanges": "Показати нові зміни"
 	},
 	"newTaskPreview": {
 		"task": "Завдання"

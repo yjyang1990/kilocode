@@ -25,13 +25,11 @@ export async function getCommitRangeForNewCompletion(task: Task): Promise<Commit
 
 		const messages = task.clineMessages
 
-		const firstCompletionIndexFromStart = messages.findIndex(
-			(msg) => msg.type === "say" && msg.say === "completion_result",
-		)
+		const firstCompletionIndex = messages.findIndex((msg) => msg.type === "say" && msg.say === "completion_result")
 		const firstCommit =
-			firstCompletionIndexFromStart >= 0
+			firstCompletionIndex >= 0
 				? messages
-						.slice(0, firstCompletionIndexFromStart)
+						.slice(0, firstCompletionIndex)
 						.find((msg) => msg.type === "say" && msg.say === "checkpoint_saved")?.text
 				: undefined
 
@@ -69,23 +67,23 @@ export async function getCommitRangeForNewCompletion(task: Task): Promise<Commit
 	}
 }
 
-export async function showNewChanges(task: Task, commitRange: CommitRange) {
+export async function seeNewChanges(task: Task, commitRange: CommitRange) {
 	try {
 		const service = await getCheckpointService(task)
 		if (!service) {
-			vscode.window.showWarningMessage(t("kilocode:showNewChanges.checkpointsUnavailable"))
+			vscode.window.showWarningMessage(t("kilocode:seeNewChanges.checkpointsUnavailable"))
 			return
 		}
 
 		const changes = await service.getDiff(commitRange)
 		if (changes.length === 0) {
-			vscode.window.showWarningMessage(t("kilocode:showNewChanges.noChanges"))
+			vscode.window.showWarningMessage(t("kilocode:seeNewChanges.noChanges"))
 			return
 		}
 
 		await vscode.commands.executeCommand(
 			"vscode.changes",
-			t("kilocode:showNewChanges.title"),
+			t("kilocode:seeNewChanges.title"),
 			changes.map((change) => [
 				vscode.Uri.file(change.paths.absolute),
 				vscode.Uri.parse(`${DIFF_VIEW_URI_SCHEME}:${change.paths.relative}`).with({
@@ -97,8 +95,8 @@ export async function showNewChanges(task: Task, commitRange: CommitRange) {
 			]),
 		)
 	} catch (err) {
-		vscode.window.showErrorMessage(t("kilocode:showNewChanges.error"))
-		TelemetryService.instance.captureException(err, { context: "showNewChanges" })
+		vscode.window.showErrorMessage(t("kilocode:seeNewChanges.error"))
+		TelemetryService.instance.captureException(err, { context: "seeNewChanges" })
 		return undefined
 	}
 }

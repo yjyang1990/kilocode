@@ -125,7 +125,7 @@
 		},
 		"tipMessage": "Kilo: Druk op {{shortcut}} om terminalopdrachten te genereren"
 	},
-	"showNewChanges": {
+	"seeNewChanges": {
 		"title": "Nieuwe wijzigingen weergeven",
 		"noChanges": "Kan nieuwe wijzigingen niet weergeven, er zijn geen wijzigingen gevonden.",
 		"error": "Kan nieuwe wijzigingen niet weergeven, er is een fout opgetreden."

@@ -125,7 +125,7 @@
 		},
 		"tipMessage": "Kilo: Nhấn {{shortcut}} để tạo lệnh terminal"
 	},
-	"showNewChanges": {
+	"seeNewChanges": {
 		"title": "Đang hiển thị các thay đổi mới",
 		"noChanges": "Không thể hiển thị các thay đổi mới, không tìm thấy thay đổi nào.",
 		"error": "Không thể hiển thị các thay đổi mới, đã xảy ra lỗi."

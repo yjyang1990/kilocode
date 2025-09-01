@@ -92,7 +92,7 @@
 			"wantsToCondense": "Kilo Code wants to condense your conversation",
 			"condenseConversation": "Condense Conversation"
 		},
-		"showNewChanges": "Show New Changes"
+		"seeNewChanges": "See New Changes"
 	},
 	"newTaskPreview": {
 		"task": "Task"

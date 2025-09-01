@@ -125,7 +125,7 @@
 		},
 		"tipMessage": "Kilo: Presiona {{shortcut}} para generar comandos de terminal"
 	},
-	"showNewChanges": {
+	"seeNewChanges": {
 		"title": "Mostrando nuevos cambios",
 		"noChanges": "No se pueden mostrar nuevos cambios, no se encontraron cambios.",
 		"error": "No se pueden mostrar nuevos cambios, ocurrió un error."

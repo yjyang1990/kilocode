@@ -110,7 +110,7 @@
 			"disableInlineAssist": "Wyłącz Asystenta Inline"
 		}
 	},
-	"showNewChanges": {
+	"seeNewChanges": {
 		"title": "Wyświetlanie nowych zmian",
 		"noChanges": "Nie można wyświetlić nowych zmian, nie znaleziono żadnych zmian.",
 		"error": "Nie można wyświetlić nowych zmian, wystąpił błąd."

@@ -17,7 +17,7 @@ import {
 } from "../../shared/tools"
 import { formatResponse } from "../prompts/responses"
 import { Package } from "../../shared/package"
-import { getCommitRangeForNewCompletion } from "../checkpoints/kilocode/showNewChanges"
+import { getCommitRangeForNewCompletion } from "../checkpoints/kilocode/seeNewChanges"
 
 // kilocode_change start
 async function getClineMessageOptions(task: Task) {

@@ -1157,13 +1157,13 @@ export const ChatRowContent = ({
 											appearance="secondary"
 											onClick={() => {
 												vscode.postMessage({
-													type: "showNewChanges",
+													type: "seeNewChanges",
 													payload: {
 														commitRange,
 													},
 												})
 											}}>
-											{t("kilocode:chat.showNewChanges")}
+											{t("kilocode:chat.seeNewChanges")}
 										</VSCodeButton>
 									</div>
 								) : (

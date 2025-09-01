@@ -110,7 +110,7 @@
 			"disableInlineAssist": "Inline Assist अक्षम करें"
 		}
 	},
-	"showNewChanges": {
+	"seeNewChanges": {
 		"title": "नए परिवर्तन दिखाए जा रहे हैं",
 		"noChanges": "नए परिवर्तन नहीं दिखाए जा सकते, कोई परिवर्तन नहीं मिले।",
 		"error": "नए परिवर्तन नहीं दिखाए जा सकते, एक त्रुटि हुई।"

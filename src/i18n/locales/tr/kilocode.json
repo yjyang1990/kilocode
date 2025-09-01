@@ -125,7 +125,7 @@
 		},
 		"tipMessage": "Kilo: Terminal komutları oluşturmak için {{shortcut}} tuşuna basın"
 	},
-	"showNewChanges": {
+	"seeNewChanges": {
 		"title": "Yeni değişiklikler gösteriliyor",
 		"noChanges": "Yeni değişiklikler gösterilemiyor, hiçbir değişiklik bulunamadı.",
 		"error": "Yeni değişiklikler gösterilemiyor, bir hata oluştu."

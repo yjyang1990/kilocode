@@ -166,7 +166,7 @@ export interface WebviewMessage {
 		| "openCustomModesSettings"
 		| "checkpointDiff"
 		| "checkpointRestore"
-		| "showNewChanges" // kilocode_change
+		| "seeNewChanges" // kilocode_change
 		| "deleteMcpServer"
 		| "maxOpenTabsContext"
 		| "maxWorkspaceFiles"
@@ -380,7 +380,7 @@ export interface BalanceDataResponsePayload {
 	error?: string
 }
 
-export interface ShowNewChangesPayload {
+export interface SeeNewChangesPayload {
 	commitRange: CommitRange
 }
 // kilocode_change end
@@ -425,7 +425,7 @@ export type WebViewMessagePayload =
 	// kilocode_change start
 	| ProfileDataResponsePayload
 	| BalanceDataResponsePayload
-	| ShowNewChangesPayload
+	| SeeNewChangesPayload
 	// kilocode_change end
 	| CheckpointDiffPayload
 	| CheckpointRestorePayload

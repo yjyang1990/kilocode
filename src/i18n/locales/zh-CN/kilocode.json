@@ -110,7 +110,7 @@
 			"disableInlineAssist": "禁用 内联辅助"
 		}
 	},
-	"showNewChanges": {
+	"seeNewChanges": {
 		"title": "显示新更改",
 		"noChanges": "无法显示新更改，未发现任何更改。",
 		"error": "无法显示新更改，发生错误。"

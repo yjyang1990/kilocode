@@ -92,7 +92,7 @@
 			"wantsToCondense": "Kilo Code ต้องการย่อการสนทนาของคุณ",
 			"condenseConversation": "ย่อการสนทนา"
 		},
-		"showNewChanges": "แสดงการเปลี่ยนแปลงใหม่"
+		"seeNewChanges": "แสดงการเปลี่ยนแปลงใหม่"
 	},
 	"newTaskPreview": {
 		"task": "งาน"
