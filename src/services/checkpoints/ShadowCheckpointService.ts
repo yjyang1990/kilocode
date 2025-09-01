@@ -30,7 +30,7 @@ function reportError(callsite: string, error: unknown) {
 const warningsShown = new Set<string>()
 function showWarning(message: string) {
 	if (warningsShown.size < 5 && !warningsShown.has(message)) {
-		vscode.window.showWarningMessage(message, t("kilocode:checkpoints.dismiss"))
+		vscode.window.showWarningMessage(message, t("kilocode:checkpoints.dismissWarning"))
 		warningsShown.add(message)
 	}
 }
