@@ -112,6 +112,7 @@
 	},
 	"seeNewChanges": {
 		"title": "Zobrazování nových změn",
+		"checkpointsUnavailable": "Nelze zobrazit nové změny, kontrolní body nejsou dostupné.",
 		"noChanges": "Nelze zobrazit nové změny, nebyly nalezeny žádné změny.",
 		"error": "Nelze zobrazit nové změny, došlo k chybě."
 	},

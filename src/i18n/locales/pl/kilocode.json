@@ -112,6 +112,7 @@
 	},
 	"seeNewChanges": {
 		"title": "Wyświetlanie nowych zmian",
+		"checkpointsUnavailable": "Nie można wyświetlić nowych zmian, punkty kontrolne są niedostępne.",
 		"noChanges": "Nie można wyświetlić nowych zmian, nie znaleziono żadnych zmian.",
 		"error": "Nie można wyświetlić nowych zmian, wystąpił błąd."
 	},
