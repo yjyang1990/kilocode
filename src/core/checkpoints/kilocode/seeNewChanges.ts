@@ -20,7 +20,7 @@ export async function getCommitRangeForNewCompletion(task: Task): Promise<Commit
 	try {
 		const service = await getCheckpointService(task)
 		if (!service) {
-			console.warn("getCommitRangeForNewCompletion: no checkpoint service")
+			console.log("getCommitRangeForNewCompletion: no checkpoint service")
 			return
 		}
 
@@ -42,7 +42,7 @@ export async function getCommitRangeForNewCompletion(task: Task): Promise<Commit
 		const lastCheckpointIndex = findLast(messages, (msg) => msg.type === "say" && msg.say === "checkpoint_saved")
 
 		if (lastCheckpointIndex >= 0 && previousCompletionIndex >= 0 && lastCheckpointIndex < previousCompletionIndex) {
-			console.warn(
+			console.log(
 				`getCommitRangeForNewCompletion: last checkpoint ${lastCheckpointIndex} is older than previous completion ${previousCompletionIndex}.`,
 			)
 			return undefined
@@ -60,13 +60,13 @@ export async function getCommitRangeForNewCompletion(task: Task): Promise<Commit
 		const fromCommit = previousCheckpointIndex >= 0 ? messages[previousCheckpointIndex].text : firstCommit
 
 		if (!toCommit || !fromCommit || fromCommit === toCommit) {
-			console.warn(`getCommitRangeForNewCompletion: invalid commit range '${fromCommit}' to '${toCommit}'.`)
+			console.log(`getCommitRangeForNewCompletion: invalid commit range '${fromCommit}' to '${toCommit}'.`)
 			return undefined
 		}
 
 		const result = { to: toCommit, from: fromCommit }
 		if ((await service.getDiff(result)).length === 0) {
-			console.warn(`getCommitRangeForNewCompletion: no changes in commit range '${fromCommit}' to '${toCommit}'.`)
+			console.log(`getCommitRangeForNewCompletion: no changes in commit range '${fromCommit}' to '${toCommit}'.`)
 			return undefined
 		}
 
