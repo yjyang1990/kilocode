@@ -83,7 +83,10 @@ export abstract class BaseOpenAiCompatibleProvider<ModelName extends string>
 		}
 
 		// Only include temperature if explicitly set
-		if (this.options.modelTemperature !== undefined) {
+		if (
+			this.options.modelTemperature !== undefined &&
+			this.options.modelTemperature !== null // kilocode_change: some providers like Chutes don't like this
+		) {
 			params.temperature = this.options.modelTemperature
 		}
 
