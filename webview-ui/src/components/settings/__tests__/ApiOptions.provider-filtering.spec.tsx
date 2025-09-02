@@ -82,7 +82,8 @@ vi.mock("@src/components/ui", () => ({
 	Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
 }))
 
-describe("ApiOptions Provider Filtering", () => {
+// kilocode_change: no filtering done on providers client side
+describe.skip("ApiOptions Provider Filtering", () => {
 	const queryClient = new QueryClient({
 		defaultOptions: {
 			queries: { retry: false },
