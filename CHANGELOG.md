@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.88.0
-
-### Minor Changes
+## [v4.88.0]
 
 - [#2235](https://github.com/Kilo-Org/kilocode/pull/2235) [`fbf4e42`](https://github.com/Kilo-Org/kilocode/commit/fbf4e42125cef538387301be784ede7d2609fe16) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Rename Inline Assist to Kilo Code Autocomplete
 
