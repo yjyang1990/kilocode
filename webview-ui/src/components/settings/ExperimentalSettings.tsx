@@ -28,8 +28,10 @@ type ExperimentalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	apiConfiguration?: any
 	setApiConfigurationField?: any
 	openRouterImageApiKey?: string
+	kiloCodeImageApiKey?: string
 	openRouterImageGenerationSelectedModel?: string
 	setOpenRouterImageApiKey?: (apiKey: string) => void
+	setKiloCodeImageApiKey?: (apiKey: string) => void
 	setImageGenerationSelectedModel?: (model: string) => void
 }
 
@@ -39,8 +41,10 @@ export const ExperimentalSettings = ({
 	apiConfiguration,
 	setApiConfigurationField,
 	openRouterImageApiKey,
+	kiloCodeImageApiKey,
 	openRouterImageGenerationSelectedModel,
 	setOpenRouterImageApiKey,
+	setKiloCodeImageApiKey,
 	setImageGenerationSelectedModel,
 	className,
 	// kilocode_change start
@@ -107,6 +111,7 @@ export const ExperimentalSettings = ({
 						if (
 							config[0] === "IMAGE_GENERATION" &&
 							setOpenRouterImageApiKey &&
+							setKiloCodeImageApiKey &&
 							setImageGenerationSelectedModel
 						) {
 							return (
@@ -117,8 +122,10 @@ export const ExperimentalSettings = ({
 										setExperimentEnabled(EXPERIMENT_IDS.IMAGE_GENERATION, enabled)
 									}
 									openRouterImageApiKey={openRouterImageApiKey}
+									kiloCodeImageApiKey={kiloCodeImageApiKey}
 									openRouterImageGenerationSelectedModel={openRouterImageGenerationSelectedModel}
 									setOpenRouterImageApiKey={setOpenRouterImageApiKey}
+									setKiloCodeImageApiKey={setKiloCodeImageApiKey}
 									setImageGenerationSelectedModel={setImageGenerationSelectedModel}
 								/>
 							)
