@@ -29,7 +29,6 @@ describe("experiments", () => {
 				morphFastApply: false, // kilocode_change
 				powerSteering: false,
 				multiFileApplyDiff: false,
-				inlineAssist: false, // kilocode_change
 				preventFocusDisruption: false,
 				imageGeneration: false,
 			}
@@ -41,7 +40,6 @@ describe("experiments", () => {
 				morphFastApply: false, // kilocode_change
 				powerSteering: true,
 				multiFileApplyDiff: false,
-				inlineAssist: false, // kilocode_change
 				preventFocusDisruption: false,
 				imageGeneration: false,
 			}
@@ -53,7 +51,6 @@ describe("experiments", () => {
 				morphFastApply: false, // kilocode_change
 				powerSteering: false,
 				multiFileApplyDiff: false,
-				inlineAssist: false, // kilocode_change
 				preventFocusDisruption: false,
 				imageGeneration: false,
 			}

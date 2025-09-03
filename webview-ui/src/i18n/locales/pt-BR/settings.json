@@ -755,10 +755,6 @@
 			"apiKey": "Chave de API Morph (opcional)",
 			"placeholder": "Digite sua chave de API Morph (opcional)"
 		},
-		"INLINE_ASSIST": {
-			"name": "Assistência em Linha",
-			"description": "Ative os recursos de assistência em linha para obter sugestões e melhorias de código rápidas diretamente no seu editor. Inclui Tarefa Rápida em Linha (Cmd+I) para alterações direcionadas e Tarefa Automática em Linha para melhorias contextuais."
-		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Edição em segundo plano",
 			"description": "Previne a interrupção do foco do editor quando habilitado. As edições de arquivos acontecem em segundo plano sem abrir visualizações de diferenças ou roubar o foco. Você pode continuar trabalhando sem interrupções enquanto o Kilo Code faz alterações. Os arquivos podem ser abertos sem foco para capturar diagnósticos ou permanecer completamente fechados."
@@ -781,6 +777,10 @@
 			"modelSelectionDescription": "Selecione o modelo para geração de imagens",
 			"warningMissingKey": "⚠️ A chave de API do OpenRouter é necessária para geração de imagens. Configure-a acima.",
 			"successConfigured": "✓ A geração de imagens está configurada e pronta para uso"
+		},
+		"INLINE_ASSIST": {
+			"name": "Autocomplete",
+			"description": "Habilita as funcionalidades do Autocomplete para sugestões de código rápidas e melhorias diretamente no seu editor. Inclui Tarefa Rápida (Cmd+I) para mudanças direcionadas e Autocomplete para melhorias contextuais."
 		}
 	},
 	"promptCaching": {

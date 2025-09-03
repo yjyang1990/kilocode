@@ -755,10 +755,6 @@
 			"apiKey": "Morph APIキー（オプション）",
 			"placeholder": "Morph APIキーを入力してください（オプション）"
 		},
-		"INLINE_ASSIST": {
-			"name": "インラインアシスト",
-			"description": "エディタ内で直接コードの提案や改善を行う、インラインアシスト機能を有効にします。ターゲットを絞った変更のためのクイックインラインタスク（Cmd+I）や、文脈に応じた改善のための自動インラインタスクが含まれます。"
-		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "バックグラウンド編集",
 			"description": "有効にすると、エディターのフォーカス中断を防ぎます。ファイル編集は差分ビューを開いたりフォーカスを奪ったりすることなく、バックグラウンドで行われます。Rooが変更を行っている間も中断されることなく作業を続けることができます。ファイルは診断をキャプチャするためにフォーカスなしで開くか、完全に閉じたままにできます。"
@@ -781,6 +777,10 @@
 			"modelSelectionDescription": "画像生成に使用するモデルを選択",
 			"warningMissingKey": "⚠️ 画像生成にはOpenRouter APIキーが必要です。上記で設定してください。",
 			"successConfigured": "✓ 画像生成が設定され、使用準備完了です"
+		},
+		"INLINE_ASSIST": {
+			"name": "Autocomplete",
+			"description": "エディター内で直接コードの迅速な提案と改善を行うAutocomplete機能を有効にします。ターゲット変更用のクイックタスク（Cmd+I）とコンテキスト改善用のAutocompleteが含まれます。"
 		}
 	},
 	"promptCaching": {
