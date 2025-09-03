@@ -768,11 +768,12 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "KI-Bildgenerierung aktivieren",
-			"description": "Wenn aktiviert, kann Kilo Code Bilder aus Textprompts generieren. Erfordert einen konfigurierten Kilo Code (bevorzugt) oder OpenRouter API-Schlüssel.",
+			"description": "Wenn aktiviert, kann Kilo Code Bilder aus Textprompts generieren. Erfordert einen konfigurierten Kilo Code oder OpenRouter API-Schlüssel (OpenRouter hat Vorrang).",
 			"openRouterApiKeyLabel": "OpenRouter API-Schlüssel",
 			"openRouterApiKeyPlaceholder": "Gib deinen OpenRouter API-Schlüssel ein",
 			"kiloCodeApiKeyLabel": "Kilo Code API-Schlüssel",
 			"kiloCodeApiKeyPlaceholder": "Gib deinen Kilo Code API-Schlüssel ein",
+			"kiloCodeApiKeyPaste": "Aktuellen Kilo Code API-Schlüssel einfügen",
 			"getApiKeyText": "Hol dir deinen API-Schlüssel von",
 			"modelSelectionLabel": "Bildgenerierungsmodell",
 			"modelSelectionDescription": "Wähle das Modell für die Bildgenerierung aus",
