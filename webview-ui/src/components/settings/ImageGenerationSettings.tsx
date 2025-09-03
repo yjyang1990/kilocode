@@ -155,7 +155,7 @@ export const ImageGenerationSettings = ({
 						</div>
 					)}
 
-					{enabled && apiKey && (
+					{enabled && (apiKey || kiloApiKey) && (
 						<div className="p-2 bg-vscode-editorInfo-background text-vscode-editorInfo-foreground rounded text-sm">
 							{t("settings:experimental.IMAGE_GENERATION.successConfigured")}
 						</div>
