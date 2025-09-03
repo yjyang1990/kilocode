@@ -813,7 +813,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "تمكين إنشاء صور بالذكاء الاصطناعي",
-			"description": "عند التفعيل، يمكن لـ Roo إنشاء صور من النصوص باستخدام نماذج إنشاء الصور من OpenRouter. يتطلب مفتاح OpenRouter API.",
+			"description": "عند التفعيل، يمكن لـ Kilo Code إنشاء صور من النصوص باستخدام نماذج إنشاء الصور من OpenRouter. يتطلب مفتاح OpenRouter API.",
 			"openRouterApiKeyLabel": "مفتاح OpenRouter API",
 			"openRouterApiKeyPlaceholder": "أدخل مفتاح OpenRouter API",
 			"getApiKeyText": "احصل على مفتاحك من",

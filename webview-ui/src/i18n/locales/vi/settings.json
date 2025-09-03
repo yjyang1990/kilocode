@@ -769,7 +769,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Bật tạo hình ảnh AI",
-			"description": "Khi được bật, Roo có thể tạo hình ảnh từ lời nhắc văn bản bằng các mô hình tạo hình ảnh của OpenRouter. Yêu cầu khóa API OpenRouter được cấu hình.",
+			"description": "Khi được bật, Kilo Code có thể tạo hình ảnh từ lời nhắc văn bản bằng các mô hình tạo hình ảnh của OpenRouter. Yêu cầu khóa API OpenRouter được cấu hình.",
 			"openRouterApiKeyLabel": "Khóa API OpenRouter",
 			"openRouterApiKeyPlaceholder": "Nhập khóa API OpenRouter của bạn",
 			"getApiKeyText": "Lấy khóa API của bạn từ",

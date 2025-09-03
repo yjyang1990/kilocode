@@ -768,7 +768,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Habilitar generació d'imatges amb IA",
-			"description": "Quan estigui habilitat, Roo pot generar imatges a partir de prompts de text utilitzant els models de generació d'imatges d'OpenRouter. Requereix que es configuri una clau d'API d'OpenRouter.",
+			"description": "Quan estigui habilitat, Kilo Code pot generar imatges a partir de prompts de text utilitzant els models de generació d'imatges d'OpenRouter. Requereix que es configuri una clau d'API d'OpenRouter.",
 			"openRouterApiKeyLabel": "Clau API d'OpenRouter",
 			"openRouterApiKeyPlaceholder": "Introdueix la teva clau API d'OpenRouter",
 			"getApiKeyText": "Obté la teva clau API de",

@@ -769,7 +769,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Abilita generazione immagini AI",
-			"description": "Quando abilitato, Roo può generare immagini da prompt di testo utilizzando i modelli di generazione immagini di OpenRouter. Richiede una chiave API OpenRouter configurata.",
+			"description": "Quando abilitato, Kilo Code può generare immagini da prompt di testo utilizzando i modelli di generazione immagini di OpenRouter. Richiede una chiave API OpenRouter configurata.",
 			"openRouterApiKeyLabel": "Chiave API OpenRouter",
 			"openRouterApiKeyPlaceholder": "Inserisci la tua chiave API OpenRouter",
 			"getApiKeyText": "Ottieni la tua chiave API da",

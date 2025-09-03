@@ -773,7 +773,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Enable AI image generation",
-			"description": "When enabled, Roo can generate images from text prompts using OpenRouter's image generation models. Requires an OpenRouter API key to be configured.",
+			"description": "When enabled, Kilo Code can generate images from text prompts using OpenRouter's image generation models. Requires an OpenRouter API key to be configured.",
 			"openRouterApiKeyLabel": "OpenRouter API Key",
 			"openRouterApiKeyPlaceholder": "Enter your OpenRouter API key",
 			"getApiKeyText": "Get your API key from",

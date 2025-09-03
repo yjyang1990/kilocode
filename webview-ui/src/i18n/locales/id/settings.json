@@ -790,7 +790,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Aktifkan pembuatan gambar AI",
-			"description": "Ketika diaktifkan, Roo dapat menghasilkan gambar dari prompt teks menggunakan model pembuatan gambar OpenRouter. Memerlukan kunci API OpenRouter yang dikonfigurasi.",
+			"description": "Ketika diaktifkan, Kilo Code dapat menghasilkan gambar dari prompt teks menggunakan model pembuatan gambar OpenRouter. Memerlukan kunci API OpenRouter yang dikonfigurasi.",
 			"openRouterApiKeyLabel": "Kunci API OpenRouter",
 			"openRouterApiKeyPlaceholder": "Masukkan kunci API OpenRouter Anda",
 			"getApiKeyText": "Dapatkan kunci API Anda dari",

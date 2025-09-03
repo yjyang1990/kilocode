@@ -812,7 +812,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Увімкнути генерацію зображень ШІ",
-			"description": "Коли увімкнено, Roo може генерувати зображення з текстових запитів, використовуючи моделі генерації зображень OpenRouter. Потребує OpenRouter API ключ.",
+			"description": "Коли увімкнено, Kilo Code може генерувати зображення з текстових запитів, використовуючи моделі генерації зображень OpenRouter. Потребує OpenRouter API ключ.",
 			"openRouterApiKeyLabel": "OpenRouter API Key",
 			"openRouterApiKeyPlaceholder": "Введіть свій OpenRouter API ключ",
 			"getApiKeyText": "Отримайте API ключ з",

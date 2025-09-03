@@ -824,7 +824,7 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Povolit AI generování obrázků",
-			"description": "Když je povoleno, Roo může generovat obrázky z textových podnětů pomocí modelů pro generování obrázků OpenRouter. Vyžaduje OpenRouter API klíč.",
+			"description": "Když je povoleno, Kilo Code může generovat obrázky z textových podnětů pomocí modelů pro generování obrázků OpenRouter. Vyžaduje OpenRouter API klíč.",
 			"openRouterApiKeyLabel": "OpenRouter API Key",
 			"openRouterApiKeyPlaceholder": "Zadejte svůj OpenRouter API klíč",
 			"getApiKeyText": "Získejte API klíč z",
