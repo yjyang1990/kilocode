@@ -888,6 +888,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							setOpenRouterImageApiKey={setOpenRouterImageApiKey}
 							setKiloCodeImageApiKey={setKiloCodeImageApiKey}
 							setImageGenerationSelectedModel={setImageGenerationSelectedModel}
+							currentProfileKilocodeToken={apiConfiguration.kilocodeToken}
 						/>
 					)}
 

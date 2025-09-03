@@ -778,6 +778,7 @@
 			"openRouterApiKeyPlaceholder": "Enter your OpenRouter API key",
 			"kiloCodeApiKeyLabel": "Kilo Code API Key",
 			"kiloCodeApiKeyPlaceholder": "Enter your Kilo Code API key",
+			"kiloCodeApiKeyPaste": "Paste current Kilo Code API Key",
 			"getApiKeyText": "Get your API key from",
 			"modelSelectionLabel": "Image Generation Model",
 			"modelSelectionDescription": "Select the model to use for image generation",

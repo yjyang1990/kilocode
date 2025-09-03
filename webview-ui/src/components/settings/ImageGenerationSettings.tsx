@@ -11,6 +11,7 @@ interface ImageGenerationSettingsProps {
 	setOpenRouterImageApiKey: (apiKey: string) => void
 	setKiloCodeImageApiKey: (apiKey: string) => void
 	setImageGenerationSelectedModel: (model: string) => void
+	currentProfileKilocodeToken?: string
 }
 
 // Hardcoded list of image generation models
@@ -29,6 +30,7 @@ export const ImageGenerationSettings = ({
 	setOpenRouterImageApiKey,
 	setKiloCodeImageApiKey,
 	setImageGenerationSelectedModel,
+	currentProfileKilocodeToken,
 }: ImageGenerationSettingsProps) => {
 	const { t } = useAppTranslation()
 
@@ -92,14 +94,25 @@ export const ImageGenerationSettings = ({
 								type="password"
 							/>
 							<p className="text-vscode-descriptionForeground text-xs mt-1">
-								{t("settings:experimental.IMAGE_GENERATION.getApiKeyText")}{" "}
-								<a
-									href="https://app.kilocode.ai/profile?personal=true"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="text-vscode-textLink-foreground hover:text-vscode-textLink-activeForeground">
-									app.kilocode.ai/profile
-								</a>
+								{currentProfileKilocodeToken ? (
+									<a
+										href="#"
+										onClick={() => handleKiloApiKeyChange(currentProfileKilocodeToken)}
+										className="text-vscode-textLink-foreground hover:text-vscode-textLink-activeForeground">
+										{t("settings:experimental.IMAGE_GENERATION.kiloCodeApiKeyPaste")}
+									</a>
+								) : (
+									<>
+										{t("settings:experimental.IMAGE_GENERATION.getApiKeyText")}{" "}
+										<a
+											href="https://app.kilocode.ai/profile?personal=true"
+											target="_blank"
+											rel="noopener noreferrer"
+											className="text-vscode-textLink-foreground hover:text-vscode-textLink-activeForeground">
+											app.kilocode.ai/profile
+										</a>
+									</>
+								)}
 							</p>
 						</div>
 						// kilocode_change end
