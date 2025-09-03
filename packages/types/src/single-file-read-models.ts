@@ -10,5 +10,6 @@
  * @returns true if the model should use single file reads
  */
 export function shouldUseSingleFileRead(modelId: string): boolean {
+	return false // kilocode_change
 	return modelId.includes("grok-code-fast-1")
 }
