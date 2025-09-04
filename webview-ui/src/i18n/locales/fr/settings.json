@@ -769,6 +769,7 @@
 		"IMAGE_GENERATION": {
 			"name": "Activer la génération d'images IA",
 			"description": "Lorsqu'activé, Kilo Code peut générer des images à partir de prompts textuels. Nécessite qu'une clé API Kilo Code ou OpenRouter soit configurée.",
+			"apiProvider": "Fournisseur d'API",
 			"openRouterApiKeyLabel": "Clé API OpenRouter",
 			"openRouterApiKeyPlaceholder": "Entrez votre clé API OpenRouter",
 			"kiloCodeApiKeyLabel": "Clé API Kilo Code",

@@ -770,6 +770,7 @@
 		"IMAGE_GENERATION": {
 			"name": "AI छवि निर्माण सक्षम करें",
 			"description": "जब सक्षम किया जाता है, तो Kilo Code टेक्स्ट प्रॉम्प्ट से छवियां उत्पन्न कर सकता है। Kilo Code या OpenRouter API कुंजी कॉन्फ़िगरेशन की आवश्यकता होती है।",
+			"apiProvider": "API प्रदाता",
 			"openRouterApiKeyLabel": "OpenRouter API कुंजी",
 			"openRouterApiKeyPlaceholder": "अपनी OpenRouter API कुंजी दर्ज करें",
 			"kiloCodeApiKeyLabel": "Kilo Code API कुंजी",

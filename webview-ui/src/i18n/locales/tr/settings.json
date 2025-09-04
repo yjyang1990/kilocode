@@ -770,6 +770,7 @@
 		"IMAGE_GENERATION": {
 			"name": "AI görüntü üretimini etkinleştir",
 			"description": "Etkinleştirildiğinde, Kilo Code metin istemlerinden görüntüler üretebilir. Yapılandırılmış bir Kilo Code veya OpenRouter API anahtarı gerektirir.",
+			"apiProvider": "API Sağlayıcı",
 			"openRouterApiKeyLabel": "OpenRouter API Anahtarı",
 			"openRouterApiKeyPlaceholder": "OpenRouter API anahtarınızı girin",
 			"kiloCodeApiKeyLabel": "Kilo Code API Anahtarı",

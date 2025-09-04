@@ -770,6 +770,7 @@
 		"IMAGE_GENERATION": {
 			"name": "Bật tạo hình ảnh AI",
 			"description": "Khi được bật, Kilo Code có thể tạo hình ảnh từ lời nhắc văn bản. Yêu cầu khóa API Kilo Code hoặc OpenRouter được cấu hình.",
+			"apiProvider": "Nhà cung cấp API",
 			"openRouterApiKeyLabel": "Khóa API OpenRouter",
 			"openRouterApiKeyPlaceholder": "Nhập khóa API OpenRouter của bạn",
 			"kiloCodeApiKeyLabel": "Khóa API Kilo Code",

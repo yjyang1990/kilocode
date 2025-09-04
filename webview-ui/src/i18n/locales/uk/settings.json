@@ -813,6 +813,7 @@
 		"IMAGE_GENERATION": {
 			"name": "Увімкнути генерацію зображень ШІ",
 			"description": "Коли увімкнено, Kilo Code може генерувати зображення з текстових запитів. Потребує Kilo Code або OpenRouter API ключ.",
+			"apiProvider": "Провайдер API",
 			"openRouterApiKeyLabel": "OpenRouter API Key",
 			"openRouterApiKeyPlaceholder": "Введіть свій OpenRouter API ключ",
 			"kiloCodeApiKeyLabel": "Kilo Code API ключ",

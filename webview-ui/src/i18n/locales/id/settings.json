@@ -791,6 +791,7 @@
 		"IMAGE_GENERATION": {
 			"name": "Aktifkan pembuatan gambar AI",
 			"description": "Ketika diaktifkan, Kilo Code dapat menghasilkan gambar dari prompt teks. Memerlukan kunci API Kilo Code atau OpenRouter yang dikonfigurasi.",
+			"apiProvider": "Penyedia API",
 			"openRouterApiKeyLabel": "Kunci API OpenRouter",
 			"openRouterApiKeyPlaceholder": "Masukkan kunci API OpenRouter Anda",
 			"kiloCodeApiKeyLabel": "Kunci API Kilo Code",

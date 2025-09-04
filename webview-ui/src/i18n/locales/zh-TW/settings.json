@@ -770,6 +770,7 @@
 		"IMAGE_GENERATION": {
 			"name": "啟用 AI 圖像生成",
 			"description": "啟用後，Kilo Code 可以從文字提示生成圖像。需要設定 Kilo Code 或 OpenRouter API 金鑰。",
+			"apiProvider": "API 供應商",
 			"openRouterApiKeyLabel": "OpenRouter API 金鑰",
 			"openRouterApiKeyPlaceholder": "輸入您的 OpenRouter API 金鑰",
 			"kiloCodeApiKeyLabel": "Kilo Code API 金鑰",

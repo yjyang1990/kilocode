@@ -770,6 +770,7 @@
 		"IMAGE_GENERATION": {
 			"name": "AI-afbeeldingsgeneratie inschakelen",
 			"description": "Wanneer ingeschakeld, kan Kilo Code afbeeldingen genereren van tekstprompts. Vereist een geconfigureerde Kilo Code of OpenRouter API-sleutel.",
+			"apiProvider": "API-provider",
 			"openRouterApiKeyLabel": "OpenRouter API-sleutel",
 			"openRouterApiKeyPlaceholder": "Voer je OpenRouter API-sleutel in",
 			"kiloCodeApiKeyLabel": "Kilo Code API-sleutel",

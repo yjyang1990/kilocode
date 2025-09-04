@@ -814,6 +814,7 @@
 		"IMAGE_GENERATION": {
 			"name": "تمكين إنشاء صور بالذكاء الاصطناعي",
 			"description": "عند التفعيل، يمكن لـ Kilo Code إنشاء صور من النصوص. يتطلب مفتاح Kilo Code أو OpenRouter API.",
+			"apiProvider": "مزود API",
 			"openRouterApiKeyLabel": "مفتاح OpenRouter API",
 			"openRouterApiKeyPlaceholder": "أدخل مفتاح OpenRouter API",
 			"kiloCodeApiKeyLabel": "مفتاح Kilo Code API",

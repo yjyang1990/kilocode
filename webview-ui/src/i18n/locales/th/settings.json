@@ -803,6 +803,7 @@
 		"IMAGE_GENERATION": {
 			"name": "เปิดใช้งานการสร้างภาพด้วย AI",
 			"description": "เมื่อเปิดใช้งาน Kilo Code สามารถสร้างภาพจากข้อความ prompt ต้องการ API key ของ Kilo Code หรือ OpenRouter",
+			"apiProvider": "ผู้ให้บริการ API",
 			"openRouterApiKeyLabel": "OpenRouter API Key",
 			"openRouterApiKeyPlaceholder": "ป้อน OpenRouter API key ของคุณ",
 			"kiloCodeApiKeyLabel": "Kilo Code API Key",
