@@ -29,6 +29,7 @@ import { attemptCompletionTool } from "../tools/attemptCompletionTool"
 import { newTaskTool } from "../tools/newTaskTool"
 
 import { updateTodoListTool } from "../tools/updateTodoListTool"
+import { generateImageTool } from "../tools/generateImageTool"
 
 import { formatResponse } from "../prompts/responses"
 import { validateToolUse } from "../tools/validateToolUse"
@@ -240,6 +241,8 @@ export async function presentAssistantMessage(cline: Task, recursionDepth: numbe
 					case "condense":
 						return `[${block.name}]`
 					// kilocode_change end
+					case "generate_image":
+						return `[${block.name} for '${block.params.path}']`
 				}
 			}
 
@@ -560,6 +563,7 @@ export async function presentAssistantMessage(cline: Task, recursionDepth: numbe
 					await newTaskTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
 					break
 				case "attempt_completion":
+					await checkpointSaveAndMark(cline) // kilocode_change for "See new changes"
 					await attemptCompletionTool(
 						cline,
 						block,
@@ -582,6 +586,9 @@ export async function presentAssistantMessage(cline: Task, recursionDepth: numbe
 					await condenseTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
 					break
 				// kilocode_change end
+				case "generate_image":
+					await generateImageTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
+					break
 			}
 			// kilocode_change end
 
