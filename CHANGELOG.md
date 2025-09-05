@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.27.0
+
+### Minor Changes
+
+- ![3.27.0 Release - Bug Fixes and Improvements](/releases/3.27.0-release.png)
+
 ## [3.26.7] - 2025-09-05
 
 ![3.26.7 Release - OpenAI Service Tiers](/releases/3.26.7-release.png)
