@@ -17,7 +17,7 @@ interface Notification {
 	title: string
 	message: string
 	action?: NotificationAction
-	modelId?: string
+	suggestModelId?: string
 }
 
 const USE_MODEL_BUTTON_LABEL = "Use model"
@@ -65,19 +65,19 @@ export const KilocodeNotifications: React.FC = () => {
 
 	const modelIdKey = getModelIdKey({ provider })
 
-	const switchModel = (modelId: string) => {
+	const switchModel = (suggestModelId: string) => {
 		vscode.postMessage({
 			type: "upsertApiConfiguration",
 			text: currentApiConfigName,
 			apiConfiguration: {
 				...apiConfiguration,
-				[modelIdKey]: modelId,
+				[modelIdKey]: suggestModelId,
 				openRouterSpecificProvider: OPENROUTER_DEFAULT_PROVIDER_NAME,
 			},
 		})
 		telemetryClient.capture(TelemetryEventName.NOTIFICATION_CLICKED, {
 			actionText: USE_MODEL_BUTTON_LABEL,
-			modelId,
+			suggestModelId,
 		})
 	}
 
@@ -102,15 +102,15 @@ export const KilocodeNotifications: React.FC = () => {
 	}
 
 	const action = currentNotification.action
-	const modelId = currentNotification.modelId
+	const suggestModelId = currentNotification.suggestModelId
 	const isReadyToSwitchModels =
 		!isLoading &&
 		!isError &&
-		modelId &&
-		modelId in providerModels &&
+		suggestModelId &&
+		suggestModelId in providerModels &&
 		currentApiConfigName &&
 		apiConfiguration &&
-		modelId !== apiConfiguration[modelIdKey]
+		suggestModelId !== apiConfiguration[modelIdKey]
 
 	return (
 		<div className="kilocode-notifications flex flex-col mb-4">
@@ -129,8 +129,11 @@ export const KilocodeNotifications: React.FC = () => {
 
 				{(action || isReadyToSwitchModels) && (
 					<div className="flex items-center justify-end gap-2">
-						{modelId && isReadyToSwitchModels && (
-							<VSCodeButton appearance="primary" onClick={() => switchModel(modelId)} className="text-sm">
+						{suggestModelId && isReadyToSwitchModels && (
+							<VSCodeButton
+								appearance="primary"
+								onClick={() => switchModel(suggestModelId)}
+								className="text-sm">
 								{USE_MODEL_BUTTON_LABEL}
 							</VSCodeButton>
 						)}
