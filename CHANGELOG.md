@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.91.2
-
-### Patch Changes
+## [v4.91.2]
 
 - [#2342](https://github.com/Kilo-Org/kilocode/pull/2342) [`6641568`](https://github.com/Kilo-Org/kilocode/commit/6641568fedba0b5f0a76ce9c5d88182b58b327a5) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Fix Jetbrains editor detection
 
