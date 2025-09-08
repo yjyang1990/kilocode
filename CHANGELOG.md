@@ -1,5 +1,9 @@
 # kilo-code
 
+## [v4.91.2]
+
+- [#2342](https://github.com/Kilo-Org/kilocode/pull/2342) [`6641568`](https://github.com/Kilo-Org/kilocode/commit/6641568fedba0b5f0a76ce9c5d88182b58b327a5) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Fix Jetbrains editor detection
+
 ## [v4.91.1]
 
 - [#2310](https://github.com/Kilo-Org/kilocode/pull/2310) [`29c7af6`](https://github.com/Kilo-Org/kilocode/commit/29c7af60d8c5c285b28ce2f9bd1bfeff1d59dc40) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Thanks @Qiiks! - Remove duplicate Qwen Code provider settings
