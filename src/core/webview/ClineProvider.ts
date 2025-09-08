@@ -2522,7 +2522,7 @@ export class ClineProvider
 				appName: packageJSON?.name ?? Package.name,
 				appVersion: packageJSON?.version ?? Package.version,
 				vscodeVersion: vscode.version,
-				platform: process.platform,
+				platform: isWsl ? "wsl" /* kilocode_change */ : process.platform,
 				editorName: kiloCodeWrapperTitle || vscode.env.appName, // kilocode_change
 			}
 		}
