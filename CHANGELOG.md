@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.92.0
-
-### Minor Changes
+## [v4.92.0]
 
 - [#2299](https://github.com/Kilo-Org/kilocode/pull/2299) [`1ab5cc7`](https://github.com/Kilo-Org/kilocode/commit/1ab5cc7d0f9d7748137791043508253af70704a9) Thanks [@catrielmuller](https://github.com/catrielmuller)! - MacOS - System Terminal Notifier Support
 
