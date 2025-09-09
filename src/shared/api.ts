@@ -28,7 +28,7 @@ const routerNames = [
 	"ollama",
 	"lmstudio",
 	"io-intelligence",
-	"deepinfra", // kilocode_change
+	"deepinfra",
 	"vercel-ai-gateway",
 ] as const
 

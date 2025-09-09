@@ -585,6 +585,13 @@
 					"type": "boolean",
 					"default": false,
 					"description": "%settings.newTaskRequireTodos.description%"
+				},
+				"kilo-code.codeIndex.embeddingBatchSize": {
+					"type": "number",
+					"default": 60,
+					"minimum": 1,
+					"maximum": 200,
+					"description": "%settings.codeIndex.embeddingBatchSize.description%"
 				}
 			}
 		},
