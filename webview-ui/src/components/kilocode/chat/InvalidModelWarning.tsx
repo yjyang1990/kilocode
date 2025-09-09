@@ -7,6 +7,7 @@ import { useProviderModels } from "../hooks/useProviderModels"
 import { safeJsonParse } from "@roo/safeJsonParse"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { isAlphaPeriodEndedError } from "@roo/kilocode/errorUtils"
+import { useState } from "react"
 
 type InnerMessage = {
 	modelId?: string
@@ -26,6 +27,8 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 		isLoading,
 		isError,
 	} = useProviderModels(apiConfiguration)
+
+	const [continueWasClicked, setWasContinueClicked] = useState(false)
 
 	const selectedModelId = apiConfiguration
 		? getSelectedModelId({
@@ -52,42 +55,41 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 		!isAlreadyChanged && !!apiConfiguration && !!currentApiConfigName && defaultModelId in providerModels
 
 	return (
-		<>
-			<div className="bg-vscode-panel-border flex flex-col gap-3 p-3 text-base">
-				<div>
-					{didAlphaPeriodEnd
-						? `🎉 The alpha period for ${unavailableModel} has ended! Change to a different model to continue.`
-						: `⚠️ The model ${unavailableModel} is unavailable. Change to a different model to continue.`}
-				</div>
-				{isLast && !isLoading && !isError && (
-					<>
-						<VSCodeButton
-							className="w-full"
-							onClick={() => {
-								if (canChangeToDefaultModel) {
-									vscode.postMessage({
-										type: "upsertApiConfiguration",
-										text: currentApiConfigName,
-										apiConfiguration: {
-											...apiConfiguration,
-											[modelIdKey]: defaultModelId,
-										},
-									})
-								}
-								vscode.postMessage({
-									type: "askResponse",
-									askResponse: "retry_clicked",
-									text: message.text,
-								})
-							}}>
-							{canChangeToDefaultModel
-								? `Continue with ${providerModels[defaultModelId]?.displayName ?? defaultModelId}`
-								: "Retry"}
-						</VSCodeButton>
-						{didAlphaPeriodEnd && <FreeModelsLink className="w-full" origin="invalid_model" />}
-					</>
-				)}
+		<div className="bg-vscode-panel-border flex flex-col gap-3 p-3 text-base">
+			<div>
+				{didAlphaPeriodEnd
+					? `🎉 The alpha period for ${unavailableModel} has ended! Change to a different model to continue.`
+					: `⚠️ The model ${unavailableModel} is unavailable. Change to a different model to continue.`}
 			</div>
-		</>
+			{isLast && !isLoading && !isError && !continueWasClicked && (
+				<>
+					<VSCodeButton
+						className="w-full"
+						onClick={() => {
+							setWasContinueClicked(true)
+							if (canChangeToDefaultModel) {
+								vscode.postMessage({
+									type: "upsertApiConfiguration",
+									text: currentApiConfigName,
+									apiConfiguration: {
+										...apiConfiguration,
+										[modelIdKey]: defaultModelId,
+									},
+								})
+							}
+							vscode.postMessage({
+								type: "askResponse",
+								askResponse: "retry_clicked",
+								text: message.text,
+							})
+						}}>
+						{canChangeToDefaultModel
+							? `Continue with ${providerModels[defaultModelId]?.displayName ?? defaultModelId}`
+							: "Retry"}
+					</VSCodeButton>
+					{didAlphaPeriodEnd && <FreeModelsLink className="w-full" origin="invalid_model" />}
+				</>
+			)}
+		</div>
 	)
 }
