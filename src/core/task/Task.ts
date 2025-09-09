@@ -111,11 +111,7 @@ import { ensureLocalKilorulesDirExists } from "../context/instructions/kilo-rule
 import { restoreTodoListForTask } from "../tools/updateTodoListTool"
 import { AutoApprovalHandler } from "./AutoApprovalHandler"
 import { Gpt5Metadata, ClineMessageWithMetadata } from "./types"
-import {
-	isAlphaPeriodEndedError,
-	isInvalidModelError,
-	isPaymentRequiredRequiredError,
-} from "../../shared/kilocode/errorUtils"
+import { isAlphaPeriodEndedError, isInvalidModelError, isPaymentRequiredError } from "../../shared/kilocode/errorUtils"
 
 const MAX_EXPONENTIAL_BACKOFF_SECONDS = 600 // 10 minutes
 const DEFAULT_USAGE_COLLECTION_TIMEOUT_MS = 5000 // 5 seconds
@@ -2697,9 +2693,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			// kilocode_change start
 			if (
 				apiConfiguration?.apiProvider === "kilocode" &&
-				(isPaymentRequiredRequiredError(error) || isInvalidModelError(error) || isAlphaPeriodEndedError(error))
+				(isPaymentRequiredError(error) || isInvalidModelError(error) || isAlphaPeriodEndedError(error))
 			) {
-				const { response } = await (isPaymentRequiredRequiredError(error)
+				const { response } = await (isPaymentRequiredError(error)
 					? this.ask(
 							"payment_required_prompt",
 							JSON.stringify({

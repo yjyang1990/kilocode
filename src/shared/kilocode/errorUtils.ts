@@ -2,7 +2,7 @@ export function stringifyError(error: unknown) {
 	return error instanceof Error ? error.stack || error.message : String(error)
 }
 
-export function isPaymentRequiredRequiredError(error: any) {
+export function isPaymentRequiredError(error: any) {
 	return !!(error && error.status === 402)
 }
 
