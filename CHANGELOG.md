@@ -1,5 +1,9 @@
 # kilo-code
 
+## [v4.92.1]
+
+- [#2364](https://github.com/Kilo-Org/kilocode/pull/2364) [`7573854`](https://github.com/Kilo-Org/kilocode/commit/75738541270db6702aac649730472c92e8084444) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Remove some nonexistent models from the model selector
+
 ## [v4.92.0]
 
 - [#2299](https://github.com/Kilo-Org/kilocode/pull/2299) [`1ab5cc7`](https://github.com/Kilo-Org/kilocode/commit/1ab5cc7d0f9d7748137791043508253af70704a9) Thanks [@catrielmuller](https://github.com/catrielmuller)! - MacOS - System Terminal Notifier Support
