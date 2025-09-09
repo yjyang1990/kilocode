@@ -8,6 +8,7 @@ import { safeJsonParse } from "@roo/safeJsonParse"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { isAlphaPeriodEndedError } from "@roo/kilocode/errorUtils"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 type InnerMessage = {
 	modelId?: string
@@ -18,6 +19,7 @@ type InnerMessage = {
 }
 
 export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage; isLast: boolean }) => {
+	const { t } = useTranslation()
 	const { currentApiConfigName, apiConfiguration } = useExtensionState()
 
 	const {
@@ -57,8 +59,8 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 		<div className="bg-vscode-panel-border flex flex-col gap-3 p-3 text-base">
 			<div>
 				{didAlphaPeriodEnd
-					? `🎉 The alpha period for ${unavailableModel} has ended! Change to a different model to continue.`
-					: `⚠️ The model ${unavailableModel} is unavailable. Change to a different model to continue.`}
+					? t("kilocode:invalidModel.alphaPeriodEnded", { model: unavailableModel })
+					: t("kilocode:invalidModel.modelUnavailable", { model: unavailableModel })}
 			</div>
 			{isLast && !isLoading && !continueWasClicked && (
 				<>
@@ -83,8 +85,10 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 							})
 						}}>
 						{canChangeToDefaultModel
-							? `Continue with ${providerModels[defaultModelId]?.displayName ?? defaultModelId}`
-							: "Continue"}
+							? t("kilocode:invalidModel.continueWith", {
+									model: providerModels[defaultModelId]?.displayName ?? defaultModelId,
+								})
+							: t("kilocode:invalidModel.continue")}
 					</VSCodeButton>
 					{didAlphaPeriodEnd && <FreeModelsLink className="w-full" origin="invalid_model" />}
 				</>
