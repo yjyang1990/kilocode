@@ -25,7 +25,6 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 		providerModels,
 		providerDefaultModel: defaultModelId,
 		isLoading,
-		isError,
 	} = useProviderModels(apiConfiguration)
 
 	const [continueWasClicked, setWasContinueClicked] = useState(false)
@@ -61,7 +60,7 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 					? `🎉 The alpha period for ${unavailableModel} has ended! Change to a different model to continue.`
 					: `⚠️ The model ${unavailableModel} is unavailable. Change to a different model to continue.`}
 			</div>
-			{isLast && !isLoading && !isError && !continueWasClicked && (
+			{isLast && !isLoading && !continueWasClicked && (
 				<>
 					<VSCodeButton
 						className="w-full"
@@ -85,7 +84,7 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 						}}>
 						{canChangeToDefaultModel
 							? `Continue with ${providerModels[defaultModelId]?.displayName ?? defaultModelId}`
-							: "Retry"}
+							: "Continue"}
 					</VSCodeButton>
 					{didAlphaPeriodEnd && <FreeModelsLink className="w-full" origin="invalid_model" />}
 				</>
