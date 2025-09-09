@@ -225,7 +225,10 @@ export const parseOpenRouterModel = ({
 		description: model.description,
 		supportsReasoningEffort: supportedParameters ? supportedParameters.includes("reasoning") : undefined,
 		supportedParameters: supportedParameters ? supportedParameters.filter(isModelParameter) : undefined,
-		preferredIndex: model.preferredIndex, // kilocode_change
+		// kilocode_change start
+		displayName: model.name,
+		preferredIndex: model.preferredIndex,
+		// kilocode_change end
 	}
 
 	// The OpenRouter model definition doesn't give us any hints about

@@ -80,7 +80,9 @@ export const InvalidModelWarning = ({ message, isLast }: { message: ClineMessage
 									text: message.text,
 								})
 							}}>
-							{canChangeToDefaultModel ? `Continue with ${defaultModelId}` : "Retry"}
+							{canChangeToDefaultModel
+								? `Continue with ${providerModels[defaultModelId]?.displayName ?? defaultModelId}`
+								: "Retry"}
 						</VSCodeButton>
 						{didAlphaPeriodEnd && <FreeModelsLink className="w-full" origin="invalid_model" />}
 					</>
