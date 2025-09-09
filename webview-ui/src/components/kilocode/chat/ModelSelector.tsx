@@ -27,13 +27,14 @@ export const ModelSelector = ({ currentApiConfigName, apiConfiguration, fallback
 
 	const modelsIds = usePreferredModels(providerModels)
 	const options = useMemo(() => {
-		const missingModelIds = modelsIds.indexOf(selectedModelId) >= 0 ? [] : [selectedModelId]
+		const missingModelIds =
+			modelsIds.indexOf(selectedModelId) >= 0 ? ["sonic", "openrouter/horizon-beta"] : [selectedModelId]
 		return missingModelIds.concat(modelsIds).map((modelId) => ({
 			value: modelId,
-			label: prettyModelName(modelId),
+			label: providerModels[modelId]?.displayName ?? prettyModelName(modelId),
 			type: DropdownOptionType.ITEM,
 		}))
-	}, [modelsIds, selectedModelId])
+	}, [modelsIds, providerModels, selectedModelId])
 
 	const disabled = isLoading || isError
 
