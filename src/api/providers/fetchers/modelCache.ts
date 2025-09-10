@@ -96,10 +96,10 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 					headers: options.kilocodeToken ? { Authorization: `Bearer ${options.kilocodeToken}` } : undefined,
 				})
 				break
+			// kilocode_change end
 			case "cerebras":
 				models = cerebrasModels
 				break
-			// kilocode_change end
 			case "ollama":
 				models = await getOllamaModels(options.baseUrl)
 				break
