@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.93.1
-
-### Patch Changes
+## [v4.93.1]
 
 - [#2388](https://github.com/Kilo-Org/kilocode/pull/2388) [`484ced4`](https://github.com/Kilo-Org/kilocode/commit/484ced4df8f6bc24091268d1850c8eba752e7cc8) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Kilo Code Provider Routing settings are now hidden when managed by an organization
 
