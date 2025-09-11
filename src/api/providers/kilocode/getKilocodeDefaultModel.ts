@@ -7,7 +7,7 @@ import { DEFAULT_HEADERS } from "../constants"
 
 type KilocodeToken = string
 
-type OrganisationId = string
+type OrganizationId = string
 
 const cache = new Map<string, Promise<string>>()
 
@@ -19,10 +19,10 @@ const fetcher = fetchWithTimeout(5000)
 
 async function fetchKilocodeDefaultModel(
 	kilocodeToken: KilocodeToken,
-	organisationId?: OrganisationId,
+	organizationId?: OrganizationId,
 ): Promise<string> {
 	try {
-		const path = organisationId ? `/organizations/${organisationId}/defaults` : `/defaults`
+		const path = organizationId ? `/organizations/${organizationId}/defaults` : `/defaults`
 		const url = `${getKiloBaseUriFromToken(kilocodeToken)}/api${path}`
 		const response = await fetcher(url, {
 			headers: {
@@ -48,15 +48,15 @@ async function fetchKilocodeDefaultModel(
 
 export async function getKilocodeDefaultModel(
 	kilocodeToken?: KilocodeToken,
-	organisationId?: OrganisationId,
+	organizationId?: OrganizationId,
 ): Promise<string> {
 	if (!kilocodeToken) {
 		return openRouterDefaultModelId
 	}
-	const key = JSON.stringify({ kilocodeToken, organisationId })
+	const key = JSON.stringify({ kilocodeToken, organizationId })
 	let defaultModelPromise = cache.get(key)
 	if (!defaultModelPromise) {
-		defaultModelPromise = fetchKilocodeDefaultModel(kilocodeToken, organisationId)
+		defaultModelPromise = fetchKilocodeDefaultModel(kilocodeToken, organizationId)
 		cache.set(key, defaultModelPromise)
 	}
 	return await defaultModelPromise
