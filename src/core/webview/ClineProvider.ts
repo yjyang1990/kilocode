@@ -3096,6 +3096,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		await this.postStateToWebview()
 	}
 
+	public getTaskHistory(): HistoryItem[] {
+		return this.getGlobalState("taskHistory") || []
+	}
 	// kilocode_change end
 
 	public get cwd() {

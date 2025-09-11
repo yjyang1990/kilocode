@@ -984,6 +984,15 @@ export const webviewMessageHandler = async (
 				await seeNewChanges(task, (message.payload as SeeNewChangesPayload).commitRange)
 			}
 			break
+		case "taskHistoryRequest": {
+			await provider.postMessageToWebview({
+				type: "taskHistoryResponse",
+				payload: {
+					historyItems: provider.getTaskHistory(),
+				},
+			})
+			break
+		}
 		// kilocode_change end
 		case "checkpointRestore": {
 			const result = checkoutRestorePayloadSchema.safeParse(message.payload)

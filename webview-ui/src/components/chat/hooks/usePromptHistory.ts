@@ -1,4 +1,5 @@
-import { ClineMessage, HistoryItem } from "@roo-code/types"
+import { useTaskHistory } from "@/kilocode/hooks/useTaskHistory"
+import { ClineMessage } from "@roo-code/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 interface UsePromptHistoryProps {
@@ -38,8 +39,7 @@ export const usePromptHistory = ({
 	const [historyIndex, setHistoryIndex] = useState(-1)
 	const [tempInput, setTempInput] = useState("")
 	const [promptHistory, setPromptHistory] = useState<string[]>([])
-
-	const taskHistory: HistoryItem[] = [] // kilocode_change
+	const { data } = useTaskHistory() // kilocode_change
 
 	// Initialize prompt history with hybrid approach: conversation messages if in task, otherwise task history
 	const filteredPromptHistory = useMemo(() => {
@@ -59,6 +59,8 @@ export const usePromptHistory = ({
 			return []
 		}
 
+		const taskHistory = data?.historyItems ?? []
+
 		// Fall back to task history only when starting fresh (no active conversation)
 		if (!taskHistory?.length || !cwd) {
 			return []
@@ -69,7 +71,11 @@ export const usePromptHistory = ({
 			.filter((item) => item.task?.trim() && (!item.workspace || item.workspace === cwd))
 			.map((item) => item.task)
 			.slice(0, MAX_PROMPT_HISTORY_SIZE)
-	}, [clineMessages, taskHistory, cwd])
+	}, [
+		data, // kiloocode_change
+		clineMessages,
+		cwd,
+	])
 
 	// Update prompt history when filtered history changes and reset navigation
 	useEffect(() => {

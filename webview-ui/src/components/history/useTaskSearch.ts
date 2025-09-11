@@ -3,10 +3,12 @@ import { Fzf } from "fzf"
 
 import { highlightFzfMatch } from "@/utils/highlight"
 import { useExtensionState } from "@/context/ExtensionStateContext"
+import { useTaskHistory } from "@/kilocode/hooks/useTaskHistory"
 
 type SortOption = "newest" | "oldest" | "mostExpensive" | "mostTokens" | "mostRelevant"
 
 export const useTaskSearch = () => {
+	const { data } = useTaskHistory() // kilocode_change
 	const { /*taskHistory, kilocode_change */ cwd } = useExtensionState()
 	const [searchQuery, setSearchQuery] = useState("")
 	const [sortOption, setSortOption] = useState<SortOption>("newest")
@@ -24,9 +26,8 @@ export const useTaskSearch = () => {
 		}
 	}, [searchQuery, sortOption, lastNonRelevantSort])
 
-	const taskHistory = []
-
 	const presentableTasks = useMemo(() => {
+		const taskHistory = data?.historyItems ?? [] // kilocode_change
 		let tasks = taskHistory.filter((item) => item.ts && item.task)
 		if (!showAllWorkspaces) {
 			tasks = tasks.filter((item) => item.workspace === cwd)
@@ -37,7 +38,7 @@ export const useTaskSearch = () => {
 		}
 		// kilocode_change end
 		return tasks
-	}, [taskHistory, showAllWorkspaces, showFavoritesOnly, cwd]) // kilocode_change
+	}, [data, showAllWorkspaces, showFavoritesOnly, cwd]) // kilocode_change
 
 	const fzf = useMemo(() => {
 		return new Fzf(presentableTasks, {
