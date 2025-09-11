@@ -15,6 +15,7 @@
 	},
 	"invalidModel": {
 		"alphaPeriodEnded": "🎉 The alpha period for {{model}} has ended! Change to a different model to continue.",
+		"notAllowedForTeam": "⚠️ Your team does not allow use of the {{model}} model. Change to a different model to continue.",
 		"modelUnavailable": "⚠️ The model {{model}} is unavailable. Change to a different model to continue.",
 		"continueWith": "Continue with {{model}}",
 		"continue": "Continue"
