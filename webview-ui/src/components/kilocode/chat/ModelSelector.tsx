@@ -27,10 +27,7 @@ export const ModelSelector = ({ currentApiConfigName, apiConfiguration, fallback
 
 	const modelsIds = usePreferredModels(providerModels)
 	const options = useMemo(() => {
-		const missingModelIds =
-			modelsIds.indexOf(selectedModelId) >= 0
-				? ["YOLO/TEST_DO_NOT_MERGE", "openrouter/horizon-beta"]
-				: [selectedModelId]
+		const missingModelIds = modelsIds.indexOf(selectedModelId) >= 0 ? [] : [selectedModelId]
 		return missingModelIds.concat(modelsIds).map((modelId) => ({
 			value: modelId,
 			label: providerModels[modelId]?.displayName ?? prettyModelName(modelId),
