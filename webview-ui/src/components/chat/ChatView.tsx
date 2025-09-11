@@ -98,7 +98,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		clineMessages: messages,
 		currentTaskItem,
 		currentTaskTodos,
-		taskHistory,
+		taskHistoryFullLength, // kilocode_change
 		apiConfiguration,
 		organizationAllowList,
 		mcpServers,
@@ -2002,12 +2002,12 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 									}}
 								/>
 							</p>
-							{taskHistory.length === 0 && <IdeaSuggestionsBox />} {/* kilocode_change */}
+							{taskHistoryFullLength === 0 && <IdeaSuggestionsBox />} {/* kilocode_change */}
 							{/*<div className="mb-2.5">
 								{cloudIsAuthenticated || taskHistory.length < 4 ? <RooTips /> : <RooCloudCTA />}
 							</div> kilocode_change: do not show */}
 							{/* Show the task history preview if expanded and tasks exist */}
-							{taskHistory.length > 0 && isExpanded && <HistoryPreview />}
+							{taskHistoryFullLength > 0 && isExpanded && <HistoryPreview />}
 							{/* kilocode_change start: KilocodeNotifications + Layout fixes */}
 						</div>
 						{/* kilocode_change end */}

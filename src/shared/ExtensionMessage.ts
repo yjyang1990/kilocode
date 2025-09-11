@@ -351,7 +351,7 @@ export type ExtensionState = Pick<
 	kilocodeDefaultModel: string
 	shouldShowAnnouncement: boolean
 
-	taskHistory: HistoryItem[]
+	taskHistoryFullLength: number // kilocode_change
 
 	writeDelayMs: number
 	requestDelaySeconds: number
