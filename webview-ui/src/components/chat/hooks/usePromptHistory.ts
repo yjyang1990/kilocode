@@ -72,7 +72,7 @@ export const usePromptHistory = ({
 			.map((item) => item.task)
 			.slice(0, MAX_PROMPT_HISTORY_SIZE)
 	}, [
-		data, // kiloocode_change
+		data, // kilocode_change
 		clineMessages,
 		cwd,
 	])
