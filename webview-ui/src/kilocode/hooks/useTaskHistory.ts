@@ -1,9 +1,9 @@
 import { ExtensionMessage } from "@roo/ExtensionMessage"
-import { TaskHistoryResponsePayload } from "@roo/WebviewMessage"
+import { TaskHistoryRequestPayload, TaskHistoryResponsePayload } from "@roo/WebviewMessage"
 import { vscode } from "@src/utils/vscode"
 import { useQuery } from "@tanstack/react-query"
 
-function fetchTaskHistory(): Promise<TaskHistoryResponsePayload> {
+function fetchTaskHistory(payload: TaskHistoryRequestPayload): Promise<TaskHistoryResponsePayload> {
 	return new Promise((resolve, reject) => {
 		const cleanup = () => window.removeEventListener("message", handle)
 
@@ -27,13 +27,13 @@ function fetchTaskHistory(): Promise<TaskHistoryResponsePayload> {
 		}
 
 		window.addEventListener("message", handle)
-		vscode.postMessage({ type: "taskHistoryRequest" })
+		vscode.postMessage({ type: "taskHistoryRequest", payload })
 	})
 }
 
-export function useTaskHistory() {
+export function useTaskHistory(payload: TaskHistoryRequestPayload) {
 	return useQuery({
-		queryKey: ["taskHistory"], // todo
-		queryFn: fetchTaskHistory,
+		queryKey: ["taskHistory", JSON.stringify(payload)], // SUS: there's nothing here that changes when a task gets added/deleted
+		queryFn: () => fetchTaskHistory(payload),
 	})
 }

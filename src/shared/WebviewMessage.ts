@@ -409,7 +409,7 @@ export interface SeeNewChangesPayload {
 
 export interface TaskHistoryRequestPayload {
 	workspace: "current" | "all"
-	sort: "newest" | "oldest" | "expensive" | "tokens"
+	sort: "newest" | "oldest" | "mostExpensive" | "mostTokens" | "mostRelevant"
 	favoritesOnly: boolean
 	pageIndex: number
 	search?: string
