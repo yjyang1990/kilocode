@@ -5,7 +5,6 @@ import { getModels } from "./fetchers/modelCache"
 import { DEEP_SEEK_DEFAULT_TEMPERATURE, openRouterDefaultModelId, openRouterDefaultModelInfo } from "@roo-code/types"
 import { getKiloBaseUriFromToken } from "../../shared/kilocode/token"
 import { ApiHandlerCreateMessageMetadata } from ".."
-import OpenAI from "openai"
 import { getModelEndpoints } from "./fetchers/modelEndpointCache"
 import { getKilocodeDefaultModel } from "./kilocode/getKilocodeDefaultModel"
 import { X_KILOCODE_ORGANIZATIONID, X_KILOCODE_TASKID } from "../../shared/kilocode/headers"
@@ -17,6 +16,10 @@ import { X_KILOCODE_ORGANIZATIONID, X_KILOCODE_TASKID } from "../../shared/kiloc
 export class KilocodeOpenrouterHandler extends OpenRouterHandler {
 	protected override models: ModelRecord = {}
 	defaultModel: string = openRouterDefaultModelId
+
+	protected override get providerName() {
+		return "KiloCode"
+	}
 
 	constructor(options: ApiHandlerOptions) {
 		const baseUri = getKiloBaseUriFromToken(options.kilocodeToken ?? "")
@@ -59,21 +62,7 @@ export class KilocodeOpenrouterHandler extends OpenRouterHandler {
 
 	override getModel() {
 		let id = this.options.kilocodeModel ?? this.defaultModel
-		let info = this.models[id]
-		let defaultTemperature = 0
-
-		if (!info) {
-			const defaultInfo = this.models[this.defaultModel]
-			if (defaultInfo) {
-				console.warn(`${id} no longer exists, falling back to ${this.defaultModel}`)
-				id = this.defaultModel
-				info = defaultInfo
-			} else {
-				console.warn(`${id} no longer exists, falling back to ${openRouterDefaultModelId}`)
-				id = openRouterDefaultModelId
-				info = openRouterDefaultModelInfo
-			}
-		}
+		let info = this.models[id] ?? openRouterDefaultModelInfo
 
 		// If a specific provider is requested, use the endpoint for that provider.
 		if (this.options.openRouterSpecificProvider && this.endpoints[this.options.openRouterSpecificProvider]) {
@@ -87,7 +76,7 @@ export class KilocodeOpenrouterHandler extends OpenRouterHandler {
 			modelId: id,
 			model: info,
 			settings: this.options,
-			defaultTemperature: isDeepSeekR1 ? DEEP_SEEK_DEFAULT_TEMPERATURE : defaultTemperature,
+			defaultTemperature: isDeepSeekR1 ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0,
 		})
 
 		return { id, info, topP: isDeepSeekR1 ? 0.95 : undefined, ...params }
@@ -109,7 +98,7 @@ export class KilocodeOpenrouterHandler extends OpenRouterHandler {
 				modelId: this.options.kilocodeModel,
 				endpoint: this.options.openRouterSpecificProvider,
 			}),
-			getKilocodeDefaultModel(this.options.kilocodeToken),
+			getKilocodeDefaultModel(this.options.kilocodeToken, this.options.kilocodeOrganizationId),
 		])
 
 		this.models = models
