@@ -17,17 +17,17 @@ export const useTaskSearch = () => {
 	const [sortOption, setSortOption] = useState<SortOption>("newest")
 	const [lastNonRelevantSort, setLastNonRelevantSort] = useState<SortOption | null>("newest")
 	const [showAllWorkspaces, setShowAllWorkspaces] = useState(false)
-	const [showFavoritesOnly, setShowFavoritesOnly] = useState(false) // kilocode_change
 
 	// kilocode_change start
+	const [requestedPageIndex, setRequestedPageIndex] = useState(0)
+	const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
 	const { data } = useTaskHistory({
 		workspace: showAllWorkspaces ? "all" : "current",
 		sort: sortOption,
 		favoritesOnly: showFavoritesOnly,
-		pageIndex: 0, // TODO
+		pageIndex: requestedPageIndex,
 		search: searchQuery,
 	})
-	const tasks = data?.historyItems ?? []
 	// kilocode_change end
 
 	useEffect(() => {
@@ -104,7 +104,7 @@ export const useTaskSearch = () => {
 	// kilocode_change end
 
 	return {
-		tasks,
+		data, // kilocode_change
 		searchQuery,
 		setSearchQuery,
 		sortOption,
@@ -113,7 +113,11 @@ export const useTaskSearch = () => {
 		setLastNonRelevantSort,
 		showAllWorkspaces,
 		setShowAllWorkspaces,
+		// kilocode_change start
 		showFavoritesOnly,
 		setShowFavoritesOnly,
+		requestedPageIndex,
+		setRequestedPageIndex,
+		// kilocode_change end
 	}
 }

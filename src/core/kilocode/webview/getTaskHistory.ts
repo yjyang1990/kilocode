@@ -3,6 +3,8 @@ import { TaskHistoryRequestPayload, TaskHistoryResponsePayload } from "../../../
 import { ClineProvider } from "../../webview/ClineProvider"
 import { highlightFzfMatch } from "../../../../webview-ui/src/utils/highlight" // weird hack, but apparently it works
 
+const PAGE_SIZE = 10
+
 export function getTaskHistory(
 	provider: ClineProvider,
 	request: TaskHistoryRequestPayload,
@@ -56,7 +58,11 @@ export function getTaskHistory(
 		}
 	})
 
-	return {
-		historyItems: tasks,
-	}
+	const pageCount = Math.ceil(tasks.length / PAGE_SIZE)
+	const pageIndex = Math.max(0, Math.min(request.pageIndex, pageCount - 1))
+
+	const startIndex = PAGE_SIZE * pageIndex
+	const historyItems = tasks.slice(startIndex, startIndex + PAGE_SIZE)
+
+	return { historyItems, pageIndex, pageCount }
 }

@@ -417,6 +417,8 @@ export interface TaskHistoryRequestPayload {
 
 export interface TaskHistoryResponsePayload {
 	historyItems: HistoryItem[]
+	pageIndex: number
+	pageCount: number
 }
 // kilocode_change end
 
