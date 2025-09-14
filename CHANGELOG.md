@@ -14,6 +14,8 @@
 - Disable Roomote Control on logout for better security (thanks @cte!)
 - Add padding to the cloudview for better visual spacing (thanks @mrubens!)
 
+## [3.28.1] - 2025-09-11
+
 ![3.28.1 Release - Kangaroo riding rocket to the clouds](/releases/3.28.1-release.png)
 
 - Announce Roo Code Cloud!
