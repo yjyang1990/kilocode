@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.28.2
+
+### Patch Changes
+
+- ![3.28.2 Release - Auto-approve improvements](/releases/3.28.2-release.png)
+
 ## [3.28.1] - 2025-09-11
 
 ![3.28.1 Release - Kangaroo riding rocket to the clouds](/releases/3.28.1-release.png)
