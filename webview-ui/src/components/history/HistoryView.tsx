@@ -267,51 +267,56 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 						/>
 					)}
 				/>
+			</TabContent>
+
+			{/* kilocode_change: more nesting so we can add more rows */}
+			<div className="fixed bottom-0 left-0 right-2 bg-vscode-editor-background z-1">
+				{/* Fixed action bar at bottom - only shown in selection mode with selected items */}
+				{isSelectionMode && selectedTaskIds.length > 0 && (
+					<div className="border-t border-vscode-panel-border p-2 flex justify-between items-center">
+						<div className="text-vscode-foreground">
+							{t("history:selectedItems", { selected: selectedTaskIds.length, total: tasks.length })}
+						</div>
+						<div className="flex gap-2">
+							<Button variant="secondary" onClick={() => setSelectedTaskIds([])}>
+								{t("history:clearSelection")}
+							</Button>
+							<Button variant="default" onClick={handleBatchDelete}>
+								{t("history:deleteSelected")}
+							</Button>
+						</div>
+					</div>
+				)}
 				{
 					// kilocode_change start
-					<div>
-						{(data?.pageIndex ?? 0) + 1} / {data?.pageCount ?? 1}
-						<Button
-							className="button"
-							onClick={() => {
-								const pageIndex = data?.pageIndex ?? 0
-								if (pageIndex > 0) {
-									setRequestedPageIndex(pageIndex - 1)
-								}
-							}}>
-							Prev
-						</Button>
-						<Button
-							className="button"
-							onClick={() => {
-								const pageIndex = data?.pageIndex ?? 0
-								if (pageIndex < (data?.pageCount ?? 0) - 1) {
-									setRequestedPageIndex(pageIndex + 1)
-								}
-							}}>
-							Next
-						</Button>
+					<div className="border-t border-vscode-panel-border p-2 flex justify-between items-center">
+						Page {(data?.pageIndex ?? 0) + 1} / {data?.pageCount ?? 1}
+						<div className="flex gap-2">
+							<Button
+								disabled={(data?.pageIndex ?? 0) <= 0}
+								onClick={() => {
+									const pageIndex = data?.pageIndex ?? 0
+									if (pageIndex > 0) {
+										setRequestedPageIndex(pageIndex - 1)
+									}
+								}}>
+								Previous
+							</Button>
+							<Button
+								disabled={(data?.pageIndex ?? 0) >= (data?.pageCount ?? 1) - 1}
+								onClick={() => {
+									const pageIndex = data?.pageIndex ?? 0
+									if (pageIndex < (data?.pageCount ?? 0) - 1) {
+										setRequestedPageIndex(pageIndex + 1)
+									}
+								}}>
+								Next
+							</Button>
+						</div>
 					</div>
 					// kilocode_change end
 				}
-			</TabContent>
-
-			{/* Fixed action bar at bottom - only shown in selection mode with selected items */}
-			{isSelectionMode && selectedTaskIds.length > 0 && (
-				<div className="fixed bottom-0 left-0 right-2 bg-vscode-editor-background border-t border-vscode-panel-border p-2 flex justify-between items-center">
-					<div className="text-vscode-foreground">
-						{t("history:selectedItems", { selected: selectedTaskIds.length, total: tasks.length })}
-					</div>
-					<div className="flex gap-2">
-						<Button variant="secondary" onClick={() => setSelectedTaskIds([])}>
-							{t("history:clearSelection")}
-						</Button>
-						<Button variant="default" onClick={handleBatchDelete}>
-							{t("history:deleteSelected")}
-						</Button>
-					</div>
-				</div>
-			)}
+			</div>
 
 			{/* Delete dialog */}
 			{deleteTaskId && (
