@@ -12,7 +12,7 @@ import { useTaskHistory } from "@/kilocode/hooks/useTaskHistory"
 type SortOption = "newest" | "oldest" | "mostExpensive" | "mostTokens" | "mostRelevant"
 
 export const useTaskSearch = () => {
-	const { taskHistoryVersion /*kilocode_change*/ } = useExtensionState()
+	const { taskHistoryFullLength, taskHistoryVersion } = useExtensionState() // kilocode_change
 	const [searchQuery, setSearchQuery] = useState("")
 	const [sortOption, setSortOption] = useState<SortOption>("newest")
 	const [lastNonRelevantSort, setLastNonRelevantSort] = useState<SortOption | null>("newest")
@@ -118,6 +118,7 @@ export const useTaskSearch = () => {
 		setShowAllWorkspaces,
 		// kilocode_change start
 		data,
+		taskHistoryFullLength,
 		showFavoritesOnly,
 		setShowFavoritesOnly,
 		requestedPageIndex,
