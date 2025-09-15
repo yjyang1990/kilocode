@@ -44,7 +44,11 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 		setRequestedPageIndex,
 		// kilocode_change end
 	} = useTaskSearch()
-	const tasks = data?.historyItems ?? [] // kilocode_change
+	// kilocode_change start
+	const tasks = data?.historyItems ?? []
+	const pageIndex = data?.pageIndex ?? 0
+	const pageCount = data?.pageCount ?? 1
+	// kilocode_change end
 	const { t } = useAppTranslation()
 
 	const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null)
@@ -291,14 +295,13 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 					// kilocode_change start
 					<div className="border-t border-vscode-panel-border p-2 flex justify-between items-center">
 						{t("kilocode:pagination.page", {
-							page: (data?.pageIndex ?? 0) + 1,
-							count: data?.pageCount ?? 1,
+							page: pageIndex + 1,
+							count: pageCount,
 						})}
 						<div className="flex gap-2">
 							<Button
 								disabled={(data?.pageIndex ?? 0) <= 0}
 								onClick={() => {
-									const pageIndex = data?.pageIndex ?? 0
 									if (pageIndex > 0) {
 										setRequestedPageIndex(pageIndex - 1)
 									}
@@ -306,10 +309,9 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 								{t("kilocode:pagination.previous")}
 							</Button>
 							<Button
-								disabled={(data?.pageIndex ?? 0) >= (data?.pageCount ?? 1) - 1}
+								disabled={pageIndex >= pageCount - 1}
 								onClick={() => {
-									const pageIndex = data?.pageIndex ?? 0
-									if (pageIndex < (data?.pageCount ?? 0) - 1) {
+									if (pageIndex < pageCount - 1) {
 										setRequestedPageIndex(pageIndex + 1)
 									}
 								}}>
