@@ -290,7 +290,10 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 				{
 					// kilocode_change start
 					<div className="border-t border-vscode-panel-border p-2 flex justify-between items-center">
-						Page {(data?.pageIndex ?? 0) + 1} / {data?.pageCount ?? 1}
+						{t("kilocode:pagination.page", {
+							page: (data?.pageIndex ?? 0) + 1,
+							count: data?.pageCount ?? 1,
+						})}
 						<div className="flex gap-2">
 							<Button
 								disabled={(data?.pageIndex ?? 0) <= 0}
@@ -300,7 +303,7 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 										setRequestedPageIndex(pageIndex - 1)
 									}
 								}}>
-								Previous
+								{t("kilocode:pagination.previous")}
 							</Button>
 							<Button
 								disabled={(data?.pageIndex ?? 0) >= (data?.pageCount ?? 1) - 1}
@@ -310,7 +313,7 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 										setRequestedPageIndex(pageIndex + 1)
 									}
 								}}>
-								Next
+								{t("kilocode:pagination.next")}
 							</Button>
 						</div>
 					</div>
