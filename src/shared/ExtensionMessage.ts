@@ -150,11 +150,13 @@ export interface ExtensionMessage {
 		| "commands"
 		| "insertTextIntoTextarea"
 	text?: string
+	// kilocode_change start
 	payload?:
 		| ProfileDataResponsePayload
 		| BalanceDataResponsePayload
 		| TasksByIdResponsePayload
-		| TaskHistoryResponsePayload // kilocode_change: Add payload for profile and balance data
+		| TaskHistoryResponsePayload
+	// kilocode_change end
 	action?:
 		| "chatButtonClicked"
 		| "mcpButtonClicked"

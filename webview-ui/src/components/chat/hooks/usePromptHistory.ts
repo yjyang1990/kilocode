@@ -70,7 +70,7 @@ export const usePromptHistory = ({
 			return []
 		}
 
-		const taskHistory = data?.historyItems ?? []
+		const taskHistory = data?.historyItems ?? [] // kilocode_change
 
 		// Fall back to task history only when starting fresh (no active conversation)
 		if (!taskHistory?.length || !cwd) {
