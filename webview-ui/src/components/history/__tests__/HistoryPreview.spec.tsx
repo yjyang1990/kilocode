@@ -79,6 +79,8 @@ const mockTasks: HistoryItem[] = [
 	},
 ]
 
+const mockKiloCodeTaskHistoryVersion = 0
+
 describe("HistoryPreview", () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
@@ -97,7 +99,7 @@ describe("HistoryPreview", () => {
 			setShowAllWorkspaces: vi.fn(),
 		})
 
-		const { container } = render(<HistoryPreview />)
+		const { container } = render(<HistoryPreview taskHistoryVersion={mockKiloCodeTaskHistoryVersion} />)
 
 		// Should render the container but no task items
 		expect(container.firstChild).toHaveClass("flex", "flex-col", "gap-3")
@@ -117,7 +119,7 @@ describe("HistoryPreview", () => {
 			setShowAllWorkspaces: vi.fn(),
 		})
 
-		render(<HistoryPreview />)
+		render(<HistoryPreview taskHistoryVersion={mockKiloCodeTaskHistoryVersion} />)
 
 		// Should render only the first 3 tasks
 		expect(screen.getByTestId("task-item-task-1")).toBeInTheDocument()
@@ -142,7 +144,7 @@ describe("HistoryPreview", () => {
 			setShowAllWorkspaces: vi.fn(),
 		})
 
-		render(<HistoryPreview />)
+		render(<HistoryPreview taskHistoryVersion={mockKiloCodeTaskHistoryVersion} />)
 
 		expect(screen.getByTestId("task-item-task-1")).toBeInTheDocument()
 		expect(screen.getByTestId("task-item-task-2")).toBeInTheDocument()
@@ -166,7 +168,7 @@ describe("HistoryPreview", () => {
 			setShowAllWorkspaces: vi.fn(),
 		})
 
-		render(<HistoryPreview />)
+		render(<HistoryPreview taskHistoryVersion={mockKiloCodeTaskHistoryVersion} />)
 
 		expect(screen.getByTestId("task-item-task-1")).toBeInTheDocument()
 		expect(screen.queryByTestId("task-item-task-2")).not.toBeInTheDocument()
@@ -185,7 +187,7 @@ describe("HistoryPreview", () => {
 			setShowAllWorkspaces: vi.fn(),
 		})
 
-		render(<HistoryPreview />)
+		render(<HistoryPreview taskHistoryVersion={mockKiloCodeTaskHistoryVersion} />)
 
 		// Verify TaskItem was called with correct props for first 3 tasks
 		expect(mockTaskItem).toHaveBeenCalledWith(
@@ -224,7 +226,7 @@ describe("HistoryPreview", () => {
 			setShowAllWorkspaces: vi.fn(),
 		})
 
-		const { container } = render(<HistoryPreview />)
+		const { container } = render(<HistoryPreview taskHistoryVersion={mockKiloCodeTaskHistoryVersion} />)
 
 		expect(container.firstChild).toHaveClass("flex", "flex-col", "gap-3")
 	})

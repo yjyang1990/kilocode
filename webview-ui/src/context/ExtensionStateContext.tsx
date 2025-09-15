@@ -206,6 +206,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		version: "",
 		clineMessages: [],
 		taskHistoryFullLength: 0, // kilocode_change
+		taskHistoryVersion: 0, // kilocode_change
 		shouldShowAnnouncement: false,
 		allowedCommands: [],
 		deniedCommands: [],

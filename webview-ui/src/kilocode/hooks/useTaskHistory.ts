@@ -77,9 +77,9 @@ function fetchTaskHistory(payload: TaskHistoryRequestPayload): Promise<TaskHisto
 	})
 }
 
-export function useTaskHistory(payload: Omit<TaskHistoryRequestPayload, "requestId">) {
+export function useTaskHistory(payload: Omit<TaskHistoryRequestPayload, "requestId">, taskHistoryVersion: number) {
 	return useQuery({
-		queryKey: ["taskHistory", JSON.stringify(payload)], // SUS: there's nothing here that changes when a task gets added/deleted
+		queryKey: ["taskHistory", String(taskHistoryVersion), JSON.stringify(payload)],
 		queryFn: () => fetchTaskHistory({ ...payload, requestId: crypto.randomUUID() }),
 	})
 }

@@ -1620,6 +1620,7 @@ export class ClineProvider
 		const taskHistory = this.getGlobalState("taskHistory") ?? []
 		const updatedTaskHistory = taskHistory.filter((task) => task.id !== id)
 		await this.updateGlobalState("taskHistory", updatedTaskHistory)
+		this.kiloCodeTaskHistoryVersion++
 		this.recentTasksCache = undefined
 		await this.postStateToWebview()
 	}
@@ -1787,7 +1788,6 @@ export class ClineProvider
 			ttsSpeed,
 			diffEnabled,
 			enableCheckpoints,
-			taskHistoryFullLength, // kilocode_change
 			soundVolume,
 			browserViewportSize,
 			screenshotQuality,
@@ -1876,6 +1876,7 @@ export class ClineProvider
 
 		// kilocode_change start wrapper information
 		const kiloCodeWrapperProperties = getKiloCodeWrapperProperties()
+		const taskHistory = this.getTaskHistory()
 		// kilocode_change end
 
 		return {
@@ -1902,14 +1903,13 @@ export class ClineProvider
 			kiloCodeWrapperProperties, // kilocode_change wrapper information
 			kilocodeDefaultModel: await getKilocodeDefaultModel(apiConfiguration.kilocodeToken),
 			currentTaskItem: this.getCurrentTask()?.taskId
-				? (this.getGlobalState("taskHistory") /*kilocode_change*/ || []).find(
-						(item: HistoryItem) => item.id === this.getCurrentTask()?.taskId,
-					)
+				? (taskHistory || []).find((item: HistoryItem) => item.id === this.getCurrentTask()?.taskId)
 				: undefined,
 			clineMessages: this.getCurrentTask()?.clineMessages || [],
 			currentTaskTodos: this.getCurrentTask()?.todoList || [],
 			messageQueue: this.getCurrentTask()?.messageQueueService?.messages,
-			taskHistoryFullLength,
+			taskHistoryFullLength: taskHistory.length, // kilocode_change
+			taskHistoryVersion: this.kiloCodeTaskHistoryVersion, // kilocode_change
 			soundEnabled: soundEnabled ?? false,
 			ttsEnabled: ttsEnabled ?? false,
 			ttsSpeed: ttsSpeed ?? 1.0,
@@ -2036,6 +2036,10 @@ export class ClineProvider
 			| "version"
 			| "shouldShowAnnouncement"
 			| "hasSystemPromptOverride"
+			// kilocode_change start
+			| "taskHistoryFullLength"
+			| "taskHistoryVersion"
+			// kilocode_change end
 		>
 	> {
 		const stateValues = this.contextProxy.getValues()
@@ -2130,7 +2134,6 @@ export class ClineProvider
 			allowedMaxCost: stateValues.allowedMaxCost,
 			autoCondenseContext: stateValues.autoCondenseContext ?? true,
 			autoCondenseContextPercent: stateValues.autoCondenseContextPercent ?? 100,
-			taskHistoryFullLength: stateValues.taskHistory?.length ?? 0, // kilocode_change
 			allowedCommands: stateValues.allowedCommands,
 			deniedCommands: stateValues.deniedCommands,
 			soundEnabled: stateValues.soundEnabled ?? false,
@@ -2255,6 +2258,7 @@ export class ClineProvider
 		}
 
 		await this.updateGlobalState("taskHistory", history)
+		this.kiloCodeTaskHistoryVersion++
 		this.recentTasksCache = undefined
 
 		return history
@@ -3062,6 +3066,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			return item
 		})
 		await this.updateGlobalState("taskHistory", updatedHistory)
+		this.kiloCodeTaskHistoryVersion++
 		await this.postStateToWebview()
 	}
 
@@ -3093,8 +3098,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			return item
 		})
 		await this.updateGlobalState("taskHistory", updatedHistory)
+		this.kiloCodeTaskHistoryVersion++
 		await this.postStateToWebview()
 	}
+
+	private kiloCodeTaskHistoryVersion = 0
 
 	public getTaskHistory(): HistoryItem[] {
 		return this.getGlobalState("taskHistory") || []

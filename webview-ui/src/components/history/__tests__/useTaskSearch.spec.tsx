@@ -56,6 +56,7 @@ describe("useTaskSearch", () => {
 		vi.clearAllMocks()
 		mockUseExtensionState.mockReturnValue({
 			taskHistory: mockTaskHistory,
+			taskHistoryVersion: 0, // kilocode_change
 			cwd: "/workspace/project1",
 		} as any)
 	})

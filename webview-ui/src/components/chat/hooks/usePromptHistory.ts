@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 interface UsePromptHistoryProps {
 	clineMessages: ClineMessage[] | undefined
-	// taskHistory: HistoryItem[] | undefined // kilocode_change
+	taskHistoryVersion: number // kilocode_change
 	cwd: string | undefined
 	inputValue: string
 	setInputValue: (value: string) => void
@@ -27,7 +27,7 @@ export interface UsePromptHistoryReturn {
 
 export const usePromptHistory = ({
 	clineMessages,
-	// taskHistory, // kilocode_change
+	taskHistoryVersion, // kilocode_change
 	cwd,
 	inputValue,
 	setInputValue,
@@ -41,12 +41,15 @@ export const usePromptHistory = ({
 	const [promptHistory, setPromptHistory] = useState<string[]>([])
 
 	// kilocode_change start
-	const { data } = useTaskHistory({
-		workspace: "current",
-		sort: "newest",
-		favoritesOnly: false,
-		pageIndex: 0,
-	})
+	const { data } = useTaskHistory(
+		{
+			workspace: "current",
+			sort: "newest",
+			favoritesOnly: false,
+			pageIndex: 0,
+		},
+		taskHistoryVersion,
+	)
 	// kilocode_change end
 
 	// Initialize prompt history with hybrid approach: conversation messages if in task, otherwise task history

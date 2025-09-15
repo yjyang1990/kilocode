@@ -6,13 +6,13 @@ import {
 // import { Fzf } from "fzf"
 
 // import { highlightFzfMatch } from "@/utils/highlight" // kilocode_change
-// import { useExtensionState } from "@/context/ExtensionStateContext" // kilocode_change
+import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useTaskHistory } from "@/kilocode/hooks/useTaskHistory"
 
 type SortOption = "newest" | "oldest" | "mostExpensive" | "mostTokens" | "mostRelevant"
 
 export const useTaskSearch = () => {
-	// const { taskHistory, cwd } = useExtensionState() // kilocode_change
+	const { taskHistoryVersion /*kilocode_change*/ } = useExtensionState()
 	const [searchQuery, setSearchQuery] = useState("")
 	const [sortOption, setSortOption] = useState<SortOption>("newest")
 	const [lastNonRelevantSort, setLastNonRelevantSort] = useState<SortOption | null>("newest")
@@ -21,13 +21,16 @@ export const useTaskSearch = () => {
 	// kilocode_change start
 	const [requestedPageIndex, setRequestedPageIndex] = useState(0)
 	const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
-	const { data } = useTaskHistory({
-		workspace: showAllWorkspaces ? "all" : "current",
-		sort: sortOption,
-		favoritesOnly: showFavoritesOnly,
-		pageIndex: requestedPageIndex,
-		search: searchQuery,
-	})
+	const { data } = useTaskHistory(
+		{
+			workspace: showAllWorkspaces ? "all" : "current",
+			sort: sortOption,
+			favoritesOnly: showFavoritesOnly,
+			pageIndex: requestedPageIndex,
+			search: searchQuery,
+		},
+		taskHistoryVersion,
+	)
 	// kilocode_change end
 
 	useEffect(() => {
@@ -104,7 +107,7 @@ export const useTaskSearch = () => {
 	// kilocode_change end
 
 	return {
-		data, // kilocode_change
+		tasks: data?.historyItems ?? [], // kilocode_change
 		searchQuery,
 		setSearchQuery,
 		sortOption,
@@ -114,6 +117,7 @@ export const useTaskSearch = () => {
 		showAllWorkspaces,
 		setShowAllWorkspaces,
 		// kilocode_change start
+		data,
 		showFavoritesOnly,
 		setShowFavoritesOnly,
 		requestedPageIndex,
