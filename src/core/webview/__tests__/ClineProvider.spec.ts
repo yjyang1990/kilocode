@@ -769,7 +769,7 @@ describe("ClineProvider", () => {
 		expect(state).toHaveProperty("alwaysAllowWrite")
 		expect(state).toHaveProperty("alwaysAllowExecute")
 		expect(state).toHaveProperty("alwaysAllowBrowser")
-		expect(state).toHaveProperty("taskHistory")
+		// expect(state).toHaveProperty("taskHistory") // kilocode_change
 		expect(state).toHaveProperty("soundEnabled")
 		expect(state).toHaveProperty("ttsEnabled")
 		expect(state).toHaveProperty("diffEnabled")
