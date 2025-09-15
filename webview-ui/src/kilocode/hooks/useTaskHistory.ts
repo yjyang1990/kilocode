@@ -3,7 +3,6 @@ import { ExtensionMessage } from "@roo/ExtensionMessage"
 import { TaskHistoryRequestPayload, TaskHistoryResponsePayload, TasksByIdResponsePayload } from "@roo/WebviewMessage"
 import { vscode } from "@src/utils/vscode"
 import { useQuery } from "@tanstack/react-query"
-import { randomUUID } from "crypto"
 
 function fetchTask(requestId: string, taskIds: string[]): Promise<HistoryItem[]> {
 	return new Promise((resolve, reject) => {
@@ -41,7 +40,7 @@ function fetchTask(requestId: string, taskIds: string[]): Promise<HistoryItem[]>
 export function useTaskWithId(taskIds: string[]) {
 	return useQuery({
 		queryKey: ["taskHistory", taskIds],
-		queryFn: () => fetchTask(randomUUID(), taskIds),
+		queryFn: () => fetchTask(crypto.randomUUID(), taskIds),
 	})
 }
 
@@ -81,6 +80,6 @@ function fetchTaskHistory(payload: TaskHistoryRequestPayload): Promise<TaskHisto
 export function useTaskHistory(payload: Omit<TaskHistoryRequestPayload, "requestId">) {
 	return useQuery({
 		queryKey: ["taskHistory", JSON.stringify(payload)], // SUS: there's nothing here that changes when a task gets added/deleted
-		queryFn: () => fetchTaskHistory({ ...payload, requestId: randomUUID() }),
+		queryFn: () => fetchTaskHistory({ ...payload, requestId: crypto.randomUUID() }),
 	})
 }
