@@ -13,6 +13,11 @@
 		"addCredit": "Ajouter du crédit",
 		"lowBalance": "Votre solde Kilo Code est bas"
 	},
+	"pagination": {
+		"previous": "Précédent",
+		"next": "Suivant",
+		"page": "Page {{page}} / {{count}}"
+	},
 	"invalidModel": {
 		"alphaPeriodEnded": "🎉 La période alpha pour {{model}} est terminée ! Changez vers un modèle différent pour continuer.",
 		"modelUnavailable": "⚠️ Le modèle {{model}} n'est pas disponible. Changez vers un modèle différent pour continuer.",
