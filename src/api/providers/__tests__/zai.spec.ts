@@ -43,7 +43,7 @@ describe("ZAiHandler", () => {
 			new ZAiHandler({ zaiApiKey: "test-zai-api-key", zaiApiLine: "international" })
 			expect(OpenAI).toHaveBeenCalledWith(
 				expect.objectContaining({
-					baseURL: "https://api.z.ai/api/coding/paas/v4", // kilocode_change, upstream pr pending
+					baseURL: "https://api.z.ai/api/paas/v4",
 				}),
 			)
 		})
