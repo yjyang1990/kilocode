@@ -1,4 +1,4 @@
-import axios, { type RawAxiosRequestHeaders /*kilocode_change*/ } from "axios"
+import axios from "axios"
 import { z } from "zod"
 
 import {
@@ -115,7 +115,11 @@ export async function getOpenRouterModels(
 		// kilocode_change end
 
 		if (!result.success) {
-			throw new Error("OpenRouter models response is invalid: " + result.error.format()) // kilocode_change
+			// kilocode_change start
+			throw new Error(
+				"OpenRouter models response is invalid: " + JSON.stringify(result.error.format(), undefined, 2),
+			)
+			// kilocode_change end
 		}
 
 		for (const model of data) {
