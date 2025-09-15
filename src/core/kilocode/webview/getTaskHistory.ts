@@ -64,5 +64,5 @@ export function getTaskHistory(
 	const startIndex = PAGE_SIZE * pageIndex
 	const historyItems = tasks.slice(startIndex, startIndex + PAGE_SIZE)
 
-	return { historyItems, pageIndex, pageCount }
+	return { requestId: request.requestId, historyItems, pageIndex, pageCount }
 }

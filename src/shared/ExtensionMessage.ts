@@ -21,9 +21,16 @@ import { McpServer } from "./mcp"
 import { McpMarketplaceCatalog, McpDownloadResponse } from "./kilocode/mcp"
 import { Mode } from "./modes"
 import { ModelRecord, RouterModels } from "./api"
-import { ProfileDataResponsePayload, BalanceDataResponsePayload, TaskHistoryResponsePayload } from "./WebviewMessage" // kilocode_change
-import { ClineRulesToggles } from "./cline-rules" // kilocode_change
-import { KiloCodeWrapperProperties } from "./kilocode/wrapper" // kilocode_change
+// kilocode_change start
+import {
+	ProfileDataResponsePayload,
+	BalanceDataResponsePayload,
+	TaskHistoryResponsePayload,
+	TasksByIdResponsePayload,
+} from "./WebviewMessage"
+import { ClineRulesToggles } from "./cline-rules"
+import { KiloCodeWrapperProperties } from "./kilocode/wrapper"
+// kilocode_change end
 
 // Command interface for frontend/backend communication
 export interface Command {
@@ -131,6 +138,7 @@ export interface ExtensionMessage {
 		| "marketplaceRemoveResult"
 		| "marketplaceData"
 		| "mermaidFixResponse" // kilocode_change
+		| "tasksByIdResponse" // kilocode_change
 		| "taskHistoryResponse" // kilocode_change
 		| "shareTaskSuccess"
 		| "codeIndexSettingsSaved"
@@ -142,7 +150,11 @@ export interface ExtensionMessage {
 		| "commands"
 		| "insertTextIntoTextarea"
 	text?: string
-	payload?: ProfileDataResponsePayload | BalanceDataResponsePayload | TaskHistoryResponsePayload // kilocode_change: Add payload for profile and balance data
+	payload?:
+		| ProfileDataResponsePayload
+		| BalanceDataResponsePayload
+		| TasksByIdResponsePayload
+		| TaskHistoryResponsePayload // kilocode_change: Add payload for profile and balance data
 	action?:
 		| "chatButtonClicked"
 		| "mcpButtonClicked"

@@ -1,11 +1,55 @@
+import { HistoryItem } from "@roo-code/types"
 import { ExtensionMessage } from "@roo/ExtensionMessage"
-import { TaskHistoryRequestPayload, TaskHistoryResponsePayload } from "@roo/WebviewMessage"
+import { TaskHistoryRequestPayload, TaskHistoryResponsePayload, TasksByIdResponsePayload } from "@roo/WebviewMessage"
 import { vscode } from "@src/utils/vscode"
 import { useQuery } from "@tanstack/react-query"
+import { randomUUID } from "crypto"
+
+function fetchTask(requestId: string, taskIds: string[]): Promise<HistoryItem[]> {
+	return new Promise((resolve, reject) => {
+		const cleanup = () => {
+			window.removeEventListener("message", handle)
+		}
+
+		const timeout = setTimeout(() => {
+			cleanup()
+			reject(new Error("Timeout"))
+		}, 10000)
+
+		const handle = (event: MessageEvent) => {
+			const message = event.data as ExtensionMessage
+			if (message.type === "tasksByIdResponse") {
+				const result = message.payload as TasksByIdResponsePayload
+				if (result?.requestId !== requestId) {
+					return
+				}
+				clearTimeout(timeout)
+				cleanup()
+				if (result?.tasks) {
+					resolve(result.tasks)
+				} else {
+					reject(new Error("Task not found"))
+				}
+			}
+		}
+
+		window.addEventListener("message", handle)
+		vscode.postMessage({ type: "tasksByIdRequest", payload: { requestId, taskIds } })
+	})
+}
+
+export function useTaskWithId(taskIds: string[]) {
+	return useQuery({
+		queryKey: ["taskHistory", taskIds],
+		queryFn: () => fetchTask(randomUUID(), taskIds),
+	})
+}
 
 function fetchTaskHistory(payload: TaskHistoryRequestPayload): Promise<TaskHistoryResponsePayload> {
 	return new Promise((resolve, reject) => {
-		const cleanup = () => window.removeEventListener("message", handle)
+		const cleanup = () => {
+			window.removeEventListener("message", handle)
+		}
 
 		const timeout = setTimeout(() => {
 			cleanup()
@@ -15,9 +59,12 @@ function fetchTaskHistory(payload: TaskHistoryRequestPayload): Promise<TaskHisto
 		const handle = (event: MessageEvent) => {
 			const message = event.data as ExtensionMessage
 			if (message.type === "taskHistoryResponse") {
+				const result = message.payload as TaskHistoryResponsePayload
+				if (result?.requestId !== payload.requestId) {
+					return
+				}
 				clearTimeout(timeout)
 				cleanup()
-				const result = message.payload as TaskHistoryResponsePayload
 				if (result) {
 					resolve(result)
 				} else {
@@ -31,9 +78,9 @@ function fetchTaskHistory(payload: TaskHistoryRequestPayload): Promise<TaskHisto
 	})
 }
 
-export function useTaskHistory(payload: TaskHistoryRequestPayload) {
+export function useTaskHistory(payload: Omit<TaskHistoryRequestPayload, "requestId">) {
 	return useQuery({
 		queryKey: ["taskHistory", JSON.stringify(payload)], // SUS: there's nothing here that changes when a task gets added/deleted
-		queryFn: () => fetchTaskHistory(payload),
+		queryFn: () => fetchTaskHistory({ ...payload, requestId: randomUUID() }),
 	})
 }

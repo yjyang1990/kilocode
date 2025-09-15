@@ -254,6 +254,7 @@ export interface WebviewMessage {
 		| "editMessage" // kilocode_change
 		| "systemNotificationsEnabled" // kilocode_change
 		| "dismissNotificationId" // kilocode_change
+		| "tasksByIdRequest" // kilocode_change
 		| "taskHistoryRequest" // kilocode_change
 		| "shareTaskSuccess"
 		| "exportMode"
@@ -407,7 +408,13 @@ export interface SeeNewChangesPayload {
 	commitRange: CommitRange
 }
 
+export interface TasksByIdRequestPayload {
+	requestId: string
+	taskIds: string[]
+}
+
 export interface TaskHistoryRequestPayload {
+	requestId: string
 	workspace: "current" | "all"
 	sort: "newest" | "oldest" | "mostExpensive" | "mostTokens" | "mostRelevant"
 	favoritesOnly: boolean
@@ -415,7 +422,13 @@ export interface TaskHistoryRequestPayload {
 	search?: string
 }
 
+export interface TasksByIdResponsePayload {
+	requestId: string
+	tasks: HistoryItem[]
+}
+
 export interface TaskHistoryResponsePayload {
+	requestId: string
 	historyItems: HistoryItem[]
 	pageIndex: number
 	pageCount: number
@@ -463,6 +476,7 @@ export type WebViewMessagePayload =
 	| ProfileDataResponsePayload
 	| BalanceDataResponsePayload
 	| SeeNewChangesPayload
+	| TasksByIdRequestPayload
 	| TaskHistoryRequestPayload
 	// kilocode_change end
 	| CheckpointDiffPayload
