@@ -274,13 +274,16 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 				/>
 			</TabContent>
 
-			{/* kilocode_change: more nesting so we can add more rows */}
-			<div className="fixed bottom-0 left-0 right-2 bg-vscode-editor-background z-1">
+			{/* kilocode_change: more nesting so we can add more rows, removed fixed class */}
+			<div className="bg-vscode-editor-background">
 				{/* Fixed action bar at bottom - only shown in selection mode with selected items */}
 				{isSelectionMode && selectedTaskIds.length > 0 && (
 					<div className="border-t border-vscode-panel-border p-2 flex justify-between items-center">
 						<div className="text-vscode-foreground">
-							{t("history:selectedItems", { selected: selectedTaskIds.length, total: tasks.length })}
+							{t("history:selectedItems", {
+								selected: selectedTaskIds.length,
+								total: taskHistoryFullLength, // kilocode_change
+							})}
 						</div>
 						<div className="flex gap-2">
 							<Button variant="secondary" onClick={() => setSelectedTaskIds([])}>
@@ -294,7 +297,7 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 				)}
 				{
 					// kilocode_change start
-					<div className="border-t border-vscode-panel-border p-2 flex justify-between items-center">
+					<div className="border-t border-b border-vscode-panel-border p-2 flex justify-between items-center">
 						{t("kilocode:pagination.page", {
 							page: pageIndex + 1,
 							count: pageCount,
@@ -343,12 +346,13 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 					}}
 				/>
 			)}
-			{/* kilocode_change */}
-			{selectedTaskIds.length === 0 && (
+			{
+				// kilocode_change start
 				<div className="fixed bottom-0 right-0">
 					<BottomControls />
 				</div>
-			)}
+				// kilocode_change end
+			}
 		</Tab>
 	)
 }
