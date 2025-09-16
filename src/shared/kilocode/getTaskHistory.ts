@@ -1,18 +1,19 @@
 import { Fzf } from "fzf"
-import { TaskHistoryRequestPayload, TaskHistoryResponsePayload } from "../../../shared/WebviewMessage"
-import { ClineProvider } from "../../webview/ClineProvider"
-import { highlightFzfMatch } from "../../../../webview-ui/src/utils/highlight" // weird hack, but apparently it works
+import { HistoryItem } from "@roo-code/types"
+import { highlightFzfMatch } from "../../../webview-ui/src/utils/highlight" // weird hack, but apparently it works
+import { TaskHistoryRequestPayload, TaskHistoryResponsePayload } from "../WebviewMessage"
 
 const PAGE_SIZE = 10
 
 export function getTaskHistory(
-	provider: ClineProvider,
+	taskHistory: HistoryItem[],
+	cwd: string,
 	request: TaskHistoryRequestPayload,
 ): TaskHistoryResponsePayload {
-	let tasks = provider.getTaskHistory().filter((item) => item.ts && item.task)
+	let tasks = taskHistory.filter((item) => item.ts && item.task)
 
 	if (request.workspace === "current") {
-		tasks = tasks.filter((item) => item.workspace === provider.cwd)
+		tasks = tasks.filter((item) => item.workspace === cwd)
 	}
 
 	if (request.favoritesOnly) {

@@ -76,7 +76,7 @@ import { MarketplaceManager, MarketplaceItemType } from "../../services/marketpl
 import { setPendingTodoList } from "../tools/updateTodoListTool"
 import { UsageTracker } from "../../utils/usage-tracker"
 import { seeNewChanges } from "../checkpoints/kilocode/seeNewChanges" // kilocode_change
-import { getTaskHistory } from "../kilocode/webview/getTaskHistory" // kilocode_change
+import { getTaskHistory } from "../../shared/kilocode/getTaskHistory" // kilocode_change
 
 export const webviewMessageHandler = async (
 	provider: ClineProvider,
@@ -1006,7 +1006,11 @@ export const webviewMessageHandler = async (
 		case "taskHistoryRequest": {
 			await provider.postMessageToWebview({
 				type: "taskHistoryResponse",
-				payload: getTaskHistory(provider, message.payload as TaskHistoryRequestPayload),
+				payload: getTaskHistory(
+					provider.getTaskHistory(),
+					provider.cwd,
+					message.payload as TaskHistoryRequestPayload,
+				),
 			})
 			break
 		}
