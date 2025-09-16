@@ -304,7 +304,7 @@ const HistoryView = ({ onDone }: HistoryViewProps) => {
 						})}
 						<div className="flex gap-2">
 							<Button
-								disabled={(data?.pageIndex ?? 0) <= 0}
+								disabled={pageIndex <= 0}
 								onClick={() => {
 									if (pageIndex > 0) {
 										setRequestedPageIndex(pageIndex - 1)
