@@ -4,7 +4,7 @@ import type { HistoryItem } from "@roo-code/types"
 
 import HistoryPreview from "../HistoryPreview"
 
-vi.mock("../useTaskSearch")
+vi.mock("@/kilocode/hooks/useTaskHistory")
 
 vi.mock("../TaskItem", () => {
 	return {
@@ -19,7 +19,19 @@ vi.mock("../TaskItem", () => {
 import { useTaskSearch } from "../useTaskSearch"
 import TaskItem from "../TaskItem"
 
-const mockUseTaskSearch = useTaskSearch as any
+import { useTaskHistory } from "@/kilocode/hooks/useTaskHistory"
+
+function kiloCodeSetUpUseTaskHistoryMock(useTaskSearchReturnValue: Partial<ReturnType<typeof useTaskSearch>>) {
+	;(useTaskHistory as ReturnType<typeof vi.fn>).mockReturnValue({
+		data: {
+			requestId: "",
+			historyItems: useTaskSearchReturnValue.tasks ?? [],
+			pageIndex: 0,
+			pageCount: 1,
+		},
+	})
+}
+
 const mockTaskItem = TaskItem as any
 
 const mockTasks: HistoryItem[] = [
@@ -87,7 +99,7 @@ describe("HistoryPreview", () => {
 	})
 
 	it("renders nothing when no tasks are available", () => {
-		mockUseTaskSearch.mockReturnValue({
+		kiloCodeSetUpUseTaskHistoryMock({
 			tasks: [],
 			searchQuery: "",
 			setSearchQuery: vi.fn(),
@@ -107,7 +119,7 @@ describe("HistoryPreview", () => {
 	})
 
 	it("renders up to 3 tasks when tasks are available", () => {
-		mockUseTaskSearch.mockReturnValue({
+		kiloCodeSetUpUseTaskHistoryMock({
 			tasks: mockTasks,
 			searchQuery: "",
 			setSearchQuery: vi.fn(),
@@ -132,7 +144,7 @@ describe("HistoryPreview", () => {
 
 	it("renders all tasks when there are 3 or fewer", () => {
 		const threeTasks = mockTasks.slice(0, 3)
-		mockUseTaskSearch.mockReturnValue({
+		kiloCodeSetUpUseTaskHistoryMock({
 			tasks: threeTasks,
 			searchQuery: "",
 			setSearchQuery: vi.fn(),
@@ -156,7 +168,7 @@ describe("HistoryPreview", () => {
 
 	it("renders only 1 task when there is only 1 task", () => {
 		const oneTask = mockTasks.slice(0, 1)
-		mockUseTaskSearch.mockReturnValue({
+		kiloCodeSetUpUseTaskHistoryMock({
 			tasks: oneTask,
 			searchQuery: "",
 			setSearchQuery: vi.fn(),
@@ -175,7 +187,7 @@ describe("HistoryPreview", () => {
 	})
 
 	it("passes correct props to TaskItem components", () => {
-		mockUseTaskSearch.mockReturnValue({
+		kiloCodeSetUpUseTaskHistoryMock({
 			tasks: mockTasks.slice(0, 3),
 			searchQuery: "",
 			setSearchQuery: vi.fn(),
@@ -214,7 +226,7 @@ describe("HistoryPreview", () => {
 	})
 
 	it("renders with correct container classes", () => {
-		mockUseTaskSearch.mockReturnValue({
+		kiloCodeSetUpUseTaskHistoryMock({
 			tasks: mockTasks.slice(0, 1),
 			searchQuery: "",
 			setSearchQuery: vi.fn(),
