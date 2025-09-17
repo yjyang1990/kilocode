@@ -37,10 +37,10 @@ import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { useSelectedModel } from "@src/components/ui/hooks/useSelectedModel"
 // import RooHero from "@src/components/welcome/RooHero" // kilocode_change: unused
 // import RooTips from "@src/components/welcome/RooTips" // kilocode_change: unused
-// import RooCloudCTA from "@src/components/welcome/RooCloudCTA" // kilocode_change: unused
 import { StandardTooltip } from "@src/components/ui"
 import { useAutoApprovalState } from "@src/hooks/useAutoApprovalState"
 import { useAutoApprovalToggles } from "@src/hooks/useAutoApprovalToggles"
+// import { CloudUpsellDialog } from "@src/components/cloud/CloudUpsellDialog" // kilocode_change: unused
 
 import TelemetryBanner from "../common/TelemetryBanner" // kilocode_change: deactivated for now
 // import VersionIndicator from "../common/VersionIndicator" // kilocode_change: unused
@@ -63,6 +63,9 @@ import { IdeaSuggestionsBox } from "../kilocode/chat/IdeaSuggestionsBox" // kilo
 import { KilocodeNotifications } from "../kilocode/KilocodeNotifications" // kilocode_change
 import { QueuedMessages } from "./QueuedMessages"
 import { buildDocLink } from "@/utils/docLinks"
+// import DismissibleUpsell from "../common/DismissibleUpsell" // kilocode_change: unused
+// import { useCloudUpsell } from "@src/hooks/useCloudUpsell" // kilocode_change: unused
+// import { Cloud } from "lucide-react" // kilocode_change: unused
 
 export interface ChatViewProps {
 	isHidden: boolean
@@ -216,6 +219,17 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	useEffect(() => {
 		clineAskRef.current = clineAsk
 	}, [clineAsk])
+
+	// kilocode_change start: unused
+	// const {
+	// 	isOpen: isUpsellOpen,
+	// 	openUpsell,
+	// 	closeUpsell,
+	// 	handleConnect,
+	// } = useCloudUpsell({
+	// 	autoOpenOnAuth: false,
+	// })
+	// kilocode_change end
 
 	// Keep inputValueRef in sync with inputValue state
 	useEffect(() => {
@@ -2195,6 +2209,8 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			)} */}
 
 			<div id="roo-portal" />
+			{/* kilocode_change: disable  */}
+			{/* <CloudUpsellDialog open={isUpsellOpen} onOpenChange={closeUpsell} onConnect={handleConnect} /> */}
 		</div>
 	)
 }

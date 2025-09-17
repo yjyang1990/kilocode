@@ -154,7 +154,7 @@ export class ClineProvider
 
 	public isViewLaunched = false
 	public settingsImportedAt?: number
-	public readonly latestAnnouncementId = "aug-25-2025-grok-code-fast" // Update for Grok Code Fast announcement
+	public readonly latestAnnouncementId = "sep-2025-roo-code-cloud" // Roo Code Cloud announcement
 	public readonly providerSettingsManager: ProviderSettingsManager
 	public readonly customModesManager: CustomModesManager
 
@@ -884,7 +884,7 @@ export class ClineProvider
 			fuzzyMatchThreshold,
 			experiments,
 			cloudUserInfo,
-			remoteControlEnabled,
+			taskSyncEnabled,
 		} = await this.getState()
 
 		const task = new Task({
@@ -902,7 +902,7 @@ export class ClineProvider
 			taskNumber: historyItem.number,
 			workspacePath: historyItem.workspace,
 			onCreated: this.taskCreationCallback,
-			enableBridge: BridgeOrchestrator.isEnabled(cloudUserInfo, remoteControlEnabled),
+			enableBridge: BridgeOrchestrator.isEnabled(cloudUserInfo, taskSyncEnabled),
 		})
 
 		await this.addClineToStack(task)
@@ -1856,11 +1856,13 @@ export class ClineProvider
 			includeDiagnosticMessages,
 			maxDiagnosticMessages,
 			includeTaskHistoryInEnhance,
+			taskSyncEnabled,
 			remoteControlEnabled,
 			openRouterImageApiKey,
 			kiloCodeImageApiKey,
 			openRouterImageGenerationSelectedModel,
 			openRouterUseMiddleOutTransform,
+			featureRoomoteControlEnabled,
 		} = await this.getState()
 
 		const telemetryKey = process.env.KILOCODE_POSTHOG_API_KEY
@@ -2016,11 +2018,13 @@ export class ClineProvider
 			includeDiagnosticMessages: includeDiagnosticMessages ?? true,
 			maxDiagnosticMessages: maxDiagnosticMessages ?? 50,
 			includeTaskHistoryInEnhance: includeTaskHistoryInEnhance ?? true,
+			taskSyncEnabled,
 			remoteControlEnabled,
 			openRouterImageApiKey,
 			kiloCodeImageApiKey,
 			openRouterImageGenerationSelectedModel,
 			openRouterUseMiddleOutTransform,
+			featureRoomoteControlEnabled,
 		}
 	}
 
@@ -2105,6 +2109,16 @@ export class ClineProvider
 		} catch (error) {
 			console.error(
 				`[getState] failed to get organization settings version: ${error instanceof Error ? error.message : String(error)}`,
+			)
+		}
+
+		let taskSyncEnabled: boolean = false
+
+		try {
+			taskSyncEnabled = CloudService.instance.isTaskSyncEnabled()
+		} catch (error) {
+			console.error(
+				`[getState] failed to get task sync enabled state: ${error instanceof Error ? error.message : String(error)}`,
 			)
 		}
 
@@ -2233,6 +2247,7 @@ export class ClineProvider
 			includeDiagnosticMessages: stateValues.includeDiagnosticMessages ?? true,
 			maxDiagnosticMessages: stateValues.maxDiagnosticMessages ?? 50,
 			includeTaskHistoryInEnhance: stateValues.includeTaskHistoryInEnhance ?? true,
+			taskSyncEnabled,
 			remoteControlEnabled: (() => {
 				try {
 					const cloudSettings = CloudService.instance.getUserSettings()
@@ -2247,6 +2262,18 @@ export class ClineProvider
 			openRouterImageApiKey: stateValues.openRouterImageApiKey,
 			kiloCodeImageApiKey: stateValues.kiloCodeImageApiKey,
 			openRouterImageGenerationSelectedModel: stateValues.openRouterImageGenerationSelectedModel,
+			featureRoomoteControlEnabled: (() => {
+				try {
+					const userSettings = CloudService.instance.getUserSettings()
+					const hasOrganization = cloudUserInfo?.organizationId != null
+					return hasOrganization || (userSettings?.features?.roomoteControlEnabled ?? false)
+				} catch (error) {
+					console.error(
+						`[getState] failed to get featureRoomoteControlEnabled: ${error instanceof Error ? error.message : String(error)}`,
+					)
+					return false
+				}
+			})(),
 		}
 	}
 
@@ -2369,7 +2396,19 @@ export class ClineProvider
 	}
 
 	public async remoteControlEnabled(enabled: boolean) {
+		if (!enabled) {
+			await BridgeOrchestrator.disconnect()
+			return
+		}
+
 		const userInfo = CloudService.instance.getUserInfo()
+
+		if (!userInfo) {
+			this.log("[ClineProvider#remoteControlEnabled] Failed to get user info, disconnecting")
+			await BridgeOrchestrator.disconnect()
+			return
+		}
+
 		const config = await CloudService.instance.cloudAPI?.bridgeConfig().catch(() => undefined)
 
 		if (!config) {
