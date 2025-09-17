@@ -20,6 +20,10 @@ vi.mock("vscode", () => ({
 		createTextEditorDecorationType: vi.fn().mockReturnValue({
 			dispose: vi.fn(),
 		}),
+		onDidOpenTerminal: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
+		terminals: [],
 		activeTextEditor: null,
 	},
 	workspace: {
@@ -260,6 +264,16 @@ vi.mock("../services/ghost", () => ({
 
 vi.mock("../services/commit-message", () => ({
 	registerCommitMessageProvider: vi.fn(),
+}))
+
+vi.mock("../services/terminal-welcome", () => ({
+	registerWelcomeService: vi.fn(),
+}))
+
+vi.mock("../services/terminal-welcome/TerminalWelcomeService", () => ({
+	TerminalWelcomeService: {
+		register: vi.fn(),
+	},
 }))
 
 describe("extension.ts", () => {
