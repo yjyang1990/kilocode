@@ -96,8 +96,6 @@ export abstract class ShadowCheckpointService extends EventEmitter {
 		if (nestedGitPath) {
 			// Show persistent error message with the offending path
 			const relativePath = path.relative(this.workspaceDir, nestedGitPath)
-			const message = t("common:errors.nested_git_repos_warning", { path: relativePath })
-			vscode.window.showErrorMessage(message)
 
 			showWarning(t("kilocode:checkpoints.nestedGitRepos")) // kilocode_change
 
