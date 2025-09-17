@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { getKiloCodeBackendSignInUrl } from "../../helpers"
 import { Button } from "@src/components/ui"
@@ -11,6 +11,7 @@ import { ModelPicker } from "../../../settings/ModelPicker"
 import { vscode } from "@src/utils/vscode"
 import { OrganizationSelector } from "../../common/OrganizationSelector"
 import { KiloCodeWrapperProperties } from "../../../../../../src/shared/kilocode/wrapper"
+import { ProfileData, ProfileDataResponsePayload, WebviewMessage } from "@roo/WebviewMessage"
 
 type KiloCodeProps = {
 	apiConfiguration: ProviderSettings
@@ -38,6 +39,7 @@ export const KiloCode = ({
 	kilocodeDefaultModel,
 }: KiloCodeProps) => {
 	const { t } = useAppTranslation()
+	const [profileData, setProfileData] = useState<ProfileData | null>(null)
 
 	const handleInputChange = useCallback(
 		<K extends keyof ProviderSettings, E>(
@@ -49,6 +51,54 @@ export const KiloCode = ({
 			},
 		[setApiConfigurationField],
 	)
+
+	// Fetch profile data when component mounts and token exists
+	useEffect(() => {
+		if (apiConfiguration.kilocodeToken) {
+			vscode.postMessage({
+				type: "fetchProfileDataRequest",
+			})
+		}
+	}, [apiConfiguration.kilocodeToken])
+
+	// Listen for profile data response
+	useEffect(() => {
+		const handleMessage = (event: MessageEvent<WebviewMessage>) => {
+			if (event.data.type === "profileDataResponse") {
+				const payload = event.data.payload as ProfileDataResponsePayload
+				if (payload.success && payload.data) {
+					setProfileData(payload.data)
+				}
+			}
+		}
+
+		window.addEventListener("message", handleMessage)
+		return () => window.removeEventListener("message", handleMessage)
+	}, [])
+
+	// Check if user has @kilocode.ai email
+	const isKiloCodeAiUser = profileData?.user?.email?.endsWith("@kilocode.ai") ?? false
+
+	// Get current timestamp for comparison
+	const now = Date.now()
+	const isWarningsDisabled = apiConfiguration.kilocodeTesterWarningsDisabledUntil
+		? apiConfiguration.kilocodeTesterWarningsDisabledUntil > now
+		: false
+
+	const handleToggleTesterWarnings = useCallback(() => {
+		const newTimestamp = isWarningsDisabled ? now : now + 24 * 60 * 60 * 1000
+
+		setApiConfigurationField("kilocodeTesterWarningsDisabledUntil", newTimestamp)
+
+		vscode.postMessage({
+			type: "upsertApiConfiguration",
+			text: currentApiConfigName,
+			apiConfiguration: {
+				...apiConfiguration,
+				kilocodeTesterWarningsDisabledUntil: newTimestamp,
+			},
+		})
+	}, [isWarningsDisabled, now, setApiConfigurationField, currentApiConfigName, apiConfiguration])
 
 	return (
 		<>
@@ -107,6 +157,21 @@ export const KiloCode = ({
 				serviceUrl="https://kilocode.ai"
 				organizationAllowList={organizationAllowList}
 			/>
+
+			{/* KILOCODE-TESTER warnings setting - only visible for @kilocode.ai users */}
+			{isKiloCodeAiUser && (
+				<div className="mb-4">
+					<label className="block font-medium mb-2">Disable KILOCODE-TESTER warnings</label>
+					<div className="text-sm text-vscode-descriptionForeground mb-2">
+						{isWarningsDisabled
+							? `Warnings disabled until ${new Date(apiConfiguration.kilocodeTesterWarningsDisabledUntil || 0).toLocaleString()}`
+							: "KILOCODE-TESTER warnings are currently enabled"}
+					</div>
+					<Button variant="secondary" onClick={handleToggleTesterWarnings} className="text-sm">
+						{isWarningsDisabled ? "Enable warnings now" : "Disable warnings for 1 day"}
+					</Button>
+				</div>
+			)}
 		</>
 	)
 }
