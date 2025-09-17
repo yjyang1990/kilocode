@@ -17,7 +17,6 @@ import {
 	// kilocode_change start
 	geminiCliDefaultModelId,
 	geminiCliModels,
-	deepInfraDefaultModelId,
 	// kilocode_change end
 	mistralDefaultModelId,
 	mistralModels,
@@ -61,6 +60,7 @@ import {
 	qwenCodeModels,
 	vercelAiGatewayDefaultModelId,
 	BEDROCK_CLAUDE_SONNET_4_MODEL_ID,
+	deepInfraDefaultModelId,
 } from "@roo-code/types"
 
 import type { ModelRecord, RouterModels } from "@roo/api"
@@ -339,10 +339,10 @@ function getSelectedModel({
 				}
 			}
 
-			// Fallback to anthropic model if no match found
+			const invalidOrDefaultModel = apiConfiguration.kilocodeModel ?? kilocodeDefaultModel
 			return {
-				id: kilocodeDefaultModel,
-				info: routerModels["kilocode-openrouter"][kilocodeDefaultModel],
+				id: invalidOrDefaultModel,
+				info: routerModels["kilocode-openrouter"][invalidOrDefaultModel],
 			}
 		}
 		case "gemini-cli": {

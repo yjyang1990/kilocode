@@ -43,7 +43,8 @@ import {
 } from "./activate"
 import { initializeI18n } from "./i18n"
 import { registerGhostProvider } from "./services/ghost" // kilocode_change
-import { TerminalWelcomeService } from "./services/terminal-welcome/TerminalWelcomeService" // kilocode_change
+import { registerMainThreadForwardingLogger } from "./utils/fowardingLogger" // kilocode_change
+import { registerWelcomeService } from "./services/terminal-welcome" // kilocode_change
 import { getKiloCodeWrapperProperties } from "./core/kilocode/wrapper" // kilocode_change
 
 /**
@@ -168,20 +169,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	authStateChangedHandler = async (data: { state: AuthState; previousState: AuthState }) => {
 		postStateListener()
 
-		// Check if user has logged out
 		if (data.state === "logged-out") {
 			try {
-				// Disconnect the bridge when user logs out
-				// When userInfo is null and remoteControlEnabled is false, BridgeOrchestrator
-				// will disconnect. The options parameter is not needed for disconnection.
-				await BridgeOrchestrator.connectOrDisconnect(null, false)
-
+				await BridgeOrchestrator.disconnect()
 				cloudLogger("[CloudService] BridgeOrchestrator disconnected on logout")
 			} catch (error) {
 				cloudLogger(
-					`[CloudService] Failed to disconnect BridgeOrchestrator on logout: ${
-						error instanceof Error ? error.message : String(error)
-					}`,
+					`[CloudService] Failed to disconnect BridgeOrchestrator on logout: ${error instanceof Error ? error.message : String(error)}`,
 				)
 			}
 		}
@@ -189,6 +183,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	settingsUpdatedHandler = async () => {
 		const userInfo = CloudService.instance.getUserInfo()
+
 		if (userInfo && CloudService.instance.cloudAPI) {
 			try {
 				const config = await CloudService.instance.cloudAPI.bridgeConfig()
@@ -200,8 +195,6 @@ export async function activate(context: vscode.ExtensionContext) {
 					? true
 					: (CloudService.instance.getUserSettings()?.settings?.extensionBridgeEnabled ?? false)
 
-				cloudLogger(`[CloudService] Settings updated - remoteControlEnabled = ${remoteControlEnabled}`)
-
 				await BridgeOrchestrator.connectOrDisconnect(userInfo, remoteControlEnabled, {
 					...config,
 					provider,
@@ -209,7 +202,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				})
 			} catch (error) {
 				cloudLogger(
-					`[CloudService] Failed to update BridgeOrchestrator on settings change: ${error instanceof Error ? error.message : String(error)}`,
+					`[CloudService] BridgeOrchestrator#connectOrDisconnect failed on settings change: ${error instanceof Error ? error.message : String(error)}`,
 				)
 			}
 		}
@@ -231,8 +224,6 @@ export async function activate(context: vscode.ExtensionContext) {
 			const isCloudAgent =
 				typeof process.env.ROO_CODE_CLOUD_TOKEN === "string" && process.env.ROO_CODE_CLOUD_TOKEN.length > 0
 
-			cloudLogger(`[CloudService] isCloudAgent = ${isCloudAgent}, socketBridgeUrl = ${config.socketBridgeUrl}`)
-
 			const remoteControlEnabled = isCloudAgent
 				? true
 				: (CloudService.instance.getUserSettings()?.settings?.extensionBridgeEnabled ?? false)
@@ -244,7 +235,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			})
 		} catch (error) {
 			cloudLogger(
-				`[CloudService] Failed to fetch bridgeConfig: ${error instanceof Error ? error.message : String(error)}`,
+				`[CloudService] BridgeOrchestrator#connectOrDisconnect failed on user change: ${error instanceof Error ? error.message : String(error)}`,
 			)
 		}
 	}
@@ -267,6 +258,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Add to subscriptions for proper cleanup on deactivate.
 	context.subscriptions.push(cloudService)
+
+	// Trigger initial cloud profile sync now that CloudService is ready
+	try {
+		await provider.initializeCloudProfileSyncWhenReady()
+	} catch (error) {
+		outputChannel.appendLine(
+			`[CloudService] Failed to initialize cloud profile sync: ${error instanceof Error ? error.message : String(error)}`,
+		)
+	}
 
 	// Finish initializing the provider.
 	TelemetryService.instance.setProvider(provider)
@@ -350,13 +350,20 @@ export async function activate(context: vscode.ExtensionContext) {
 		}),
 	)
 
-	// kilocode_change start
-	const kilocodeWrapperProperties = getKiloCodeWrapperProperties()
-	if (!kilocodeWrapperProperties.kiloCodeWrapped) {
+	// kilocode_change start - Kilo Code specific registrations
+	const { kiloCodeWrapped } = getKiloCodeWrapperProperties()
+	if (!kiloCodeWrapped) {
+		// Only use autocomplete in VS Code
 		registerGhostProvider(context, provider)
+		// Only show the terminal welcome tip in VS Code
+		registerWelcomeService(context)
+	} else {
+		// Only foward logs in Jetbrains
+		registerMainThreadForwardingLogger(context)
 	}
-	// kilocode_change end
 	registerCommitMessageProvider(context, outputChannel) // kilocode_change
+	// kilocode_change end - Kilo Code specific registrations
+
 	registerCodeActions(context)
 	registerTerminalActions(context)
 
