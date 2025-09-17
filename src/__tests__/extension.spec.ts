@@ -14,6 +14,13 @@ vi.mock("vscode", () => ({
 			onDidChangeTabs: vi.fn(),
 		},
 		onDidChangeActiveTextEditor: vi.fn(),
+		onDidChangeTextEditorSelection: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
+		createTextEditorDecorationType: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
+		activeTextEditor: null,
 	},
 	workspace: {
 		registerTextDocumentContentProvider: vi.fn(),
@@ -27,19 +34,67 @@ vi.mock("vscode", () => ({
 			dispose: vi.fn(),
 		}),
 		onDidChangeWorkspaceFolders: vi.fn(),
+		onDidChangeConfiguration: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
+		onDidChangeTextDocument: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
+		onDidOpenTextDocument: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
+		onDidCloseTextDocument: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
 	},
 	languages: {
 		registerCodeActionsProvider: vi.fn(),
 	},
 	commands: {
 		executeCommand: vi.fn(),
+		registerCommand: vi.fn().mockReturnValue({
+			dispose: vi.fn(),
+		}),
 	},
 	env: {
 		language: "en",
+		appName: "Visual Studio Code",
 	},
 	ExtensionMode: {
 		Production: 1,
 	},
+	ThemeColor: vi.fn((color: any) => ({ id: color })),
+	OverviewRulerLane: {
+		Right: 1,
+	},
+	Range: vi.fn().mockImplementation((start, end) => ({
+		start,
+		end,
+		isEmpty: vi.fn().mockReturnValue(false),
+		isSingleLine: vi.fn().mockReturnValue(true),
+	})),
+	Uri: {
+		joinPath: vi.fn().mockImplementation((...paths) => ({
+			toString: () => paths.join("/"),
+			path: paths.join("/"),
+		})),
+		parse: vi.fn().mockImplementation((uri) => ({
+			toString: () => uri,
+			path: uri,
+		})),
+		file: vi.fn().mockImplementation((path) => ({
+			toString: () => `file://${path}`,
+			path,
+		})),
+	},
+	CodeActionKind: {
+		QuickFix: { value: "quickfix" },
+	},
+	EventEmitter: vi.fn().mockImplementation(() => ({
+		event: vi.fn(),
+		fire: vi.fn(),
+		dispose: vi.fn(),
+	})),
 }))
 
 vi.mock("@dotenvx/dotenvx", () => ({
@@ -107,9 +162,25 @@ vi.mock("../core/config/ContextProxy", () => ({
 		getInstance: vi.fn().mockResolvedValue({
 			getValue: vi.fn(),
 			setValue: vi.fn(),
-			getValues: vi.fn().mockReturnValue({}),
+			getValues: vi.fn().mockReturnValue({
+				ghostServiceSettings: {
+					enabled: true,
+				},
+			}),
 			getProviderSettings: vi.fn().mockReturnValue({}),
 		}),
+		get instance() {
+			return {
+				getValue: vi.fn(),
+				setValue: vi.fn(),
+				getValues: vi.fn().mockReturnValue({
+					ghostServiceSettings: {
+						enabled: true,
+					},
+				}),
+				getProviderSettings: vi.fn().mockReturnValue({}),
+			}
+		},
 	},
 }))
 
@@ -168,6 +239,27 @@ vi.mock("../activate", () => ({
 
 vi.mock("../i18n", () => ({
 	initializeI18n: vi.fn(),
+	t: vi.fn().mockImplementation((key, options = {}) => {
+		return `mocked-translation-${key}`
+	}),
+}))
+
+vi.mock("../services/ghost/GhostProvider", () => ({
+	GhostProvider: {
+		initialize: vi.fn().mockReturnValue({
+			load: vi.fn(),
+		}),
+		getInstance: vi.fn().mockReturnValue(null),
+		instance: null,
+	},
+}))
+
+vi.mock("../services/ghost", () => ({
+	registerGhostProvider: vi.fn(),
+}))
+
+vi.mock("../services/commit-message", () => ({
+	registerCommitMessageProvider: vi.fn(),
 }))
 
 describe("extension.ts", () => {
