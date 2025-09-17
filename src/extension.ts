@@ -44,7 +44,7 @@ import {
 import { initializeI18n } from "./i18n"
 import { registerGhostProvider } from "./services/ghost" // kilocode_change
 import { registerMainThreadForwardingLogger } from "./utils/fowardingLogger" // kilocode_change
-import { TerminalWelcomeService } from "./services/terminal-welcome/TerminalWelcomeService" // kilocode_change
+import { registerWelcomeService } from "./services/terminal-welcome" // kilocode_change
 import { getKiloCodeWrapperProperties } from "./core/kilocode/wrapper" // kilocode_change
 
 /**
@@ -355,6 +355,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (!kiloCodeWrapped) {
 		// Only use autocomplete in VS Code
 		registerGhostProvider(context, provider)
+		// Only show the terminal welcome tip in VS Code
+		registerWelcomeService(context)
 	} else {
 		// Only foward logs in Jetbrains
 		registerMainThreadForwardingLogger(context)
