@@ -29,7 +29,8 @@ const TelemetryBanner = () => {
 	}
 
 	return (
-		<div className="relative px-4 py-2.5 pr-10 bg-vscode-banner-background border-b border-vscode-panel-border text-sm leading-normal text-vscode-foreground">
+		// kilocode_change: styling
+		<div className="relative p-4 pr-10 bg-vscode-editor-background border border-vscode-panel-border rounded text-sm leading-normal text-vscode-foreground">
 			{/* Close button (X) */}
 			<button
 				onClick={handleClose}

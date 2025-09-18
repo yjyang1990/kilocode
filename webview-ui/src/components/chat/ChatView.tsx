@@ -1902,6 +1902,8 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 	const areButtonsVisible = showScrollToBottom || primaryButtonText || secondaryButtonText || isStreaming
 
+	const showTelemetryBanner = telemetrySetting === "unset" // kilocode_change
+
 	return (
 		<div
 			data-testid="chat-view"
@@ -1978,9 +1980,11 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							</div>
 						</div>
 					)}
-					<div>
-						<OrganizationSelector className="absolute top-2 right-3" />
-					</div>
+					{!showTelemetryBanner && (
+						<div>
+							<OrganizationSelector className="absolute top-2 right-3" />
+						</div>
+					)}
 					{/* kilocode_change start: changed the classes to support notifications */}
 					<div className="w-full h-full flex flex-col gap-4 px-3.5 transition-all duration-300">
 						{/* kilocode_change end */}
@@ -1993,9 +1997,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 						<RooHero /> */}
 
-						{telemetrySetting === "unset" && <TelemetryBanner />}
 						{/* kilocode_change start: KilocodeNotifications + Layout fixes */}
-						{telemetrySetting !== "unset" && (
+						{showTelemetryBanner && <TelemetryBanner />}
+						{!showTelemetryBanner && (
 							<div className={taskHistoryFullLength === 0 ? "mt-10" : undefined}>
 								<KilocodeNotifications />
 							</div>
