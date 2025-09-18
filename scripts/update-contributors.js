@@ -60,15 +60,21 @@ function generateContributorMarkdown(contributors) {
   let markdown = '## Contributors\n\n';
   markdown += 'Thanks to all the contributors who help make Kilo Code better!\n\n';
 
-  // Create a grid of contributor avatars
-  let contributorGrid = '<table>\n  <tr>\n';
+  // Filter out bot users first
+  const validContributors = contributors.filter(contributor => !isBotUser(contributor.login));
 
-  for (let i = 0; i < contributors.length; i++) {
-    const contributor = contributors[i];
+  // Create a grid of contributor avatars in rows of 5
+  let contributorGrid = '<table>\n';
 
-    // Skip bot users
-    if (isBotUser(contributor.login)) {
-      continue;
+  for (let i = 0; i < validContributors.length; i++) {
+    const contributor = validContributors[i];
+
+    // Start a new row every 5 contributors
+    if (i % 5 === 0) {
+      if (i > 0) {
+        contributorGrid += '\n  </tr>\n';
+      }
+      contributorGrid += '  <tr>\n';
     }
 
     const contributorCell = `    <td align="center">
@@ -80,13 +86,9 @@ function generateContributorMarkdown(contributors) {
     </td>`;
 
     contributorGrid += contributorCell;
-
-    // Start new row every 5 contributors
-    if ((i + 1) % 5 === 0 && i < contributors.length - 1) {
-      contributorGrid += '\n  </tr>\n  <tr>\n';
-    }
   }
 
+  // Close the last row
   contributorGrid += '\n  </tr>\n</table>\n';
 
   markdown += contributorGrid;

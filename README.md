@@ -117,10 +117,7 @@ Thanks to all the contributors who help make Kilo Code better!
         <br />
         <sub><b>samhvw8</b></sub>
       </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
+    </td>    <td align="center">
       <a href="https://github.com/hassoncs">
         <img src="https://avatars.githubusercontent.com/u/5104925?v=4?size=100" width="100" height="100" alt="hassoncs" style="border-radius: 50%;" />
         <br />
@@ -132,7 +129,10 @@ Thanks to all the contributors who help make Kilo Code better!
         <br />
         <sub><b>olearycrew</b></sub>
       </a>
-    </td>    <td align="center">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <a href="https://github.com/catrielmuller">
         <img src="https://avatars.githubusercontent.com/u/2272323?v=4?size=100" width="100" height="100" alt="catrielmuller" style="border-radius: 50%;" />
         <br />
@@ -144,10 +144,7 @@ Thanks to all the contributors who help make Kilo Code better!
         <br />
         <sub><b>markijbema</b></sub>
       </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
+    </td>    <td align="center">
       <a href="https://github.com/R00-B0T">
         <img src="https://avatars.githubusercontent.com/u/110429663?v=4?size=100" width="100" height="100" alt="R00-B0T" style="border-radius: 50%;" />
         <br />
@@ -165,16 +162,16 @@ Thanks to all the contributors who help make Kilo Code better!
         <br />
         <sub><b>PyGuy2</b></sub>
       </a>
-    </td>    <td align="center">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <a href="https://github.com/a8trejo">
         <img src="https://avatars.githubusercontent.com/u/62401433?v=4?size=100" width="100" height="100" alt="a8trejo" style="border-radius: 50%;" />
         <br />
         <sub><b>a8trejo</b></sub>
       </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
+    </td>    <td align="center">
       <a href="https://github.com/MuriloFP">
         <img src="https://avatars.githubusercontent.com/u/50873657?v=4?size=100" width="100" height="100" alt="MuriloFP" style="border-radius: 50%;" />
         <br />
@@ -198,16 +195,16 @@ Thanks to all the contributors who help make Kilo Code better!
         <br />
         <sub><b>canrobins13</b></sub>
       </a>
-    </td>    <td align="center">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <a href="https://github.com/stea9499">
         <img src="https://avatars.githubusercontent.com/u/4163795?v=4?size=100" width="100" height="100" alt="stea9499" style="border-radius: 50%;" />
         <br />
         <sub><b>stea9499</b></sub>
       </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
+    </td>    <td align="center">
       <a href="https://github.com/jr">
         <img src="https://avatars.githubusercontent.com/u/5629?v=4?size=100" width="100" height="100" alt="jr" style="border-radius: 50%;" />
         <br />
@@ -231,7 +228,10 @@ Thanks to all the contributors who help make Kilo Code better!
         <br />
         <sub><b>beatlevic</b></sub>
       </a>
-    </td>    <td align="center">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <a href="https://github.com/joemanley201">
         <img src="https://avatars.githubusercontent.com/u/8299960?v=4?size=100" width="100" height="100" alt="joemanley201" style="border-radius: 50%;" />
         <br />
