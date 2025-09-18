@@ -129,12 +129,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		context.globalState.update("allowedCommands", defaultCommands)
 	}
 
-	// kilocode_change start
-	if (!context.globalState.get("firstInstallCompleted")) {
-		await context.globalState.update("telemetrySetting", "enabled")
-	}
-	// kilocode_change end
-
 	const contextProxy = await ContextProxy.getInstance(context)
 
 	// Initialize code index managers for all workspace folders.
