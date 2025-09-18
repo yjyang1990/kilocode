@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback } from "react"
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { getKiloCodeBackendSignInUrl } from "../../helpers"
 import { Button } from "@src/components/ui"
@@ -11,7 +11,7 @@ import { ModelPicker } from "../../../settings/ModelPicker"
 import { vscode } from "@src/utils/vscode"
 import { OrganizationSelector } from "../../common/OrganizationSelector"
 import { KiloCodeWrapperProperties } from "../../../../../../src/shared/kilocode/wrapper"
-import { ProfileData, ProfileDataResponsePayload, WebviewMessage } from "@roo/WebviewMessage"
+import { useKiloIdentity } from "@src/utils/kilocode/useKiloIdentity"
 
 type KiloCodeProps = {
 	apiConfiguration: ProviderSettings
@@ -39,8 +39,7 @@ export const KiloCode = ({
 	kilocodeDefaultModel,
 }: KiloCodeProps) => {
 	const { t } = useAppTranslation()
-	const [profileData, setProfileData] = useState<ProfileData | null>(null)
-
+	
 	const handleInputChange = useCallback(
 		<K extends keyof ProviderSettings, E>(
 			field: K,
@@ -52,31 +51,9 @@ export const KiloCode = ({
 		[setApiConfigurationField],
 	)
 
-	// Fetch profile data when component mounts and token exists
-	useEffect(() => {
-		if (apiConfiguration.kilocodeToken) {
-			vscode.postMessage({
-				type: "fetchProfileDataRequest",
-			})
-		}
-	}, [apiConfiguration.kilocodeToken])
-
-	// Listen for profile data response
-	useEffect(() => {
-		const handleMessage = (event: MessageEvent<WebviewMessage>) => {
-			if (event.data.type === "profileDataResponse") {
-				const payload = event.data.payload as ProfileDataResponsePayload
-				if (payload.success && payload.data) {
-					setProfileData(payload.data)
-				}
-			}
-		}
-
-		window.addEventListener("message", handleMessage)
-		return () => window.removeEventListener("message", handleMessage)
-	}, [])
-
-	const isKiloCodeAiUser = profileData?.user?.email?.endsWith("@kilocode.ai") ?? false
+	// Use the existing hook to get user identity
+	const userIdentity = useKiloIdentity(apiConfiguration.kilocodeToken || "", "")
+	const isKiloCodeAiUser = userIdentity.endsWith("@kilocode.ai")
 
 	const areKilocodeWarningsDisabled = apiConfiguration.kilocodeTesterWarningsDisabledUntil
 		? apiConfiguration.kilocodeTesterWarningsDisabledUntil > Date.now()
