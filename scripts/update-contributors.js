@@ -81,8 +81,8 @@ function generateContributorMarkdown(contributors) {
 
     contributorGrid += contributorCell;
 
-    // Start new row every 6 contributors
-    if ((i + 1) % 6 === 0 && i < contributors.length - 1) {
+    // Start new row every 5 contributors
+    if ((i + 1) % 5 === 0 && i < contributors.length - 1) {
       contributorGrid += '\n  </tr>\n  <tr>\n';
     }
   }
