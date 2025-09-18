@@ -84,18 +84,8 @@ export const KiloCode = ({
 
 	const handleToggleTesterWarnings = useCallback(() => {
 		const newTimestamp = Date.now() + (areKilocodeWarningsDisabled ? 0 : 24 * 60 * 60 * 1000)
-
 		setApiConfigurationField("kilocodeTesterWarningsDisabledUntil", newTimestamp)
-
-		vscode.postMessage({
-			type: "upsertApiConfiguration",
-			text: currentApiConfigName,
-			apiConfiguration: {
-				...apiConfiguration,
-				kilocodeTesterWarningsDisabledUntil: newTimestamp,
-			},
-		})
-	}, [areKilocodeWarningsDisabled, setApiConfigurationField, currentApiConfigName, apiConfiguration])
+	}, [areKilocodeWarningsDisabled, setApiConfigurationField])
 
 	return (
 		<>
