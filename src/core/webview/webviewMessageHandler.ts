@@ -2496,7 +2496,7 @@ export const webviewMessageHandler = async (
 		// kilocode_change_start
 		case "fetchProfileDataRequest":
 			try {
-				const { apiConfiguration } = await provider.getState()
+				const { apiConfiguration, currentApiConfigName } = await provider.getState()
 				const kilocodeToken = apiConfiguration?.kilocodeToken
 
 				if (!kilocodeToken) {
@@ -2524,7 +2524,7 @@ export const webviewMessageHandler = async (
 					({ id }) => id === apiConfiguration?.kilocodeOrganizationId,
 				)
 				if (apiConfiguration?.kilocodeOrganizationId && !organizationExists) {
-					provider.upsertProviderProfile(provider.providerSettingsManager.activateProfile.name, {
+					provider.upsertProviderProfile(currentApiConfigName ?? "default", {
 						...apiConfiguration,
 						kilocodeOrganizationId: undefined,
 					})
