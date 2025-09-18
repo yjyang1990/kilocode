@@ -76,17 +76,14 @@ export const KiloCode = ({
 		return () => window.removeEventListener("message", handleMessage)
 	}, [])
 
-	// Check if user has @kilocode.ai email
 	const isKiloCodeAiUser = profileData?.user?.email?.endsWith("@kilocode.ai") ?? false
 
-	// Get current timestamp for comparison
-	const now = Date.now()
-	const isWarningsDisabled = apiConfiguration.kilocodeTesterWarningsDisabledUntil
-		? apiConfiguration.kilocodeTesterWarningsDisabledUntil > now
+	const areKilocodeWarningsDisabled = apiConfiguration.kilocodeTesterWarningsDisabledUntil
+		? apiConfiguration.kilocodeTesterWarningsDisabledUntil > Date.now()
 		: false
 
 	const handleToggleTesterWarnings = useCallback(() => {
-		const newTimestamp = isWarningsDisabled ? now : now + 24 * 60 * 60 * 1000
+		const newTimestamp = Date.now() + (areKilocodeWarningsDisabled ? 0 : 24 * 60 * 60 * 1000)
 
 		setApiConfigurationField("kilocodeTesterWarningsDisabledUntil", newTimestamp)
 
@@ -98,7 +95,7 @@ export const KiloCode = ({
 				kilocodeTesterWarningsDisabledUntil: newTimestamp,
 			},
 		})
-	}, [isWarningsDisabled, now, setApiConfigurationField, currentApiConfigName, apiConfiguration])
+	}, [areKilocodeWarningsDisabled, setApiConfigurationField, currentApiConfigName, apiConfiguration])
 
 	return (
 		<>
@@ -163,12 +160,12 @@ export const KiloCode = ({
 				<div className="mb-4">
 					<label className="block font-medium mb-2">Disable KILOCODE-TESTER warnings</label>
 					<div className="text-sm text-vscode-descriptionForeground mb-2">
-						{isWarningsDisabled
+						{areKilocodeWarningsDisabled
 							? `Warnings disabled until ${new Date(apiConfiguration.kilocodeTesterWarningsDisabledUntil || 0).toLocaleString()}`
 							: "KILOCODE-TESTER warnings are currently enabled"}
 					</div>
 					<Button variant="secondary" onClick={handleToggleTesterWarnings} className="text-sm">
-						{isWarningsDisabled ? "Enable warnings now" : "Disable warnings for 1 day"}
+						{areKilocodeWarningsDisabled ? "Enable warnings now" : "Disable warnings for 1 day"}
 					</Button>
 				</div>
 			)}
