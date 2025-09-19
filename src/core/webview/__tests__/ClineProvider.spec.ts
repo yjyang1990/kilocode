@@ -2703,6 +2703,7 @@ describe("ClineProvider - Router Models", () => {
 				unboundApiKey: "unbound-key",
 				litellmApiKey: "litellm-key",
 				litellmBaseUrl: "http://localhost:4000",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 			},
 		} as any)
 
@@ -2732,6 +2733,7 @@ describe("ClineProvider - Router Models", () => {
 		expect(getModels).toHaveBeenCalledWith({ provider: "glama" })
 		expect(getModels).toHaveBeenCalledWith({ provider: "unbound", apiKey: "unbound-key" })
 		expect(getModels).toHaveBeenCalledWith({ provider: "vercel-ai-gateway" })
+		expect(getModels).toHaveBeenCalledWith({ provider: "ovhcloud" })
 		expect(getModels).toHaveBeenCalledWith({
 			provider: "litellm",
 			apiKey: "litellm-key",
@@ -2754,6 +2756,7 @@ describe("ClineProvider - Router Models", () => {
 				"vercel-ai-gateway": mockModels,
 				huggingface: {},
 				"io-intelligence": {},
+				ovhcloud: mockModels,
 			},
 		})
 	})
@@ -2770,6 +2773,7 @@ describe("ClineProvider - Router Models", () => {
 				unboundApiKey: "unbound-key",
 				litellmApiKey: "litellm-key",
 				litellmBaseUrl: "http://localhost:4000",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 			},
 		} as any)
 
@@ -2789,6 +2793,7 @@ describe("ClineProvider - Router Models", () => {
 			.mockResolvedValueOnce(mockModels) // vercel-ai-gateway success
 			.mockResolvedValueOnce(mockModels) // deepinfra success
 			.mockRejectedValueOnce(new Error("LiteLLM connection failed")) // litellm fail
+			.mockResolvedValueOnce(mockModels) // ovhcloud
 
 		await messageHandler({ type: "requestRouterModels" })
 
@@ -2808,6 +2813,7 @@ describe("ClineProvider - Router Models", () => {
 				"vercel-ai-gateway": mockModels,
 				huggingface: {},
 				"io-intelligence": {},
+				ovhcloud: mockModels,
 			},
 		})
 
@@ -2859,6 +2865,7 @@ describe("ClineProvider - Router Models", () => {
 				requestyApiKey: "requesty-key",
 				glamaApiKey: "glama-key",
 				unboundApiKey: "unbound-key",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 				// No litellm config
 			},
 		} as any)
@@ -2895,6 +2902,7 @@ describe("ClineProvider - Router Models", () => {
 				requestyApiKey: "requesty-key",
 				glamaApiKey: "glama-key",
 				unboundApiKey: "unbound-key",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 				// No litellm config
 			},
 		} as any)
@@ -2930,6 +2938,7 @@ describe("ClineProvider - Router Models", () => {
 				"vercel-ai-gateway": mockModels,
 				huggingface: {},
 				"io-intelligence": {},
+				ovhcloud: mockModels,
 			},
 		})
 	})

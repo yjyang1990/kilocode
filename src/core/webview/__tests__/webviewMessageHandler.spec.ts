@@ -192,6 +192,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 				unboundApiKey: "unbound-key",
 				litellmApiKey: "litellm-key",
 				litellmBaseUrl: "http://localhost:4000",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 			},
 		})
 	})
@@ -249,6 +250,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 				"vercel-ai-gateway": mockModels,
 				huggingface: {},
 				"io-intelligence": {},
+				ovhcloud: mockModels,
 			},
 		})
 	})
@@ -260,6 +262,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 				requestyApiKey: "requesty-key",
 				glamaApiKey: "glama-key",
 				unboundApiKey: "unbound-key",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 				// Missing litellm config
 			},
 		})
@@ -298,6 +301,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 				requestyApiKey: "requesty-key",
 				glamaApiKey: "glama-key",
 				unboundApiKey: "unbound-key",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 				// Missing litellm config
 			},
 		})
@@ -341,6 +345,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 				"vercel-ai-gateway": mockModels,
 				huggingface: {},
 				"io-intelligence": {},
+				ovhcloud: mockModels,
 			},
 		})
 	})
@@ -366,6 +371,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			.mockResolvedValueOnce(mockModels) // vercel-ai-gateway
 			.mockResolvedValueOnce(mockModels) // deepinfra
 			.mockRejectedValueOnce(new Error("LiteLLM connection failed")) // litellm
+			.mockResolvedValueOnce(mockModels) // ovhcloud
 
 		await webviewMessageHandler(mockClineProvider, {
 			type: "requestRouterModels",
@@ -383,6 +389,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 				litellm: {},
 				"kilocode-openrouter": mockModels,
 				ollama: {},
+				ovhcloud: mockModels,
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
 				huggingface: {},
@@ -425,6 +432,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			.mockRejectedValueOnce(new Error("Vercel AI Gateway error")) // vercel-ai-gateway
 			.mockRejectedValueOnce(new Error("DeepInfra API error")) // deepinfra
 			.mockRejectedValueOnce(new Error("LiteLLM connection failed")) // litellm
+			.mockRejectedValueOnce(new Error("OVHCloud AI Endpoints error")) // ovhcloud
 
 		await webviewMessageHandler(mockClineProvider, {
 			type: "requestRouterModels",
@@ -471,6 +479,13 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			success: false,
 			error: "LiteLLM connection failed",
 			values: { provider: "litellm" },
+		})
+
+		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
+			type: "singleRouterModelFetchResponse",
+			success: false,
+			error: "OVHCloud AI Endpoints error",
+			values: { provider: "ovhcloud" },
 		})
 	})
 
