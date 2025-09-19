@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.96.1
-
-### Patch Changes
+## [v4.96.1]
 
 - [#2452](https://github.com/Kilo-Org/kilocode/pull/2452) [`d4cfbe9`](https://github.com/Kilo-Org/kilocode/commit/d4cfbe98a7ca4e2ce389fe221875f6158688ff69) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Jetbrains - Fix reload extension when switch project
 
