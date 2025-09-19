@@ -305,7 +305,7 @@ export class DirectoryScanner implements IDirectoryScanner {
 											`${error.message} (Workspace: ${scanWorkspace}, File: ${cachedFilePath})`,
 										)
 									: new Error(
-											t("embed0dings:scanner.unknownErrorDeletingPoints", {
+											t("embeddings:scanner.unknownErrorDeletingPoints", {
 												filePath: cachedFilePath,
 											}) + ` (Workspace: ${scanWorkspace})`,
 										),
