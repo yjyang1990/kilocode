@@ -795,7 +795,7 @@ export class CommandsAPI {
 
 // Environment mock
 export const env = {
-	appName: "Kilo Code CLI",
+	appName: "wrapper|cli|cli|0.0.1",
 	appRoot: process.cwd(),
 	language: "en",
 	machineId: "cli-machine-id",
