@@ -44,6 +44,14 @@
 		},
 		"playwright": {
 			"cache": false
+		},
+		"cli:build": {
+			"outputs": ["cli/dist/**"],
+			"inputs": ["cli/src/**", "cli/package.json", "cli/tsconfig.json"]
+		},
+		"cli:dev": {
+			"cache": false,
+			"persistent": true
 		}
 	}
 }
