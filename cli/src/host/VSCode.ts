@@ -354,6 +354,57 @@ export enum FileType {
 	SymbolicLink = 64,
 }
 
+// FileSystemError class mock
+export class FileSystemError extends Error {
+	public code: string
+
+	constructor(message: string, code: string = "Unknown") {
+		super(message)
+		this.name = "FileSystemError"
+		this.code = code
+	}
+
+	static FileNotFound(messageOrUri?: string | Uri): FileSystemError {
+		const message =
+			typeof messageOrUri === "string" ? messageOrUri : `File not found: ${messageOrUri?.fsPath || "unknown"}`
+		return new FileSystemError(message, "FileNotFound")
+	}
+
+	static FileExists(messageOrUri?: string | Uri): FileSystemError {
+		const message =
+			typeof messageOrUri === "string" ? messageOrUri : `File exists: ${messageOrUri?.fsPath || "unknown"}`
+		return new FileSystemError(message, "FileExists")
+	}
+
+	static FileNotADirectory(messageOrUri?: string | Uri): FileSystemError {
+		const message =
+			typeof messageOrUri === "string"
+				? messageOrUri
+				: `File is not a directory: ${messageOrUri?.fsPath || "unknown"}`
+		return new FileSystemError(message, "FileNotADirectory")
+	}
+
+	static FileIsADirectory(messageOrUri?: string | Uri): FileSystemError {
+		const message =
+			typeof messageOrUri === "string"
+				? messageOrUri
+				: `File is a directory: ${messageOrUri?.fsPath || "unknown"}`
+		return new FileSystemError(message, "FileIsADirectory")
+	}
+
+	static NoPermissions(messageOrUri?: string | Uri): FileSystemError {
+		const message =
+			typeof messageOrUri === "string" ? messageOrUri : `No permissions: ${messageOrUri?.fsPath || "unknown"}`
+		return new FileSystemError(message, "NoPermissions")
+	}
+
+	static Unavailable(messageOrUri?: string | Uri): FileSystemError {
+		const message =
+			typeof messageOrUri === "string" ? messageOrUri : `Unavailable: ${messageOrUri?.fsPath || "unknown"}`
+		return new FileSystemError(message, "Unavailable")
+	}
+}
+
 export interface FileStat {
 	type: FileType
 	ctime: number
@@ -773,6 +824,7 @@ export function createVSCodeAPIMock(extensionPath: string, workspacePath: string
 		OverviewRulerLane,
 		ExtensionContext,
 		FileType,
+		FileSystemError,
 		TabInputText: class TabInputText {
 			constructor(public uri: Uri) {}
 		},
