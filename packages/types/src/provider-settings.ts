@@ -12,6 +12,7 @@ import {
 	doubaoModels,
 	featherlessModels,
 	fireworksModels,
+	syntheticModels,
 	geminiModels,
 	groqModels,
 	ioIntelligenceModels,
@@ -140,6 +141,7 @@ export const providerNames = [
 	"kilocode",
 	"gemini-cli",
 	"virtual-quota-fallback",
+	"synthetic",
 	// kilocode_change end
 	"sambanova",
 	"vertex",
@@ -439,6 +441,10 @@ const fireworksSchema = apiModelIdProviderModelSchema.extend({
 	fireworksApiKey: z.string().optional(),
 })
 
+const syntheticSchema = apiModelIdProviderModelSchema.extend({
+	syntheticApiKey: z.string().optional(),
+})
+
 const featherlessSchema = apiModelIdProviderModelSchema.extend({
 	featherlessApiKey: z.string().optional(),
 })
@@ -501,6 +507,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	sambaNovaSchema.merge(z.object({ apiProvider: z.literal("sambanova") })),
 	zaiSchema.merge(z.object({ apiProvider: z.literal("zai") })),
 	fireworksSchema.merge(z.object({ apiProvider: z.literal("fireworks") })),
+	syntheticSchema.merge(z.object({ apiProvider: z.literal("synthetic") })),
 	featherlessSchema.merge(z.object({ apiProvider: z.literal("featherless") })),
 	ioIntelligenceSchema.merge(z.object({ apiProvider: z.literal("io-intelligence") })),
 	qwenCodeSchema.merge(z.object({ apiProvider: z.literal("qwen-code") })),
@@ -546,6 +553,7 @@ export const providerSettingsSchema = z.object({
 	...sambaNovaSchema.shape,
 	...zaiSchema.shape,
 	...fireworksSchema.shape,
+	...syntheticSchema.shape,
 	...featherlessSchema.shape,
 	...ioIntelligenceSchema.shape,
 	...qwenCodeSchema.shape,
@@ -710,6 +718,11 @@ export const MODELS_BY_PROVIDER: Record<
 		id: "fireworks",
 		label: "Fireworks",
 		models: Object.keys(fireworksModels),
+	},
+	synthetic: {
+		id: "synthetic",
+		label: "Synthetic",
+		models: Object.keys(syntheticModels),
 	},
 	gemini: {
 		id: "gemini",
