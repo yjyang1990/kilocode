@@ -1,6 +1,6 @@
 import { EventEmitter } from "events"
 import * as path from "path"
-import { createExtensionHost, ExtensionHost } from "../mock/ExtensionHost.js"
+import { createExtensionHost, ExtensionHost } from "../host/ExtensionHost.js"
 import { createMessageBridge, MessageBridge } from "../communication/ipc.js"
 import { TUIApplication } from "../tui/App.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
