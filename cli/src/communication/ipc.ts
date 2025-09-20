@@ -91,7 +91,9 @@ export class IPCChannel extends EventEmitter {
 			console.log(`[IPC] Sending event:`, data)
 		}
 
+		// Emit both the message (for routing) and the event (for local handlers)
 		this.emit("message", message)
+		this.emit("event", message)
 	}
 
 	/**

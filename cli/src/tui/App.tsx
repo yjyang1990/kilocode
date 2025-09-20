@@ -41,14 +41,26 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 	const handleExtensionMessage = useCallback(
 		(message: ExtensionMessage) => {
 			console.log(`[CLI App] Received extension message: ${message.type}`)
+			console.log(`[DEBUG] Current isLoading state: ${state.isLoading}`)
+			console.log(`[DEBUG] Message state:`, message.state ? "present" : "null")
 
 			switch (message.type) {
 				case "state":
-					setState((prev) => ({
-						...prev,
-						extensionState: message.state || null,
-						isLoading: false,
-					}))
+					console.log(`[DEBUG] Processing state message, setting isLoading to false`)
+					setState((prev) => {
+						console.log(
+							`[DEBUG] Previous state - isLoading: ${prev.isLoading}, extensionState: ${prev.extensionState ? "present" : "null"}`,
+						)
+						const newState = {
+							...prev,
+							extensionState: message.state || null,
+							isLoading: false,
+						}
+						console.log(
+							`[DEBUG] New state - isLoading: ${newState.isLoading}, extensionState: ${newState.extensionState ? "present" : "null"}`,
+						)
+						return newState
+					})
 					break
 				case "action":
 					if (message.action === "chatButtonClicked") {
@@ -150,7 +162,6 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 		// Request initial state
 		const requestInitialState = async () => {
 			try {
-				console.log("[CLI App] Requesting initial state...")
 				await options.messageBridge.sendWebviewMessage({
 					type: "webviewDidLaunch",
 				})
@@ -207,8 +218,6 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 			</Box>
 		)
 	}
-
-	console.log(`[DEBUG] Rendering App with currentView: ${state.currentView}`)
 
 	return (
 		<Box flexDirection="column" height="100%">
