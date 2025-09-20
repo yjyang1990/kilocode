@@ -77,6 +77,12 @@ export enum DiagnosticSeverity {
 	Hint = 3,
 }
 
+// UI Kind enum
+export enum UIKind {
+	Desktop = 1,
+	Web = 2,
+}
+
 // Code Action Kind mock
 export class CodeActionKind {
 	static readonly Empty = new CodeActionKind("")
@@ -449,6 +455,22 @@ export class FileSystemAPI {
 			throw new Error(`Failed to write file: ${uri.fsPath}`)
 		}
 	}
+
+	async delete(uri: Uri): Promise<void> {
+		try {
+			fs.unlinkSync(uri.fsPath)
+		} catch (error) {
+			throw new Error(`Failed to delete file: ${uri.fsPath}`)
+		}
+	}
+
+	async createDirectory(uri: Uri): Promise<void> {
+		try {
+			fs.mkdirSync(uri.fsPath, { recursive: true })
+		} catch (error) {
+			throw new Error(`Failed to create directory: ${uri.fsPath}`)
+		}
+	}
 }
 
 // Workspace API mock
@@ -802,6 +824,21 @@ export const env = {
 	sessionId: "cli-session-id",
 	remoteName: undefined,
 	shell: process.env.SHELL || "/bin/bash",
+	uriScheme: "vscode",
+	uiKind: 1, // Desktop
+	openExternal: async (uri: Uri): Promise<boolean> => {
+		console.log(`[ENV] Would open external URL: ${uri.toString()}`)
+		return true
+	},
+	clipboard: {
+		readText: async (): Promise<string> => {
+			console.log(`[ENV] Clipboard read requested`)
+			return ""
+		},
+		writeText: async (text: string): Promise<void> => {
+			console.log(`[ENV] Clipboard write: ${text.substring(0, 100)}${text.length > 100 ? "..." : ""}`)
+		},
+	},
 }
 
 // Main VSCode API mock
@@ -818,6 +855,7 @@ export function createVSCodeAPIMock(extensionPath: string, workspacePath: string
 		ConfigurationTarget,
 		ViewColumn,
 		DiagnosticSeverity,
+		UIKind,
 		CodeActionKind,
 		ThemeColor,
 		DecorationRangeBehavior,
@@ -825,6 +863,19 @@ export function createVSCodeAPIMock(extensionPath: string, workspacePath: string
 		ExtensionContext,
 		FileType,
 		FileSystemError,
+		Disposable: class DisposableClass implements Disposable {
+			dispose(): void {
+				// No-op for CLI
+			}
+
+			static from(...disposables: Disposable[]): Disposable {
+				return {
+					dispose: () => {
+						disposables.forEach((d) => d.dispose())
+					},
+				}
+			}
+		},
 		TabInputText: class TabInputText {
 			constructor(public uri: Uri) {}
 		},
