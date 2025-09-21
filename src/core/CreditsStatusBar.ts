@@ -11,6 +11,7 @@ export class CreditsStatusBar implements vscode.Disposable {
 	private previousBalance?: number
 	private previousBalanceTimestamp?: Date
 	private isRefreshing = false
+	private lastConsumptionRate?: string
 	private readonly REFRESH_INTERVAL_MS = 5 * 60 * 1000 // 5 minutes
 
 	constructor(
@@ -66,7 +67,8 @@ export class CreditsStatusBar implements vscode.Disposable {
 		try {
 			const result = await this.provider.fetchBalanceData()
 
-			this.updateStatusBar(result)
+			// Don't call updateStatusBar here - the registered balance handler will be notified
+			// and call updateStatusBar automatically when fetchBalanceData completes
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : String(error)
 			this.updateStatusBar({ success: false, error: errorMessage })
@@ -88,7 +90,7 @@ export class CreditsStatusBar implements vscode.Disposable {
 		// Handle loading state
 		if (payload.isLoading) {
 			this.statusBarItem.text = "$(sync~spin) Kilocode: Loading..."
-			this.statusBarItem.tooltip = "Refreshing balance...\nClick to refresh"
+			this.statusBarItem.tooltip = "Click to refresh"
 			this.statusBarItem.backgroundColor = undefined
 			this.statusBarItem.show()
 			return
@@ -98,59 +100,34 @@ export class CreditsStatusBar implements vscode.Disposable {
 			this.lastSuccessfulBalance = payload.data.balance
 			this.lastSuccessfulTimestamp = new Date()
 
-			const balance = payload.data.balance
-			const compactBalance = this.formatBalance(balance)
-			const fullBalance = this.formatBalance(balance, false)
+			const currentBalance = this.lastSuccessfulBalance
 
 			// Calculate consumption rate using PREVIOUS values BEFORE updating stored values
 			let consumptionRate = ""
-			if (this.lastSuccessfulBalance !== undefined && this.previousBalanceTimestamp && this.previousBalance) {
-				// Use the PREVIOUS timestamp for calculation, not the new one we're about to set
+			let ratePerMin = 0
+			if (this.previousBalanceTimestamp && this.previousBalance) {
 				const timeDiffMs = Date.now() - this.previousBalanceTimestamp.getTime()
-				const timeDiffHours = timeDiffMs / (1000 * 60 * 60)
-				const balanceDiff = this.previousBalance - balance
+				const balanceDiff = this.previousBalance - currentBalance
 
 				// Debug logging
-				console.debug(
-					`[CreditsStatusBar] Balance diff: ${balanceDiff}, Time diff: ${timeDiffHours.toFixed(12)}h`,
-				)
+				console.debug(`[CreditsStatusBar] Balance diff: ${balanceDiff}, Time diff: ${timeDiffMs} ms`)
 
-				const ratePerHour = balanceDiff / timeDiffHours
-				const rateFormatted = this.formatBalance(Math.abs(ratePerHour), false)
+				ratePerMin = balanceDiff / (timeDiffMs / 1000 / 60)
 
-				if (!Number.isNaN(ratePerHour)) {
-					consumptionRate = `$${rateFormatted}/hour`
-					console.debug(`[CreditsStatusBar] Showing consumption rate: $${rateFormatted}/hr`)
+				if (ratePerMin > 0) {
+					consumptionRate = `@ $${this.formatBalance(ratePerMin)}/min`
+					console.debug(`[CreditsStatusBar] Showing consumption rate: ${consumptionRate}`)
 				}
 			}
 
 			// Store current values as previous for next calculation
-			this.previousBalance = this.lastSuccessfulBalance
+			this.previousBalance = currentBalance
 			this.previousBalanceTimestamp = this.lastSuccessfulTimestamp
 
-			this.statusBarItem.text = `$(credit-card) Kilocode: $${compactBalance} @ ${consumptionRate}`
-			this.statusBarItem.tooltip = `Kilocode balance: $${fullBalance}\nLast updated: ${this.lastSuccessfulTimestamp.toLocaleString()}\n${consumptionRate}\nClick to refresh`
+			this.statusBarItem.text = `$(credit-card) Kilocode: $${this.formatBalance(currentBalance)} ${consumptionRate}`
+
 			this.statusBarItem.backgroundColor = undefined
-		} else {
-			const error = payload.error || "Unknown error"
-
-			// Handle rate limiting
-			if (error.includes("429") || error.includes("rate limit")) {
-				this.statusBarItem.text = "$(warning) Kilocode: rate limited"
-				this.statusBarItem.tooltip = `Rate limited. ${error}\nLast successful: ${this.lastSuccessfulTimestamp?.toLocaleString() || "never"}\nClick to retry`
-				this.statusBarItem.backgroundColor = new vscode.ThemeColor("statusBarItem.warningBackground")
-			} else {
-				// Handle other errors
-				const lastSuccessful = this.lastSuccessfulTimestamp
-					? `Last successful: ${this.lastSuccessfulTimestamp.toLocaleString()}`
-					: "No successful fetch yet"
-
-				this.statusBarItem.text = "$(error) Kilocode: error"
-				this.statusBarItem.tooltip = `Failed to fetch balance: ${error}\n${lastSuccessful}\nClick to retry`
-				this.statusBarItem.backgroundColor = new vscode.ThemeColor("statusBarItem.errorBackground")
-			}
 		}
-
 		this.statusBarItem.show()
 	}
 
@@ -159,16 +136,16 @@ export class CreditsStatusBar implements vscode.Disposable {
 		const clampedBalance = Math.max(0, balance)
 
 		if (compact) {
-			// Use compact notation for status bar (1.2k, 1.2M)
+			// Use compact notation for status bar (1.21k, 1.29M)
 			return new Intl.NumberFormat(undefined, {
-				maximumFractionDigits: 1,
+				maximumFractionDigits: 2,
 				notation: "compact",
 			}).format(clampedBalance)
 		} else {
 			// Use full notation for tooltip
 			return new Intl.NumberFormat(undefined, {
 				minimumFractionDigits: 2,
-				maximumFractionDigits: 2,
+				maximumFractionDigits: 5,
 			}).format(clampedBalance)
 		}
 	}
