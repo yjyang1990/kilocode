@@ -22,6 +22,11 @@ export interface WebviewMessage {
 	apiConfiguration?: any
 	mode?: string
 	values?: Record<string, any>
+	askResponse?: string
+	terminalOperation?: string
+	context?: string
+	invoke?: string
+	action?: string
 	[key: string]: any
 }
 

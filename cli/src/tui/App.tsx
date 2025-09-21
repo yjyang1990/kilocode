@@ -112,6 +112,56 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 						})
 					}
 					break
+				case "selectedImages":
+					// Handle image selection messages
+					logService.debug("Received selectedImages message", "CLI App", { images: message.images })
+					// For CLI, we might want to handle this differently or pass it to the active view
+					break
+				case "invoke":
+					// Handle invoke messages that trigger specific actions
+					logService.debug(`Received invoke message: ${message.invoke}`, "CLI App")
+					switch (message.invoke) {
+						case "newChat":
+							// Reset chat state
+							setState((prev) => ({
+								...prev,
+								extensionState: prev.extensionState
+									? {
+											...prev.extensionState,
+											clineMessages: [],
+										}
+									: null,
+							}))
+							break
+						case "sendMessage":
+							// This would be handled by the ChatView component
+							logService.debug("Invoke sendMessage received", "CLI App")
+							break
+						case "setChatBoxMessage":
+							// This would be handled by the ChatView component
+							logService.debug("Invoke setChatBoxMessage received", "CLI App")
+							break
+						case "primaryButtonClick":
+						case "secondaryButtonClick":
+							// These would be handled by the ChatView component
+							logService.debug(`Invoke ${message.invoke} received`, "CLI App")
+							break
+						default:
+							logService.debug(`Unhandled invoke: ${message.invoke}`, "CLI App")
+							break
+					}
+					break
+				case "condenseTaskContextResponse":
+					// Handle context condensing response
+					logService.debug("Received condenseTaskContextResponse", "CLI App")
+					if (message.text && state.extensionState?.currentTaskItem?.id === message.text) {
+						// Update state to reflect condensing completion
+						setState((prev) => ({
+							...prev,
+							// Could add a flag to indicate condensing is complete
+						}))
+					}
+					break
 				default:
 					logService.info(`Unhandled extension message: ${message.type}`, "CLI App")
 					break
@@ -372,6 +422,13 @@ export class TUIApplication extends EventEmitter {
 
 	handleExtensionMessage(message: ExtensionMessage): void {
 		this.emit("extensionMessage", message)
+	}
+
+	// Method to forward messages to the currently active view
+	forwardMessageToActiveView(message: ExtensionMessage): void {
+		// This could be enhanced to forward messages to the appropriate view
+		// For now, we'll let the App component handle it through the callback
+		logService.debug("Forwarding message to active view", "TUIApplication", { type: message.type })
 	}
 
 	async dispose(): Promise<void> {

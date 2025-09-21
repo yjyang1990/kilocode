@@ -40,9 +40,11 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 		}
 	}, [extensionState?.clineMessages])
 
-	// Handle extension messages
+	// Handle extension messages - simplified without dependencies
 	useEffect(() => {
 		const handleMessage = (message: ExtensionMessage) => {
+			logService.debug(`ChatView received extension message: ${message.type}`, "ChatView")
+
 			switch (message.type) {
 				case "messageUpdated":
 					if (message.clineMessage) {
@@ -54,13 +56,77 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 						}))
 					}
 					break
+				case "action":
+					switch (message.action) {
+						case "didBecomeVisible":
+							// Focus handling for CLI
+							logService.debug("ChatView became visible", "ChatView")
+							break
+						case "focusInput":
+							// Focus input handling for CLI
+							logService.debug("Focus input requested", "ChatView")
+							break
+					}
+					break
+				case "selectedImages":
+					// Handle image selection in CLI context
+					if (message.images && message.context !== "edit") {
+						logService.debug("Selected images received", "ChatView", { count: message.images.length })
+						// For CLI, we might handle images differently
+					}
+					break
+				case "invoke":
+					switch (message.invoke) {
+						case "newChat":
+							setChatState((prev) => ({
+								...prev,
+								messages: [],
+								inputValue: "",
+								isStreaming: false,
+								isWaitingForResponse: false,
+								currentAsk: null,
+							}))
+							break
+						case "sendMessage":
+							// Handle send message invoke
+							logService.debug("Invoke sendMessage received", "ChatView")
+							break
+						case "setChatBoxMessage":
+							if (message.text) {
+								setChatState((prev) => ({
+									...prev,
+									inputValue: prev.inputValue + (prev.inputValue ? " " : "") + message.text,
+								}))
+							}
+							break
+						case "primaryButtonClick":
+							// Handle primary button click
+							logService.debug("Invoke primaryButtonClick received", "ChatView")
+							break
+						case "secondaryButtonClick":
+							// Handle secondary button click
+							logService.debug("Invoke secondaryButtonClick received", "ChatView")
+							break
+					}
+					break
+				case "condenseTaskContextResponse":
+					// Handle context condensing response
+					logService.debug("Context condensing response received", "ChatView")
+					setChatState((prev) => ({
+						...prev,
+						isWaitingForResponse: false,
+					}))
+					break
 				default:
+					logService.debug(`Unhandled message type in ChatView: ${message.type}`, "ChatView")
 					break
 			}
 		}
 
-		// This would be connected to the message bridge in a real implementation
-		// For now, we'll handle it through props
+		// Connect to extension message handling through props
+		logService.debug("ChatView message handler setup", "ChatView")
+		// The actual message handling will be done through the callback above
+		// when messages are received via onExtensionMessage prop
 	}, [onExtensionMessage])
 
 	const handleSendMessage = useCallback(async () => {

@@ -131,14 +131,46 @@ export class ExtensionHost extends EventEmitter {
 					break
 
 				case "askResponse":
-					if (message.text) {
-						await this.handleAskResponse(message.text)
-					}
+					await this.handleAskResponse(
+						message.askResponse || message.text || "",
+						message.text,
+						message.images,
+					)
 					break
 
 				case "mode":
 					if (message.text) {
 						await this.handleModeChange(message.text)
+					}
+					break
+
+				case "clearTask":
+					await this.handleClearTask()
+					break
+
+				case "cancelTask":
+					await this.handleCancelTask()
+					break
+
+				case "selectImages":
+					await this.handleSelectImages()
+					break
+
+				case "terminalOperation":
+					if (message.terminalOperation) {
+						await this.handleTerminalOperation(message.terminalOperation)
+					}
+					break
+
+				case "condense":
+					if (message.text) {
+						await this.handleCondense(message.text)
+					}
+					break
+
+				case "condenseTaskContextRequest":
+					if (message.text) {
+						await this.handleCondenseTaskContextRequest(message.text)
 					}
 					break
 
@@ -343,13 +375,96 @@ export class ExtensionHost extends EventEmitter {
 		}
 	}
 
-	private async handleAskResponse(text: string): Promise<void> {
+	private async handleAskResponse(askResponse: string, text?: string, images?: string[]): Promise<void> {
 		// Handle user response to AI questions
+		logService.debug(`Handling ask response: ${askResponse}`, "ExtensionHost", { text, images })
+
 		if (this.extensionAPI && typeof this.extensionAPI.sendMessage === "function") {
 			try {
-				await this.extensionAPI.sendMessage(text)
+				await this.extensionAPI.sendMessage({ askResponse, text, images })
 			} catch (error) {
 				logService.error("Error sending ask response", "ExtensionHost", { error })
+			}
+		}
+	}
+
+	private async handleClearTask(): Promise<void> {
+		// Handle clearing/resetting the current task
+		logService.debug("Handling clear task", "ExtensionHost")
+
+		if (this.currentState) {
+			this.currentState.clineMessages = []
+			this.broadcastStateUpdate()
+		}
+	}
+
+	private async handleCancelTask(): Promise<void> {
+		// Handle canceling the current task
+		logService.debug("Handling cancel task", "ExtensionHost")
+
+		if (this.extensionAPI && typeof this.extensionAPI.cancelTask === "function") {
+			try {
+				await this.extensionAPI.cancelTask()
+			} catch (error) {
+				logService.error("Error canceling task", "ExtensionHost", { error })
+			}
+		}
+	}
+
+	private async handleSelectImages(): Promise<void> {
+		// Handle image selection request
+		logService.debug("Handling select images", "ExtensionHost")
+
+		// For CLI, we might not support image selection or handle it differently
+		// Send empty images response for now
+		this.emit("message", {
+			type: "selectedImages",
+			images: [],
+			context: "chat",
+		})
+	}
+
+	private async handleTerminalOperation(operation: string): Promise<void> {
+		// Handle terminal operations (continue, abort)
+		logService.debug(`Handling terminal operation: ${operation}`, "ExtensionHost")
+
+		if (this.extensionAPI && typeof this.extensionAPI.handleTerminalOperation === "function") {
+			try {
+				await this.extensionAPI.handleTerminalOperation(operation)
+			} catch (error) {
+				logService.error("Error handling terminal operation", "ExtensionHost", { error })
+			}
+		}
+	}
+
+	private async handleCondense(text: string): Promise<void> {
+		// Handle context condensing
+		logService.debug("Handling condense", "ExtensionHost", { text })
+
+		if (this.extensionAPI && typeof this.extensionAPI.condense === "function") {
+			try {
+				await this.extensionAPI.condense(text)
+			} catch (error) {
+				logService.error("Error handling condense", "ExtensionHost", { error })
+			}
+		}
+	}
+
+	private async handleCondenseTaskContextRequest(taskId: string): Promise<void> {
+		// Handle task context condensing request
+		logService.debug("Handling condense task context request", "ExtensionHost", { taskId })
+
+		if (this.extensionAPI && typeof this.extensionAPI.condenseTaskContext === "function") {
+			try {
+				await this.extensionAPI.condenseTaskContext(taskId)
+
+				// Send response back
+				this.emit("message", {
+					type: "condenseTaskContextResponse",
+					text: taskId,
+				})
+			} catch (error) {
+				logService.error("Error handling condense task context", "ExtensionHost", { error })
 			}
 		}
 	}
