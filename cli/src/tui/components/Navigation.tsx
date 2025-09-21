@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 
-type ViewType = "chat" | "history" | "settings" | "modes" | "mcp"
+type ViewType = "chat" | "history" | "settings" | "modes" | "mcp" | "logs"
 
 interface NavigationProps {
 	currentView: ViewType
@@ -14,6 +14,7 @@ const viewLabels: Record<ViewType, string> = {
 	settings: "⚙️ Settings",
 	modes: "🎭 Modes",
 	mcp: "🔌 MCP",
+	logs: "🗒️ Logs",
 }
 
 const viewShortcuts: Record<ViewType, string> = {
@@ -22,6 +23,7 @@ const viewShortcuts: Record<ViewType, string> = {
 	settings: "R",
 	modes: "T",
 	mcp: "U",
+	logs: "L",
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange }) => {

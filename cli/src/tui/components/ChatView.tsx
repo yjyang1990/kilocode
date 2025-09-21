@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import { Box, Text, useInput } from "ink"
 import TextInput from "ink-text-input"
 import Spinner from "ink-spinner"
+import { logService } from "../../services/LogService.js"
 import type { ExtensionState, WebviewMessage, ExtensionMessage, ClineMessage } from "../../types/messages.js"
 
 interface ChatViewProps {
@@ -86,7 +87,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 				})
 			}
 		} catch (error) {
-			console.error("Failed to send message:", error)
+			logService.error("Failed to send message", "ChatView", { error })
 			setChatState((prev) => ({ ...prev, isWaitingForResponse: false }))
 		}
 
@@ -101,7 +102,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 			})
 			setChatState((prev) => ({ ...prev, currentAsk: null }))
 		} catch (error) {
-			console.error("Failed to approve:", error)
+			logService.error("Failed to approve", "ChatView", { error })
 		}
 	}, [sendMessage])
 
@@ -113,7 +114,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 			})
 			setChatState((prev) => ({ ...prev, currentAsk: null }))
 		} catch (error) {
-			console.error("Failed to reject:", error)
+			logService.error("Failed to reject", "ChatView", { error })
 		}
 	}, [sendMessage])
 

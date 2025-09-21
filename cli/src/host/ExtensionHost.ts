@@ -1,6 +1,7 @@
 import { EventEmitter } from "events"
 import * as path from "path"
 import { createVSCodeAPIMock } from "./VSCode.js"
+import { logService } from "../services/LogService.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
 
 export interface ExtensionHostOptions {
@@ -23,6 +24,13 @@ export class ExtensionHost extends EventEmitter {
 	private extensionAPI: any = null
 	private vscodeAPI: any = null
 	private webviewProviders: Map<string, any> = new Map()
+	private originalConsole: {
+		log: typeof console.log
+		error: typeof console.error
+		warn: typeof console.warn
+		debug: typeof console.debug
+		info: typeof console.info
+	} | null = null
 
 	constructor(options: ExtensionHostOptions) {
 		super()
@@ -35,26 +43,26 @@ export class ExtensionHost extends EventEmitter {
 		}
 
 		try {
-			console.log("[ExtensionHost] Activating real extension...")
+			logService.info("Activating extension...", "ExtensionHost")
 
 			// Setup VSCode API mock
 			await this.setupVSCodeAPIMock()
 
-			// Load the real extension
+			// Load the extension
 			await this.loadExtension()
 
 			// Activate the extension
 			await this.activateExtension()
 
 			this.isActivated = true
-			console.log("[ExtensionHost] Real extension activated successfully")
+			logService.info("Extension activated successfully", "ExtensionHost")
 
 			// Emit activation event
 			this.emit("activated", this.getAPI())
 
 			return this.getAPI()
 		} catch (error) {
-			console.error("[ExtensionHost] Failed to activate extension:", error)
+			logService.error("Failed to activate extension", "ExtensionHost", { error })
 			this.emit("error", error)
 			throw error
 		}
@@ -66,7 +74,7 @@ export class ExtensionHost extends EventEmitter {
 		}
 
 		try {
-			console.log("[ExtensionHost] Deactivating real extension...")
+			logService.info("Deactivating extension...", "ExtensionHost")
 
 			// Call extension's deactivate function if it exists
 			if (this.extensionModule && typeof this.extensionModule.deactivate === "function") {
@@ -83,6 +91,9 @@ export class ExtensionHost extends EventEmitter {
 				}
 			}
 
+			// Restore original console methods
+			this.restoreConsole()
+
 			this.isActivated = false
 			this.currentState = null
 			this.extensionModule = null
@@ -91,19 +102,19 @@ export class ExtensionHost extends EventEmitter {
 			this.webviewProviders.clear()
 			this.removeAllListeners()
 
-			console.log("[ExtensionHost] Real extension deactivated")
+			logService.info("Extension deactivated", "ExtensionHost")
 		} catch (error) {
-			console.error("[ExtensionHost] Error during deactivation:", error)
+			logService.error("Error during deactivation", "ExtensionHost", { error })
 			throw error
 		}
 	}
 
 	async sendWebviewMessage(message: WebviewMessage): Promise<void> {
 		try {
-			console.log("[ExtensionHost] Processing webview message:", message.type)
+			logService.debug(`Processing webview message: ${message.type}`, "ExtensionHost")
 
 			if (!this.isActivated || !this.extensionAPI) {
-				console.warn("[ExtensionHost] Extension not activated, ignoring message")
+				logService.warn("Extension not activated, ignoring message", "ExtensionHost")
 				return
 			}
 
@@ -132,10 +143,10 @@ export class ExtensionHost extends EventEmitter {
 					break
 
 				default:
-					console.log("[ExtensionHost] Unhandled webview message type:", message.type)
+					logService.debug(`Unhandled webview message type: ${message.type}`, "ExtensionHost")
 			}
 		} catch (error) {
-			console.error("[ExtensionHost] Error handling webview message:", error)
+			logService.error("Error handling webview message", "ExtensionHost", { error })
 			this.emit("error", error)
 		}
 	}
@@ -151,14 +162,68 @@ export class ExtensionHost extends EventEmitter {
 		process.env.KILO_CLI_MODE = "true"
 		process.env.NODE_ENV = process.env.NODE_ENV || "production"
 
-		console.log("[ExtensionHost] VSCode API mock setup complete")
+		// Intercept console logs from the extension and forward to LogService
+		this.setupConsoleInterception()
+
+		logService.debug("VSCode API mock setup complete", "ExtensionHost")
+	}
+
+	private setupConsoleInterception(): void {
+		// Store original console methods
+		this.originalConsole = {
+			log: console.log,
+			error: console.error,
+			warn: console.warn,
+			debug: console.debug,
+			info: console.info,
+		}
+
+		// Override console methods to forward to LogService ONLY (no console output)
+		console.log = (...args: any[]) => {
+			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			logService.info(message, "Extension")
+		}
+
+		console.error = (...args: any[]) => {
+			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			logService.error(message, "Extension")
+		}
+
+		console.warn = (...args: any[]) => {
+			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			logService.warn(message, "Extension")
+		}
+
+		console.debug = (...args: any[]) => {
+			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			logService.debug(message, "Extension")
+		}
+
+		console.info = (...args: any[]) => {
+			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			logService.info(message, "Extension")
+		}
+
+		logService.debug("Console interception setup complete", "ExtensionHost")
+	}
+
+	private restoreConsole(): void {
+		if (this.originalConsole) {
+			console.log = this.originalConsole.log
+			console.error = this.originalConsole.error
+			console.warn = this.originalConsole.warn
+			console.debug = this.originalConsole.debug
+			console.info = this.originalConsole.info
+			this.originalConsole = null
+			logService.debug("Console methods restored", "ExtensionHost")
+		}
 	}
 
 	private async loadExtension(): Promise<void> {
 		const extensionPath = path.join(this.options.binUnpackedPath, "dist", "extension.js")
 
 		try {
-			console.log("[ExtensionHost] Loading extension from:", extensionPath)
+			logService.info(`Loading extension from: ${extensionPath}`, "ExtensionHost")
 
 			// Use createRequire to load CommonJS module from ES module context
 			const { createRequire } = await import("module")
@@ -207,26 +272,26 @@ export class ExtensionHost extends EventEmitter {
 				throw new Error("Extension module does not export an activate function")
 			}
 
-			console.log("[ExtensionHost] Extension module loaded successfully")
+			logService.info("Extension module loaded successfully", "ExtensionHost")
 		} catch (error) {
-			console.error("[ExtensionHost] Failed to load extension module:", error)
+			logService.error("Failed to load extension module", "ExtensionHost", { error })
 			throw new Error(`Failed to load extension: ${error instanceof Error ? error.message : String(error)}`)
 		}
 	}
 
 	private async activateExtension(): Promise<void> {
 		try {
-			console.log("[ExtensionHost] Calling extension activate function...")
+			logService.info("Calling extension activate function...", "ExtensionHost")
 
 			// Call the extension's activate function with our mocked context
 			this.extensionAPI = await this.extensionModule.activate(this.vscodeAPI.context)
 
-			console.log("[ExtensionHost] Extension activate function completed")
+			logService.info("Extension activate function completed", "ExtensionHost")
 
 			// Initialize state from extension
 			this.initializeState()
 		} catch (error) {
-			console.error("[ExtensionHost] Extension activation failed:", error)
+			logService.error("Extension activation failed", "ExtensionHost", { error })
 			throw error
 		}
 	}
@@ -234,7 +299,7 @@ export class ExtensionHost extends EventEmitter {
 	private initializeState(): void {
 		// Create initial state that matches the extension's expected structure
 		this.currentState = {
-			version: "1.0.0-cli-simple-real",
+			version: "1.0.0",
 			apiConfiguration: {
 				apiProvider: "kilocode",
 				kilocodeToken: process.env.KILOCODE_TOKEN || "",
@@ -273,7 +338,7 @@ export class ExtensionHost extends EventEmitter {
 					images,
 				})
 			} catch (error) {
-				console.error("[ExtensionHost] Error starting new task:", error)
+				logService.error("Error starting new task", "ExtensionHost", { error })
 			}
 		}
 	}
@@ -284,7 +349,7 @@ export class ExtensionHost extends EventEmitter {
 			try {
 				await this.extensionAPI.sendMessage(text)
 			} catch (error) {
-				console.error("[ExtensionHost] Error sending ask response:", error)
+				logService.error("Error sending ask response", "ExtensionHost", { error })
 			}
 		}
 	}
@@ -303,7 +368,7 @@ export class ExtensionHost extends EventEmitter {
 				type: "state",
 				state: this.currentState,
 			}
-			console.log("[ExtensionHost] Broadcasting state update")
+			logService.debug("Broadcasting state update", "ExtensionHost")
 			this.emit("message", stateMessage)
 		}
 	}
@@ -312,7 +377,7 @@ export class ExtensionHost extends EventEmitter {
 		return {
 			getState: () => this.currentState,
 			sendMessage: (message: ExtensionMessage) => {
-				console.log("[ExtensionHost] Sending message:", message.type)
+				logService.debug(`Sending message: ${message.type}`, "ExtensionHost")
 				this.emit("message", message)
 			},
 			updateState: (updates: Partial<ExtensionState>) => {

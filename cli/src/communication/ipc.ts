@@ -1,4 +1,5 @@
 import { EventEmitter } from "events"
+import { logService } from "../services/LogService.js"
 import type { ExtensionMessage, WebviewMessage } from "../types/messages.js"
 
 export interface IPCMessage {
@@ -51,7 +52,7 @@ export class IPCChannel extends EventEmitter {
 			this.pendingRequests.set(id, { resolve, reject, timeout })
 
 			if (this.options.enableLogging) {
-				console.log(`[IPC] Sending request ${id}:`, data)
+				logService.debug(`Sending request ${id}`, "IPC", { data })
 			}
 
 			this.emit("message", message)
@@ -70,7 +71,7 @@ export class IPCChannel extends EventEmitter {
 		}
 
 		if (this.options.enableLogging) {
-			console.log(`[IPC] Sending response ${requestId}:`, data)
+			logService.debug(`Sending response ${requestId}`, "IPC", { data })
 		}
 
 		this.emit("message", message)
@@ -88,7 +89,7 @@ export class IPCChannel extends EventEmitter {
 		}
 
 		if (this.options.enableLogging) {
-			console.log(`[IPC] Sending event:`, data)
+			logService.debug("Sending event", "IPC", { data })
 		}
 
 		// Emit both the message (for routing) and the event (for local handlers)
@@ -101,7 +102,7 @@ export class IPCChannel extends EventEmitter {
 	 */
 	handleMessage(message: IPCMessage): void {
 		if (this.options.enableLogging) {
-			console.log(`[IPC] Received ${message.type} ${message.id}:`, message.data)
+			logService.debug(`Received ${message.type} ${message.id}`, "IPC", { data: message.data })
 		}
 
 		switch (message.type) {

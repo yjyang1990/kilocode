@@ -8,8 +8,10 @@ import { HistoryView } from "./components/HistoryView.js"
 import { SettingsView } from "./components/SettingsView.js"
 import { ModesView } from "./components/ModesView.js"
 import { McpView } from "./components/McpView.js"
+import { LogsView } from "./components/LogsView.js"
 import { StatusBar } from "./components/StatusBar.js"
 import { Navigation } from "./components/Navigation.js"
+import { logService } from "../services/LogService.js"
 
 export interface TUIApplicationOptions {
 	messageBridge: MessageBridge
@@ -19,7 +21,7 @@ export interface TUIApplicationOptions {
 	initialView?: ViewType
 }
 
-type ViewType = "chat" | "history" | "settings" | "modes" | "mcp"
+type ViewType = "chat" | "history" | "settings" | "modes" | "mcp" | "logs"
 
 interface AppState {
 	currentView: ViewType
@@ -40,24 +42,26 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 	// Handle extension messages
 	const handleExtensionMessage = useCallback(
 		(message: ExtensionMessage) => {
-			console.log(`[CLI App] Received extension message: ${message.type}`)
-			console.log(`[DEBUG] Current isLoading state: ${state.isLoading}`)
-			console.log(`[DEBUG] Message state:`, message.state ? "present" : "null")
+			logService.info(`Received extension message: ${message.type}`, "CLI App")
+			logService.debug(`Current isLoading state: ${state.isLoading}`, "CLI App")
+			logService.debug(`Message state: ${message.state ? "present" : "null"}`, "CLI App")
 
 			switch (message.type) {
 				case "state":
-					console.log(`[DEBUG] Processing state message, setting isLoading to false`)
+					logService.debug("Processing state message, setting isLoading to false", "CLI App")
 					setState((prev) => {
-						console.log(
-							`[DEBUG] Previous state - isLoading: ${prev.isLoading}, extensionState: ${prev.extensionState ? "present" : "null"}`,
+						logService.debug(
+							`Previous state - isLoading: ${prev.isLoading}, extensionState: ${prev.extensionState ? "present" : "null"}`,
+							"CLI App",
 						)
 						const newState = {
 							...prev,
 							extensionState: message.state || null,
 							isLoading: false,
 						}
-						console.log(
-							`[DEBUG] New state - isLoading: ${newState.isLoading}, extensionState: ${newState.extensionState ? "present" : "null"}`,
+						logService.debug(
+							`New state - isLoading: ${newState.isLoading}, extensionState: ${newState.extensionState ? "present" : "null"}`,
+							"CLI App",
 						)
 						return newState
 					})
@@ -109,7 +113,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 					}
 					break
 				default:
-					console.log(`[CLI App] Unhandled extension message: ${message.type}`)
+					logService.info(`Unhandled extension message: ${message.type}`, "CLI App")
 					break
 			}
 		},
@@ -119,7 +123,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 	// Global keyboard shortcuts
 	useInput((input, key) => {
 		if (key.ctrl) {
-			console.log(`[DEBUG] Ctrl key detected with input: "${input}"`)
+			logService.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
 			switch (input) {
 				case "c":
 					exit()
@@ -142,8 +146,11 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 				case "y":
 					setState((prev) => ({ ...prev, currentView: "mcp" }))
 					break
+				case "l":
+					setState((prev) => ({ ...prev, currentView: "logs" }))
+					break
 				default:
-					console.log(`[DEBUG] Unhandled Ctrl+${input}`)
+					logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
 			}
 		}
 	})
@@ -166,7 +173,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 					type: "webviewDidLaunch",
 				})
 			} catch (error) {
-				console.error("Failed to request initial state:", error)
+				logService.error("Failed to request initial state", "CLI App", { error })
 				setState((prev) => ({
 					...prev,
 					error: "Failed to connect to extension",
@@ -187,7 +194,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 			try {
 				await options.messageBridge.sendWebviewMessage(message)
 			} catch (error) {
-				console.error("Failed to send message:", error)
+				logService.error("Failed to send message", "CLI App", { error })
 			}
 		},
 		[options.messageBridge],
@@ -195,7 +202,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 
 	const switchView = useCallback(
 		(view: ViewType) => {
-			console.log(`[DEBUG] Switching view from ${state.currentView} to ${view}`)
+			logService.debug(`Switching view from ${state.currentView} to ${view}`, "CLI App")
 			setState((prev) => ({ ...prev, currentView: view }))
 		},
 		[state.currentView],
@@ -268,6 +275,13 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 						onBack={() => switchView("chat")}
 					/>
 				)}
+				{state.currentView === "logs" && (
+					<LogsView
+						extensionState={state.extensionState}
+						sendMessage={sendMessage}
+						onBack={() => switchView("chat")}
+					/>
+				)}
 			</Box>
 
 			{/* Status bar */}
@@ -298,7 +312,7 @@ export class TUIApplication extends EventEmitter {
 
 	async executeTask(message: string): Promise<void> {
 		// For single task execution, we'll create a non-interactive mode
-		console.log(`Executing task: ${message}`)
+		logService.info(`Executing task: ${message}`, "TUIApplication")
 
 		try {
 			await this.options.messageBridge.sendWebviewMessage({
@@ -309,9 +323,9 @@ export class TUIApplication extends EventEmitter {
 			// Wait for task completion or user interruption
 			// This is a simplified implementation - in practice we'd need to handle
 			// the full task lifecycle with proper state management
-			console.log("Task execution started. Press Ctrl+C to cancel.")
+			logService.info("Task execution started. Press Ctrl+C to cancel.", "TUIApplication")
 		} catch (error) {
-			console.error("Failed to execute task:", error)
+			logService.error("Failed to execute task", "TUIApplication", { error })
 			throw error
 		}
 	}

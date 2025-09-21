@@ -1,5 +1,6 @@
 import * as fs from "fs"
 import * as path from "path"
+import { logService } from "../services/LogService.js"
 
 // Basic VSCode API types and enums
 export interface Thenable<T> extends Promise<T> {}
@@ -182,11 +183,11 @@ export class OutputChannel implements Disposable {
 	}
 
 	append(value: string): void {
-		console.log(`[${this._name}] ${value}`)
+		logService.info(`[${this._name}] ${value}`, "VSCode.OutputChannel")
 	}
 
 	appendLine(value: string): void {
-		console.log(`[${this._name}] ${value}`)
+		logService.info(`[${this._name}] ${value}`, "VSCode.OutputChannel")
 	}
 
 	clear(): void {
@@ -262,7 +263,7 @@ export class ExtensionContext {
 				fs.mkdirSync(dirPath, { recursive: true })
 			}
 		} catch (error) {
-			console.warn(`Failed to create directory ${dirPath}:`, error)
+			logService.warn(`Failed to create directory ${dirPath}`, "VSCode.ExtensionContext", { error })
 		}
 	}
 }
@@ -291,7 +292,7 @@ class MemoryMemento implements Memento {
 				this.data = JSON.parse(content)
 			}
 		} catch (error) {
-			console.warn(`Failed to load state from ${this.filePath}:`, error)
+			logService.warn(`Failed to load state from ${this.filePath}`, "VSCode.Memento", { error })
 			this.data = {}
 		}
 	}
@@ -300,7 +301,7 @@ class MemoryMemento implements Memento {
 		try {
 			fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2))
 		} catch (error) {
-			console.warn(`Failed to save state to ${this.filePath}:`, error)
+			logService.warn(`Failed to save state to ${this.filePath}`, "VSCode.Memento", { error })
 		}
 	}
 
@@ -690,17 +691,17 @@ export class WindowAPI {
 	}
 
 	showInformationMessage(message: string, ...items: string[]): Thenable<string | undefined> {
-		console.log(`[INFO] ${message}`)
+		logService.info(message, "VSCode.Window")
 		return Promise.resolve(undefined)
 	}
 
 	showWarningMessage(message: string, ...items: string[]): Thenable<string | undefined> {
-		console.warn(`[WARN] ${message}`)
+		logService.warn(message, "VSCode.Window")
 		return Promise.resolve(undefined)
 	}
 
 	showErrorMessage(message: string, ...items: string[]): Thenable<string | undefined> {
-		console.error(`[ERROR] ${message}`)
+		logService.error(message, "VSCode.Window")
 		return Promise.resolve(undefined)
 	}
 
@@ -809,7 +810,7 @@ export class CommandsAPI {
 			case "workbench.action.reloadWindow":
 				return Promise.resolve(undefined as T)
 			default:
-				console.warn(`[Commands] Unknown command: ${command}`)
+				logService.warn(`Unknown command: ${command}`, "VSCode.Commands")
 				return Promise.resolve(undefined as T)
 		}
 	}
@@ -827,16 +828,19 @@ export const env = {
 	uriScheme: "vscode",
 	uiKind: 1, // Desktop
 	openExternal: async (uri: Uri): Promise<boolean> => {
-		console.log(`[ENV] Would open external URL: ${uri.toString()}`)
+		logService.info(`Would open external URL: ${uri.toString()}`, "VSCode.Env")
 		return true
 	},
 	clipboard: {
 		readText: async (): Promise<string> => {
-			console.log(`[ENV] Clipboard read requested`)
+			logService.debug("Clipboard read requested", "VSCode.Clipboard")
 			return ""
 		},
 		writeText: async (text: string): Promise<void> => {
-			console.log(`[ENV] Clipboard write: ${text.substring(0, 100)}${text.length > 100 ? "..." : ""}`)
+			logService.debug(
+				`Clipboard write: ${text.substring(0, 100)}${text.length > 100 ? "..." : ""}`,
+				"VSCode.Clipboard",
+			)
 		},
 	},
 }

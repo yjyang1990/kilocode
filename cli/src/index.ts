@@ -2,6 +2,7 @@
 
 import { Command } from "commander"
 import { KiloCodeCLI } from "./cli/KiloCodeCLI.js"
+import { logService } from "./services/LogService.js"
 
 // Mock package info for CLI
 const Package = {
@@ -74,12 +75,12 @@ program
 
 // Global error handler
 process.on("uncaughtException", (error) => {
-	console.error("Uncaught Exception:", error)
+	logService.error("Uncaught Exception", "Process", { error })
 	process.exit(1)
 })
 
 process.on("unhandledRejection", (reason, promise) => {
-	console.error("Unhandled Rejection at:", promise, "reason:", reason)
+	logService.error("Unhandled Rejection", "Process", { promise, reason })
 	process.exit(1)
 })
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Box, Text, useInput } from "ink"
 import SelectInput from "ink-select-input"
+import { logService } from "../../services/LogService.js"
 import type { ExtensionState, WebviewMessage, HistoryItem } from "../../types/messages.js"
 
 interface HistoryViewProps {
@@ -38,7 +39,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ extensionState, sendMe
 					},
 				})
 			} catch (error) {
-				console.error("Failed to load history:", error)
+				logService.error("Failed to load history", "HistoryView", { error })
 				setHistoryState((prev) => ({ ...prev, isLoading: false }))
 			}
 		}
@@ -54,7 +55,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ extensionState, sendMe
 			})
 			onBack() // Return to chat view
 		} catch (error) {
-			console.error("Failed to open task:", error)
+			logService.error("Failed to open task", "HistoryView", { error })
 		}
 	}
 
@@ -70,7 +71,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ extensionState, sendMe
 				tasks: prev.tasks.filter((task) => task.id !== taskId),
 			}))
 		} catch (error) {
-			console.error("Failed to delete task:", error)
+			logService.error("Failed to delete task", "HistoryView", { error })
 		}
 	}
 
