@@ -128,7 +128,7 @@ export class CreditsStatusBar implements vscode.Disposable {
 			this.previousBalance = this.lastSuccessfulBalance
 			this.previousBalanceTimestamp = this.lastSuccessfulTimestamp
 
-			this.statusBarItem.text = `$(symbol-dollar) Kilocode: $${compactBalance} @ ${consumptionRate}`
+			this.statusBarItem.text = `$(credit-card) Kilocode: $${compactBalance} @ ${consumptionRate}`
 			this.statusBarItem.tooltip = `Kilocode balance: $${fullBalance}\nLast updated: ${this.lastSuccessfulTimestamp.toLocaleString()}\n${consumptionRate}\nClick to refresh`
 			this.statusBarItem.backgroundColor = undefined
 		} else {
