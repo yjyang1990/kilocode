@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.96.2
-
-### Patch Changes
+## [v4.96.2]
 
 - [#2521](https://github.com/Kilo-Org/kilocode/pull/2521) [`9304511`](https://github.com/Kilo-Org/kilocode/commit/9304511cb001114886f026744c3492f6a6a839f2) Thanks [@mcowger](https://github.com/mcowger)! - Update loop error message to refer to model instead of Kilo Code as the cause.
 
