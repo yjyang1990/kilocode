@@ -2699,7 +2699,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		// Use the shared timestamp so that subtasks respect the same rate-limit
 		// window as their parent tasks.
 		if (Task.lastGlobalApiRequestTime) {
-			const now = Date.now()
+			const now = performance.now() // kilocode_change
 			const timeSinceLastRequest = now - Task.lastGlobalApiRequestTime
 			const rateLimit = apiConfiguration?.rateLimitSeconds || 0
 			rateLimitDelay = Math.ceil(Math.max(0, rateLimit * 1000 - timeSinceLastRequest) / 1000)
@@ -2717,7 +2717,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 
 		// Update last request time before making the request so that subsequent
 		// requests — even from new subtasks — will honour the provider's rate-limit.
-		Task.lastGlobalApiRequestTime = Date.now()
+		Task.lastGlobalApiRequestTime = performance.now() // kilocode_change
 
 		const systemPrompt = await this.getSystemPrompt()
 		this.lastUsedInstructions = systemPrompt
