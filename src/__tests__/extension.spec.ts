@@ -92,17 +92,24 @@ vi.mock("vscode", () => ({
 		isSingleLine: vi.fn().mockReturnValue(true),
 	})),
 	Uri: {
-		joinPath: vi.fn().mockImplementation((...paths) => ({
-			toString: () => paths.join("/"),
-			path: paths.join("/"),
-		})),
+		joinPath: vi.fn().mockImplementation((base, ...segments) => {
+			const parts = [typeof base === "string" ? base : base.path, ...segments]
+			const path = parts.join("/")
+			return {
+				path,
+				fsPath: path,
+				toString: () => path,
+			}
+		}),
 		parse: vi.fn().mockImplementation((uri) => ({
 			toString: () => uri,
 			path: uri,
+			fsPath: uri,
 		})),
 		file: vi.fn().mockImplementation((path) => ({
 			toString: () => `file://${path}`,
 			path,
+			fsPath: path,
 		})),
 	},
 	CodeActionKind: {
