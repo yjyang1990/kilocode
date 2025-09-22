@@ -318,13 +318,22 @@ describe("extension.ts", () => {
 		vi.clearAllMocks()
 		mockBridgeOrchestratorDisconnect.mockClear()
 
-		const storagePath = join(tmpdir(), "kilocode-test-storage")
+		const storageRoot = join(tmpdir(), "kilocode-test-storage")
+		const storagePath = join(storageRoot, "global")
 
 		mockContext = {
 			extensionPath: "/test/path",
 			globalState: {
 				get: vi.fn().mockReturnValue(undefined),
 				update: vi.fn(),
+			},
+			workspaceState: {
+				get: vi.fn().mockReturnValue(undefined),
+				update: vi.fn().mockResolvedValue(undefined),
+			},
+			secrets: {
+				get: vi.fn().mockResolvedValue(undefined),
+				store: vi.fn().mockResolvedValue(undefined),
 			},
 			globalStoragePath: storagePath,
 			globalStorageUri: {
