@@ -184,6 +184,10 @@ export function getModelParams({
 
 // kilocode_change start
 function supportsTogglingReasoning(modelId: string) {
-	return modelId.startsWith("deepseek/deepseek-v3.1") || modelId.startsWith("deepseek/deepseek-chat-v3.1")
+	return (
+		modelId.startsWith("deepseek/deepseek-v3.1") ||
+		modelId.startsWith("deepseek/deepseek-chat-v3.1") ||
+		modelId.startsWith("x-ai/grok-4-fast")
+	)
 }
 // kilocode_change end
