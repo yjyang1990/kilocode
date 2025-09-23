@@ -172,7 +172,18 @@ export function getModelParams({
 		return {
 			format,
 			...params,
-			reasoning: getOpenRouterReasoning({ model, reasoningBudget, reasoningEffort, settings }),
+			// kilocode_change start
+			reasoning:
+				reasoningEffort === "minimal" && supportsTogglingReasoning(modelId)
+					? { enabled: false }
+					: getOpenRouterReasoning({ model, reasoningBudget, reasoningEffort, settings }),
+			// kilocode_change end
 		}
 	}
 }
+
+// kilocode_change start
+function supportsTogglingReasoning(modelId: string) {
+	return modelId.startsWith("deepseek/deepseek-v3.1") || modelId.startsWith("deepseek/deepseek-chat-v3.1")
+}
+// kilocode_change end
