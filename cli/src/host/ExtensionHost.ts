@@ -694,10 +694,9 @@ export class ExtensionHost extends EventEmitter {
 			// Load persisted API configuration
 			const persistedConfig = {
 				apiProvider: config.get("apiProvider", "kilocode"),
-				kilocodeToken: config.get("kilocodeToken", ""),
+				kilocodeToken: config.get("kilocodeToken", process.env.KILOCODE_TOKEN || ""),
 				kilocodeModel: config.get("kilocodeModel", "anthropic/claude-sonnet-4"),
 				kilocodeOrganizationId: config.get("kilocodeOrganizationId", ""),
-				// Add other API configuration fields as needed
 			}
 
 			const currentApiConfigName = config.get("currentApiConfigName", "default")
@@ -711,7 +710,9 @@ export class ExtensionHost extends EventEmitter {
 				this.currentState.currentApiConfigName = currentApiConfigName
 			}
 
-			logService.debug("Loaded persisted configuration", "ExtensionHost", { currentApiConfigName })
+			logService.debug("Loaded persisted configuration from MemoryMemento", "ExtensionHost", {
+				currentApiConfigName,
+			})
 		} catch (error) {
 			logService.warn("Failed to load persisted configuration", "ExtensionHost", { error })
 		}

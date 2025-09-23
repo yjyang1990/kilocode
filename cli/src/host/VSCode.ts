@@ -1,7 +1,6 @@
 import * as fs from "fs"
 import * as path from "path"
 import { logService } from "../services/LogService.js"
-import { getSettingsService, SettingsService } from "../services/SettingsService.js"
 
 // Basic VSCode API types and enums
 export interface Thenable<T> extends Promise<T> {}
@@ -307,6 +306,11 @@ class MemoryMemento implements Memento {
 
 	private saveToFile(): void {
 		try {
+			// Ensure directory exists
+			const dir = path.dirname(this.filePath)
+			if (!fs.existsSync(dir)) {
+				fs.mkdirSync(dir, { recursive: true })
+			}
 			fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2))
 		} catch (error) {
 			logService.warn(`Failed to save state to ${this.filePath}`, "VSCode.Memento", { error })
@@ -490,9 +494,11 @@ export class WorkspaceAPI {
 	public fs: FileSystemAPI
 	private _onDidChangeWorkspaceFolders = new EventEmitter<any>()
 	private workspacePath: string
+	private context: ExtensionContext
 
-	constructor(workspacePath: string) {
+	constructor(workspacePath: string, context: ExtensionContext) {
 		this.workspacePath = workspacePath
+		this.context = context
 		this.workspaceFolders = [
 			{
 				uri: Uri.file(workspacePath),
@@ -530,7 +536,7 @@ export class WorkspaceAPI {
 	}
 
 	getConfiguration(section?: string): WorkspaceConfiguration {
-		return new MockWorkspaceConfiguration(section, this.workspacePath)
+		return new MockWorkspaceConfiguration(section, this.context)
 	}
 
 	findFiles(include: string, exclude?: string): Thenable<Uri[]> {
@@ -587,83 +593,80 @@ export interface WorkspaceConfiguration {
 
 export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 	private section: string | undefined
-	private settingsService: SettingsService
-	private workspacePath: string
-	private initializationPromise: Promise<void>
+	private globalMemento: MemoryMemento
+	private workspaceMemento: MemoryMemento
 
-	constructor(section?: string, workspacePath?: string) {
+	constructor(section?: string, context?: ExtensionContext) {
 		this.section = section
-		this.workspacePath = workspacePath || process.cwd()
 
-		try {
-			// Get or initialize the settings service
-			this.settingsService = getSettingsService({ workspacePath: this.workspacePath })
-		} catch (error) {
-			// If settings service doesn't exist, create it
-			this.settingsService = getSettingsService({ workspacePath: this.workspacePath })
+		if (context) {
+			// Use the extension context's mementos
+			this.globalMemento = context.globalState as unknown as MemoryMemento
+			this.workspaceMemento = context.workspaceState as unknown as MemoryMemento
+		} else {
+			// Fallback: create our own mementos (shouldn't happen in normal usage)
+			const globalStoragePath = path.join(
+				process.env.HOME || process.env.USERPROFILE || "/tmp",
+				".kilocode-cli",
+				"global-storage",
+			)
+			const workspaceStoragePath = path.join(process.cwd(), ".kilocode-cli", "workspace-storage")
+
+			this.ensureDirectoryExists(globalStoragePath)
+			this.ensureDirectoryExists(workspaceStoragePath)
+
+			this.globalMemento = new MemoryMemento(path.join(globalStoragePath, "configuration.json"))
+			this.workspaceMemento = new MemoryMemento(path.join(workspaceStoragePath, "configuration.json"))
 		}
-
-		// Initialize the settings service and store the promise
-		this.initializationPromise = this.initializeSettingsService()
 	}
 
-	private async initializeSettingsService(): Promise<void> {
+	private ensureDirectoryExists(dirPath: string): void {
 		try {
-			await this.settingsService.initialize()
+			if (!fs.existsSync(dirPath)) {
+				fs.mkdirSync(dirPath, { recursive: true })
+			}
 		} catch (error) {
-			logService.error("Failed to initialize settings service", "VSCode.MockWorkspaceConfiguration", { error })
+			logService.warn(`Failed to create directory ${dirPath}`, "VSCode.MockWorkspaceConfiguration", { error })
 		}
-	}
-
-	private async ensureInitialized(): Promise<void> {
-		await this.initializationPromise
 	}
 
 	get<T>(section: string, defaultValue?: T): T | undefined {
 		const fullSection = this.section ? `${this.section}.${section}` : section
 
-		try {
-			return this.settingsService.get(fullSection, defaultValue)
-		} catch (error) {
-			logService.warn(`Failed to get configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
-				error,
-			})
-			return defaultValue
+		// Check workspace configuration first (higher priority)
+		const workspaceValue = this.workspaceMemento.get(fullSection)
+		if (workspaceValue !== undefined && workspaceValue !== null) {
+			return workspaceValue as T
 		}
+
+		// Check global configuration
+		const globalValue = this.globalMemento.get(fullSection)
+		if (globalValue !== undefined && globalValue !== null) {
+			return globalValue as T
+		}
+
+		// Return default value
+		return defaultValue
 	}
 
 	has(section: string): boolean {
 		const fullSection = this.section ? `${this.section}.${section}` : section
-
-		try {
-			return this.settingsService.has(fullSection)
-		} catch (error) {
-			logService.warn(`Failed to check configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
-				error,
-			})
-			return false
-		}
+		return this.workspaceMemento.get(fullSection) !== undefined || this.globalMemento.get(fullSection) !== undefined
 	}
 
 	inspect<T>(section: string): any {
 		const fullSection = this.section ? `${this.section}.${section}` : section
+		const workspaceValue = this.workspaceMemento.get(fullSection)
+		const globalValue = this.globalMemento.get(fullSection)
 
-		try {
-			const value = this.settingsService.get(fullSection)
-
-			if (value !== undefined) {
-				return {
-					key: fullSection,
-					defaultValue: undefined, // We don't track default values separately
-					globalValue: value,
-					workspaceValue: undefined,
-					workspaceFolderValue: undefined,
-				}
+		if (workspaceValue !== undefined || globalValue !== undefined) {
+			return {
+				key: fullSection,
+				defaultValue: undefined,
+				globalValue: globalValue,
+				workspaceValue: workspaceValue,
+				workspaceFolderValue: undefined,
 			}
-		} catch (error) {
-			logService.warn(`Failed to inspect configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
-				error,
-			})
 		}
 
 		return undefined
@@ -673,10 +676,14 @@ export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 		const fullSection = this.section ? `${this.section}.${section}` : section
 
 		try {
-			// Determine scope based on configuration target
+			// Determine which memento to use based on configuration target
+			const memento =
+				configurationTarget === ConfigurationTarget.Workspace ? this.workspaceMemento : this.globalMemento
+
 			const scope = configurationTarget === ConfigurationTarget.Workspace ? "workspace" : "global"
 
-			await this.settingsService.set(fullSection, value, scope)
+			// Update the memento (this automatically persists to disk)
+			await memento.update(fullSection, value)
 
 			logService.debug(
 				`Configuration updated: ${fullSection} = ${JSON.stringify(value)} (${scope})`,
@@ -691,22 +698,28 @@ export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 	}
 
 	// Additional method to reload configuration from disk
-	public async reload(): Promise<void> {
-		try {
-			await this.settingsService.reload()
-		} catch (error) {
-			logService.error("Failed to reload configuration", "VSCode.MockWorkspaceConfiguration", { error })
-		}
+	public reload(): void {
+		// MemoryMemento automatically loads from disk, so we don't need to do anything special
+		logService.debug("Configuration reload requested", "VSCode.MockWorkspaceConfiguration")
 	}
 
 	// Method to get all configuration data (useful for debugging)
 	public getAllConfig(): Record<string, any> {
-		try {
-			return this.settingsService.getAll()
-		} catch (error) {
-			logService.error("Failed to get all configuration", "VSCode.MockWorkspaceConfiguration", { error })
-			return {}
+		const globalKeys = this.globalMemento.keys()
+		const workspaceKeys = this.workspaceMemento.keys()
+		const allConfig: Record<string, any> = {}
+
+		// Add global settings
+		for (const key of globalKeys) {
+			allConfig[key] = this.globalMemento.get(key)
 		}
+
+		// Add workspace settings (these override global)
+		for (const key of workspaceKeys) {
+			allConfig[key] = this.workspaceMemento.get(key)
+		}
+
+		return allConfig
 	}
 }
 
@@ -939,6 +952,22 @@ export class WindowAPI {
 	}
 }
 
+export interface WorkspaceFolder {
+	uri: Uri
+	name: string
+	index: number
+}
+
+export interface WorkspaceConfiguration {
+	get<T>(section: string): T | undefined
+	get<T>(section: string, defaultValue: T): T
+	has(section: string): boolean
+	inspect<T>(section: string): any
+	update(section: string, value: any, configurationTarget?: ConfigurationTarget): Thenable<void>
+}
+
+// Commands API mock
+
 // Commands API mock
 export class CommandsAPI {
 	private commands: Map<string, (...args: any[]) => any> = new Map()
@@ -1009,7 +1038,7 @@ export const env = {
 // Main VSCode API mock
 export function createVSCodeAPIMock(extensionPath: string, workspacePath: string) {
 	const context = new ExtensionContext(extensionPath, workspacePath)
-	const workspace = new WorkspaceAPI(workspacePath)
+	const workspace = new WorkspaceAPI(workspacePath, context)
 	const window = new WindowAPI()
 	const commands = new CommandsAPI()
 
@@ -1075,7 +1104,21 @@ export function createVSCodeAPIMock(extensionPath: string, workspacePath: string
 		},
 		extensions: {
 			all: [],
-			getExtension: () => undefined,
+			getExtension: (extensionId: string) => {
+				// Mock the extension object with extensionUri for theme loading
+				if (extensionId === "kilocode.kilo-code") {
+					return {
+						id: extensionId,
+						extensionUri: context.extensionUri,
+						extensionPath: context.extensionPath,
+						isActive: true,
+						packageJSON: {},
+						exports: undefined,
+						activate: () => Promise.resolve(),
+					}
+				}
+				return undefined
+			},
 			onDidChange: () => ({ dispose: () => {} }),
 		},
 		// Add file system watcher
