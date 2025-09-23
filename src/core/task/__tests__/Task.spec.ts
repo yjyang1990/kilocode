@@ -1114,9 +1114,11 @@ describe("Cline", () => {
 				await parentIterator.next()
 
 				// Simulate time passing (more than rate limit)
-				const originalDateNow = Date.now
-				const mockTime = Date.now() + (mockApiConfig.rateLimitSeconds + 1) * 1000
-				Date.now = vi.fn(() => mockTime)
+				// kilocode_change start: use performance instead of Date
+				const originalDateNow = performance.now
+				const mockTime = performance.now() + (mockApiConfig.rateLimitSeconds + 1) * 1000
+				performance.now = vi.fn(() => mockTime)
+				// kilocode_change end
 
 				// Create a subtask after time has passed
 				const child = new Task({
@@ -1139,7 +1141,7 @@ describe("Cline", () => {
 				expect(mockDelay).not.toHaveBeenCalled()
 
 				// Restore Date.now
-				Date.now = originalDateNow
+				performance.now = originalDateNow // kilocode_change
 			})
 
 			it("should share rate limiting across multiple subtasks", async () => {
