@@ -2835,6 +2835,10 @@ export class ClineProvider
 			diffStrategy: task?.diffStrategy?.getName(),
 			isSubtask: task ? !!task.parentTask : undefined,
 			...(todos && { todos }),
+			// kilocode_change start
+			currentTaskSize: task?.clineMessages.length ?? 0,
+			taskHistorySize: this.getTaskHistory().length,
+			// kilocode_change end
 		}
 	}
 
@@ -2852,15 +2856,8 @@ export class ClineProvider
 
 	public async getTelemetryProperties(): Promise<TelemetryProperties> {
 		// kilocode_change start
-		const {
-			mode,
-			apiConfiguration,
-			language,
-			experiments, // kilocode_change
-		} = await this.getState()
+		const { apiConfiguration, experiments } = await this.getState()
 		const task = this.getCurrentTask()
-
-		const packageJSON = this.context.extension?.packageJSON
 
 		async function getModelId() {
 			try {
