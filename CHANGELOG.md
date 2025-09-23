@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.28.7
+
+### Patch Changes
+
+- ![3.28.7 Release - Hidden Thinking](/releases/3.28.7-release.png)
+
 ## [3.28.6] - 2025-09-23
 
 ![3.28.6 Release - Kangaroo studying ancient codex](/releases/3.28.6-release.png)
