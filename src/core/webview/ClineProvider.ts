@@ -1884,6 +1884,7 @@ export class ClineProvider
 		// kilocode_change start wrapper information
 		const kiloCodeWrapperProperties = getKiloCodeWrapperProperties()
 		const taskHistory = this.getTaskHistory()
+		this.kiloCodeTaskHistorySizeForTelemetryOnly = taskHistory.length
 		// kilocode_change end
 
 		return {
@@ -2839,6 +2840,10 @@ export class ClineProvider
 			diffStrategy: task?.diffStrategy?.getName(),
 			isSubtask: task ? !!task.parentTask : undefined,
 			...(todos && { todos }),
+			// kilocode_change start
+			currentTaskSize: task?.clineMessages.length,
+			taskHistorySize: this.kiloCodeTaskHistorySizeForTelemetryOnly || undefined,
+			// kilocode_change end
 		}
 	}
 
@@ -2856,15 +2861,8 @@ export class ClineProvider
 
 	public async getTelemetryProperties(): Promise<TelemetryProperties> {
 		// kilocode_change start
-		const {
-			mode,
-			apiConfiguration,
-			language,
-			experiments, // kilocode_change
-		} = await this.getState()
+		const { apiConfiguration, experiments } = await this.getState()
 		const task = this.getCurrentTask()
-
-		const packageJSON = this.context.extension?.packageJSON
 
 		async function getModelId() {
 			try {
@@ -3154,6 +3152,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	}
 
 	private kiloCodeTaskHistoryVersion = 0
+	private kiloCodeTaskHistorySizeForTelemetryOnly = 0
 
 	public getTaskHistory(): HistoryItem[] {
 		return this.getGlobalState("taskHistory") || []
