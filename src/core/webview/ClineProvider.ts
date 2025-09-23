@@ -2837,7 +2837,7 @@ export class ClineProvider
 			isSubtask: task ? !!task.parentTask : undefined,
 			...(todos && { todos }),
 			// kilocode_change start
-			currentTaskSize: task?.clineMessages.length ?? 0,
+			currentTaskSize: task?.clineMessages.length,
 			taskHistorySize: this.kiloCodeTaskHistorySizeForTelemetryOnly || undefined,
 			// kilocode_change end
 		}
