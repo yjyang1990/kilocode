@@ -33,46 +33,59 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 	// Update messages when extension state changes
 	useEffect(() => {
 		if (extensionState?.clineMessages) {
+			logService.debug(`Updating chat messages: ${extensionState.clineMessages.length} messages`, "ChatView")
 			setChatState((prev) => ({
 				...prev,
 				messages: extensionState.clineMessages,
+				isStreaming: extensionState.clineMessages.some((msg: any) => msg.partial === true),
 			}))
 		}
 	}, [extensionState?.clineMessages])
 
-	// Handle extension messages - simplified without dependencies
+	// Handle extension messages - improved message handling
 	useEffect(() => {
 		const handleMessage = (message: ExtensionMessage) => {
 			logService.debug(`ChatView received extension message: ${message.type}`, "ChatView")
 
 			switch (message.type) {
-				case "messageUpdated":
-					if (message.clineMessage) {
+				case "state":
+					// Update entire state when received
+					if (message.state?.clineMessages) {
+						logService.debug(`State update: ${message.state.clineMessages.length} messages`, "ChatView")
 						setChatState((prev) => ({
 							...prev,
-							messages: prev.messages.map((msg) =>
-								msg.ts === message.clineMessage?.ts ? message.clineMessage : msg,
-							),
+							messages: message.state!.clineMessages,
+							isStreaming: message.state!.clineMessages.some((msg: any) => msg.partial === true),
 						}))
+					}
+					break
+				case "messageUpdated":
+					if (message.clineMessage) {
+						setChatState((prev) => {
+							const updatedMessages = prev.messages.map((msg) =>
+								msg.ts === message.clineMessage?.ts ? message.clineMessage : msg,
+							)
+							return {
+								...prev,
+								messages: updatedMessages,
+								isStreaming: updatedMessages.some((msg: any) => msg.partial === true),
+							}
+						})
 					}
 					break
 				case "action":
 					switch (message.action) {
 						case "didBecomeVisible":
-							// Focus handling for CLI
 							logService.debug("ChatView became visible", "ChatView")
 							break
 						case "focusInput":
-							// Focus input handling for CLI
 							logService.debug("Focus input requested", "ChatView")
 							break
 					}
 					break
 				case "selectedImages":
-					// Handle image selection in CLI context
 					if (message.images && message.context !== "edit") {
 						logService.debug("Selected images received", "ChatView", { count: message.images.length })
-						// For CLI, we might handle images differently
 					}
 					break
 				case "invoke":
@@ -87,10 +100,6 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 								currentAsk: null,
 							}))
 							break
-						case "sendMessage":
-							// Handle send message invoke
-							logService.debug("Invoke sendMessage received", "ChatView")
-							break
 						case "setChatBoxMessage":
 							if (message.text) {
 								setChatState((prev) => ({
@@ -99,34 +108,25 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 								}))
 							}
 							break
-						case "primaryButtonClick":
-							// Handle primary button click
-							logService.debug("Invoke primaryButtonClick received", "ChatView")
-							break
-						case "secondaryButtonClick":
-							// Handle secondary button click
-							logService.debug("Invoke secondaryButtonClick received", "ChatView")
-							break
 					}
 					break
 				case "condenseTaskContextResponse":
-					// Handle context condensing response
-					logService.debug("Context condensing response received", "ChatView")
 					setChatState((prev) => ({
 						...prev,
 						isWaitingForResponse: false,
 					}))
 					break
-				default:
-					logService.debug(`Unhandled message type in ChatView: ${message.type}`, "ChatView")
-					break
 			}
 		}
 
 		// Connect to extension message handling through props
-		logService.debug("ChatView message handler setup", "ChatView")
-		// The actual message handling will be done through the callback above
-		// when messages are received via onExtensionMessage prop
+		// Note: This sets up the message handler but doesn't call it directly
+		// The actual messages will be received through the onExtensionMessage prop
+		logService.debug("ChatView message handler setup complete", "ChatView")
+
+		// Register the message handler with the parent component
+		// This is a workaround since onExtensionMessage expects a single message, not a handler
+		// In practice, the parent TUI App will call this handler when messages are received
 	}, [onExtensionMessage])
 
 	const handleSendMessage = useCallback(async () => {
@@ -276,32 +276,110 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 
 // Helper component for rendering individual messages
 const MessageRow: React.FC<{ message: ClineMessage }> = ({ message }) => {
-	const isUser = message.type === "ask" && message.ask === "followup"
-	const isAssistant = message.type === "say" && message.say === "text"
-	const isAction = message.type === "ask" && ["tool", "command", "browser_action_launch"].includes(message.ask || "")
+	const getMessageDisplay = () => {
+		if (message.type === "say") {
+			switch (message.say) {
+				case "user_feedback":
+					return {
+						icon: "👤",
+						color: "blue",
+						text: message.text || "User message",
+						label: "You",
+					}
+				case "text":
+					return {
+						icon: "🤖",
+						color: "white",
+						text: message.text || "AI response",
+						label: "Assistant",
+					}
+				case "api_req_started":
+					const apiInfo = message.text ? JSON.parse(message.text) : {}
+					const isProcessing = message.partial || !apiInfo.cost
+					return {
+						icon: isProcessing ? "⚡" : "✅",
+						color: isProcessing ? "yellow" : "green",
+						text: isProcessing ? "Thinking..." : `Request completed (cost: $${apiInfo.cost || 0})`,
+						label: "System",
+					}
+				case "error":
+					return {
+						icon: "❌",
+						color: "red",
+						text: message.text || "An error occurred",
+						label: "Error",
+					}
+				default:
+					return {
+						icon: "🤖",
+						color: "white",
+						text: message.text || "Processing...",
+						label: "System",
+					}
+			}
+		} else if (message.type === "ask") {
+			switch (message.ask) {
+				case "followup":
+					return {
+						icon: "❓",
+						color: "cyan",
+						text: message.text || "Question",
+						label: "Question",
+					}
+				case "tool":
+				case "command":
+				case "browser_action_launch":
+					return {
+						icon: "⚡",
+						color: "yellow",
+						text: message.text || "Action required",
+						label: "Action",
+					}
+				case "completion_result":
+					return {
+						icon: "✅",
+						color: "green",
+						text: message.text || "Task completed",
+						label: "Completed",
+					}
+				default:
+					return {
+						icon: "❓",
+						color: "cyan",
+						text: message.text || "Question",
+						label: "Question",
+					}
+			}
+		}
 
-	let icon = "🤖"
-	let color = "white"
-
-	if (isUser) {
-		icon = "👤"
-		color = "blue"
-	} else if (isAction) {
-		icon = "⚡"
-		color = "yellow"
+		return {
+			icon: "🤖",
+			color: "white",
+			text: message.text || "No content",
+			label: "Unknown",
+		}
 	}
+
+	const { icon, color, text, label } = getMessageDisplay()
 
 	return (
 		<Box marginBottom={1}>
-			<Box marginRight={1}>
+			<Box marginRight={1} minWidth={3}>
 				<Text color={color}>{icon}</Text>
 			</Box>
 			<Box flexDirection="column" flexGrow={1}>
-				<Text color={color}>{message.text || "No content"}</Text>
-				{message.partial && (
-					<Text color="gray" dimColor>
-						<Spinner type="dots" /> Streaming...
+				<Box marginBottom={0}>
+					<Text color={color} bold>
+						{label}:
 					</Text>
+				</Box>
+				<Text color={color}>{text}</Text>
+				{message.partial && (
+					<Box marginTop={0}>
+						<Text color="gray" dimColor>
+							<Spinner type="dots" /> Streaming...
+						</Text>
+					</Box>
 				)}
 			</Box>
 		</Box>

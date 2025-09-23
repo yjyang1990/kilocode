@@ -1,6 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
 import { logService } from "../services/LogService.js"
+import { getSettingsService, SettingsService } from "../services/SettingsService.js"
 
 // Basic VSCode API types and enums
 export interface Thenable<T> extends Promise<T> {}
@@ -82,6 +83,13 @@ export enum DiagnosticSeverity {
 export enum UIKind {
 	Desktop = 1,
 	Web = 2,
+}
+
+// Extension Mode enum
+export enum ExtensionMode {
+	Production = 1,
+	Development = 2,
+	Test = 3,
 }
 
 // Code Action Kind mock
@@ -222,7 +230,7 @@ export class ExtensionContext {
 	public globalStoragePath: string
 	public logUri: Uri
 	public logPath: string
-	public extensionMode: number = 1 // Production
+	public extensionMode: ExtensionMode = ExtensionMode.Production
 
 	constructor(extensionPath: string, workspacePath: string) {
 		this.extensionPath = extensionPath
@@ -481,8 +489,10 @@ export class WorkspaceAPI {
 	public workspaceFile: Uri | undefined
 	public fs: FileSystemAPI
 	private _onDidChangeWorkspaceFolders = new EventEmitter<any>()
+	private workspacePath: string
 
 	constructor(workspacePath: string) {
+		this.workspacePath = workspacePath
 		this.workspaceFolders = [
 			{
 				uri: Uri.file(workspacePath),
@@ -520,7 +530,7 @@ export class WorkspaceAPI {
 	}
 
 	getConfiguration(section?: string): WorkspaceConfiguration {
-		return new MockWorkspaceConfiguration(section)
+		return new MockWorkspaceConfiguration(section, this.workspacePath)
 	}
 
 	findFiles(include: string, exclude?: string): Thenable<Uri[]> {
@@ -575,37 +585,128 @@ export interface WorkspaceConfiguration {
 	update(section: string, value: any, configurationTarget?: ConfigurationTarget): Thenable<void>
 }
 
-class MockWorkspaceConfiguration implements WorkspaceConfiguration {
+export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 	private section: string | undefined
+	private settingsService: SettingsService
+	private workspacePath: string
+	private initializationPromise: Promise<void>
 
-	constructor(section?: string) {
+	constructor(section?: string, workspacePath?: string) {
 		this.section = section
+		this.workspacePath = workspacePath || process.cwd()
+
+		try {
+			// Get or initialize the settings service
+			this.settingsService = getSettingsService({ workspacePath: this.workspacePath })
+		} catch (error) {
+			// If settings service doesn't exist, create it
+			this.settingsService = getSettingsService({ workspacePath: this.workspacePath })
+		}
+
+		// Initialize the settings service and store the promise
+		this.initializationPromise = this.initializeSettingsService()
+	}
+
+	private async initializeSettingsService(): Promise<void> {
+		try {
+			await this.settingsService.initialize()
+		} catch (error) {
+			logService.error("Failed to initialize settings service", "VSCode.MockWorkspaceConfiguration", { error })
+		}
+	}
+
+	private async ensureInitialized(): Promise<void> {
+		await this.initializationPromise
 	}
 
 	get<T>(section: string, defaultValue?: T): T | undefined {
-		// Return default values for common configurations
 		const fullSection = this.section ? `${this.section}.${section}` : section
 
-		// Add common configuration defaults here
-		const defaults: Record<string, any> = {
-			"kilo-code.allowedCommands": ["git log", "git diff", "git show"],
-			"kilo-code.deniedCommands": [],
-			"kilo-code.commandExecutionTimeout": 0,
+		try {
+			return this.settingsService.get(fullSection, defaultValue)
+		} catch (error) {
+			logService.warn(`Failed to get configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
+				error,
+			})
+			return defaultValue
 		}
-
-		return defaults[fullSection] !== undefined ? defaults[fullSection] : defaultValue
 	}
 
 	has(section: string): boolean {
-		return false // Simplified implementation
+		const fullSection = this.section ? `${this.section}.${section}` : section
+
+		try {
+			return this.settingsService.has(fullSection)
+		} catch (error) {
+			logService.warn(`Failed to check configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
+				error,
+			})
+			return false
+		}
 	}
 
 	inspect<T>(section: string): any {
-		return undefined // Simplified implementation
+		const fullSection = this.section ? `${this.section}.${section}` : section
+
+		try {
+			const value = this.settingsService.get(fullSection)
+
+			if (value !== undefined) {
+				return {
+					key: fullSection,
+					defaultValue: undefined, // We don't track default values separately
+					globalValue: value,
+					workspaceValue: undefined,
+					workspaceFolderValue: undefined,
+				}
+			}
+		} catch (error) {
+			logService.warn(`Failed to inspect configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
+				error,
+			})
+		}
+
+		return undefined
 	}
 
 	async update(section: string, value: any, configurationTarget?: ConfigurationTarget): Promise<void> {
-		// No-op for CLI
+		const fullSection = this.section ? `${this.section}.${section}` : section
+
+		try {
+			// Determine scope based on configuration target
+			const scope = configurationTarget === ConfigurationTarget.Workspace ? "workspace" : "global"
+
+			await this.settingsService.set(fullSection, value, scope)
+
+			logService.debug(
+				`Configuration updated: ${fullSection} = ${JSON.stringify(value)} (${scope})`,
+				"VSCode.MockWorkspaceConfiguration",
+			)
+		} catch (error) {
+			logService.error(`Failed to update configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
+				error,
+			})
+			throw error
+		}
+	}
+
+	// Additional method to reload configuration from disk
+	public async reload(): Promise<void> {
+		try {
+			await this.settingsService.reload()
+		} catch (error) {
+			logService.error("Failed to reload configuration", "VSCode.MockWorkspaceConfiguration", { error })
+		}
+	}
+
+	// Method to get all configuration data (useful for debugging)
+	public getAllConfig(): Record<string, any> {
+		try {
+			return this.settingsService.getAll()
+		} catch (error) {
+			logService.error("Failed to get all configuration", "VSCode.MockWorkspaceConfiguration", { error })
+			return {}
+		}
 	}
 }
 
@@ -677,6 +778,7 @@ export class TabGroupsAPI {
 // Window API mock
 export class WindowAPI {
 	public tabGroups: TabGroupsAPI
+	public visibleTextEditors: any[] = []
 
 	constructor() {
 		this.tabGroups = new TabGroupsAPI()
@@ -721,9 +823,67 @@ export class WindowAPI {
 	}
 
 	registerWebviewViewProvider(viewId: string, provider: any, options?: any): Disposable {
-		// Store the provider for later use
+		// Store the provider for later use by ExtensionHost
+		if ((global as any).__extensionHost) {
+			;(global as any).__extensionHost.registerWebviewProvider(viewId, provider)
+
+			// Set up webview mock that captures messages from the extension
+			const mockWebview = {
+				postMessage: (message: any) => {
+					logService.debug(`Extension sending webview message: ${message.type}`, "VSCode.Webview")
+					// Forward extension messages to ExtensionHost for CLI consumption
+					if ((global as any).__extensionHost) {
+						;(global as any).__extensionHost.emit("extensionWebviewMessage", message)
+					}
+				},
+				onDidReceiveMessage: (listener: (message: any) => void) => {
+					// This is how the extension listens for messages from the webview
+					// We need to connect this to our message bridge
+					if ((global as any).__extensionHost) {
+						;(global as any).__extensionHost.on("webviewMessage", listener)
+					}
+					return { dispose: () => {} }
+				},
+				asWebviewUri: (uri: Uri) => {
+					// Convert file URIs to webview-compatible URIs
+					// For CLI, we can just return a mock webview URI
+					return Uri.parse(`vscode-webview://webview/${uri.path}`)
+				},
+				html: "",
+				options: {},
+				cspSource: "vscode-webview:",
+			}
+
+			// Provide the mock webview to the provider
+			if (provider.resolveWebviewView) {
+				const mockWebviewView = {
+					webview: mockWebview,
+					viewType: viewId,
+					title: viewId,
+					description: undefined,
+					badge: undefined,
+					show: () => {},
+					onDidChangeVisibility: () => ({ dispose: () => {} }),
+					onDidDispose: () => ({ dispose: () => {} }),
+					visible: true,
+				}
+
+				// Call the provider's resolveWebviewView method
+				setTimeout(() => {
+					try {
+						provider.resolveWebviewView(mockWebviewView, { preserveFocus: false }, {})
+					} catch (error) {
+						logService.error("Error resolving webview view", "VSCode.Window", { error })
+					}
+				}, 100)
+			}
+		}
 		return {
-			dispose: () => {},
+			dispose: () => {
+				if ((global as any).__extensionHost) {
+					;(global as any).__extensionHost.unregisterWebviewProvider(viewId)
+				}
+			},
 		}
 	}
 
@@ -819,7 +979,8 @@ export class CommandsAPI {
 // Environment mock
 export const env = {
 	appName: "wrapper|cli|cli|0.0.1",
-	appRoot: process.cwd(),
+	//appRoot: process.cwd(),
+	appRoot: "/home/catrielmuller/Dev/Kilo-Org/kilocode/cli",
 	language: "en",
 	machineId: "cli-machine-id",
 	sessionId: "cli-session-id",
@@ -860,6 +1021,7 @@ export function createVSCodeAPIMock(extensionPath: string, workspacePath: string
 		ViewColumn,
 		DiagnosticSeverity,
 		UIKind,
+		ExtensionMode,
 		CodeActionKind,
 		ThemeColor,
 		DecorationRangeBehavior,

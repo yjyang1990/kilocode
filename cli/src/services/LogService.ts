@@ -23,9 +23,24 @@ export class LogService {
 	private logs: LogEntry[] = []
 	private maxEntries: number = 1000
 	private listeners: Array<(entry: LogEntry) => void> = []
+	private originalConsole: {
+		log: typeof console.log
+		error: typeof console.error
+		warn: typeof console.warn
+		debug: typeof console.debug
+		info: typeof console.info
+	} | null = null
 
 	private constructor() {
 		// Private constructor for singleton pattern
+		// Store original console methods before any interception
+		this.originalConsole = {
+			log: console.log,
+			error: console.error,
+			warn: console.warn,
+			debug: console.debug,
+			info: console.info,
+		}
 	}
 
 	/**
@@ -68,25 +83,32 @@ export class LogService {
 
 	/**
 	 * Output log entry to console with appropriate formatting
+	 * Uses original console methods to avoid circular dependency
 	 */
 	private outputToConsole(entry: LogEntry): void {
+		// Use original console methods to prevent circular dependency
+		if (!this.originalConsole) {
+			// Fallback: if original console not available, skip console output
+			return
+		}
+
 		const timestamp = new Date(entry.timestamp).toISOString()
 		const source = entry.source ? `[${entry.source}]` : ""
 		const prefix = `${timestamp} ${source}`
 
 		switch (entry.level) {
 			case "error":
-				console.error(`${prefix} ERROR:`, entry.message, entry.context || "")
+				this.originalConsole.error(`${prefix} ERROR:`, entry.message, entry.context || "")
 				break
 			case "warn":
-				console.warn(`${prefix} WARN:`, entry.message, entry.context || "")
+				this.originalConsole.warn(`${prefix} WARN:`, entry.message, entry.context || "")
 				break
 			case "debug":
-				console.debug(`${prefix} DEBUG:`, entry.message, entry.context || "")
+				this.originalConsole.debug(`${prefix} DEBUG:`, entry.message, entry.context || "")
 				break
 			case "info":
 			default:
-				console.log(`${prefix} INFO:`, entry.message, entry.context || "")
+				this.originalConsole.log(`${prefix} INFO:`, entry.message, entry.context || "")
 				break
 		}
 	}

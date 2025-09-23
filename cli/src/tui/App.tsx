@@ -82,6 +82,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 				case "messageUpdated":
 					// Handle message updates like the webview does
 					if (message.clineMessage && state.extensionState) {
+						logService.debug(`Updating message with ts: ${message.clineMessage.ts}`, "CLI App")
 						setState((prev) => {
 							if (!prev.extensionState) return prev
 
@@ -92,6 +93,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 							if (lastIndex !== -1) {
 								const newClineMessages = [...prev.extensionState.clineMessages]
 								newClineMessages[lastIndex] = message.clineMessage!
+								logService.debug(`Updated existing message at index ${lastIndex}`, "CLI App")
 								return {
 									...prev,
 									extensionState: {
@@ -101,6 +103,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 								}
 							} else {
 								// Add new message
+								logService.debug(`Adding new message with ts: ${message.clineMessage!.ts}`, "CLI App")
 								return {
 									...prev,
 									extensionState: {
@@ -170,8 +173,9 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 		[state.extensionState],
 	)
 
-	// Global keyboard shortcuts
+	// Global keyboard shortcuts - only handle Ctrl combinations to avoid interfering with child components
 	useInput((input, key) => {
+		// Only process Ctrl key combinations, let other input pass through to child components
 		if (key.ctrl) {
 			logService.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
 			switch (input) {
@@ -202,7 +206,9 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 				default:
 					logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
 			}
+			return // Consume the input when it's a Ctrl combination
 		}
+		// For non-Ctrl input, don't consume it - let child components handle it
 	})
 
 	// Initialize extension state and listen for messages
@@ -294,7 +300,11 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 					<ChatView
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
-						onExtensionMessage={handleExtensionMessage}
+						onExtensionMessage={(message: ExtensionMessage) => {
+							// Forward extension messages to the ChatView
+							logService.debug(`Forwarding message to ChatView: ${message.type}`, "CLI App")
+							handleExtensionMessage(message)
+						}}
 					/>
 				)}
 				{state.currentView === "history" && (

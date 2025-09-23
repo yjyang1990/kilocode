@@ -31,6 +31,8 @@ export class ExtensionHost extends EventEmitter {
 		debug: typeof console.debug
 		info: typeof console.info
 	} | null = null
+	private processedWebviewMessages = new Set<string>()
+	private lastWebviewLaunchTime = 0
 
 	constructor(options: ExtensionHostOptions) {
 		super()
@@ -100,6 +102,8 @@ export class ExtensionHost extends EventEmitter {
 			this.extensionAPI = null
 			this.vscodeAPI = null
 			this.webviewProviders.clear()
+			this.processedWebviewMessages.clear()
+			this.lastWebviewLaunchTime = 0
 			this.removeAllListeners()
 
 			logService.info("Extension deactivated", "ExtensionHost")
@@ -113,7 +117,7 @@ export class ExtensionHost extends EventEmitter {
 		try {
 			logService.debug(`Processing webview message: ${message.type}`, "ExtensionHost")
 
-			if (!this.isActivated || !this.extensionAPI) {
+			if (!this.isActivated) {
 				logService.warn("Extension not activated, ignoring message", "ExtensionHost")
 				return
 			}
@@ -121,6 +125,13 @@ export class ExtensionHost extends EventEmitter {
 			// Handle different message types
 			switch (message.type) {
 				case "webviewDidLaunch":
+					// Prevent rapid-fire webviewDidLaunch messages
+					const now = Date.now()
+					if (now - this.lastWebviewLaunchTime < 1000) {
+						logService.debug("Ignoring webviewDidLaunch - too soon after last one", "ExtensionHost")
+						return
+					}
+					this.lastWebviewLaunchTime = now
 					await this.handleWebviewLaunch()
 					break
 
@@ -174,9 +185,39 @@ export class ExtensionHost extends EventEmitter {
 					}
 					break
 
+				case "upsertApiConfiguration":
+					// Handle API configuration updates with persistence
+					if (message.text && message.apiConfiguration) {
+						try {
+							// Update local state immediately
+							if (this.currentState) {
+								this.currentState.apiConfiguration = {
+									...this.currentState.apiConfiguration,
+									...message.apiConfiguration,
+								}
+								this.currentState.currentApiConfigName = message.text
+
+								// Persist the API configuration to VSCode configuration
+								await this.persistApiConfiguration(message.text, message.apiConfiguration)
+
+								this.broadcastStateUpdate()
+							}
+							logService.debug(
+								`Updated and persisted API configuration: ${message.text}`,
+								"ExtensionHost",
+							)
+						} catch (error) {
+							logService.error("Error updating API configuration", "ExtensionHost", { error })
+						}
+					}
+					break
+
 				default:
 					logService.debug(`Unhandled webview message type: ${message.type}`, "ExtensionHost")
 			}
+
+			// Also emit the message for the webview provider to handle
+			this.emit("webviewMessage", message)
 		} catch (error) {
 			logService.error("Error handling webview message", "ExtensionHost", { error })
 			this.emit("error", error)
@@ -189,6 +230,9 @@ export class ExtensionHost extends EventEmitter {
 
 		// Set global vscode object for the extension
 		;(global as any).vscode = this.vscodeAPI
+
+		// Set global reference to this ExtensionHost for webview provider registration
+		;(global as any).__extensionHost = this
 
 		// Set environment variables to disable problematic features in CLI mode
 		process.env.KILO_CLI_MODE = "true"
@@ -211,32 +255,39 @@ export class ExtensionHost extends EventEmitter {
 		}
 
 		// Override console methods to forward to LogService ONLY (no console output)
+		// IMPORTANT: Use original console methods to avoid circular dependency
 		console.log = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			// Use LogService but bypass its console output to prevent circular calls
 			logService.info(message, "Extension")
 		}
 
 		console.error = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			// Use LogService but bypass its console output to prevent circular calls
 			logService.error(message, "Extension")
 		}
 
 		console.warn = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			// Use LogService but bypass its console output to prevent circular calls
 			logService.warn(message, "Extension")
 		}
 
 		console.debug = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			// Use LogService but bypass its console output to prevent circular calls
 			logService.debug(message, "Extension")
 		}
 
 		console.info = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+			// Use LogService but bypass its console output to prevent circular calls
 			logService.info(message, "Extension")
 		}
 
-		logService.debug("Console interception setup complete", "ExtensionHost")
+		// Use original console for this log to avoid circular dependency during setup
+		this.originalConsole.debug("Console interception setup complete")
 	}
 
 	private restoreConsole(): void {
@@ -322,9 +373,102 @@ export class ExtensionHost extends EventEmitter {
 
 			// Initialize state from extension
 			this.initializeState()
+
+			// Set up message listener to receive updates from the extension
+			this.setupExtensionMessageListener()
 		} catch (error) {
 			logService.error("Extension activation failed", "ExtensionHost", { error })
 			throw error
+		}
+	}
+
+	private setupExtensionMessageListener(): void {
+		// Listen for extension state updates and forward them
+		if (this.vscodeAPI && this.vscodeAPI.context) {
+			// The extension will update state through the webview provider
+			// We need to listen for those updates and forward them to the CLI
+			logService.debug("Setting up extension message listener", "ExtensionHost")
+
+			// Track message IDs to prevent infinite loops
+			const processedMessageIds = new Set<string>()
+
+			// Listen for messages from the extension's webview (postMessage calls)
+			this.on("extensionWebviewMessage", (message: any) => {
+				// Create a unique ID for this message to prevent loops
+				const messageId = `${message.type}_${Date.now()}_${JSON.stringify(message).slice(0, 50)}`
+
+				if (processedMessageIds.has(messageId)) {
+					logService.debug(`Skipping duplicate message: ${message.type}`, "ExtensionHost")
+					return
+				}
+
+				processedMessageIds.add(messageId)
+
+				// Clean up old message IDs to prevent memory leaks
+				if (processedMessageIds.size > 100) {
+					const oldestIds = Array.from(processedMessageIds).slice(0, 50)
+					oldestIds.forEach((id) => processedMessageIds.delete(id))
+				}
+
+				logService.debug(`Received extension webview message: ${message.type}`, "ExtensionHost")
+
+				// Only forward specific message types that are important for CLI
+				switch (message.type) {
+					case "state":
+						// Extension is sending a full state update
+						if (message.state && this.currentState) {
+							// Update our state with the extension's state, particularly clineMessages
+							this.currentState = {
+								...this.currentState,
+								...message.state,
+								clineMessages: message.state.clineMessages || this.currentState.clineMessages,
+							}
+
+							// Forward the updated state to the CLI
+							this.emit("message", {
+								type: "state",
+								state: this.currentState,
+							})
+						}
+						break
+
+					case "messageUpdated":
+						// Extension is sending an individual message update
+						if (message.clineMessage) {
+							// Forward the message update to the CLI
+							this.emit("message", {
+								type: "messageUpdated",
+								clineMessage: message.clineMessage,
+							})
+						}
+						break
+
+					// Don't forward these message types as they can cause loops
+					case "mcpServers":
+					case "theme":
+					case "listApiConfig":
+					case "rulesData":
+						logService.debug(
+							`Ignoring extension message type to prevent loops: ${message.type}`,
+							"ExtensionHost",
+						)
+						break
+
+					default:
+						// Only forward other important messages
+						if (message.type && !message.type.startsWith("_")) {
+							logService.debug(`Forwarding extension message: ${message.type}`, "ExtensionHost")
+							this.emit("message", message)
+						}
+						break
+				}
+			})
+
+			// Set up webview message handler for messages TO the extension
+			this.on("webviewMessage", (message: any) => {
+				logService.debug(`Handling webview message from CLI to extension: ${message.type}`, "ExtensionHost")
+				// These are messages from the CLI that need to be sent to the extension
+			})
 		}
 	}
 
@@ -349,8 +493,9 @@ export class ExtensionHost extends EventEmitter {
 			mcpServers: [],
 		}
 
-		// Broadcast initial state
-		setTimeout(() => {
+		// Load persisted configuration and then broadcast state
+		setTimeout(async () => {
+			await this.loadPersistedConfiguration()
 			this.broadcastStateUpdate()
 		}, 200)
 	}
@@ -361,16 +506,41 @@ export class ExtensionHost extends EventEmitter {
 	}
 
 	private async handleNewTask(text: string, images?: string[]): Promise<void> {
-		// Simulate task creation through the extension API
-		if (this.extensionAPI && typeof this.extensionAPI.startNewTask === "function") {
-			try {
+		logService.debug("Handling new task", "ExtensionHost", { text, images })
+
+		try {
+			// Forward the new task to the real extension API
+			if (this.extensionAPI && typeof this.extensionAPI.startNewTask === "function") {
 				await this.extensionAPI.startNewTask({
 					configuration: this.currentState?.apiConfiguration || {},
 					text,
 					images,
 				})
-			} catch (error) {
-				logService.error("Error starting new task", "ExtensionHost", { error })
+				logService.debug("Successfully forwarded new task to extension API", "ExtensionHost")
+			} else {
+				logService.warn("Extension API startNewTask not available", "ExtensionHost")
+
+				// If extension API is not available, we need to handle this gracefully
+				// The extension should populate clineMessages through its normal flow
+				if (this.currentState) {
+					// Just broadcast current state to ensure UI is updated
+					this.broadcastStateUpdate()
+				}
+			}
+		} catch (error) {
+			logService.error("Error handling new task", "ExtensionHost", { error })
+
+			// Create error message for user if extension fails
+			if (this.currentState) {
+				const errorMessage = {
+					ts: Date.now(),
+					type: "say" as const,
+					say: "error" as const,
+					text: `Error starting task: ${error instanceof Error ? error.message : String(error)}`,
+				}
+
+				this.currentState.clineMessages = [...this.currentState.clineMessages, errorMessage]
+				this.broadcastStateUpdate()
 			}
 		}
 	}
@@ -379,12 +549,16 @@ export class ExtensionHost extends EventEmitter {
 		// Handle user response to AI questions
 		logService.debug(`Handling ask response: ${askResponse}`, "ExtensionHost", { text, images })
 
-		if (this.extensionAPI && typeof this.extensionAPI.sendMessage === "function") {
-			try {
+		try {
+			// Forward the ask response to the real extension API
+			if (this.extensionAPI && typeof this.extensionAPI.sendMessage === "function") {
 				await this.extensionAPI.sendMessage({ askResponse, text, images })
-			} catch (error) {
-				logService.error("Error sending ask response", "ExtensionHost", { error })
+				logService.debug("Successfully forwarded ask response to extension API", "ExtensionHost")
+			} else {
+				logService.warn("Extension API sendMessage not available", "ExtensionHost")
 			}
+		} catch (error) {
+			logService.error("Error handling ask response", "ExtensionHost", { error })
 		}
 	}
 
@@ -483,8 +657,63 @@ export class ExtensionHost extends EventEmitter {
 				type: "state",
 				state: this.currentState,
 			}
-			logService.debug("Broadcasting state update", "ExtensionHost")
+			logService.debug("Broadcasting state update", "ExtensionHost", {
+				messageCount: this.currentState.clineMessages.length,
+				mode: this.currentState.mode,
+			})
 			this.emit("message", stateMessage)
+		}
+	}
+
+	private async persistApiConfiguration(configName: string, apiConfiguration: any): Promise<void> {
+		try {
+			// Get the workspace configuration and persist the API settings
+			const config = this.vscodeAPI.workspace.getConfiguration("kilo-code")
+
+			// Store individual API configuration fields
+			for (const [key, value] of Object.entries(apiConfiguration)) {
+				if (value !== undefined && value !== null) {
+					await config.update(key, value, this.vscodeAPI.ConfigurationTarget.Global)
+				}
+			}
+
+			// Store the current API configuration name
+			await config.update("currentApiConfigName", configName, this.vscodeAPI.ConfigurationTarget.Global)
+
+			logService.debug(`Persisted API configuration: ${configName}`, "ExtensionHost")
+		} catch (error) {
+			logService.error("Failed to persist API configuration", "ExtensionHost", { error })
+			throw error
+		}
+	}
+
+	private async loadPersistedConfiguration(): Promise<void> {
+		try {
+			const config = this.vscodeAPI.workspace.getConfiguration("kilo-code")
+
+			// Load persisted API configuration
+			const persistedConfig = {
+				apiProvider: config.get("apiProvider", "kilocode"),
+				kilocodeToken: config.get("kilocodeToken", ""),
+				kilocodeModel: config.get("kilocodeModel", "anthropic/claude-sonnet-4"),
+				kilocodeOrganizationId: config.get("kilocodeOrganizationId", ""),
+				// Add other API configuration fields as needed
+			}
+
+			const currentApiConfigName = config.get("currentApiConfigName", "default")
+
+			// Update current state with persisted configuration
+			if (this.currentState) {
+				this.currentState.apiConfiguration = {
+					...this.currentState.apiConfiguration,
+					...persistedConfig,
+				}
+				this.currentState.currentApiConfigName = currentApiConfigName
+			}
+
+			logService.debug("Loaded persisted configuration", "ExtensionHost", { currentApiConfigName })
+		} catch (error) {
+			logService.warn("Failed to load persisted configuration", "ExtensionHost", { error })
 		}
 	}
 
@@ -502,6 +731,17 @@ export class ExtensionHost extends EventEmitter {
 				}
 			},
 		}
+	}
+
+	// Methods for webview provider registration (called from VSCode API mock)
+	registerWebviewProvider(viewId: string, provider: any): void {
+		this.webviewProviders.set(viewId, provider)
+		logService.debug(`Registered webview provider: ${viewId}`, "ExtensionHost")
+	}
+
+	unregisterWebviewProvider(viewId: string): void {
+		this.webviewProviders.delete(viewId)
+		logService.debug(`Unregistered webview provider: ${viewId}`, "ExtensionHost")
 	}
 }
 
