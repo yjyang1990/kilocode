@@ -1,10 +1,13 @@
 # Roo Code Changelog
 
-## 3.28.7
+## [3.28.7] - 2025-09-23
 
-### Patch Changes
+![3.28.7 Release - Hidden Thinking](/releases/3.28.7-release.png)
 
-- ![3.28.7 Release - Hidden Thinking](/releases/3.28.7-release.png)
+- UX: Collapse thinking blocks by default with UI settings to always show them (thanks @brunobergher!)
+- Fix: Resolve checkpoint restore popover positioning issue (#8219 by @NaccOll, PR by @app/roomote)
+- Add cloud account switcher functionality (thanks @mrubens!)
+- Add support for zai-org/GLM-4.5-turbo model in Chutes provider (#8155 by @mugnimaestra, PR by @app/roomote)
 
 ## [3.28.6] - 2025-09-23
 
