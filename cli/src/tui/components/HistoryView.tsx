@@ -8,6 +8,7 @@ interface HistoryViewProps {
 	extensionState: ExtensionState | null
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	onBack: () => void
+	lastExtensionMessage?: any
 }
 
 interface HistoryState {
@@ -16,7 +17,12 @@ interface HistoryState {
 	isLoading: boolean
 }
 
-export const HistoryView: React.FC<HistoryViewProps> = ({ extensionState, sendMessage, onBack }) => {
+export const HistoryView: React.FC<HistoryViewProps> = ({
+	extensionState,
+	sendMessage,
+	onBack,
+	lastExtensionMessage,
+}) => {
 	const [historyState, setHistoryState] = useState<HistoryState>({
 		tasks: [],
 		selectedIndex: 0,
@@ -46,6 +52,26 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ extensionState, sendMe
 
 		loadHistory()
 	}, [sendMessage])
+
+	// Listen for extension messages, specifically taskHistoryResponse
+	useEffect(() => {
+		if (
+			lastExtensionMessage &&
+			lastExtensionMessage.type === "taskHistoryResponse" &&
+			lastExtensionMessage.payload
+		) {
+			logService.debug("Received taskHistoryResponse in HistoryView", "HistoryView", {
+				payload: lastExtensionMessage.payload,
+			})
+
+			// Update history state with the received data
+			setHistoryState((prev) => ({
+				...prev,
+				tasks: lastExtensionMessage.payload.historyItems || [],
+				isLoading: false,
+			}))
+		}
+	}, [lastExtensionMessage])
 
 	const handleTaskSelect = async (item: any) => {
 		try {

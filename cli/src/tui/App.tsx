@@ -28,6 +28,7 @@ interface AppState {
 	extensionState: ExtensionState | null
 	isLoading: boolean
 	error: string | null
+	lastExtensionMessage: ExtensionMessage | null
 }
 
 const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
@@ -37,6 +38,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 		extensionState: null,
 		isLoading: true,
 		error: null,
+		lastExtensionMessage: null,
 	})
 
 	// Handle extension messages
@@ -164,6 +166,15 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 							// Could add a flag to indicate condensing is complete
 						}))
 					}
+					break
+				case "taskHistoryResponse":
+					// Handle task history response
+					logService.debug("Received taskHistoryResponse", "CLI App")
+					// Store the message so it can be passed to the HistoryView
+					setState((prev) => ({
+						...prev,
+						lastExtensionMessage: message,
+					}))
 					break
 				default:
 					logService.info(`Unhandled extension message: ${message.type}`, "CLI App")
@@ -312,6 +323,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
 						onBack={() => switchView("chat")}
+						lastExtensionMessage={state.lastExtensionMessage}
 					/>
 				)}
 				{state.currentView === "settings" && (

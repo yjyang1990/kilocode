@@ -443,6 +443,17 @@ export class ExtensionHost extends EventEmitter {
 						}
 						break
 
+					case "taskHistoryResponse":
+						// Extension is sending task history data
+						if (message.payload) {
+							// Forward the task history response to the CLI
+							this.emit("message", {
+								type: "taskHistoryResponse",
+								payload: message.payload,
+							})
+						}
+						break
+
 					// Don't forward these message types as they can cause loops
 					case "mcpServers":
 					case "theme":
