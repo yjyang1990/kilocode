@@ -7,6 +7,7 @@ interface McpViewProps {
 	extensionState: ExtensionState | null
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	onBack: () => void
+	sidebarVisible?: boolean
 }
 
 interface McpState {
@@ -16,7 +17,7 @@ interface McpState {
 	selectedServer: McpServer | null
 }
 
-export const McpView: React.FC<McpViewProps> = ({ extensionState, sendMessage, onBack }) => {
+export const McpView: React.FC<McpViewProps> = ({ extensionState, sendMessage, onBack, sidebarVisible = false }) => {
 	const [mcpState, setMcpState] = useState<McpState>({
 		servers: [],
 		selectedIndex: 0,
@@ -66,13 +67,10 @@ export const McpView: React.FC<McpViewProps> = ({ extensionState, sendMessage, o
 	}
 
 	useInput((input, key) => {
-		if (key.escape) {
-			if (mcpState.showingDetails) {
-				setMcpState((prev) => ({ ...prev, showingDetails: false, selectedServer: null }))
-			} else {
-				onBack()
-			}
-		} else if (input === "t" && mcpState.selectedServer) {
+		// Don't handle input when sidebar is visible
+		if (sidebarVisible) return
+
+		if (input === "t" && mcpState.selectedServer) {
 			handleToggleServer(mcpState.selectedServer.name, mcpState.selectedServer.disabled || false)
 		} else if (input === "r" && mcpState.selectedServer) {
 			handleRestartServer(mcpState.selectedServer.name)
@@ -139,8 +137,7 @@ export const McpView: React.FC<McpViewProps> = ({ extensionState, sendMessage, o
 				{/* Footer */}
 				<Box borderStyle="single" borderColor="gray" paddingX={1}>
 					<Text color="gray">
-						<Text color="blue">t</Text> to toggle, <Text color="yellow">r</Text> to restart,{" "}
-						<Text color="gray">Esc</Text> to go back
+						<Text color="blue">t</Text> to toggle, <Text color="yellow">r</Text> to restart
 					</Text>
 				</Box>
 			</Box>
@@ -175,7 +172,17 @@ export const McpView: React.FC<McpViewProps> = ({ extensionState, sendMessage, o
 						<Box marginBottom={1}>
 							<Text color="gray">Select a server to view details:</Text>
 						</Box>
-						<SelectInput items={serverItems} onSelect={handleServerSelect} />
+						{sidebarVisible ? (
+							<Box flexDirection="column">
+								{serverItems.map((item, index) => (
+									<Text key={item.value} color="white">
+										{item.label}
+									</Text>
+								))}
+							</Box>
+						) : (
+							<SelectInput items={serverItems} onSelect={handleServerSelect} />
+						)}
 					</>
 				)}
 			</Box>
@@ -183,7 +190,7 @@ export const McpView: React.FC<McpViewProps> = ({ extensionState, sendMessage, o
 			{/* Footer */}
 			<Box borderStyle="single" borderColor="gray" paddingX={1}>
 				<Text color="gray">
-					<Text color="blue">Enter</Text> to view details, <Text color="gray">Esc</Text> to go back
+					<Text color="blue">Enter</Text> to view details
 				</Text>
 			</Box>
 		</Box>

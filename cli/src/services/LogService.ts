@@ -86,30 +86,50 @@ export class LogService {
 	 * Uses original console methods to avoid circular dependency
 	 */
 	private outputToConsole(entry: LogEntry): void {
+		// GUARD: Prevent recursive logging by checking if we're already in a logging call
+		if ((this as any)._isLogging) {
+			return
+		}
+
 		// Use original console methods to prevent circular dependency
 		if (!this.originalConsole) {
 			// Fallback: if original console not available, skip console output
 			return
 		}
 
-		const timestamp = new Date(entry.timestamp).toISOString()
-		const source = entry.source ? `[${entry.source}]` : ""
-		const prefix = `${timestamp} ${source}`
+		// Set flag to prevent recursion
+		;(this as any)._isLogging = true
 
-		switch (entry.level) {
-			case "error":
-				this.originalConsole.error(`${prefix} ERROR:`, entry.message, entry.context || "")
-				break
-			case "warn":
-				this.originalConsole.warn(`${prefix} WARN:`, entry.message, entry.context || "")
-				break
-			case "debug":
-				this.originalConsole.debug(`${prefix} DEBUG:`, entry.message, entry.context || "")
-				break
-			case "info":
-			default:
-				this.originalConsole.log(`${prefix} INFO:`, entry.message, entry.context || "")
-				break
+		try {
+			const timestamp = new Date(entry.timestamp).toISOString()
+			const source = entry.source ? `[${entry.source}]` : ""
+			const prefix = `${timestamp} ${source}`
+
+			// DIAGNOSTIC: Check if our "original" console methods are actually original
+			const isOriginalConsole = this.originalConsole.error.toString().includes("[native code]")
+			if (!isOriginalConsole) {
+				// Our "original" console is actually intercepted - skip to prevent loop
+				return
+			}
+
+			switch (entry.level) {
+				case "error":
+					this.originalConsole.error(`${prefix} ERROR:`, entry.message, entry.context || "")
+					break
+				case "warn":
+					this.originalConsole.warn(`${prefix} WARN:`, entry.message, entry.context || "")
+					break
+				case "debug":
+					this.originalConsole.debug(`${prefix} DEBUG:`, entry.message, entry.context || "")
+					break
+				case "info":
+				default:
+					this.originalConsole.log(`${prefix} INFO:`, entry.message, entry.context || "")
+					break
+			}
+		} finally {
+			// Always clear the flag
+			;(this as any)._isLogging = false
 		}
 	}
 

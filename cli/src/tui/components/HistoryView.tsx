@@ -9,6 +9,7 @@ interface HistoryViewProps {
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	onBack: () => void
 	lastExtensionMessage?: any
+	sidebarVisible?: boolean
 }
 
 interface HistoryState {
@@ -22,6 +23,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 	sendMessage,
 	onBack,
 	lastExtensionMessage,
+	sidebarVisible = false,
 }) => {
 	const [historyState, setHistoryState] = useState<HistoryState>({
 		tasks: [],
@@ -102,9 +104,10 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 	}
 
 	useInput((input, key) => {
-		if (key.escape) {
-			onBack()
-		} else if (input === "d" && historyState.tasks.length > 0) {
+		// Don't handle input when sidebar is visible
+		if (sidebarVisible) return
+
+		if (input === "d" && historyState.tasks.length > 0) {
 			const selectedTask = historyState.tasks[historyState.selectedIndex]
 			if (selectedTask) {
 				handleDeleteTask(selectedTask.id)
@@ -115,7 +118,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 	if (historyState.isLoading) {
 		return (
 			<Box flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-				<Text color="blue">📚 Loading task history...</Text>
+				<Text color="blue">Loading task history...</Text>
 			</Box>
 		)
 	}
@@ -128,7 +131,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 					Create your first task in the chat view
 				</Text>
 				<Text color="gray" dimColor>
-					Press Esc to go back
+					Use the navigation menu to switch views
 				</Text>
 			</Box>
 		)
@@ -140,24 +143,33 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 	}))
 
 	return (
-		<Box flexDirection="column" height="100%">
+		<Box flexDirection="column" height="100%" paddingX={1} paddingY={1}>
 			{/* Header */}
 			<Box borderStyle="single" borderColor="blue" paddingX={1}>
 				<Text color="blue" bold>
-					📚 Task History ({historyState.tasks.length} tasks)
+					Task History ({historyState.tasks.length} tasks)
 				</Text>
 			</Box>
 
 			{/* Task list */}
-			<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
-				<SelectInput items={taskItems} onSelect={handleTaskSelect} />
+			<Box flexDirection="column" flexGrow={1}>
+				{sidebarVisible ? (
+					<Box flexDirection="column">
+						{taskItems.map((item, index) => (
+							<Text key={item.value} color="white">
+								{item.label}
+							</Text>
+						))}
+					</Box>
+				) : (
+					<SelectInput items={taskItems} onSelect={handleTaskSelect} />
+				)}
 			</Box>
 
 			{/* Footer */}
-			<Box borderStyle="single" borderColor="gray" paddingX={1}>
+			<Box marginTop={1} borderStyle="single" borderColor="gray" paddingX={1}>
 				<Text color="gray">
-					<Text color="blue">Enter</Text> to open task, <Text color="red">d</Text> to delete,{" "}
-					<Text color="gray">Esc</Text> to go back
+					<Text color="blue">Enter</Text> to open task, <Text color="red">d</Text> to delete
 				</Text>
 			</Box>
 		</Box>

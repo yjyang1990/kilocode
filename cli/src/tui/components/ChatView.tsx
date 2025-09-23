@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import { Box, Text, useInput } from "ink"
 import TextInput from "ink-text-input"
 import Spinner from "ink-spinner"
+import { ScrollBox } from "@sasaplus1/ink-scroll-box"
 import { logService } from "../../services/LogService.js"
 import type { ExtensionState, WebviewMessage, ExtensionMessage, ClineMessage } from "../../types/messages.js"
 
@@ -9,6 +10,7 @@ interface ChatViewProps {
 	extensionState: ExtensionState | null
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	onExtensionMessage: (message: ExtensionMessage) => void
+	sidebarVisible?: boolean
 }
 
 interface ChatState {
@@ -19,7 +21,12 @@ interface ChatState {
 	currentAsk: string | null
 }
 
-export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage, onExtensionMessage }) => {
+export const ChatView: React.FC<ChatViewProps> = ({
+	extensionState,
+	sendMessage,
+	onExtensionMessage,
+	sidebarVisible = false,
+}) => {
 	const [chatState, setChatState] = useState<ChatState>({
 		messages: [],
 		inputValue: "",
@@ -29,6 +36,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 	})
 
 	const [inputMode, setInputMode] = useState<"normal" | "input">("normal")
+	const [scrollOffset, setScrollOffset] = useState(0)
 
 	// Update messages when extension state changes
 	useEffect(() => {
@@ -186,6 +194,9 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 
 	// Local input handling - only when in chat view and not in input mode
 	useInput((input, key) => {
+		// Don't handle input when sidebar is visible
+		if (sidebarVisible) return
+
 		if (inputMode === "input") {
 			return // Let TextInput handle it
 		}
@@ -201,8 +212,23 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 			handleApprove()
 		} else if (input === "n" && chatState.currentAsk) {
 			handleReject()
+		} else if (key.upArrow && chatState.messages.length > 0) {
+			// Scroll up - decrease offset to show earlier messages
+			setScrollOffset((prev) => Math.max(0, prev - 1))
+		} else if (key.downArrow && chatState.messages.length > 0) {
+			// Scroll down - increase offset to show later messages
+			setScrollOffset((prev) => prev + 1)
 		}
 	})
+
+	// Auto-scroll to bottom when new messages arrive - keep user's scroll position unless they're at bottom
+	useEffect(() => {
+		if (chatState.messages.length > 0) {
+			// Only auto-scroll if user was already at the bottom (scrollOffset is 0)
+			// This preserves user's scroll position when they're reading older messages
+			setScrollOffset((prev) => (prev === 0 ? 0 : prev))
+		}
+	}, [chatState.messages.length])
 
 	// Determine if we have an active ask
 	const lastMessage = chatState.messages[chatState.messages.length - 1]
@@ -213,32 +239,48 @@ export const ChatView: React.FC<ChatViewProps> = ({ extensionState, sendMessage,
 			{/* Header */}
 			<Box borderStyle="single" borderColor="blue" paddingX={1}>
 				<Text color="blue" bold>
-					💬 Chat - {extensionState?.mode || "code"} mode
+					Chat - Mode: {extensionState?.mode || "code"}
+					{chatState.isStreaming && <Text color="yellow"> | Thinking...</Text>}
 				</Text>
-				{chatState.isStreaming && (
-					<Box marginLeft={1}>
-						<Spinner type="dots" />
-						<Text color="yellow"> Thinking...</Text>
-					</Box>
-				)}
 			</Box>
 
 			{/* Messages area */}
 			<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
 				{chatState.messages.length === 0 ? (
 					<Box flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-						<Text color="gray">🤖 Welcome to Kilo Code CLI!</Text>
+						<Text color="blue" bold>
+							Welcome to Kilo Code CLI!
+						</Text>
 						<Text color="gray">Type your task or question and press Enter to start.</Text>
 						<Text color="gray" dimColor>
 							Press Enter to start typing, y/n to approve/reject actions
 						</Text>
+						<Text color="gray" dimColor>
+							Press Esc to open the navigation menu
+						</Text>
+						{chatState.isStreaming && (
+							<Box marginTop={1}>
+								<Spinner type="dots" />
+								<Text color="yellow"> Thinking...</Text>
+							</Box>
+						)}
 					</Box>
 				) : (
-					<Box flexDirection="column">
-						{chatState.messages.slice(-10).map((message, index) => (
-							<MessageRow key={message.ts} message={message} />
-						))}
-					</Box>
+					<ScrollBox height="100%" offset={scrollOffset}>
+						{[
+							...(chatState.isStreaming
+								? [
+										<Box key="spinner" paddingX={1} marginBottom={1}>
+											<Spinner type="dots" />
+											<Text color="yellow"> Thinking...</Text>
+										</Box>,
+									]
+								: []),
+							...chatState.messages.map((message, index) => (
+								<MessageRow key={message.ts} message={message} />
+							)),
+						]}
+					</ScrollBox>
 				)}
 			</Box>
 

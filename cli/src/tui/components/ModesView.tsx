@@ -7,6 +7,7 @@ interface ModesViewProps {
 	extensionState: ExtensionState | null
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	onBack: () => void
+	sidebarVisible?: boolean
 }
 
 interface ModesState {
@@ -23,7 +24,12 @@ const defaultModes = [
 	{ slug: "test", name: "Test", description: "Write and maintain tests" },
 ]
 
-export const ModesView: React.FC<ModesViewProps> = ({ extensionState, sendMessage, onBack }) => {
+export const ModesView: React.FC<ModesViewProps> = ({
+	extensionState,
+	sendMessage,
+	onBack,
+	sidebarVisible = false,
+}) => {
 	const [modesState, setModesState] = useState<ModesState>({
 		modes: defaultModes,
 		currentMode: extensionState?.mode || "code",
@@ -50,15 +56,16 @@ export const ModesView: React.FC<ModesViewProps> = ({ extensionState, sendMessag
 			})
 
 			setModesState((prev) => ({ ...prev, currentMode: item.value }))
+
+			// Navigate back to chat after switching mode
+			onBack()
 		} catch (error) {
 			console.error("Failed to switch mode:", error)
 		}
 	}
 
 	useInput((input, key) => {
-		if (key.escape) {
-			onBack()
-		}
+		// No keyboard shortcuts needed for this view
 	})
 
 	const modeItems = modesState.modes.map((mode) => ({
@@ -71,7 +78,7 @@ export const ModesView: React.FC<ModesViewProps> = ({ extensionState, sendMessag
 			{/* Header */}
 			<Box borderStyle="single" borderColor="blue" paddingX={1}>
 				<Text color="blue" bold>
-					🎭 Modes - Current: {modesState.currentMode}
+					Modes - Current: {modesState.currentMode}
 				</Text>
 			</Box>
 
@@ -80,13 +87,24 @@ export const ModesView: React.FC<ModesViewProps> = ({ extensionState, sendMessag
 				<Box marginBottom={1}>
 					<Text color="gray">Select a mode to switch to:</Text>
 				</Box>
-				<SelectInput items={modeItems} onSelect={handleModeSelect} />
+				{sidebarVisible ? (
+					<Box flexDirection="column">
+						{modeItems.map((item, index) => (
+							<Text key={item.value} color={item.value === modesState.currentMode ? "cyan" : "white"}>
+								{item.value === modesState.currentMode ? "❯ " : "  "}
+								{item.label}
+							</Text>
+						))}
+					</Box>
+				) : (
+					<SelectInput items={modeItems} onSelect={handleModeSelect} />
+				)}
 			</Box>
 
 			{/* Footer */}
 			<Box borderStyle="single" borderColor="gray" paddingX={1}>
 				<Text color="gray">
-					<Text color="blue">Enter</Text> to switch mode, <Text color="gray">Esc</Text> to go back
+					<Text color="blue">Enter</Text> to switch mode
 				</Text>
 			</Box>
 		</Box>

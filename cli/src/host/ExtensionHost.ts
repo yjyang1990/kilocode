@@ -31,6 +31,12 @@ export class ExtensionHost extends EventEmitter {
 		debug: typeof console.debug
 		info: typeof console.info
 	} | null = null
+	private originalStdout: {
+		write: typeof process.stdout.write
+	} | null = null
+	private originalStderr: {
+		write: typeof process.stderr.write
+	} | null = null
 	private processedWebviewMessages = new Set<string>()
 	private lastWebviewLaunchTime = 0
 
@@ -49,6 +55,9 @@ export class ExtensionHost extends EventEmitter {
 
 			// Setup VSCode API mock
 			await this.setupVSCodeAPIMock()
+
+			// Set up console interception AFTER VSCode API setup
+			this.setupConsoleInterception()
 
 			// Load the extension
 			await this.loadExtension()
@@ -238,9 +247,6 @@ export class ExtensionHost extends EventEmitter {
 		process.env.KILO_CLI_MODE = "true"
 		process.env.NODE_ENV = process.env.NODE_ENV || "production"
 
-		// Intercept console logs from the extension and forward to LogService
-		this.setupConsoleInterception()
-
 		logService.debug("VSCode API mock setup complete", "ExtensionHost")
 	}
 
@@ -254,40 +260,114 @@ export class ExtensionHost extends EventEmitter {
 			info: console.info,
 		}
 
+		// Store original stdout/stderr write methods
+		this.originalStdout = {
+			write: process.stdout.write.bind(process.stdout),
+		}
+		this.originalStderr = {
+			write: process.stderr.write.bind(process.stderr),
+		}
+
 		// Override console methods to forward to LogService ONLY (no console output)
 		// IMPORTANT: Use original console methods to avoid circular dependency
 		console.log = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			// Use LogService but bypass its console output to prevent circular calls
-			logService.info(message, "Extension")
+			// Filter out extension logs that should be hidden
+			if (!this.shouldHideExtensionLog(message)) {
+				logService.info(message, "Extension")
+			}
 		}
 
 		console.error = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			// Use LogService but bypass its console output to prevent circular calls
-			logService.error(message, "Extension")
+			if (!this.shouldHideExtensionLog(message)) {
+				logService.error(message, "Extension")
+			}
 		}
 
 		console.warn = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			// Use LogService but bypass its console output to prevent circular calls
-			logService.warn(message, "Extension")
+			if (!this.shouldHideExtensionLog(message)) {
+				logService.warn(message, "Extension")
+			}
 		}
 
 		console.debug = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			// Use LogService but bypass its console output to prevent circular calls
-			logService.debug(message, "Extension")
+			if (!this.shouldHideExtensionLog(message)) {
+				logService.debug(message, "Extension")
+			}
 		}
 
 		console.info = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			// Use LogService but bypass its console output to prevent circular calls
-			logService.info(message, "Extension")
+			if (!this.shouldHideExtensionLog(message)) {
+				logService.info(message, "Extension")
+			}
 		}
 
-		// Use original console for this log to avoid circular dependency during setup
-		this.originalConsole.debug("Console interception setup complete")
+		// Intercept stdout/stderr to catch direct writes that bypass console
+		const extensionHost = this
+		const originalStdoutWrite = this.originalStdout!.write
+		const originalStderrWrite = this.originalStderr!.write
+
+		process.stdout.write = function (chunk: any, encoding?: any, callback?: any): boolean {
+			const message = chunk.toString()
+			// Only hide extension logs, allow everything else through
+			if (extensionHost.shouldHideExtensionLog(message)) {
+				// Hide the log by not writing to stdout, but still call callback
+				if (typeof encoding === "function") {
+					callback = encoding
+					encoding = undefined
+				}
+				if (callback) callback()
+				return true
+			} else {
+				// Allow non-extension logs to pass through normally
+				return originalStdoutWrite.call(this, chunk, encoding, callback)
+			}
+		}
+
+		process.stderr.write = function (chunk: any, encoding?: any, callback?: any): boolean {
+			const message = chunk.toString()
+			// Only hide extension logs, allow everything else through
+			if (extensionHost.shouldHideExtensionLog(message)) {
+				// Hide the log by not writing to stderr, but still call callback
+				if (typeof encoding === "function") {
+					callback = encoding
+					encoding = undefined
+				}
+				if (callback) callback()
+				return true
+			} else {
+				// Allow non-extension logs to pass through normally
+				return originalStderrWrite.call(this, chunk, encoding, callback)
+			}
+		}
+	}
+
+	/**
+	 * Determine if an extension log should be hidden from the user
+	 */
+	private shouldHideExtensionLog(message: string): boolean {
+		// Hide logs that match extension internal patterns
+		const hiddenPatterns = [
+			/^\[createTask\]/,
+			/^\[Task#/,
+			/^\[e#/,
+			/^Fetched default model from/,
+			/^getCommitRangeForNewCompletion:/,
+			/Task#ask will block/,
+			/git = \d+\.\d+\.\d+/,
+			/initialized shadow repo/,
+			/checkpoint saved in/,
+			/starting checkpoint save/,
+			/creating shadow git repo/,
+			/initializing checkpoints service/,
+			/initializing shadow git/,
+		]
+
+		return hiddenPatterns.some((pattern) => pattern.test(message.trim()))
 	}
 
 	private restoreConsole(): void {
@@ -298,8 +378,19 @@ export class ExtensionHost extends EventEmitter {
 			console.debug = this.originalConsole.debug
 			console.info = this.originalConsole.info
 			this.originalConsole = null
-			logService.debug("Console methods restored", "ExtensionHost")
 		}
+
+		if (this.originalStdout) {
+			process.stdout.write = this.originalStdout.write
+			this.originalStdout = null
+		}
+
+		if (this.originalStderr) {
+			process.stderr.write = this.originalStderr.write
+			this.originalStderr = null
+		}
+
+		logService.debug("Console methods and streams restored", "ExtensionHost")
 	}
 
 	private async loadExtension(): Promise<void> {

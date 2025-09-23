@@ -8,6 +8,7 @@ interface SettingsViewProps {
 	extensionState: ExtensionState | null
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	onBack: () => void
+	sidebarVisible?: boolean
 }
 
 type SettingCategory = "api" | "behavior" | "terminal" | "advanced"
@@ -27,7 +28,12 @@ const categories: { value: SettingCategory; label: string }[] = [
 	{ value: "advanced", label: "🔧 Advanced Settings" },
 ]
 
-export const SettingsView: React.FC<SettingsViewProps> = ({ extensionState, sendMessage, onBack }) => {
+export const SettingsView: React.FC<SettingsViewProps> = ({
+	extensionState,
+	sendMessage,
+	onBack,
+	sidebarVisible = false,
+}) => {
 	const [settingsState, setSettingsState] = useState<SettingsState>({
 		currentCategory: "api",
 		editingField: null,
@@ -101,12 +107,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ extensionState, send
 	}
 
 	useInput((input, key) => {
+		// Don't handle input when sidebar is visible
+		if (sidebarVisible) return
+
 		// Handle editing mode first
 		if (settingsState.editingField) {
-			if (key.escape) {
-				handleCancelEdit()
-				return // Consume the input
-			} else if (key.return) {
+			if (key.return) {
 				handleSaveField()
 				return // Consume the input
 			}
@@ -121,12 +127,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ extensionState, send
 				focusMode: prev.focusMode === "sidebar" ? "content" : "sidebar",
 				selectedSettingIndex: 0, // Reset selection when switching focus
 			}))
-			return // Consume the input
-		}
-
-		// Handle non-editing mode
-		if (key.escape) {
-			onBack()
 			return // Consume the input
 		}
 
@@ -246,7 +246,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ extensionState, send
 					width={25}
 					paddingX={1}
 					paddingY={1}>
-					{settingsState.focusMode === "sidebar" ? (
+					{settingsState.focusMode === "sidebar" && !sidebarVisible ? (
 						<SelectInput items={categories} onSelect={handleCategorySelect} />
 					) : (
 						<Box flexDirection="column">
@@ -285,7 +285,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ extensionState, send
 									/>
 								</Box>
 								<Text color="gray" dimColor>
-									Press Enter to save, Esc to cancel
+									Press Enter to save
 								</Text>
 							</Box>
 						) : (
@@ -313,7 +313,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ extensionState, send
 									/>
 								</Box>
 								<Text color="gray" dimColor>
-									Press Enter to save, Esc to cancel
+									Press Enter to save
 								</Text>
 							</Box>
 						) : (
@@ -332,7 +332,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ extensionState, send
 			<Box borderStyle="single" borderColor="gray" paddingX={1}>
 				<Text color="gray">
 					<Text color="blue">Tab</Text> to switch focus, <Text color="blue">↑↓</Text> to navigate,{" "}
-					<Text color="blue">Enter</Text> to edit, <Text color="gray">Esc</Text> to go back
+					<Text color="blue">Enter</Text> to edit
 				</Text>
 			</Box>
 		</Box>

@@ -10,7 +10,8 @@ import { ModesView } from "./components/ModesView.js"
 import { McpView } from "./components/McpView.js"
 import { LogsView } from "./components/LogsView.js"
 import { StatusBar } from "./components/StatusBar.js"
-import { Navigation } from "./components/Navigation.js"
+import { OverlaySidebar } from "./components/OverlaySidebar.js"
+import { FullScreenLayout } from "./components/FullScreenLayout.js"
 import { logService } from "../services/LogService.js"
 
 export interface TUIApplicationOptions {
@@ -29,6 +30,7 @@ interface AppState {
 	isLoading: boolean
 	error: string | null
 	lastExtensionMessage: ExtensionMessage | null
+	sidebarVisible: boolean
 }
 
 const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
@@ -39,6 +41,7 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 		isLoading: true,
 		error: null,
 		lastExtensionMessage: null,
+		sidebarVisible: false,
 	})
 
 	// Handle extension messages
@@ -184,43 +187,55 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 		[state.extensionState],
 	)
 
-	// Global keyboard shortcuts - only handle Ctrl combinations to avoid interfering with child components
-	useInput((input, key) => {
-		// Only process Ctrl key combinations, let other input pass through to child components
-		if (key.ctrl) {
-			logService.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
-			switch (input) {
-				case "c":
-					exit()
-					break
-				case "q":
-					exit()
-					break
-				case "w":
-					setState((prev) => ({ ...prev, currentView: "chat" }))
-					break
-				case "e":
-					setState((prev) => ({ ...prev, currentView: "history" }))
-					break
-				case "r":
-					setState((prev) => ({ ...prev, currentView: "settings" }))
-					break
-				case "t":
-					setState((prev) => ({ ...prev, currentView: "modes" }))
-					break
-				case "y":
-					setState((prev) => ({ ...prev, currentView: "mcp" }))
-					break
-				case "l":
-					setState((prev) => ({ ...prev, currentView: "logs" }))
-					break
-				default:
-					logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
+	// Global keyboard shortcuts - handle escape key and Ctrl combinations
+	useInput(
+		(input, key) => {
+			// Handle escape key to toggle sidebar
+			if (key.escape) {
+				logService.debug("ESC key pressed, toggling sidebar", "CLI App")
+				setState((prev) => ({ ...prev, sidebarVisible: !prev.sidebarVisible }))
+				return
 			}
-			return // Consume the input when it's a Ctrl combination
-		}
-		// For non-Ctrl input, don't consume it - let child components handle it
-	})
+
+			// Only process Ctrl key combinations when sidebar is not visible
+			if (key.ctrl && !state.sidebarVisible) {
+				logService.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
+				switch (input) {
+					case "c":
+						exit()
+						break
+					case "q":
+						exit()
+						break
+					case "w":
+						setState((prev) => ({ ...prev, currentView: "chat" }))
+						break
+					case "e":
+						setState((prev) => ({ ...prev, currentView: "history" }))
+						break
+					case "r":
+						setState((prev) => ({ ...prev, currentView: "settings" }))
+						break
+					case "t":
+						setState((prev) => ({ ...prev, currentView: "modes" }))
+						break
+					case "y":
+						setState((prev) => ({ ...prev, currentView: "mcp" }))
+						break
+					case "l":
+						setState((prev) => ({ ...prev, currentView: "logs" }))
+						break
+					default:
+						logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
+				}
+				return // Consume the input when it's a Ctrl combination
+			}
+			// For non-Ctrl input, don't consume it - let child components handle it
+		},
+		{
+			isActive: true,
+		},
+	)
 
 	// Initialize extension state and listen for messages
 	useEffect(() => {
@@ -275,6 +290,24 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 		[state.currentView],
 	)
 
+	const handleSidebarSelect = useCallback(
+		(item: ViewType | "profile" | "exit") => {
+			if (item === "exit") {
+				exit()
+			} else if (item === "profile") {
+				// Handle profile view - for now redirect to settings
+				setState((prev) => ({ ...prev, currentView: "settings", sidebarVisible: false }))
+			} else {
+				setState((prev) => ({ ...prev, currentView: item, sidebarVisible: false }))
+			}
+		},
+		[exit],
+	)
+
+	const handleSidebarClose = useCallback(() => {
+		setState((prev) => ({ ...prev, sidebarVisible: false }))
+	}, [])
+
 	if (state.isLoading) {
 		return (
 			<Box flexDirection="column" alignItems="center" justifyContent="center" height={10}>
@@ -293,21 +326,10 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 		)
 	}
 
-	return (
-		<Box flexDirection="column" height="100%">
-			{/* Header */}
-			<Box borderStyle="single" borderColor="blue" paddingX={1}>
-				<Text color="blue" bold>
-					🤖 Kilo Code CLI - {state.extensionState?.version || "1.0.0"}
-				</Text>
-			</Box>
-
-			{/* Navigation */}
-			<Navigation currentView={state.currentView} onViewChange={switchView} />
-
-			{/* Main content area */}
-			<Box flexGrow={1} flexDirection="column">
-				{state.currentView === "chat" && (
+	const renderMainContent = () => {
+		switch (state.currentView) {
+			case "chat":
+				return (
 					<ChatView
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
@@ -316,49 +338,85 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 							logService.debug(`Forwarding message to ChatView: ${message.type}`, "CLI App")
 							handleExtensionMessage(message)
 						}}
+						sidebarVisible={state.sidebarVisible}
 					/>
-				)}
-				{state.currentView === "history" && (
+				)
+			case "history":
+				return (
 					<HistoryView
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
 						onBack={() => switchView("chat")}
 						lastExtensionMessage={state.lastExtensionMessage}
+						sidebarVisible={state.sidebarVisible}
 					/>
-				)}
-				{state.currentView === "settings" && (
+				)
+			case "settings":
+				return (
 					<SettingsView
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
 						onBack={() => switchView("chat")}
+						sidebarVisible={state.sidebarVisible}
 					/>
-				)}
-				{state.currentView === "modes" && (
+				)
+			case "modes":
+				return (
 					<ModesView
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
 						onBack={() => switchView("chat")}
+						sidebarVisible={state.sidebarVisible}
 					/>
-				)}
-				{state.currentView === "mcp" && (
+				)
+			case "mcp":
+				return (
 					<McpView
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
 						onBack={() => switchView("chat")}
+						sidebarVisible={state.sidebarVisible}
 					/>
-				)}
-				{state.currentView === "logs" && (
+				)
+			case "logs":
+				return (
 					<LogsView
 						extensionState={state.extensionState}
 						sendMessage={sendMessage}
 						onBack={() => switchView("chat")}
+						sidebarVisible={state.sidebarVisible}
 					/>
-				)}
-			</Box>
+				)
+			default:
+				return null
+		}
+	}
 
-			{/* Status bar */}
-			<StatusBar extensionState={state.extensionState} workspace={options.workspace || process.cwd()} />
-		</Box>
+	return (
+		<FullScreenLayout>
+			<Box flexDirection="column" height="100%">
+				{/* Main content area with sidebar */}
+				<Box flexDirection="row" flexGrow={1}>
+					{/* Sidebar - Shows as a side panel when visible */}
+					{state.sidebarVisible && (
+						<OverlaySidebar
+							isVisible={state.sidebarVisible}
+							currentView={state.currentView}
+							onSelectItem={handleSidebarSelect}
+							onClose={handleSidebarClose}
+						/>
+					)}
+
+					{/* Main content area - takes up remaining space */}
+					<Box flexGrow={1} flexDirection="column">
+						{renderMainContent()}
+					</Box>
+				</Box>
+
+				{/* Status bar - always at bottom */}
+				<StatusBar extensionState={state.extensionState} workspace={options.workspace || process.cwd()} />
+			</Box>
+		</FullScreenLayout>
 	)
 }
 

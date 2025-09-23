@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { Box, Text, useInput } from "ink"
+import { ScrollBox } from "@sasaplus1/ink-scroll-box"
 import type { ExtensionState, WebviewMessage } from "../../types/messages.js"
 import { logService, type LogEntry, type LogLevel, type LogFilter } from "../../services/LogService.js"
 
@@ -7,6 +8,7 @@ interface LogsViewProps {
 	extensionState: ExtensionState | null
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	onBack: () => void
+	sidebarVisible?: boolean
 }
 
 interface LogsState {
@@ -31,7 +33,7 @@ const LOG_LEVEL_ICONS: Record<LogLevel, string> = {
 	error: "🔴",
 }
 
-export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage, onBack }) => {
+export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage, onBack, sidebarVisible = false }) => {
 	const [logsState, setLogsState] = useState<LogsState>({
 		logs: [],
 		filter: {},
@@ -39,6 +41,8 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 		autoScroll: true,
 		showingCount: 50, // Show last 50 logs by default
 	})
+
+	const [scrollOffset, setScrollOffset] = useState(0)
 
 	// Load logs and subscribe to updates
 	useEffect(() => {
@@ -115,9 +119,10 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 
 	// Handle keyboard input
 	useInput((input, key) => {
-		if (key.escape) {
-			onBack()
-		} else if (input === "c") {
+		// Don't handle input when sidebar is visible
+		if (sidebarVisible) return
+
+		if (input === "c") {
 			clearLogs()
 		} else if (input === "i") {
 			toggleLogLevel("info")
@@ -131,6 +136,12 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 			adjustShowingCount(25)
 		} else if (input === "-") {
 			adjustShowingCount(-25)
+		} else if (key.upArrow && logsState.logs.length > 0) {
+			// Scroll up - decrease offset to show earlier messages
+			setScrollOffset((prev) => Math.max(0, prev - 1))
+		} else if (key.downArrow && logsState.logs.length > 0) {
+			// Scroll down - increase offset to show later messages
+			setScrollOffset((prev) => prev + 1)
 		}
 	})
 
@@ -155,14 +166,22 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 			{/* Header */}
 			<Box borderStyle="single" borderColor="blue" paddingX={1}>
 				<Text color="blue" bold>
-					🗒️ Logs ({logsState.logs.length}/{totalLogs} entries)
+					Logs
 				</Text>
 			</Box>
 
 			{/* Filter controls */}
-			<Box borderStyle="single" borderColor="gray" paddingX={1} justifyContent="space-between">
+			<Box
+				flexGrow={1}
+				flexShrink={0}
+				borderStyle="single"
+				borderColor="gray"
+				paddingX={1}
+				justifyContent="space-between">
 				<Box gap={1}>
-					<Text color="gray">Filters:</Text>
+					<Text color="gray" bold>
+						Filters:
+					</Text>
 					{(["info", "debug", "warn", "error"] as LogLevel[]).map((level) => (
 						<Text key={level}>
 							<Text color={logsState.selectedLevels.has(level) ? LOG_LEVEL_COLORS[level] : "gray"}>
@@ -174,9 +193,14 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 						</Text>
 					))}
 				</Box>
-				<Text color="gray" dimColor>
-					Showing: {logsState.showingCount}
-				</Text>
+				<Box gap={1}>
+					<Text color="gray" dimColor>
+						<Text color="blue">[i]</Text>nfo <Text color="yellow">[d]</Text>ebug{" "}
+						<Text color="magenta">[w]</Text>arn <Text color="red">[e]</Text>rror{" "}
+						<Text color="green">[c]</Text>
+						lear <Text color="cyan">[+/-]</Text>count
+					</Text>
+				</Box>
 			</Box>
 
 			{/* Logs area */}
@@ -191,21 +215,12 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 						</Text>
 					</Box>
 				) : (
-					<Box flexDirection="column">
+					<ScrollBox height="100%" offset={scrollOffset}>
 						{logsState.logs.map((log) => (
 							<LogRow key={log.id} log={log} formatTimestamp={formatTimestamp} />
 						))}
-					</Box>
+					</ScrollBox>
 				)}
-			</Box>
-
-			{/* Footer with controls */}
-			<Box borderStyle="single" borderColor="gray" paddingX={1}>
-				<Text color="gray">
-					<Text color="blue">[i]</Text>nfo <Text color="yellow">[d]</Text>ebug{" "}
-					<Text color="magenta">[w]</Text>arn <Text color="red">[e]</Text>rror <Text color="green">[c]</Text>
-					lear <Text color="cyan">[+/-]</Text>count <Text color="gray">[Esc]</Text> back
-				</Text>
 			</Box>
 		</Box>
 	)
@@ -220,7 +235,7 @@ const LogRow: React.FC<{
 	const icon = LOG_LEVEL_ICONS[log.level]
 
 	return (
-		<Box marginBottom={1}>
+		<Box flexGrow={0} height={1} overflow="hidden">
 			<Box marginRight={1} minWidth={12}>
 				<Text color="gray" dimColor>
 					{formatTimestamp(log.timestamp)}
