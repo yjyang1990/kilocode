@@ -1880,6 +1880,7 @@ export class ClineProvider
 		// kilocode_change start wrapper information
 		const kiloCodeWrapperProperties = getKiloCodeWrapperProperties()
 		const taskHistory = this.getTaskHistory()
+		this.kiloCodeTaskHistorySizeForTelemetryOnly = taskHistory.length
 		// kilocode_change end
 
 		return {
@@ -2837,7 +2838,7 @@ export class ClineProvider
 			...(todos && { todos }),
 			// kilocode_change start
 			currentTaskSize: task?.clineMessages.length ?? 0,
-			taskHistorySize: this.getTaskHistory().length,
+			taskHistorySize: this.kiloCodeTaskHistorySizeForTelemetryOnly || undefined,
 			// kilocode_change end
 		}
 	}
@@ -3147,6 +3148,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	}
 
 	private kiloCodeTaskHistoryVersion = 0
+	private kiloCodeTaskHistorySizeForTelemetryOnly = 0
 
 	public getTaskHistory(): HistoryItem[] {
 		return this.getGlobalState("taskHistory") || []
