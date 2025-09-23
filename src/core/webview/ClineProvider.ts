@@ -1007,7 +1007,7 @@ export class ClineProvider
 			"icons",
 		])
 		const imagesUri = getUri(webview, this.contextProxy.extensionUri, ["assets", "images"])
-		const iconsUri = getUri(webview, this.contextProxy.extensionUri, ["assets", "icons"])
+		const iconsUri = getUri(webview, this.contextProxy.extensionUri, ["assets", "icons"]) // kilocode_change
 		const audioUri = getUri(webview, this.contextProxy.extensionUri, ["webview-ui", "audio"])
 
 		const file = "src/index.tsx"
@@ -1044,7 +1044,7 @@ export class ClineProvider
 					<link href="${codiconsUri}" rel="stylesheet" />
 					<script nonce="${nonce}">
 						window.IMAGES_BASE_URI = "${imagesUri}"
-						window.ICONS_BASE_URI = "${iconsUri}"
+						window.ICONS_BASE_URI = "${iconsUri}" // kilocode_change
 						window.AUDIO_BASE_URI = "${audioUri}"
 						window.MATERIAL_ICONS_BASE_URI = "${materialIconsUri}"
 					</script>
@@ -1090,7 +1090,7 @@ export class ClineProvider
 			"icons",
 		])
 		const imagesUri = getUri(webview, this.contextProxy.extensionUri, ["assets", "images"])
-		const iconsUri = getUri(webview, this.contextProxy.extensionUri, ["assets", "icons"])
+		const iconsUri = getUri(webview, this.contextProxy.extensionUri, ["assets", "icons"]) // kilocode_changes
 		const audioUri = getUri(webview, this.contextProxy.extensionUri, ["webview-ui", "audio"])
 
 		// Use a nonce to only allow a specific script to be run.
@@ -1120,7 +1120,7 @@ export class ClineProvider
 			<link href="${codiconsUri}" rel="stylesheet" />
 			<script nonce="${nonce}">
 				window.IMAGES_BASE_URI = "${imagesUri}"
-				window.ICONS_BASE_URI = "${iconsUri}"
+				window.ICONS_BASE_URI = "${iconsUri}" // kilocode_change
 				window.AUDIO_BASE_URI = "${audioUri}"
 				window.MATERIAL_ICONS_BASE_URI = "${materialIconsUri}"
 			</script>
