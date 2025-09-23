@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.97.0
-
-### Minor Changes
+## [v4.97.0]
 
 - [#2505](https://github.com/Kilo-Org/kilocode/pull/2505) [`a59e7f5`](https://github.com/Kilo-Org/kilocode/commit/a59e7f565478c7405e62c59448bf7667e4b26c8f) Thanks [@markijbema](https://github.com/markijbema)! - Added option to the Display tab of the settings to disable autocomplete gutter animation
 
