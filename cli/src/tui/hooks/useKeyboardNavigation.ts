@@ -24,9 +24,9 @@ export const useKeyboardNavigation = ({
 				return
 			}
 
-			// Handle escape key
-			if (key.escape && actualOnEscape) {
-				actualOnEscape()
+			// Don't handle escape key here - let the global App handler manage it
+			// This prevents double-triggering of sidebar toggle
+			if (key.escape) {
 				return
 			}
 
