@@ -164,7 +164,7 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 	return (
 		<Box flexDirection="column" height="100%">
 			{/* Header */}
-			<Box borderStyle="single" borderColor="blue" paddingX={1}>
+			<Box borderStyle="single" borderColor="blue" paddingX={1} flexGrow={1} flexShrink={0}>
 				<Text color="blue" bold>
 					Logs
 				</Text>

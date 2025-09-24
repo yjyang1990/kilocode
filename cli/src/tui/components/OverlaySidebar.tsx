@@ -63,7 +63,7 @@ export const OverlaySidebar: React.FC<OverlaySidebarProps> = ({ isVisible, curre
 	}
 
 	return (
-		<Box width={30} height="100%" borderStyle="single" borderColor="blue" flexDirection="column">
+		<Box minWidth={30} width={30} height="100%" borderStyle="single" borderColor="blue" flexDirection="column">
 			{/* Header */}
 			<Box justifyContent="center">
 				<Text color="blue" bold>

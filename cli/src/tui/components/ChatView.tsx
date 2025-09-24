@@ -285,7 +285,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
 			</Box>
 
 			{/* Input area */}
-			<Box borderStyle="single" borderColor="gray" paddingX={1}>
+			<Box borderStyle="single" borderColor="gray" paddingX={1} flexGrow={1} flexShrink={0}>
 				{inputMode === "input" ? (
 					<Box>
 						<Text color="blue">💭 </Text>
