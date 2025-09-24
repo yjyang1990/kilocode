@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import type { UsePageStateProps } from "../types/components.js"
 import { useExtensionState } from "../context/index.js"
 
@@ -45,23 +45,23 @@ export const useLoadingState = (initialLoading = false) => {
 	const [isLoading, setIsLoading] = useState(initialLoading)
 	const [error, setError] = useState<string | null>(null)
 
-	const startLoading = () => {
+	const startLoading = useCallback(() => {
 		setIsLoading(true)
 		setError(null)
-	}
+	}, [])
 
-	const stopLoading = () => {
+	const stopLoading = useCallback(() => {
 		setIsLoading(false)
-	}
+	}, [])
 
-	const setLoadingError = (errorMessage: string) => {
+	const setLoadingError = useCallback((errorMessage: string) => {
 		setIsLoading(false)
 		setError(errorMessage)
-	}
+	}, [])
 
-	const clearError = () => {
+	const clearError = useCallback(() => {
 		setError(null)
-	}
+	}, [])
 
 	return {
 		isLoading,
