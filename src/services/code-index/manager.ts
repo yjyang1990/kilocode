@@ -340,6 +340,7 @@ export class CodeIndexManager {
 			rooIgnoreController,
 		)
 
+		// kilocode_change start
 		// Only validate the embedder if it matches the currently configured provider
 		const config = this._configManager!.getConfig()
 		const shouldValidate = embedder.embedderInfo.name === config.embedderProvider
@@ -352,6 +353,7 @@ export class CodeIndexManager {
 				throw new Error(errorMessage)
 			}
 		}
+		// kilocode_change end
 
 		// (Re)Initialize orchestrator
 		this._orchestrator = new CodeIndexOrchestrator(
