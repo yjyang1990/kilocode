@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react"
 import { useApp } from "ink"
 import type { ExtensionMessage, WebviewMessage } from "../../types/messages.js"
-import type { CliContextValue, CliState, CliActions, TUIApplicationOptions, ViewType } from "./types.js"
+import type { CliContextValue, CliState, CliActions, TUIApplicationOptions } from "./types.js"
 import { logService } from "../../services/LogService.js"
 
 // Create the context
@@ -16,7 +16,6 @@ export const CliContextProvider: React.FC<{
 
 	// Initialize state
 	const [state, setState] = useState<CliState>({
-		currentView: options.initialView || "chat",
 		extensionState: null,
 		isLoading: true,
 		error: null,
@@ -56,17 +55,9 @@ export const CliContextProvider: React.FC<{
 					})
 					break
 				case "action":
-					if (message.action === "chatButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "chat" }))
-					} else if (message.action === "historyButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "history" }))
-					} else if (message.action === "settingsButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "settings" }))
-					} else if (message.action === "promptsButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "modes" }))
-					} else if (message.action === "mcpButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "mcp" }))
-					}
+					// Action handling will be managed by router navigation
+					// These actions can trigger navigation through the router
+					logService.debug(`Received action: ${message.action}`, "CLI Context")
 					break
 				case "messageUpdated":
 					// Handle message updates like the webview does
@@ -186,14 +177,7 @@ export const CliContextProvider: React.FC<{
 		[options.messageBridge],
 	)
 
-	// Navigation actions
-	const switchView = useCallback(
-		(view: ViewType) => {
-			logService.debug(`Switching view from ${state.currentView} to ${view}`, "CLI Context")
-			setState((prev) => ({ ...prev, currentView: view }))
-		},
-		[state.currentView],
-	)
+	// Navigation actions removed - handled by router
 
 	// Sidebar actions
 	const toggleSidebar = useCallback(() => {
@@ -205,14 +189,12 @@ export const CliContextProvider: React.FC<{
 	}, [])
 
 	const handleSidebarSelect = useCallback(
-		(item: ViewType | "profile" | "exit") => {
+		(item: string) => {
 			if (item === "exit") {
 				exit()
-			} else if (item === "profile") {
-				// Handle profile view - for now redirect to settings
-				setState((prev) => ({ ...prev, currentView: "settings", sidebarVisible: false }))
 			} else {
-				setState((prev) => ({ ...prev, currentView: item, sidebarVisible: false }))
+				// Close sidebar - navigation will be handled by the sidebar component using router
+				setState((prev) => ({ ...prev, sidebarVisible: false }))
 			}
 		},
 		[exit],
@@ -231,7 +213,6 @@ export const CliContextProvider: React.FC<{
 	const actions: CliActions = {
 		sendMessage,
 		handleExtensionMessage,
-		switchView,
 		toggleSidebar,
 		closeSidebar,
 		handleSidebarSelect,

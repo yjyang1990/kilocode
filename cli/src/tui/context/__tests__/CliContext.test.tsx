@@ -34,7 +34,7 @@ describe("CliContext", () => {
 			initialMode: "code",
 			workspace: "/test/workspace",
 			autoApprove: false,
-			initialView: "chat",
+			initialPath: "/chat",
 		}
 	})
 

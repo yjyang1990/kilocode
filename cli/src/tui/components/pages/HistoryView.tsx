@@ -9,7 +9,8 @@ import { EmptyState } from "../generic/EmptyState.js"
 import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
 import { useLoadingState } from "../../hooks/usePageState.js"
-import { useExtensionState, useExtensionMessage, useSidebar, useViewNavigation } from "../../context/index.js"
+import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
+import { useParams, useNavigate, useRouter } from "../../router/index.js"
 
 interface HistoryState {
 	tasks: HistoryItem[]
@@ -20,7 +21,7 @@ export const HistoryView: React.FC = () => {
 	const extensionState = useExtensionState()
 	const { sendMessage, lastMessage: lastExtensionMessage } = useExtensionMessage()
 	const { visible: sidebarVisible } = useSidebar()
-	const { goBack } = useViewNavigation()
+	const { goBack } = useRouter()
 	const [historyState, setHistoryState] = useState<HistoryState>({
 		tasks: [],
 		selectedIndex: 0,

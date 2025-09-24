@@ -1,19 +1,18 @@
 import type { ExtensionMessage, ExtensionState, WebviewMessage } from "../../types/messages.js"
 import type { MessageBridge } from "../../communication/ipc.js"
 
-export type ViewType = "chat" | "history" | "settings" | "modes" | "mcp" | "logs"
+// ViewType removed - now using router paths instead
 
 export interface TUIApplicationOptions {
 	messageBridge: MessageBridge
 	initialMode: string
 	workspace: string
 	autoApprove: boolean
-	initialView?: ViewType
+	initialPath?: string
 }
 
 export interface CliState {
 	// App State
-	currentView: ViewType
 	extensionState: ExtensionState | null
 	isLoading: boolean
 	error: string | null
@@ -32,13 +31,10 @@ export interface CliActions {
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	handleExtensionMessage: (message: ExtensionMessage) => void
 
-	// Navigation
-	switchView: (view: ViewType) => void
-
 	// Sidebar Management
 	toggleSidebar: () => void
 	closeSidebar: () => void
-	handleSidebarSelect: (item: ViewType | "profile" | "exit") => void
+	handleSidebarSelect: (item: string) => void
 
 	// State Management
 	setLoading: (loading: boolean) => void
@@ -58,13 +54,10 @@ export interface UseSidebarReturn {
 	visible: boolean
 	toggle: () => void
 	close: () => void
-	handleSelect: (item: ViewType | "profile" | "exit") => void
+	handleSelect: (item: string) => void
 }
 
-export interface UseCurrentViewReturn {
-	currentView: ViewType
-	switchView: (view: ViewType) => void
-}
+// UseCurrentViewReturn removed - replaced by router hooks
 
 export interface UseExtensionMessageReturn {
 	sendMessage: (message: WebviewMessage) => Promise<void>
@@ -72,8 +65,4 @@ export interface UseExtensionMessageReturn {
 	handleMessage: (message: ExtensionMessage) => void
 }
 
-export interface UseViewNavigationReturn {
-	currentView: ViewType
-	switchView: (view: ViewType) => void
-	goBack: () => void
-}
+// UseViewNavigationReturn removed - replaced by router hooks

@@ -1,5 +1,5 @@
 import { vi, describe, test, expect } from "vitest"
-import { useCliState, useCliActions, useExtensionState, useSidebar, useCurrentView } from "../index.js"
+import { useCliState, useCliActions, useExtensionState, useSidebar } from "../index.js"
 
 // Mock the main context
 const mockContextValue = {
@@ -46,14 +46,14 @@ describe("Context Hooks", () => {
 	test("useCliState returns state", () => {
 		const state = useCliState()
 		expect(state).toBe(mockContextValue.state)
-		expect(state.currentView).toBe("chat")
+		// currentView removed - now handled by router
 		expect(state.workspace).toBe("/test/workspace")
 	})
 
 	test("useCliActions returns actions", () => {
 		const actions = useCliActions()
 		expect(actions).toBe(mockContextValue.actions)
-		expect(actions.switchView).toBeDefined()
+		// switchView removed - now handled by router
 		expect(actions.sendMessage).toBeDefined()
 	})
 
@@ -71,9 +71,5 @@ describe("Context Hooks", () => {
 		expect(sidebar.handleSelect).toBe(mockContextValue.actions.handleSidebarSelect)
 	})
 
-	test("useCurrentView returns view utilities", () => {
-		const view = useCurrentView()
-		expect(view.currentView).toBe("chat")
-		expect(view.switchView).toBe(mockContextValue.actions.switchView)
-	})
+	// useCurrentView test removed - replaced by router hooks
 })

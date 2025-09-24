@@ -7,7 +7,8 @@ import { PageHeader } from "../generic/PageHeader.js"
 import { PageFooter } from "../generic/PageFooter.js"
 import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
-import { useExtensionState, useExtensionMessage, useSidebar, useViewNavigation } from "../../context/index.js"
+import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
+import { useParams, useNavigate } from "../../router/index.js"
 import {
 	ProvidersSection,
 	AboutSection,
@@ -67,9 +68,10 @@ export const SettingsView: React.FC = () => {
 	const extensionState = useExtensionState()
 	const { sendMessage } = useExtensionMessage()
 	const { visible: sidebarVisible } = useSidebar()
-	const { goBack } = useViewNavigation()
+	const { section = "providers" } = useParams()
+	const navigate = useNavigate()
 	const [settingsState, setSettingsState] = useState<SettingsState>({
-		currentSection: "providers",
+		currentSection: section as SettingSection,
 		editingField: null,
 		editingValue: "",
 		focusMode: "sidebar", // Start with sidebar focused for navigation
@@ -95,7 +97,20 @@ export const SettingsView: React.FC = () => {
 		prevApiConfigName.current = currentApiConfigName
 	}, [currentApiConfigName, settingsState.editingField])
 
+	// Update current section when route parameter changes
+	useEffect(() => {
+		const newSection = section as SettingSection
+		if (newSection !== settingsState.currentSection) {
+			setSettingsState((prev) => ({
+				...prev,
+				currentSection: newSection,
+				selectedSettingIndex: 0,
+			}))
+		}
+	}, [section, settingsState.currentSection])
+
 	const handleSectionSelect = (item: any) => {
+		navigate(`/settings/${item.value}`)
 		setSettingsState((prev) => ({
 			...prev,
 			currentSection: item.value,

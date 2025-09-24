@@ -20,20 +20,31 @@ import {
 	useSidebar,
 	type TUIApplicationOptions,
 } from "./context/index.js"
+import { RouterProvider, Routes, Route, useNavigate, Navigate, useRouter } from "./router/index.js"
 
-// Inner App component that uses context
+// Inner App component that uses context and router
 const AppContent: React.FC = () => {
 	const state = useCliState()
 	const actions = useCliActions()
 	const sidebar = useSidebar()
+	const router = useRouter()
 
 	// Global keyboard shortcuts - handle escape key and Ctrl combinations
 	useInput(
 		(input, key) => {
-			// Handle escape key to toggle sidebar
+			// Handle escape key - toggle sidebar for root routes, go back for nested routes
 			if (key.escape) {
-				logService.debug("ESC key pressed, toggling sidebar", "CLI App")
-				sidebar.toggle()
+				// Check if current route has a parent (contains more than one slash after the first one)
+				const pathSegments = router.currentPath.split("/").filter((segment) => segment !== "")
+				const hasParent = pathSegments.length > 1
+
+				if (hasParent && router.canGoBack) {
+					logService.debug("ESC key pressed on nested route, going back", "CLI App")
+					router.goBack()
+				} else {
+					logService.debug("ESC key pressed on root route, toggling sidebar", "CLI App")
+					sidebar.toggle()
+				}
 				return
 			}
 
@@ -46,24 +57,6 @@ const AppContent: React.FC = () => {
 						break
 					case "q":
 						actions.exit()
-						break
-					case "w":
-						actions.switchView("chat")
-						break
-					case "e":
-						actions.switchView("history")
-						break
-					case "r":
-						actions.switchView("settings")
-						break
-					case "t":
-						actions.switchView("modes")
-						break
-					case "y":
-						actions.switchView("mcp")
-						break
-					case "l":
-						actions.switchView("logs")
 						break
 					default:
 						logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
@@ -95,24 +88,7 @@ const AppContent: React.FC = () => {
 		)
 	}
 
-	const renderMainContent = () => {
-		switch (state.currentView) {
-			case "chat":
-				return <ChatView />
-			case "history":
-				return <HistoryView />
-			case "settings":
-				return <SettingsView />
-			case "modes":
-				return <ModesView />
-			case "mcp":
-				return <McpView />
-			case "logs":
-				return <LogsView />
-			default:
-				return null
-		}
-	}
+	// Router handles content rendering now
 
 	return (
 		<FullScreenLayout>
@@ -123,7 +99,6 @@ const AppContent: React.FC = () => {
 					{sidebar.visible && (
 						<OverlaySidebar
 							isVisible={sidebar.visible}
-							currentView={state.currentView}
 							onSelectItem={sidebar.handleSelect}
 							onClose={sidebar.close}
 						/>
@@ -131,7 +106,18 @@ const AppContent: React.FC = () => {
 
 					{/* Main content area - takes up remaining space */}
 					<Box flexGrow={1} flexDirection="column">
-						{renderMainContent()}
+						<Routes>
+							<Route path="/chat" component={ChatView} exact />
+							<Route path="/chat/:conversationId" component={ChatView} />
+							<Route path="/history" component={HistoryView} exact />
+							<Route path="/history/:taskId" component={HistoryView} />
+							<Route path="/settings" component={() => <Navigate to="/settings/providers" />} exact />
+							<Route path="/settings/:section" component={SettingsView} />
+							<Route path="/modes" component={ModesView} exact />
+							<Route path="/modes/:modeId" component={ModesView} />
+							<Route path="/mcp" component={McpView} exact />
+							<Route path="/logs" component={LogsView} exact />
+						</Routes>
 					</Box>
 				</Box>
 
@@ -142,11 +128,15 @@ const AppContent: React.FC = () => {
 	)
 }
 
-// Main App component that wraps everything with context
+// Main App component that wraps everything with context and router
 const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
+	const initialPath = options.initialPath || "/chat"
+
 	return (
 		<CliContextProvider options={options}>
-			<AppContent />
+			<RouterProvider initialPath={initialPath}>
+				<AppContent />
+			</RouterProvider>
 		</CliContextProvider>
 	)
 }
@@ -192,7 +182,7 @@ export class TUIApplication extends EventEmitter {
 	}
 
 	async showHistory(): Promise<void> {
-		this.renderInstance = render(<App options={{ ...this.options, initialView: "history" }} />)
+		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/history" }} />)
 
 		return new Promise<void>((resolve) => {
 			this.renderInstance.waitUntilExit().then(() => {
@@ -202,7 +192,7 @@ export class TUIApplication extends EventEmitter {
 	}
 
 	async showSettings(): Promise<void> {
-		this.renderInstance = render(<App options={{ ...this.options, initialView: "settings" }} />)
+		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/settings" }} />)
 
 		return new Promise<void>((resolve) => {
 			this.renderInstance.waitUntilExit().then(() => {
@@ -212,7 +202,7 @@ export class TUIApplication extends EventEmitter {
 	}
 
 	async showModes(): Promise<void> {
-		this.renderInstance = render(<App options={{ ...this.options, initialView: "modes" }} />)
+		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/modes" }} />)
 
 		return new Promise<void>((resolve) => {
 			this.renderInstance.waitUntilExit().then(() => {
@@ -222,7 +212,7 @@ export class TUIApplication extends EventEmitter {
 	}
 
 	async showMcp(): Promise<void> {
-		this.renderInstance = render(<App options={{ ...this.options, initialView: "mcp" }} />)
+		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/mcp" }} />)
 
 		return new Promise<void>((resolve) => {
 			this.renderInstance.waitUntilExit().then(() => {

@@ -6,7 +6,8 @@ import { PageHeader } from "../generic/PageHeader.js"
 import { PageFooter } from "../generic/PageFooter.js"
 import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
-import { useExtensionState, useExtensionMessage, useSidebar, useViewNavigation } from "../../context/index.js"
+import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
+import { useRouter } from "../../router/index.js"
 
 interface ModesState {
 	modes: ModeConfig[]
@@ -26,7 +27,7 @@ export const ModesView: React.FC = () => {
 	const extensionState = useExtensionState()
 	const { sendMessage } = useExtensionMessage()
 	const { visible: sidebarVisible } = useSidebar()
-	const { goBack } = useViewNavigation()
+	const { goBack } = useRouter()
 	const [modesState, setModesState] = useState<ModesState>({
 		modes: defaultModes,
 		currentMode: extensionState?.mode || "code",
