@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.97.1
-
-### Patch Changes
+## [v4.97.1]
 
 - [#2625](https://github.com/Kilo-Org/kilocode/pull/2625) [`3409665`](https://github.com/Kilo-Org/kilocode/commit/340966544bda3a069f9cf2478658bf58f5e2cf3c) Thanks [@kevinvandijk](https://github.com/kevinvandijk)! - Add fix for Gemini CLI not being able to refresh access token anymore
 
