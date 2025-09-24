@@ -28,6 +28,7 @@ export interface NavigateOptions {
 
 export interface RouterContextValue {
 	currentPath: string
+	lastPath: string
 	params: RouteParams
 	navigate: (path: string, options?: NavigateOptions) => void
 	goBack: () => void

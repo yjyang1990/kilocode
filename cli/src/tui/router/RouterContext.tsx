@@ -9,6 +9,7 @@ export const RouterProvider: React.FC<{
 	initialPath?: string
 }> = ({ children, initialPath = "/chat" }) => {
 	const [currentPath, setCurrentPath] = useState(initialPath)
+	const [lastPath, setLastPath] = useState(initialPath)
 	const [history, setHistory] = useState<string[]>([initialPath])
 	const [params, setParams] = useState<RouteParams>({})
 
@@ -18,6 +19,7 @@ export const RouterProvider: React.FC<{
 		} else {
 			setHistory((prev) => [...prev, path])
 		}
+		setLastPath(currentPath)
 		setCurrentPath(path)
 		// Params will be updated by the Routes component when it matches routes
 	}, [])
@@ -28,6 +30,7 @@ export const RouterProvider: React.FC<{
 			const previousPath = newHistory[newHistory.length - 1]
 			if (previousPath) {
 				setHistory(newHistory)
+				setLastPath(currentPath)
 				setCurrentPath(previousPath)
 			}
 		}
@@ -39,6 +42,7 @@ export const RouterProvider: React.FC<{
 
 	const contextValue: RouterContextValue & { updateParams: (params: RouteParams) => void } = {
 		currentPath,
+		lastPath,
 		params,
 		navigate,
 		goBack,
@@ -71,4 +75,14 @@ export const useParams = () => {
 export const useCurrentPath = () => {
 	const { currentPath } = useRouter()
 	return currentPath
+}
+
+export const useLastPath = () => {
+	const { lastPath } = useRouter()
+	return lastPath
+}
+
+export const useHistory = () => {
+	const { history } = useRouter()
+	return history
 }

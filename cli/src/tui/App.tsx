@@ -5,7 +5,10 @@ import type { MessageBridge } from "../communication/ipc.js"
 import type { ExtensionMessage } from "../types/messages.js"
 import { ChatView } from "./components/pages/ChatView.js"
 import { HistoryView } from "./components/pages/HistoryView.js"
-import { SettingsView } from "./components/pages/SettingsView.js"
+import { SettingsIndex } from "./components/pages/SettingsIndex.js"
+import { ProvidersView } from "./components/pages/ProvidersView.js"
+import { AboutView } from "./components/pages/AboutView.js"
+import { GenericSettingsView } from "./components/pages/GenericSettingsView.js"
 import { ModesView } from "./components/pages/ModesView.js"
 import { McpView } from "./components/pages/McpView.js"
 import { LogsView } from "./components/pages/LogsView.js"
@@ -111,8 +114,64 @@ const AppContent: React.FC = () => {
 							<Route path="/chat/:conversationId" component={ChatView} />
 							<Route path="/history" component={HistoryView} exact />
 							<Route path="/history/:taskId" component={HistoryView} />
-							<Route path="/settings" component={() => <Navigate to="/settings/providers" />} exact />
-							<Route path="/settings/:section" component={SettingsView} />
+							<Route path="/settings" component={SettingsIndex} exact />
+							<Route path="/settings/providers" component={ProvidersView} exact />
+							<Route path="/settings/about" component={AboutView} exact />
+							<Route
+								path="/settings/auto-approve"
+								component={() => <GenericSettingsView section="auto-approve" title="Auto-Approve" />}
+								exact
+							/>
+							<Route
+								path="/settings/browser"
+								component={() => <GenericSettingsView section="browser" title="Browser" />}
+								exact
+							/>
+							<Route
+								path="/settings/checkpoints"
+								component={() => <GenericSettingsView section="checkpoints" title="Checkpoints" />}
+								exact
+							/>
+							<Route
+								path="/settings/display"
+								component={() => <GenericSettingsView section="display" title="Display" />}
+								exact
+							/>
+							<Route
+								path="/settings/notifications"
+								component={() => <GenericSettingsView section="notifications" title="Notifications" />}
+								exact
+							/>
+							<Route
+								path="/settings/context"
+								component={() => <GenericSettingsView section="context" title="Context" />}
+								exact
+							/>
+							<Route
+								path="/settings/terminal"
+								component={() => <GenericSettingsView section="terminal" title="Terminal" />}
+								exact
+							/>
+							<Route
+								path="/settings/prompts"
+								component={() => <GenericSettingsView section="prompts" title="Prompts" />}
+								exact
+							/>
+							<Route
+								path="/settings/experimental"
+								component={() => <GenericSettingsView section="experimental" title="Experimental" />}
+								exact
+							/>
+							<Route
+								path="/settings/language"
+								component={() => <GenericSettingsView section="language" title="Language" />}
+								exact
+							/>
+							<Route
+								path="/settings/mcp-servers"
+								component={() => <GenericSettingsView section="mcp-servers" title="MCP Servers" />}
+								exact
+							/>
 							<Route path="/modes" component={ModesView} exact />
 							<Route path="/modes/:modeId" component={ModesView} />
 							<Route path="/mcp" component={McpView} exact />

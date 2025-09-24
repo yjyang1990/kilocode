@@ -1,5 +1,5 @@
 export type { RouteParams, RouteMatch, RouterState, NavigateOptions, RouterContextValue } from "./types.js"
 export type { Route as RouteConfig } from "./types.js"
 export { RouteMatcher } from "./matcher.js"
-export { RouterProvider, useRouter, useNavigate, useParams, useCurrentPath } from "./RouterContext.js"
+export { RouterProvider, useRouter, useNavigate, useParams, useCurrentPath, useHistory } from "./RouterContext.js"
 export { Routes, Route, Navigate } from "./components.js"

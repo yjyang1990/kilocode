@@ -1,6 +1,7 @@
 export { Section } from "./Section.js"
 export { SectionHeader } from "./SectionHeader.js"
 export { SettingRow } from "./SettingRow.js"
+export { SettingsLayout } from "./SettingsLayout.js"
 export { ProvidersSection } from "./ProvidersSection.js"
 export { AboutSection } from "./AboutSection.js"
 export { AutoApproveSection } from "./AutoApproveSection.js"
