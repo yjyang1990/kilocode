@@ -16,7 +16,7 @@ import type { SingleCompletionHandler } from "../index"
 
 const QWEN_OAUTH_BASE_URL = "https://chat.qwen.ai"
 const QWEN_OAUTH_TOKEN_ENDPOINT = `${QWEN_OAUTH_BASE_URL}/api/v1/oauth2/token`
-const QWEN_OAUTH_CLIENT_ID = process.env.QWEN_OAUTH_CLIENT_ID ?? ""
+const QWEN_OAUTH_CLIENT_ID = "f0304373b74a44d2b584a3fb70ca9e56"
 const QWEN_DIR = ".qwen"
 const QWEN_CREDENTIAL_FILENAME = "oauth_creds.json"
 
