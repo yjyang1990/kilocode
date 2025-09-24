@@ -368,9 +368,11 @@ export class DirectoryScanner implements IDirectoryScanner {
 							.map((info) => info.filePath),
 					),
 				]
+				// kilocode_change start
 				console.debug(
 					`[DirectoryScanner] Identified ${uniqueFilePaths.length} modified files to delete points for`,
 				)
+				// kilocode_change end
 
 				if (uniqueFilePaths.length > 0) {
 					try {
@@ -385,12 +387,10 @@ export class DirectoryScanner implements IDirectoryScanner {
 							deleteError?.status || deleteError?.response?.status || deleteError?.statusCode
 						const errorMessage = deleteError instanceof Error ? deleteError.message : String(deleteError)
 
-						// kilocode_change start
 						console.error(
 							`[DirectoryScanner] Failed to delete points for ${uniqueFilePaths.length} files before upsert in workspace ${scanWorkspace}:`,
 							deleteError,
 						)
-						// kilocode_change end
 
 						TelemetryService.instance.captureEvent(TelemetryEventName.CODE_INDEX_ERROR, {
 							error: sanitizeErrorMessage(errorMessage),
