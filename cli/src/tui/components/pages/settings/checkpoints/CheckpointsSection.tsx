@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Text } from "ink"
-import { SectionHeader } from "./SectionHeader.js"
-import { Section } from "./Section.js"
+import { SectionHeader } from "../common/SectionHeader.js"
+import { Section } from "../common/Section.js"
 
 export const CheckpointsSection: React.FC = () => {
 	return (

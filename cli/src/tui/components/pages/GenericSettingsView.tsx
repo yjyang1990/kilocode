@@ -4,7 +4,7 @@ import { PageFooter } from "../generic/PageFooter.js"
 import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
 import { useSidebar } from "../../context/index.js"
-import { SettingsLayout } from "./settings/SettingsLayout.js"
+import { SettingsLayout } from "./settings/common/SettingsLayout.js"
 import {
 	AutoApproveSection,
 	BrowserSection,

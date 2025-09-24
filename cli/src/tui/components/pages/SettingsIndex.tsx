@@ -3,7 +3,7 @@ import { Box, Text } from "ink"
 import { PageHeader } from "../generic/PageHeader.js"
 import { PageLayout } from "../layout/PageLayout.js"
 import { useExtensionState } from "../../context/index.js"
-import { SettingsLayout } from "./settings/SettingsLayout.js"
+import { SettingsLayout } from "./settings/common/SettingsLayout.js"
 
 export const SettingsIndex: React.FC = () => {
 	const extensionState = useExtensionState()

@@ -8,7 +8,7 @@ interface SectionHeaderProps {
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({ title, description }) => {
 	return (
-		<Box flexDirection="column" paddingX={2} paddingY={1} borderStyle="single" borderColor="blue">
+		<Box flexDirection="column" paddingX={2} paddingY={1}>
 			<Box flexDirection="row" alignItems="center" gap={1}>
 				<Text color="blue" bold>
 					{title}

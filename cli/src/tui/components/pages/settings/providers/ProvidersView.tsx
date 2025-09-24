@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react"
-import { PageHeader } from "../generic/PageHeader.js"
-import { PageFooter } from "../generic/PageFooter.js"
-import { PageLayout } from "../layout/PageLayout.js"
-import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
-import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
-import { ProvidersSection } from "./settings/ProvidersSection.js"
-import { SettingsLayout } from "./settings/SettingsLayout.js"
+import { PageHeader } from "../../../generic/PageHeader.js"
+import { PageFooter } from "../../../generic/PageFooter.js"
+import { PageLayout } from "../../../layout/PageLayout.js"
+import { useKeyboardNavigation } from "../../../../hooks/useKeyboardNavigation.js"
+import { useExtensionState, useExtensionMessage, useSidebar } from "../../../../context/index.js"
+import { ProvidersSection } from "./ProvidersSection.js"
+import { SettingsLayout } from "../common/SettingsLayout.js"
 
 interface ProvidersState {
 	editingField: string | null

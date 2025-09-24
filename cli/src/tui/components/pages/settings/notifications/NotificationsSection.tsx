@@ -1,31 +1,31 @@
 import React from "react"
 import { Box, Text } from "ink"
-import { SectionHeader } from "./SectionHeader.js"
-import { Section } from "./Section.js"
+import { SectionHeader } from "../common/SectionHeader.js"
+import { Section } from "../common/Section.js"
 
-export const BrowserSection: React.FC = () => {
+export const NotificationsSection: React.FC = () => {
 	return (
 		<Box flexDirection="column">
-			<SectionHeader title="Browser" description="Configure browser tool settings and viewport options" />
+			<SectionHeader title="Notifications" description="Configure sound and notification preferences" />
 			<Section>
 				<Box flexDirection="column" gap={1}>
-					<Text color="gray">Browser integration settings</Text>
+					<Text color="gray">Sound and notification settings</Text>
 					<Text color="yellow">Coming soon...</Text>
 					<Box marginTop={1}>
 						<Text color="gray" dimColor>
 							This section will include:
 						</Text>
 						<Text color="gray" dimColor>
-							• Browser tool enabled/disabled
+							• Sound enabled/disabled
 						</Text>
 						<Text color="gray" dimColor>
-							• Viewport size configuration
+							• Text-to-speech settings
 						</Text>
 						<Text color="gray" dimColor>
-							• Screenshot quality settings
+							• System notifications
 						</Text>
 						<Text color="gray" dimColor>
-							• Remote browser configuration
+							• Volume controls
 						</Text>
 					</Box>
 				</Box>

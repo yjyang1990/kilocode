@@ -1,11 +1,11 @@
 import React from "react"
-import { PageHeader } from "../generic/PageHeader.js"
-import { PageFooter } from "../generic/PageFooter.js"
-import { PageLayout } from "../layout/PageLayout.js"
-import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
-import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
-import { AboutSection } from "./settings/AboutSection.js"
-import { SettingsLayout } from "./settings/SettingsLayout.js"
+import { PageHeader } from "../../../generic/PageHeader.js"
+import { PageFooter } from "../../../generic/PageFooter.js"
+import { PageLayout } from "../../../layout/PageLayout.js"
+import { useKeyboardNavigation } from "../../../../hooks/useKeyboardNavigation.js"
+import { useExtensionState, useExtensionMessage, useSidebar } from "../../../../context/index.js"
+import { AboutSection } from "./AboutSection.js"
+import { SettingsLayout } from "../common/SettingsLayout.js"
 
 export const AboutView: React.FC = () => {
 	const extensionState = useExtensionState()

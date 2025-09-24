@@ -1,19 +1,20 @@
-export { Section } from "./Section.js"
-export { SectionHeader } from "./SectionHeader.js"
-export { SettingRow } from "./SettingRow.js"
-export { SettingsLayout } from "./SettingsLayout.js"
-export { ProvidersSection } from "./ProvidersSection.js"
-export { AboutSection } from "./AboutSection.js"
-export { AutoApproveSection } from "./AutoApproveSection.js"
-export { BrowserSection } from "./BrowserSection.js"
-export { CheckpointsSection } from "./CheckpointsSection.js"
-export { DisplaySection } from "./DisplaySection.js"
-export {
-	NotificationsSection,
-	ContextSection,
-	TerminalSection,
-	PromptsSection,
-	ExperimentalSection,
-	LanguageSection,
-	McpServersSection,
-} from "./RemainingBoilerplateSections.js"
+// Common components
+export { Section } from "./common/Section.js"
+export { SectionHeader } from "./common/SectionHeader.js"
+export { SettingRow } from "./common/SettingRow.js"
+export { SettingsLayout } from "./common/SettingsLayout.js"
+
+// Page sections
+export { AboutSection } from "./about/AboutSection.js"
+export { ProvidersSection } from "./providers/ProvidersSection.js"
+export { AutoApproveSection } from "./auto-approve/AutoApproveSection.js"
+export { BrowserSection } from "./browser/BrowserSection.js"
+export { CheckpointsSection } from "./checkpoints/CheckpointsSection.js"
+export { DisplaySection } from "./display/DisplaySection.js"
+export { NotificationsSection } from "./notifications/NotificationsSection.js"
+export { ContextSection } from "./context/ContextSection.js"
+export { TerminalSection } from "./terminal/TerminalSection.js"
+export { PromptsSection } from "./prompts/PromptsSection.js"
+export { ExperimentalSection } from "./experimental/ExperimentalSection.js"
+export { LanguageSection } from "./language/LanguageSection.js"
+export { McpServersSection } from "./mcp-servers/McpServersSection.js"

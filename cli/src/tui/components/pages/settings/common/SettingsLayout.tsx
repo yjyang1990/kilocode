@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { Box, Text } from "ink"
 import SelectInput from "ink-select-input"
-import { useNavigate, useCurrentPath } from "../../../router/index.js"
-import { useKeyboardNavigation } from "../../../hooks/useKeyboardNavigation.js"
-import { useSidebar } from "../../../context/index.js"
-import { useLastPath } from "../../../router/RouterContext.js"
-import { logService } from "../../../../services/LogService.js"
+import { useNavigate, useCurrentPath } from "../../../../router/index.js"
+import { useKeyboardNavigation } from "../../../../hooks/useKeyboardNavigation.js"
+import { useSidebar } from "../../../../context/index.js"
+import { useLastPath } from "../../../../router/RouterContext.js"
+import { logService } from "../../../../../services/LogService.js"
 
 interface SettingsLayoutProps {
 	children: React.ReactNode
@@ -110,7 +110,7 @@ export const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children, isInde
 					<Box flexDirection="column">
 						{sections.map((section) => (
 							<Text key={section.value} color={section.value === highlightedSection ? "blue" : "gray"}>
-								{section.value === highlightedSection ? "❯" : " "}
+								{section.value === highlightedSection ? "❯ " : "  "}
 								{section.label}
 							</Text>
 						))}

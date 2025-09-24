@@ -1,28 +1,28 @@
 import React from "react"
 import { Box, Text } from "ink"
-import { SectionHeader } from "./SectionHeader.js"
-import { Section } from "./Section.js"
+import { SectionHeader } from "../common/SectionHeader.js"
+import { Section } from "../common/Section.js"
 
-export const DisplaySection: React.FC = () => {
+export const PromptsSection: React.FC = () => {
 	return (
 		<Box flexDirection="column">
-			<SectionHeader title="Display" description="Configure display and UI preferences" />
+			<SectionHeader title="Prompts" description="Configure custom prompts and prompt settings" />
 			<Section>
 				<Box flexDirection="column" gap={1}>
-					<Text color="gray">Display and UI settings</Text>
+					<Text color="gray">Custom prompt configuration</Text>
 					<Text color="yellow">Coming soon...</Text>
 					<Box marginTop={1}>
 						<Text color="gray" dimColor>
 							This section will include:
 						</Text>
 						<Text color="gray" dimColor>
-							• Task timeline visibility
+							• Custom support prompts
 						</Text>
 						<Text color="gray" dimColor>
-							• Auto-approve menu display
+							• Prompt templates
 						</Text>
 						<Text color="gray" dimColor>
-							• Theme preferences
+							• Task history in prompts
 						</Text>
 					</Box>
 				</Box>

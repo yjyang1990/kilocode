@@ -1,10 +1,10 @@
 import React from "react"
 import { Box, Text } from "ink"
 import TextInput from "ink-text-input"
-import type { ProviderSettings } from "../../../../types/messages.js"
-import { SectionHeader } from "./SectionHeader.js"
-import { Section } from "./Section.js"
-import { SettingRow } from "./SettingRow.js"
+import type { ProviderSettings } from "../../../../../types/messages.js"
+import { SectionHeader } from "../common/SectionHeader.js"
+import { Section } from "../common/Section.js"
+import { SettingRow } from "../common/SettingRow.js"
 
 interface ProvidersSectionProps {
 	apiConfig: ProviderSettings
