@@ -19,8 +19,8 @@ import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from ".
 import { BaseProvider } from "./base-provider"
 
 // OAuth2 Configuration (from Cline implementation)
-const OAUTH_CLIENT_ID = "681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com"
-const OAUTH_CLIENT_SECRET = "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"
+const OAUTH_CLIENT_ID = process.env.GEMINI_CLI_OAUTH_CLIENT_ID
+const OAUTH_CLIENT_SECRET = process.env.GEMINI_CLI_OAUTH_CLIENT_SECRET
 const OAUTH_REDIRECT_URI = "http://localhost:45289"
 
 // Code Assist API Configuration
@@ -142,7 +142,9 @@ export class GeminiCliHandler extends BaseProvider implements SingleCompletionHa
 
 		// Lookup for the project id from the env variable
 		// with a fallback to a default project ID (can be anything for personal OAuth)
-		const envPath = this.options.geminiCliOAuthPath || path.join(os.homedir(), ".gemini", ".env")
+		const envPath = this.options.geminiCliOAuthPath
+			? path.join(path.dirname(this.options.geminiCliOAuthPath), ".env")
+			: path.join(os.homedir(), ".gemini", ".env")
 
 		const { parsed, error } = dotenvx.config({ path: envPath })
 
