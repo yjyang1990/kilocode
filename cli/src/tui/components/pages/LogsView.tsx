@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { Box, Text, useInput } from "ink"
+import { Box, Text } from "ink"
 import { ScrollBox } from "@sasaplus1/ink-scroll-box"
-import type { ExtensionState, WebviewMessage } from "../../types/messages.js"
-import { logService, type LogEntry, type LogLevel, type LogFilter } from "../../services/LogService.js"
-
-interface LogsViewProps {
-	extensionState: ExtensionState | null
-	sendMessage: (message: WebviewMessage) => Promise<void>
-	onBack: () => void
-	sidebarVisible?: boolean
-}
+import { logService, type LogEntry, type LogLevel, type LogFilter } from "../../../services/LogService.js"
+import { PageHeader } from "../generic/PageHeader.js"
+import { EmptyState } from "../generic/EmptyState.js"
+import { PageLayout } from "../layout/PageLayout.js"
+import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
+import { useExtensionState, useExtensionMessage, useSidebar, useViewNavigation } from "../../context/index.js"
 
 interface LogsState {
 	logs: LogEntry[]
@@ -33,7 +30,11 @@ const LOG_LEVEL_ICONS: Record<LogLevel, string> = {
 	error: "🔴",
 }
 
-export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage, onBack, sidebarVisible = false }) => {
+export const LogsView: React.FC = () => {
+	const extensionState = useExtensionState()
+	const { sendMessage } = useExtensionMessage()
+	const { visible: sidebarVisible } = useSidebar()
+	const { goBack } = useViewNavigation()
 	const [logsState, setLogsState] = useState<LogsState>({
 		logs: [],
 		filter: {},
@@ -117,32 +118,28 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 		})
 	}, [])
 
-	// Handle keyboard input
-	useInput((input, key) => {
-		// Don't handle input when sidebar is visible
-		if (sidebarVisible) return
-
-		if (input === "c") {
-			clearLogs()
-		} else if (input === "i") {
-			toggleLogLevel("info")
-		} else if (input === "d") {
-			toggleLogLevel("debug")
-		} else if (input === "w") {
-			toggleLogLevel("warn")
-		} else if (input === "e") {
-			toggleLogLevel("error")
-		} else if (input === "+") {
-			adjustShowingCount(25)
-		} else if (input === "-") {
-			adjustShowingCount(-25)
-		} else if (key.upArrow && logsState.logs.length > 0) {
-			// Scroll up - decrease offset to show earlier messages
-			setScrollOffset((prev) => Math.max(0, prev - 1))
-		} else if (key.downArrow && logsState.logs.length > 0) {
-			// Scroll down - increase offset to show later messages
-			setScrollOffset((prev) => prev + 1)
-		}
+	// Use the new keyboard navigation hook
+	useKeyboardNavigation({
+		sidebarVisible,
+		customHandlers: {
+			c: () => clearLogs(),
+			i: () => toggleLogLevel("info"),
+			d: () => toggleLogLevel("debug"),
+			w: () => toggleLogLevel("warn"),
+			e: () => toggleLogLevel("error"),
+			"+": () => adjustShowingCount(25),
+			"-": () => adjustShowingCount(-25),
+			upArrow: () => {
+				if (logsState.logs.length > 0) {
+					setScrollOffset((prev) => Math.max(0, prev - 1))
+				}
+			},
+			downArrow: () => {
+				if (logsState.logs.length > 0) {
+					setScrollOffset((prev) => prev + 1)
+				}
+			},
+		},
 	})
 
 	// Format timestamp for display
@@ -161,69 +158,76 @@ export const LogsView: React.FC<LogsViewProps> = ({ extensionState, sendMessage,
 	const logCounts = logService.getLogCounts()
 	const totalLogs = logService.getLogs().length
 
-	return (
-		<Box flexDirection="column" height="100%">
-			{/* Header */}
-			<Box borderStyle="single" borderColor="blue" paddingX={1} flexGrow={1} flexShrink={0}>
-				<Text color="blue" bold>
-					Logs
+	// Create header
+	const header = <PageHeader title="Logs" />
+
+	// Create filter controls
+	const filterControls = (
+		<Box
+			flexGrow={1}
+			flexShrink={0}
+			borderStyle="single"
+			borderColor="gray"
+			paddingX={1}
+			justifyContent="space-between">
+			<Box gap={1}>
+				<Text color="gray" bold>
+					Filters:
 				</Text>
-			</Box>
-
-			{/* Filter controls */}
-			<Box
-				flexGrow={1}
-				flexShrink={0}
-				borderStyle="single"
-				borderColor="gray"
-				paddingX={1}
-				justifyContent="space-between">
-				<Box gap={1}>
-					<Text color="gray" bold>
-						Filters:
-					</Text>
-					{(["info", "debug", "warn", "error"] as LogLevel[]).map((level) => (
-						<Text key={level}>
-							<Text color={logsState.selectedLevels.has(level) ? LOG_LEVEL_COLORS[level] : "gray"}>
-								{LOG_LEVEL_ICONS[level]} {level.toUpperCase()}
-							</Text>
-							<Text color="gray" dimColor>
-								({logCounts[level]})
-							</Text>
+				{(["info", "debug", "warn", "error"] as LogLevel[]).map((level) => (
+					<Text key={level}>
+						<Text color={logsState.selectedLevels.has(level) ? LOG_LEVEL_COLORS[level] : "gray"}>
+							{LOG_LEVEL_ICONS[level]} {level.toUpperCase()}
 						</Text>
-					))}
-				</Box>
-				<Box gap={1}>
-					<Text color="gray" dimColor>
-						<Text color="blue">[i]</Text>nfo <Text color="yellow">[d]</Text>ebug{" "}
-						<Text color="magenta">[w]</Text>arn <Text color="red">[e]</Text>rror{" "}
-						<Text color="green">[c]</Text>
-						lear <Text color="cyan">[+/-]</Text>count
-					</Text>
-				</Box>
-			</Box>
-
-			{/* Logs area */}
-			<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
-				{logsState.logs.length === 0 ? (
-					<Box flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-						<Text color="gray">📭 No logs to display</Text>
 						<Text color="gray" dimColor>
-							{logsState.selectedLevels.size === 0
-								? "All log levels are filtered out"
-								: "No logs match the current filter"}
+							({logCounts[level]})
 						</Text>
-					</Box>
-				) : (
-					<ScrollBox height="100%" offset={scrollOffset}>
-						{logsState.logs.map((log) => (
-							<LogRow key={log.id} log={log} formatTimestamp={formatTimestamp} />
-						))}
-					</ScrollBox>
-				)}
+					</Text>
+				))}
+			</Box>
+			<Box gap={1}>
+				<Text color="gray" dimColor>
+					<Text color="blue">[i]</Text>nfo <Text color="yellow">[d]</Text>ebug{" "}
+					<Text color="magenta">[w]</Text>arn <Text color="red">[e]</Text>rror <Text color="green">[c]</Text>
+					lear <Text color="cyan">[+/-]</Text>count
+				</Text>
 			</Box>
 		</Box>
 	)
+
+	// Handle empty state
+	if (logsState.logs.length === 0) {
+		return (
+			<PageLayout header={header}>
+				{filterControls}
+				<EmptyState
+					icon="📭"
+					title="No logs to display"
+					description={
+						logsState.selectedLevels.size === 0
+							? "All log levels are filtered out"
+							: "No logs match the current filter"
+					}
+				/>
+			</PageLayout>
+		)
+	}
+
+	// Create main content with logs
+	const content = (
+		<Box flexDirection="column" flexGrow={1}>
+			{filterControls}
+			<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
+				<ScrollBox height="100%" offset={scrollOffset}>
+					{logsState.logs.map((log) => (
+						<LogRow key={log.id} log={log} formatTimestamp={formatTimestamp} />
+					))}
+				</ScrollBox>
+			</Box>
+		</Box>
+	)
+
+	return <PageLayout header={header}>{content}</PageLayout>
 }
 
 // Helper component for rendering individual log entries

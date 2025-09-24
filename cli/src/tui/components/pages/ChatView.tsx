@@ -3,15 +3,13 @@ import { Box, Text, useInput } from "ink"
 import TextInput from "ink-text-input"
 import Spinner from "ink-spinner"
 import { ScrollBox } from "@sasaplus1/ink-scroll-box"
-import { logService } from "../../services/LogService.js"
-import type { ExtensionState, WebviewMessage, ExtensionMessage, ClineMessage } from "../../types/messages.js"
-
-interface ChatViewProps {
-	extensionState: ExtensionState | null
-	sendMessage: (message: WebviewMessage) => Promise<void>
-	onExtensionMessage: (message: ExtensionMessage) => void
-	sidebarVisible?: boolean
-}
+import { logService } from "../../../services/LogService.js"
+import type { ExtensionMessage, ClineMessage } from "../../../types/messages.js"
+import { PageHeader } from "../generic/PageHeader.js"
+import { EmptyState } from "../generic/EmptyState.js"
+import { PageLayout } from "../layout/PageLayout.js"
+import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
+import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
 
 interface ChatState {
 	messages: ClineMessage[]
@@ -21,12 +19,10 @@ interface ChatState {
 	currentAsk: string | null
 }
 
-export const ChatView: React.FC<ChatViewProps> = ({
-	extensionState,
-	sendMessage,
-	onExtensionMessage,
-	sidebarVisible = false,
-}) => {
+export const ChatView: React.FC = () => {
+	const extensionState = useExtensionState()
+	const { sendMessage, handleMessage } = useExtensionMessage()
+	const { visible: sidebarVisible } = useSidebar()
 	const [chatState, setChatState] = useState<ChatState>({
 		messages: [],
 		inputValue: "",
@@ -135,7 +131,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
 		// Register the message handler with the parent component
 		// This is a workaround since onExtensionMessage expects a single message, not a handler
 		// In practice, the parent TUI App will call this handler when messages are received
-	}, [onExtensionMessage])
+	}, [handleMessage])
 
 	const handleSendMessage = useCallback(async () => {
 		if (!chatState.inputValue.trim()) {
@@ -192,33 +188,36 @@ export const ChatView: React.FC<ChatViewProps> = ({
 		}
 	}, [sendMessage])
 
-	// Local input handling - only when in chat view and not in input mode
-	useInput((input, key) => {
-		// Don't handle input when sidebar is visible
-		if (sidebarVisible) return
-
-		if (inputMode === "input") {
-			return // Let TextInput handle it
-		}
-
-		// Don't handle Ctrl key combinations - let the parent App handle them
-		if (key.ctrl) {
-			return
-		}
-
-		if (key.return) {
-			setInputMode("input")
-		} else if (input === "y" && chatState.currentAsk) {
-			handleApprove()
-		} else if (input === "n" && chatState.currentAsk) {
-			handleReject()
-		} else if (key.upArrow && chatState.messages.length > 0) {
-			// Scroll up - decrease offset to show earlier messages
-			setScrollOffset((prev) => Math.max(0, prev - 1))
-		} else if (key.downArrow && chatState.messages.length > 0) {
-			// Scroll down - increase offset to show later messages
-			setScrollOffset((prev) => prev + 1)
-		}
+	// Use the new keyboard navigation hook
+	useKeyboardNavigation({
+		sidebarVisible,
+		customHandlers: {
+			return: () => {
+				if (inputMode !== "input") {
+					setInputMode("input")
+				}
+			},
+			y: () => {
+				if (chatState.currentAsk) {
+					handleApprove()
+				}
+			},
+			n: () => {
+				if (chatState.currentAsk) {
+					handleReject()
+				}
+			},
+			upArrow: () => {
+				if (chatState.messages.length > 0) {
+					setScrollOffset((prev) => Math.max(0, prev - 1))
+				}
+			},
+			downArrow: () => {
+				if (chatState.messages.length > 0) {
+					setScrollOffset((prev) => prev + 1)
+				}
+			},
+		},
 	})
 
 	// Auto-scroll to bottom when new messages arrive - keep user's scroll position unless they're at bottom
@@ -234,85 +233,92 @@ export const ChatView: React.FC<ChatViewProps> = ({
 	const lastMessage = chatState.messages[chatState.messages.length - 1]
 	const hasActiveAsk = lastMessage?.type === "ask" && !lastMessage.partial
 
-	return (
-		<Box flexDirection="column" height="100%">
-			{/* Header */}
-			<Box borderStyle="single" borderColor="blue" paddingX={1}>
-				<Text color="blue" bold>
-					Chat - Mode: {extensionState?.mode || "code"}
-					{chatState.isStreaming && <Text color="yellow"> | Thinking...</Text>}
-				</Text>
-			</Box>
-
-			{/* Messages area */}
-			<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
-				{chatState.messages.length === 0 ? (
-					<Box flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-						<Text color="blue" bold>
-							Welcome to Kilo Code CLI!
-						</Text>
-						<Text color="gray">Type your task or question and press Enter to start.</Text>
-						<Text color="gray" dimColor>
-							Press Enter to start typing, y/n to approve/reject actions
-						</Text>
-						<Text color="gray" dimColor>
-							Press Esc to open the navigation menu
-						</Text>
-						{chatState.isStreaming && (
-							<Box marginTop={1}>
-								<Spinner type="dots" />
-								<Text color="yellow"> Thinking...</Text>
-							</Box>
-						)}
-					</Box>
-				) : (
-					<ScrollBox height="100%" offset={scrollOffset}>
-						{[
-							...(chatState.isStreaming
-								? [
-										<Box key="spinner" paddingX={1} marginBottom={1}>
-											<Spinner type="dots" />
-											<Text color="yellow"> Thinking...</Text>
-										</Box>,
-									]
-								: []),
-							...chatState.messages.map((message, index) => (
-								<MessageRow key={message.ts} message={message} />
-							)),
-						]}
-					</ScrollBox>
-				)}
-			</Box>
-
-			{/* Input area */}
-			<Box borderStyle="single" borderColor="gray" paddingX={1} flexGrow={1} flexShrink={0}>
-				{inputMode === "input" ? (
+	// Create header with streaming status
+	const header = (
+		<PageHeader
+			title="Chat"
+			subtitle={`Mode: ${extensionState?.mode || "code"}`}
+			actions={
+				chatState.isStreaming ? (
 					<Box>
-						<Text color="blue">💭 </Text>
-						<TextInput
-							value={chatState.inputValue}
-							onChange={(value) => setChatState((prev) => ({ ...prev, inputValue: value }))}
-							onSubmit={handleSendMessage}
-							placeholder="Type your message..."
-						/>
+						<Text color="yellow">Thinking...</Text>
 					</Box>
-				) : (
-					<Box>
-						{hasActiveAsk ? (
-							<Box gap={2}>
-								<Text color="yellow">⚡ Action required:</Text>
-								<Text color="green">[y]es</Text>
-								<Text color="red">[n]o</Text>
-							</Box>
-						) : (
-							<Text color="gray">
-								Press <Text color="blue">Enter</Text> to type a message
-							</Text>
-						)}
-					</Box>
-				)}
-			</Box>
+				) : undefined
+			}
+		/>
+	)
+
+	// Create main content
+	const content = (
+		<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
+			{chatState.messages.length === 0 ? (
+				<EmptyState
+					icon="🚀"
+					title="Welcome to Kilo Code CLI!"
+					description={[
+						"Type your task or question and press Enter to start.",
+						"Press Enter to start typing, y/n to approve/reject actions",
+						"Press Esc to open the navigation menu",
+					]}
+					isLoading={chatState.isStreaming}
+					loadingText="Thinking..."
+				/>
+			) : (
+				<ScrollBox height="100%" offset={scrollOffset}>
+					{[
+						...(chatState.isStreaming
+							? [
+									<Box key="spinner" paddingX={1} marginBottom={1}>
+										<Spinner type="dots" />
+										<Text color="yellow"> Thinking...</Text>
+									</Box>,
+								]
+							: []),
+						...chatState.messages.map((message, index) => (
+							<MessageRow key={message.ts} message={message} />
+						)),
+					]}
+				</ScrollBox>
+			)}
 		</Box>
+	)
+
+	// Create input area
+	const inputArea = (
+		<Box borderStyle="single" borderColor="gray" paddingX={1} flexGrow={1} flexShrink={0}>
+			{inputMode === "input" ? (
+				<Box>
+					<Text color="blue">💭 </Text>
+					<TextInput
+						value={chatState.inputValue}
+						onChange={(value) => setChatState((prev) => ({ ...prev, inputValue: value }))}
+						onSubmit={handleSendMessage}
+						placeholder="Type your message..."
+					/>
+				</Box>
+			) : (
+				<Box>
+					{hasActiveAsk ? (
+						<Box gap={2}>
+							<Text color="yellow">⚡ Action required:</Text>
+							<Text color="green">[y]es</Text>
+							<Text color="red">[n]o</Text>
+						</Box>
+					) : (
+						<Text color="gray">
+							Press <Text color="blue">Enter</Text> to type a message
+						</Text>
+					)}
+				</Box>
+			)}
+		</Box>
+	)
+
+	return (
+		<PageLayout header={header}>
+			{content}
+			{inputArea}
+		</PageLayout>
 	)
 }
 

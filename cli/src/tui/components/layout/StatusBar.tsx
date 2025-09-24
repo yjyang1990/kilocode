@@ -1,13 +1,10 @@
 import React from "react"
 import { Box, Text } from "ink"
-import type { ExtensionState } from "../../types/messages.js"
+import { useExtensionState, useCliState } from "../../context/index.js"
 
-interface StatusBarProps {
-	extensionState: ExtensionState | null
-	workspace: string
-}
-
-export const StatusBar: React.FC<StatusBarProps> = ({ extensionState, workspace }) => {
+export const StatusBar: React.FC = () => {
+	const extensionState = useExtensionState()
+	const { workspace } = useCliState()
 	const currentMode = extensionState?.mode || "unknown"
 	const apiProvider = extensionState?.apiConfiguration?.apiProvider || "unknown"
 	const model = extensionState?.apiConfiguration?.kilocodeModel || "unknown"

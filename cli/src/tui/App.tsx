@@ -1,191 +1,31 @@
-import React, { useState, useEffect, useCallback } from "react"
-import { render, Box, Text, useApp, useInput } from "ink"
+import React from "react"
+import { render, Box, Text, useInput } from "ink"
 import { EventEmitter } from "events"
 import type { MessageBridge } from "../communication/ipc.js"
-import type { ExtensionMessage, ExtensionState, WebviewMessage } from "../types/messages.js"
-import { ChatView } from "./components/ChatView.js"
-import { HistoryView } from "./components/HistoryView.js"
-import { SettingsView } from "./components/SettingsView.js"
-import { ModesView } from "./components/ModesView.js"
-import { McpView } from "./components/McpView.js"
-import { LogsView } from "./components/LogsView.js"
-import { StatusBar } from "./components/StatusBar.js"
-import { OverlaySidebar } from "./components/OverlaySidebar.js"
-import { FullScreenLayout } from "./components/FullScreenLayout.js"
+import type { ExtensionMessage } from "../types/messages.js"
+import { ChatView } from "./components/pages/ChatView.js"
+import { HistoryView } from "./components/pages/HistoryView.js"
+import { SettingsView } from "./components/pages/SettingsView.js"
+import { ModesView } from "./components/pages/ModesView.js"
+import { McpView } from "./components/pages/McpView.js"
+import { LogsView } from "./components/pages/LogsView.js"
+import { StatusBar } from "./components/layout/StatusBar.js"
+import { OverlaySidebar } from "./components/generic/OverlaySidebar.js"
+import { FullScreenLayout } from "./components/layout/FullScreenLayout.js"
 import { logService } from "../services/LogService.js"
+import {
+	CliContextProvider,
+	useCliState,
+	useCliActions,
+	useSidebar,
+	type TUIApplicationOptions,
+} from "./context/index.js"
 
-export interface TUIApplicationOptions {
-	messageBridge: MessageBridge
-	initialMode: string
-	workspace: string
-	autoApprove: boolean
-	initialView?: ViewType
-}
-
-type ViewType = "chat" | "history" | "settings" | "modes" | "mcp" | "logs"
-
-interface AppState {
-	currentView: ViewType
-	extensionState: ExtensionState | null
-	isLoading: boolean
-	error: string | null
-	lastExtensionMessage: ExtensionMessage | null
-	sidebarVisible: boolean
-}
-
-const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
-	const { exit } = useApp()
-	const [state, setState] = useState<AppState>({
-		currentView: options.initialView || "chat",
-		extensionState: null,
-		isLoading: true,
-		error: null,
-		lastExtensionMessage: null,
-		sidebarVisible: false,
-	})
-
-	// Handle extension messages
-	const handleExtensionMessage = useCallback(
-		(message: ExtensionMessage) => {
-			logService.info(`Received extension message: ${message.type}`, "CLI App")
-			logService.debug(`Current isLoading state: ${state.isLoading}`, "CLI App")
-			logService.debug(`Message state: ${message.state ? "present" : "null"}`, "CLI App")
-
-			switch (message.type) {
-				case "state":
-					logService.debug("Processing state message, setting isLoading to false", "CLI App")
-					setState((prev) => {
-						logService.debug(
-							`Previous state - isLoading: ${prev.isLoading}, extensionState: ${prev.extensionState ? "present" : "null"}`,
-							"CLI App",
-						)
-						const newState = {
-							...prev,
-							extensionState: message.state || null,
-							isLoading: false,
-						}
-						logService.debug(
-							`New state - isLoading: ${newState.isLoading}, extensionState: ${newState.extensionState ? "present" : "null"}`,
-							"CLI App",
-						)
-						return newState
-					})
-					break
-				case "action":
-					if (message.action === "chatButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "chat" }))
-					} else if (message.action === "historyButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "history" }))
-					} else if (message.action === "settingsButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "settings" }))
-					} else if (message.action === "promptsButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "modes" }))
-					} else if (message.action === "mcpButtonClicked") {
-						setState((prev) => ({ ...prev, currentView: "mcp" }))
-					}
-					break
-				case "messageUpdated":
-					// Handle message updates like the webview does
-					if (message.clineMessage && state.extensionState) {
-						logService.debug(`Updating message with ts: ${message.clineMessage.ts}`, "CLI App")
-						setState((prev) => {
-							if (!prev.extensionState) return prev
-
-							const lastIndex = prev.extensionState.clineMessages.findIndex(
-								(msg) => msg.ts === message.clineMessage!.ts,
-							)
-
-							if (lastIndex !== -1) {
-								const newClineMessages = [...prev.extensionState.clineMessages]
-								newClineMessages[lastIndex] = message.clineMessage!
-								logService.debug(`Updated existing message at index ${lastIndex}`, "CLI App")
-								return {
-									...prev,
-									extensionState: {
-										...prev.extensionState,
-										clineMessages: newClineMessages,
-									},
-								}
-							} else {
-								// Add new message
-								logService.debug(`Adding new message with ts: ${message.clineMessage!.ts}`, "CLI App")
-								return {
-									...prev,
-									extensionState: {
-										...prev.extensionState,
-										clineMessages: [...prev.extensionState.clineMessages, message.clineMessage!],
-									},
-								}
-							}
-						})
-					}
-					break
-				case "selectedImages":
-					// Handle image selection messages
-					logService.debug("Received selectedImages message", "CLI App", { images: message.images })
-					// For CLI, we might want to handle this differently or pass it to the active view
-					break
-				case "invoke":
-					// Handle invoke messages that trigger specific actions
-					logService.debug(`Received invoke message: ${message.invoke}`, "CLI App")
-					switch (message.invoke) {
-						case "newChat":
-							// Reset chat state
-							setState((prev) => ({
-								...prev,
-								extensionState: prev.extensionState
-									? {
-											...prev.extensionState,
-											clineMessages: [],
-										}
-									: null,
-							}))
-							break
-						case "sendMessage":
-							// This would be handled by the ChatView component
-							logService.debug("Invoke sendMessage received", "CLI App")
-							break
-						case "setChatBoxMessage":
-							// This would be handled by the ChatView component
-							logService.debug("Invoke setChatBoxMessage received", "CLI App")
-							break
-						case "primaryButtonClick":
-						case "secondaryButtonClick":
-							// These would be handled by the ChatView component
-							logService.debug(`Invoke ${message.invoke} received`, "CLI App")
-							break
-						default:
-							logService.debug(`Unhandled invoke: ${message.invoke}`, "CLI App")
-							break
-					}
-					break
-				case "condenseTaskContextResponse":
-					// Handle context condensing response
-					logService.debug("Received condenseTaskContextResponse", "CLI App")
-					if (message.text && state.extensionState?.currentTaskItem?.id === message.text) {
-						// Update state to reflect condensing completion
-						setState((prev) => ({
-							...prev,
-							// Could add a flag to indicate condensing is complete
-						}))
-					}
-					break
-				case "taskHistoryResponse":
-					// Handle task history response
-					logService.debug("Received taskHistoryResponse", "CLI App")
-					// Store the message so it can be passed to the HistoryView
-					setState((prev) => ({
-						...prev,
-						lastExtensionMessage: message,
-					}))
-					break
-				default:
-					logService.info(`Unhandled extension message: ${message.type}`, "CLI App")
-					break
-			}
-		},
-		[state.extensionState],
-	)
+// Inner App component that uses context
+const AppContent: React.FC = () => {
+	const state = useCliState()
+	const actions = useCliActions()
+	const sidebar = useSidebar()
 
 	// Global keyboard shortcuts - handle escape key and Ctrl combinations
 	useInput(
@@ -193,37 +33,37 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 			// Handle escape key to toggle sidebar
 			if (key.escape) {
 				logService.debug("ESC key pressed, toggling sidebar", "CLI App")
-				setState((prev) => ({ ...prev, sidebarVisible: !prev.sidebarVisible }))
+				sidebar.toggle()
 				return
 			}
 
 			// Only process Ctrl key combinations when sidebar is not visible
-			if (key.ctrl && !state.sidebarVisible) {
+			if (key.ctrl && !sidebar.visible) {
 				logService.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
 				switch (input) {
 					case "c":
-						exit()
+						actions.exit()
 						break
 					case "q":
-						exit()
+						actions.exit()
 						break
 					case "w":
-						setState((prev) => ({ ...prev, currentView: "chat" }))
+						actions.switchView("chat")
 						break
 					case "e":
-						setState((prev) => ({ ...prev, currentView: "history" }))
+						actions.switchView("history")
 						break
 					case "r":
-						setState((prev) => ({ ...prev, currentView: "settings" }))
+						actions.switchView("settings")
 						break
 					case "t":
-						setState((prev) => ({ ...prev, currentView: "modes" }))
+						actions.switchView("modes")
 						break
 					case "y":
-						setState((prev) => ({ ...prev, currentView: "mcp" }))
+						actions.switchView("mcp")
 						break
 					case "l":
-						setState((prev) => ({ ...prev, currentView: "logs" }))
+						actions.switchView("logs")
 						break
 					default:
 						logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
@@ -236,77 +76,6 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 			isActive: true,
 		},
 	)
-
-	// Initialize extension state and listen for messages
-	useEffect(() => {
-		const handleBridgeMessage = (message: any) => {
-			if (message.data && message.data.type === "extensionMessage") {
-				handleExtensionMessage(message.data.payload)
-			}
-		}
-
-		// Listen for extension messages through the message bridge
-		options.messageBridge.on("extensionEvent", handleBridgeMessage)
-
-		// Request initial state
-		const requestInitialState = async () => {
-			try {
-				await options.messageBridge.sendWebviewMessage({
-					type: "webviewDidLaunch",
-				})
-			} catch (error) {
-				logService.error("Failed to request initial state", "CLI App", { error })
-				setState((prev) => ({
-					...prev,
-					error: "Failed to connect to extension",
-					isLoading: false,
-				}))
-			}
-		}
-
-		requestInitialState()
-
-		return () => {
-			options.messageBridge.off("extensionEvent", handleBridgeMessage)
-		}
-	}, [options.messageBridge, handleExtensionMessage])
-
-	const sendMessage = useCallback(
-		async (message: WebviewMessage) => {
-			try {
-				await options.messageBridge.sendWebviewMessage(message)
-			} catch (error) {
-				logService.error("Failed to send message", "CLI App", { error })
-			}
-		},
-		[options.messageBridge],
-	)
-
-	const switchView = useCallback(
-		(view: ViewType) => {
-			logService.debug(`Switching view from ${state.currentView} to ${view}`, "CLI App")
-			setState((prev) => ({ ...prev, currentView: view }))
-		},
-		[state.currentView],
-	)
-
-	const handleSidebarSelect = useCallback(
-		(item: ViewType | "profile" | "exit") => {
-			if (item === "exit") {
-				exit()
-			} else if (item === "profile") {
-				// Handle profile view - for now redirect to settings
-				setState((prev) => ({ ...prev, currentView: "settings", sidebarVisible: false }))
-			} else {
-				setState((prev) => ({ ...prev, currentView: item, sidebarVisible: false }))
-			}
-		},
-		[exit],
-	)
-
-	const handleSidebarClose = useCallback(() => {
-		setState((prev) => ({ ...prev, sidebarVisible: false }))
-	}, [])
 
 	if (state.isLoading) {
 		return (
@@ -329,64 +98,17 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 	const renderMainContent = () => {
 		switch (state.currentView) {
 			case "chat":
-				return (
-					<ChatView
-						extensionState={state.extensionState}
-						sendMessage={sendMessage}
-						onExtensionMessage={(message: ExtensionMessage) => {
-							// Forward extension messages to the ChatView
-							logService.debug(`Forwarding message to ChatView: ${message.type}`, "CLI App")
-							handleExtensionMessage(message)
-						}}
-						sidebarVisible={state.sidebarVisible}
-					/>
-				)
+				return <ChatView />
 			case "history":
-				return (
-					<HistoryView
-						extensionState={state.extensionState}
-						sendMessage={sendMessage}
-						onBack={() => switchView("chat")}
-						lastExtensionMessage={state.lastExtensionMessage}
-						sidebarVisible={state.sidebarVisible}
-					/>
-				)
+				return <HistoryView />
 			case "settings":
-				return (
-					<SettingsView
-						extensionState={state.extensionState}
-						sendMessage={sendMessage}
-						onBack={() => switchView("chat")}
-						sidebarVisible={state.sidebarVisible}
-					/>
-				)
+				return <SettingsView />
 			case "modes":
-				return (
-					<ModesView
-						extensionState={state.extensionState}
-						sendMessage={sendMessage}
-						onBack={() => switchView("chat")}
-						sidebarVisible={state.sidebarVisible}
-					/>
-				)
+				return <ModesView />
 			case "mcp":
-				return (
-					<McpView
-						extensionState={state.extensionState}
-						sendMessage={sendMessage}
-						onBack={() => switchView("chat")}
-						sidebarVisible={state.sidebarVisible}
-					/>
-				)
+				return <McpView />
 			case "logs":
-				return (
-					<LogsView
-						extensionState={state.extensionState}
-						sendMessage={sendMessage}
-						onBack={() => switchView("chat")}
-						sidebarVisible={state.sidebarVisible}
-					/>
-				)
+				return <LogsView />
 			default:
 				return null
 		}
@@ -398,12 +120,12 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 				{/* Main content area with sidebar */}
 				<Box flexDirection="row" flexGrow={1}>
 					{/* Sidebar - Shows as a side panel when visible */}
-					{state.sidebarVisible && (
+					{sidebar.visible && (
 						<OverlaySidebar
-							isVisible={state.sidebarVisible}
+							isVisible={sidebar.visible}
 							currentView={state.currentView}
-							onSelectItem={handleSidebarSelect}
-							onClose={handleSidebarClose}
+							onSelectItem={sidebar.handleSelect}
+							onClose={sidebar.close}
 						/>
 					)}
 
@@ -414,9 +136,18 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 				</Box>
 
 				{/* Status bar - always at bottom */}
-				<StatusBar extensionState={state.extensionState} workspace={options.workspace || process.cwd()} />
+				<StatusBar />
 			</Box>
 		</FullScreenLayout>
+	)
+}
+
+// Main App component that wraps everything with context
+const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
+	return (
+		<CliContextProvider options={options}>
+			<AppContent />
+		</CliContextProvider>
 	)
 }
 
