@@ -335,6 +335,7 @@ export class DirectoryScanner implements IDirectoryScanner {
 		onError?: (error: Error) => void,
 		onBlocksIndexed?: (indexedCount: number) => void,
 	): Promise<void> {
+		// kilocode_change start
 		if (batchBlocks.length === 0) {
 			console.debug("[DirectoryScanner] Skipping empty batch processing")
 			return
@@ -343,6 +344,7 @@ export class DirectoryScanner implements IDirectoryScanner {
 		console.debug(
 			`[DirectoryScanner] Starting to process batch of ${batchBlocks.length} blocks in workspace ${scanWorkspace}`,
 		)
+		// kilocode_change end
 
 		let attempts = 0
 		let success = false
@@ -350,13 +352,15 @@ export class DirectoryScanner implements IDirectoryScanner {
 
 		while (attempts < MAX_BATCH_RETRIES && !success) {
 			attempts++
+			// kilocode_change start
 			console.debug(
 				`[DirectoryScanner] Processing batch attempt ${attempts}/${MAX_BATCH_RETRIES} for ${batchBlocks.length} blocks`,
 			)
+			// kilocode_change end
 
 			try {
 				// --- Deletion Step ---
-				console.debug("[DirectoryScanner] Starting deletion step for modified files")
+				console.debug("[DirectoryScanner] Starting deletion step for modified files") // kilocode_change
 				const uniqueFilePaths = [
 					...new Set(
 						batchFileInfos
@@ -371,18 +375,22 @@ export class DirectoryScanner implements IDirectoryScanner {
 				if (uniqueFilePaths.length > 0) {
 					try {
 						await this.qdrantClient.deletePointsByMultipleFilePaths(uniqueFilePaths)
+						// kilocode_change start
 						console.debug(
 							`[DirectoryScanner] Successfully deleted points for ${uniqueFilePaths.length} files`,
 						)
+						// kilocode_change end
 					} catch (deleteError: any) {
 						const errorStatus =
 							deleteError?.status || deleteError?.response?.status || deleteError?.statusCode
 						const errorMessage = deleteError instanceof Error ? deleteError.message : String(deleteError)
 
+						// kilocode_change start
 						console.error(
 							`[DirectoryScanner] Failed to delete points for ${uniqueFilePaths.length} files before upsert in workspace ${scanWorkspace}:`,
 							deleteError,
 						)
+						// kilocode_change end
 
 						TelemetryService.instance.captureEvent(TelemetryEventName.CODE_INDEX_ERROR, {
 							error: sanitizeErrorMessage(errorMessage),
@@ -402,14 +410,15 @@ export class DirectoryScanner implements IDirectoryScanner {
 						)
 					}
 				}
+				// --- End Deletion Step ---
 
 				// Create embeddings for batch
-				console.debug(`[DirectoryScanner] Creating embeddings for ${batchTexts.length} texts`)
+				console.debug(`[DirectoryScanner] Creating embeddings for ${batchTexts.length} texts`) // kilocode_change
 				const { embeddings } = await this.embedder.createEmbeddings(batchTexts)
-				console.debug(`[DirectoryScanner] Successfully created ${embeddings.length} embeddings`)
+				console.debug(`[DirectoryScanner] Successfully created ${embeddings.length} embeddings`) // kilocode_change
 
 				// Prepare points for Qdrant
-				console.debug("[DirectoryScanner] Preparing points for Qdrant upsert")
+				console.debug("[DirectoryScanner] Preparing points for Qdrant upsert") // kilocode_change
 				const points = batchBlocks.map((block, index) => {
 					const normalizedAbsolutePath = generateNormalizedAbsolutePath(block.file_path, scanWorkspace)
 
@@ -428,25 +437,27 @@ export class DirectoryScanner implements IDirectoryScanner {
 						},
 					}
 				})
-				console.debug(`[DirectoryScanner] Prepared ${points.length} points for Qdrant`)
+				console.debug(`[DirectoryScanner] Prepared ${points.length} points for Qdrant`) // kilocode_change
 
 				// Upsert points to Qdrant
-				console.debug("[DirectoryScanner] Starting Qdrant upsert")
+				console.debug("[DirectoryScanner] Starting Qdrant upsert") // kilocode_change
 				await this.qdrantClient.upsertPoints(points)
-				console.debug("[DirectoryScanner] Completed Qdrant upsert")
+				console.debug("[DirectoryScanner] Completed Qdrant upsert") // kilocode_change
 				onBlocksIndexed?.(batchBlocks.length)
 
 				// Update hashes for successfully processed files in this batch
-				console.debug("[DirectoryScanner] Updating file hashes in cache")
+				console.debug("[DirectoryScanner] Updating file hashes in cache") // kilocode_change
 				for (const fileInfo of batchFileInfos) {
 					await this.cacheManager.updateHash(fileInfo.filePath, fileInfo.fileHash)
 				}
-				console.debug("[DirectoryScanner] Completed updating file hashes in cache")
+				console.debug("[DirectoryScanner] Completed updating file hashes in cache") // kilocode_change
 
 				success = true
+				// kilocode_change start
 				console.debug(
 					`[DirectoryScanner] Successfully processed batch of ${batchBlocks.length} blocks after ${attempts} attempt(s)`,
 				)
+				// kilocode_change end
 			} catch (error) {
 				lastError = error as Error
 				console.error(
@@ -463,7 +474,7 @@ export class DirectoryScanner implements IDirectoryScanner {
 
 				if (attempts < MAX_BATCH_RETRIES) {
 					const delay = INITIAL_RETRY_DELAY_MS * Math.pow(2, attempts - 1)
-					console.debug(`[DirectoryScanner] Retrying batch in ${delay}ms`)
+					console.debug(`[DirectoryScanner] Retrying batch in ${delay}ms`) // kilocode_change
 					await new Promise((resolve) => setTimeout(resolve, delay))
 				}
 			}
