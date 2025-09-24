@@ -9,7 +9,6 @@ import type { PageHeaderProps } from "../../types/components.js"
 export const PageHeader: React.FC<PageHeaderProps> = ({
 	title,
 	subtitle,
-	icon,
 	color = "blue",
 	badge,
 	actions,
@@ -20,7 +19,6 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 			<Box justifyContent="space-between" width="100%">
 				<Box>
 					<Text color={color} bold>
-						{icon && `${icon} `}
 						{title}
 						{subtitle && (
 							<>

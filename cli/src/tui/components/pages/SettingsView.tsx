@@ -8,22 +8,59 @@ import { PageFooter } from "../generic/PageFooter.js"
 import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
 import { useExtensionState, useExtensionMessage, useSidebar, useViewNavigation } from "../../context/index.js"
+import {
+	ProvidersSection,
+	AboutSection,
+	AutoApproveSection,
+	BrowserSection,
+	CheckpointsSection,
+	DisplaySection,
+	NotificationsSection,
+	ContextSection,
+	TerminalSection,
+	PromptsSection,
+	ExperimentalSection,
+	LanguageSection,
+	McpServersSection,
+} from "./settings/index.js"
 
-type SettingCategory = "api" | "behavior" | "terminal" | "advanced"
+type SettingSection =
+	| "providers"
+	| "autoApprove"
+	| "browser"
+	| "checkpoints"
+	| "display"
+	| "notifications"
+	| "context"
+	| "terminal"
+	| "prompts"
+	| "experimental"
+	| "language"
+	| "mcpServers"
+	| "about"
 
 interface SettingsState {
-	currentCategory: SettingCategory
+	currentSection: SettingSection
 	editingField: string | null
 	editingValue: string
 	focusMode: "sidebar" | "content"
 	selectedSettingIndex: number
 }
 
-const categories: { value: SettingCategory; label: string }[] = [
-	{ value: "api", label: "🤖 API Configuration" },
-	{ value: "behavior", label: "⚙️  Behavior Settings" },
-	{ value: "terminal", label: "💻 Terminal Settings" },
-	{ value: "advanced", label: "🔧 Advanced Settings" },
+const sections: { value: SettingSection; label: string }[] = [
+	{ value: "providers", label: "Providers" },
+	{ value: "autoApprove", label: "Auto-Approve" },
+	{ value: "browser", label: "Browser" },
+	{ value: "checkpoints", label: "Checkpoints" },
+	{ value: "display", label: "Display" },
+	{ value: "notifications", label: "Notifications" },
+	{ value: "context", label: "Context" },
+	{ value: "terminal", label: "Terminal" },
+	{ value: "prompts", label: "Prompts" },
+	{ value: "experimental", label: "Experimental" },
+	{ value: "language", label: "Language" },
+	{ value: "mcpServers", label: "MCP Servers" },
+	{ value: "about", label: "About Kilo Code" },
 ]
 
 export const SettingsView: React.FC = () => {
@@ -32,11 +69,11 @@ export const SettingsView: React.FC = () => {
 	const { visible: sidebarVisible } = useSidebar()
 	const { goBack } = useViewNavigation()
 	const [settingsState, setSettingsState] = useState<SettingsState>({
-		currentCategory: "api",
+		currentSection: "providers",
 		editingField: null,
 		editingValue: "",
-		focusMode: "content", // Start with content focused so users can edit settings immediately
-		selectedSettingIndex: 0, // Start with first setting selected
+		focusMode: "sidebar", // Start with sidebar focused for navigation
+		selectedSettingIndex: 0,
 	})
 
 	const apiConfig = extensionState?.apiConfiguration || {}
@@ -58,8 +95,12 @@ export const SettingsView: React.FC = () => {
 		prevApiConfigName.current = currentApiConfigName
 	}, [currentApiConfigName, settingsState.editingField])
 
-	const handleCategorySelect = (item: any) => {
-		setSettingsState((prev) => ({ ...prev, currentCategory: item.value }))
+	const handleSectionSelect = (item: any) => {
+		setSettingsState((prev) => ({
+			...prev,
+			currentSection: item.value,
+			selectedSettingIndex: 0, // Reset selection when changing sections
+		}))
 	}
 
 	const handleFieldEdit = (field: string, currentValue: string) => {
@@ -103,61 +144,48 @@ export const SettingsView: React.FC = () => {
 		}))
 	}
 
-	// Get current settings based on category
-	const getCurrentSettings = () => {
-		switch (settingsState.currentCategory) {
-			case "api":
-				return [
-					{
-						field: "apiProvider",
-						label: "API Provider",
-						value: apiConfig.apiProvider || "kilocode",
-						onEdit: () => handleFieldEdit("apiProvider", apiConfig.apiProvider || ""),
-					},
-					{
-						field: "kilocodeToken",
-						label: "Kilo Code Token",
-						value: apiConfig.kilocodeToken ? "••••••••" : "Not set",
-						onEdit: () => handleFieldEdit("kilocodeToken", apiConfig.kilocodeToken || ""),
-					},
-					{
-						field: "kilocodeModel",
-						label: "Model",
-						value: apiConfig.kilocodeModel || "anthropic/claude-sonnet-4",
-						onEdit: () => handleFieldEdit("kilocodeModel", apiConfig.kilocodeModel || ""),
-					},
-				]
-			default:
-				return []
-		}
+	const handleEditingValueChange = (value: string) => {
+		setSettingsState((prev) => ({ ...prev, editingValue: value }))
 	}
 
-	// Use the new keyboard navigation hook
+	// Keyboard navigation handlers
 	useKeyboardNavigation({
 		sidebarVisible,
 		customHandlers: {
 			return: () => {
 				if (settingsState.editingField) {
 					handleSaveField()
-				} else if (settingsState.focusMode === "content") {
-					// Edit the currently selected setting
-					const currentSettings = getCurrentSettings()
-					const selectedSetting = currentSettings[settingsState.selectedSettingIndex]
+				} else if (settingsState.focusMode === "content" && settingsState.currentSection === "providers") {
+					// Only allow editing in providers section for now
+					const settings = [
+						{ field: "apiProvider", value: apiConfig.apiProvider || "" },
+						{ field: "kilocodeToken", value: apiConfig.kilocodeToken || "" },
+						{ field: "kilocodeModel", value: apiConfig.kilocodeModel || "" },
+						{ field: "kilocodeOrganizationId", value: apiConfig.kilocodeOrganizationId || "" },
+					]
+					const selectedSetting = settings[settingsState.selectedSettingIndex]
 					if (selectedSetting) {
-						selectedSetting.onEdit()
+						handleFieldEdit(selectedSetting.field, selectedSetting.value)
 					}
 				}
 			},
-			tab: () => {
-				setSettingsState((prev) => ({
-					...prev,
-					focusMode: prev.focusMode === "sidebar" ? "content" : "sidebar",
-					selectedSettingIndex: 0, // Reset selection when switching focus
-				}))
+			escape: () => {
+				if (settingsState.editingField) {
+					handleCancelEdit()
+				}
+			},
+			leftArrow: () => {
+				if (!settingsState.editingField) {
+					setSettingsState((prev) => ({ ...prev, focusMode: "sidebar" }))
+				}
+			},
+			rightArrow: () => {
+				if (!settingsState.editingField) {
+					setSettingsState((prev) => ({ ...prev, focusMode: "content" }))
+				}
 			},
 			upArrow: () => {
-				if (settingsState.focusMode === "content") {
-					const currentSettings = getCurrentSettings()
+				if (settingsState.focusMode === "content" && !settingsState.editingField) {
 					setSettingsState((prev) => ({
 						...prev,
 						selectedSettingIndex: Math.max(0, prev.selectedSettingIndex - 1),
@@ -165,68 +193,83 @@ export const SettingsView: React.FC = () => {
 				}
 			},
 			downArrow: () => {
-				if (settingsState.focusMode === "content") {
-					const currentSettings = getCurrentSettings()
+				if (settingsState.focusMode === "content" && !settingsState.editingField) {
+					// Only allow navigation in providers section for now
+					const maxIndex = settingsState.currentSection === "providers" ? 3 : 0
 					setSettingsState((prev) => ({
 						...prev,
-						selectedSettingIndex: Math.min(currentSettings.length - 1, prev.selectedSettingIndex + 1),
+						selectedSettingIndex: Math.min(maxIndex, prev.selectedSettingIndex + 1),
 					}))
 				}
 			},
 		},
 	})
 
-	const renderApiSettings = () => {
-		const settings = getCurrentSettings()
-		return (
-			<Box flexDirection="column" gap={1}>
-				{settings.map((setting, index) => (
-					<SettingRow
-						key={setting.field}
-						label={setting.label}
-						value={setting.value}
-						onEdit={setting.onEdit}
-						isEditing={settingsState.editingField === setting.field}
-						isSelected={
-							settingsState.focusMode === "content" && settingsState.selectedSettingIndex === index
-						}
+	const renderCurrentSection = () => {
+		const commonProps = {
+			editingField: settingsState.editingField,
+			editingValue: settingsState.editingValue,
+			selectedSettingIndex: settingsState.selectedSettingIndex,
+			onFieldEdit: handleFieldEdit,
+			onSaveField: handleSaveField,
+			onEditingValueChange: handleEditingValueChange,
+		}
+
+		switch (settingsState.currentSection) {
+			case "providers":
+				return <ProvidersSection apiConfig={apiConfig} {...commonProps} />
+			case "about":
+				return (
+					<AboutSection
+						version={extensionState?.version || "4.96.1"}
+						telemetrySetting={extensionState?.telemetrySetting || "enabled"}
+						onExportSettings={() => sendMessage({ type: "exportSettings" })}
+						onImportSettings={() => sendMessage({ type: "importSettings" })}
+						onResetState={() => sendMessage({ type: "resetState" })}
+						onToggleTelemetry={() => {
+							const newSetting = extensionState?.telemetrySetting === "enabled" ? "disabled" : "enabled"
+							sendMessage({ type: "telemetrySetting", text: newSetting })
+						}}
 					/>
-				))}
-			</Box>
-		)
+				)
+			case "autoApprove":
+				return <AutoApproveSection />
+			case "browser":
+				return <BrowserSection />
+			case "checkpoints":
+				return <CheckpointsSection />
+			case "display":
+				return <DisplaySection />
+			case "notifications":
+				return <NotificationsSection />
+			case "context":
+				return <ContextSection />
+			case "terminal":
+				return <TerminalSection />
+			case "prompts":
+				return <PromptsSection />
+			case "experimental":
+				return <ExperimentalSection />
+			case "language":
+				return <LanguageSection />
+			case "mcpServers":
+				return <McpServersSection />
+			default:
+				return <ProvidersSection apiConfig={apiConfig} {...commonProps} />
+		}
 	}
 
-	const renderBehaviorSettings = () => (
-		<Box flexDirection="column" gap={1}>
-			<Text color="gray">Auto-approval settings, permissions, etc.</Text>
-			<Text color="yellow">Coming soon...</Text>
-		</Box>
-	)
-
-	const renderTerminalSettings = () => (
-		<Box flexDirection="column" gap={1}>
-			<Text color="gray">Terminal integration settings</Text>
-			<Text color="yellow">Coming soon...</Text>
-		</Box>
-	)
-
-	const renderAdvancedSettings = () => (
-		<Box flexDirection="column" gap={1}>
-			<Text color="gray">Advanced configuration options</Text>
-			<Text color="yellow">Coming soon...</Text>
-		</Box>
-	)
-
 	// Create header
-	const header = <PageHeader title="Settings" icon="⚙️" />
+	const header = <PageHeader title="Settings" />
 
 	// Create footer with action hints
 	const footer = (
 		<PageFooter
 			actions={[
-				{ key: "Tab", label: "to switch focus" },
-				{ key: "↑↓", label: "to navigate" },
-				{ key: "Enter", label: "to edit" },
+				{ key: "←→", label: "switch columns" },
+				{ key: "↑↓", label: "navigate" },
+				{ key: "Enter", label: "edit/save" },
+				{ key: "Esc", label: "cancel" },
 			]}
 		/>
 	)
@@ -234,23 +277,24 @@ export const SettingsView: React.FC = () => {
 	// Create main content
 	const content = (
 		<Box flexDirection="row" flexGrow={1}>
-			{/* Category sidebar */}
+			{/* Section sidebar */}
 			<Box
 				borderStyle="single"
 				borderColor={settingsState.focusMode === "sidebar" ? "blue" : "gray"}
 				width={25}
+				minWidth={25}
 				paddingX={1}
 				paddingY={1}>
 				{settingsState.focusMode === "sidebar" && !sidebarVisible ? (
-					<SelectInput items={categories} onSelect={handleCategorySelect} />
+					<SelectInput items={sections} onSelect={handleSectionSelect} />
 				) : (
 					<Box flexDirection="column">
-						{categories.map((category) => (
+						{sections.map((section) => (
 							<Text
-								key={category.value}
-								color={category.value === settingsState.currentCategory ? "blue" : "gray"}>
-								{category.value === settingsState.currentCategory ? "❯" : " "}
-								{category.label}
+								key={section.value}
+								color={section.value === settingsState.currentSection ? "blue" : "gray"}>
+								{section.value === settingsState.currentSection ? "❯" : " "}
+								{section.label}
 							</Text>
 						))}
 					</Box>
@@ -261,33 +305,9 @@ export const SettingsView: React.FC = () => {
 			<Box
 				flexDirection="column"
 				flexGrow={1}
-				paddingX={2}
-				paddingY={1}
 				borderStyle="single"
 				borderColor={settingsState.focusMode === "content" ? "blue" : "gray"}>
-				{settingsState.editingField ? (
-					<Box flexDirection="column" gap={1}>
-						<Text color="blue">Editing: {settingsState.editingField}</Text>
-						<Box>
-							<Text>Value: </Text>
-							<TextInput
-								value={settingsState.editingValue}
-								onChange={(value) => setSettingsState((prev) => ({ ...prev, editingValue: value }))}
-								onSubmit={handleSaveField}
-							/>
-						</Box>
-						<Text color="gray" dimColor>
-							Press Enter to save
-						</Text>
-					</Box>
-				) : (
-					<>
-						{settingsState.currentCategory === "api" && renderApiSettings()}
-						{settingsState.currentCategory === "behavior" && renderBehaviorSettings()}
-						{settingsState.currentCategory === "terminal" && renderTerminalSettings()}
-						{settingsState.currentCategory === "advanced" && renderAdvancedSettings()}
-					</>
-				)}
+				{renderCurrentSection()}
 			</Box>
 		</Box>
 	)
@@ -296,24 +316,5 @@ export const SettingsView: React.FC = () => {
 		<PageLayout header={header} footer={footer}>
 			{content}
 		</PageLayout>
-	)
-}
-
-// Helper component for individual setting rows
-const SettingRow: React.FC<{
-	label: string
-	value: string
-	onEdit: () => void
-	isEditing: boolean
-	isSelected: boolean
-}> = ({ label, value, onEdit, isEditing, isSelected }) => {
-	return (
-		<Box justifyContent="space-between" paddingX={isSelected ? 1 : 0}>
-			<Text color={isEditing ? "blue" : isSelected ? "cyan" : "white"}>
-				{isSelected ? "❯ " : "  "}
-				{label}:
-			</Text>
-			<Text color={isEditing ? "blue" : isSelected ? "cyan" : "gray"}>{value}</Text>
-		</Box>
 	)
 }

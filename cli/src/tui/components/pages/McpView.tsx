@@ -101,7 +101,7 @@ export const McpView: React.FC = () => {
 
 	// If showing server details
 	if (mcpState.showingDetails && mcpState.selectedServer) {
-		const header = <PageHeader title="MCP Server" subtitle={mcpState.selectedServer.name} icon="🔌" />
+		const header = <PageHeader title="MCP Server" subtitle={mcpState.selectedServer.name} />
 
 		const footer = (
 			<PageFooter
@@ -169,7 +169,7 @@ export const McpView: React.FC = () => {
 	}
 
 	// Main server list view
-	const header = <PageHeader title="MCP Servers" badge={`${mcpState.servers.length}`} icon="🔌" />
+	const header = <PageHeader title="MCP Servers" badge={`${mcpState.servers.length}`} />
 
 	const footer = <PageFooter actions={[{ key: "Enter", label: "to view details" }]} />
 

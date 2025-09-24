@@ -27,7 +27,6 @@ export interface ContextNavigablePageProps extends ContextPageProps {
 export interface PageHeaderProps {
 	title: string
 	subtitle?: string
-	icon?: string
 	color?: "blue" | "green" | "yellow" | "red" | "cyan" | "magenta" | "white" | "gray"
 	badge?: string
 	actions?: React.ReactNode
