@@ -20,6 +20,11 @@ function estimateOllamaTokenCount(messages: Message[]): number {
 }
 // kilocode_change end
 
+interface OllamaChatOptions {
+	temperature: number
+	num_ctx?: number
+}
+
 function convertToOllamaMessages(anthropicMessages: Anthropic.Messages.MessageParam[]): Message[] {
 	const ollamaMessages: Message[] = []
 
@@ -223,14 +228,22 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		)
 
 		try {
+			// Build options object conditionally
+			const chatOptions: OllamaChatOptions = {
+				temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
+			}
+
+			// Only include num_ctx if explicitly set via ollamaNumCtx
+			if (this.options.ollamaNumCtx !== undefined) {
+				chatOptions.num_ctx = this.options.ollamaNumCtx
+			}
+
 			// Create the actual API request promise
 			const stream = await client.chat({
 				model: modelId,
 				messages: ollamaMessages,
 				stream: true,
-				options: {
-					temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
-				},
+				options: chatOptions,
 			})
 
 			let totalInputTokens = 0
@@ -331,13 +344,21 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 			const { id: modelId } = this.getModel() // kilocode_change: fetchModel => getModel
 			const useR1Format = modelId.toLowerCase().includes("deepseek-r1")
 
+			// Build options object conditionally
+			const chatOptions: OllamaChatOptions = {
+				temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
+			}
+
+			// Only include num_ctx if explicitly set via ollamaNumCtx
+			if (this.options.ollamaNumCtx !== undefined) {
+				chatOptions.num_ctx = this.options.ollamaNumCtx
+			}
+
 			const response = await client.chat({
 				model: modelId,
 				messages: [{ role: "user", content: prompt }],
 				stream: false,
-				options: {
-					temperature: this.options.modelTemperature ?? (useR1Format ? DEEP_SEEK_DEFAULT_TEMPERATURE : 0),
-				},
+				options: chatOptions,
 			})
 
 			return response.message?.content || ""
