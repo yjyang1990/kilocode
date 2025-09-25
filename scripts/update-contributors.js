@@ -90,8 +90,6 @@ function generateContributorMarkdown(contributors) {
 		const contributorCell = `    <td align="center">
       <a href="${contributor.html_url}">
         <img src="${contributor.avatar_url}?size=100" width="100" height="100" alt="${contributor.login}" style="border-radius: 50%;" />
-        <br />
-        <sub><b>${contributor.login}</b></sub>
       </a>
     </td>`
 
@@ -110,11 +108,7 @@ function generateContributorMarkdown(contributors) {
 
 		const moreCell = `    <td align="center">
       <a href="${CONTRIBUTORS_PAGE_URL}">
-        <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 50%; color: #666; font-size: 18px;">
-          ...
-        </div>
-        <br />
-        <sub><b>more ...</b></sub>
+        <b>more ...</b>
       </a>
     </td>`
 

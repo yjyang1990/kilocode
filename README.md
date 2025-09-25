@@ -69,32 +69,22 @@ Thanks to all the contributors who help make Kilo Code better!
     <td align="center">
       <a href="https://github.com/mcowger">
         <img src="https://avatars.githubusercontent.com/u/1929548?size=100" width="100" height="100" alt="mcowger" style="border-radius: 50%;" />
-        <br />
-        <sub><b>mcowger</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://github.com/bhaktatejas922">
         <img src="https://avatars.githubusercontent.com/u/26863466?size=100" width="100" height="100" alt="bhaktatejas922" style="border-radius: 50%;" />
-        <br />
-        <sub><b>bhaktatejas922</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://github.com/NyxJae">
         <img src="https://avatars.githubusercontent.com/u/52313587?size=100" width="100" height="100" alt="NyxJae" style="border-radius: 50%;" />
-        <br />
-        <sub><b>NyxJae</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://github.com/Aikiboy123">
         <img src="https://avatars.githubusercontent.com/u/161741275?size=100" width="100" height="100" alt="Aikiboy123" style="border-radius: 50%;" />
-        <br />
-        <sub><b>Aikiboy123</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://github.com/cobra91">
         <img src="https://avatars.githubusercontent.com/u/1060585?size=100" width="100" height="100" alt="cobra91" style="border-radius: 50%;" />
-        <br />
-        <sub><b>cobra91</b></sub>
       </a>
     </td>
   </tr>
@@ -102,33 +92,22 @@ Thanks to all the contributors who help make Kilo Code better!
     <td align="center">
       <a href="https://github.com/ivanarifin">
         <img src="https://avatars.githubusercontent.com/u/111653938?size=100" width="100" height="100" alt="ivanarifin" style="border-radius: 50%;" />
-        <br />
-        <sub><b>ivanarifin</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://github.com/PeterDaveHello">
         <img src="https://avatars.githubusercontent.com/u/3691490?size=100" width="100" height="100" alt="PeterDaveHello" style="border-radius: 50%;" />
-        <br />
-        <sub><b>PeterDaveHello</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://github.com/possible055">
         <img src="https://avatars.githubusercontent.com/u/38576169?size=100" width="100" height="100" alt="possible055" style="border-radius: 50%;" />
-        <sub><b>possible055</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://github.com/seuros">
         <img src="https://avatars.githubusercontent.com/u/2394703?size=100" width="100" height="100" alt="seuros" style="border-radius: 50%;" />
-        <br />
-        <sub><b>seuros</b></sub>
       </a>
     </td>    <td align="center">
       <a href="https://kilocode.ai/#contributors">
-        <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 50%; color: #666; font-size: 18px;">
-          ...
-        </div>
-        <br />
-        <sub><b>more ...</b></sub>
+        <b>more ...</b>
       </a>
     </td>
   </tr>
