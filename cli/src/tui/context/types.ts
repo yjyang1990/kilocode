@@ -1,4 +1,4 @@
-import type { ExtensionMessage, ExtensionState, WebviewMessage } from "../../types/messages.js"
+import type { ExtensionMessage, ExtensionState, WebviewMessage, RouterModels } from "../../types/messages.js"
 import type { MessageBridge } from "../../communication/ipc.js"
 
 // ViewType removed - now using router paths instead
@@ -18,6 +18,11 @@ export interface CliState {
 	error: string | null
 	lastExtensionMessage: ExtensionMessage | null
 	sidebarVisible: boolean
+
+	// Model Management
+	routerModels: RouterModels | null
+	isLoadingModels: boolean
+	modelLoadingError: string | null
 
 	// Application Options
 	workspace: string
@@ -39,6 +44,12 @@ export interface CliActions {
 	// State Management
 	setLoading: (loading: boolean) => void
 	setError: (error: string | null) => void
+
+	// Model Management
+	requestRouterModels: () => Promise<void>
+	setRouterModels: (models: RouterModels | null) => void
+	setModelLoadingState: (loading: boolean) => void
+	setModelLoadingError: (error: string | null) => void
 
 	// App Control
 	exit: () => void
@@ -63,6 +74,7 @@ export interface UseExtensionMessageReturn {
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	lastMessage: ExtensionMessage | null
 	handleMessage: (message: ExtensionMessage) => void
+	requestRouterModels: () => Promise<void>
 }
 
 // UseViewNavigationReturn removed - replaced by router hooks

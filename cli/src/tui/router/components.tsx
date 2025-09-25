@@ -18,34 +18,37 @@ interface NavigateProps {
 }
 
 export const Routes: React.FC<RoutesProps> = ({ children }) => {
-	const { currentPath, updateParams } = useRouter() as any
+	const { currentPath, updateParams, updateQuery } = useRouter() as any
 
 	const routes = React.Children.toArray(children).filter(
 		(child) => React.isValidElement(child) && child.type === Route,
 	) as React.ReactElement<RouteProps>[]
 
-	// Use useEffect to update params only when currentPath changes
+	// Use useEffect to update params and query only when currentPath changes
 	const [matchedRoute, setMatchedRoute] = React.useState<{
 		component: React.ComponentType<any>
 		params: any
+		query: any
 	} | null>(null)
 
 	React.useEffect(() => {
 		for (const route of routes) {
 			const match = RouteMatcher.matchRoute(route.props.path, currentPath)
 			if (match && (route.props.exact ? match.isExact : true)) {
-				// Update params in context
+				// Update params and query in context
 				updateParams(match.params)
+				updateQuery(match.query)
 				setMatchedRoute({
 					component: route.props.component,
 					params: match.params,
+					query: match.query,
 				})
 				return
 			}
 		}
 		// No route matched
 		setMatchedRoute(null)
-	}, [currentPath, updateParams])
+	}, [currentPath, updateParams, updateQuery])
 
 	if (matchedRoute) {
 		const Component = matchedRoute.component

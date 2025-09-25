@@ -9,7 +9,14 @@ import { Section } from "../../common/Section.js"
 import { useKeyboardNavigation } from "../../../../../hooks/useKeyboardNavigation.js"
 import { useExtensionState, useExtensionMessage, useSidebar } from "../../../../../context/index.js"
 import { useRouter, useParams } from "../../../../../router/index.js"
-import { getFieldInfo, isSensitiveField, isOptionalField } from "../../../../../../constants/providers/index.js"
+import {
+	getFieldInfo,
+	isSensitiveField,
+	isOptionalField,
+	isModelField,
+	providerSupportsModelList,
+} from "../../../../../../constants/providers/index.js"
+import type { ProviderName } from "../../../../../../types/messages.js"
 
 export const EditFieldPage: React.FC = () => {
 	const extensionState = useExtensionState()
@@ -23,6 +30,16 @@ export const EditFieldPage: React.FC = () => {
 	const apiConfig = extensionState?.apiConfiguration || {}
 	const currentApiConfigName = extensionState?.currentApiConfigName || "default"
 	const fieldName = params.field as string
+
+	// Check if this is a model field and redirect to model selector
+	useEffect(() => {
+		const provider = apiConfig.apiProvider as ProviderName
+		if (fieldName && isModelField(fieldName) && provider && providerSupportsModelList(provider)) {
+			// Redirect to model selector instead
+			router.navigate(`/settings/providers/choose-model?provider=${provider}&field=${fieldName}`)
+			return
+		}
+	}, [fieldName, apiConfig.apiProvider, router])
 
 	// Initialize with current field value when component mounts
 	useEffect(() => {

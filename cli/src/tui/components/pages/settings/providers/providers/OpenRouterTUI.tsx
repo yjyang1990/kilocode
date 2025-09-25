@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import TextInput from "ink-text-input"
 import type { ProviderSettings } from "../../../../../../types/messages.js"
+import { getProviderSettings } from "../../../../../../constants/index.js"
 
 interface OpenRouterTUIProps {
 	apiConfiguration: ProviderSettings
@@ -20,28 +21,12 @@ export const OpenRouterTUI: React.FC<OpenRouterTUIProps> = ({
 	onFieldEdit,
 	onEditingValueChange,
 }) => {
+	// Use the unified provider settings system
+	const baseSettings = getProviderSettings("openrouter", apiConfiguration)
+
+	// Add OpenRouter-specific fields that aren't in the base system
 	const settings = [
-		{
-			field: "openRouterApiKey",
-			label: "API Key",
-			value: apiConfiguration.openRouterApiKey ? "••••••••" : "Not set",
-			actualValue: apiConfiguration.openRouterApiKey || "",
-			type: "password" as const,
-		},
-		{
-			field: "openRouterModelId",
-			label: "Model",
-			value: apiConfiguration.openRouterModelId || "anthropic/claude-3-5-sonnet",
-			actualValue: apiConfiguration.openRouterModelId || "",
-			type: "text" as const,
-		},
-		{
-			field: "openRouterBaseUrl",
-			label: "Base URL",
-			value: apiConfiguration.openRouterBaseUrl || "Default",
-			actualValue: apiConfiguration.openRouterBaseUrl || "",
-			type: "text" as const,
-		},
+		...baseSettings,
 		{
 			field: "openRouterUseMiddleOutTransform",
 			label: "Use Middle-Out Transform",

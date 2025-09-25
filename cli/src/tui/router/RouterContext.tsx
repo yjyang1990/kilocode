@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react"
-import type { RouterContextValue, NavigateOptions, RouteParams } from "./types.js"
+import type { RouterContextValue, NavigateOptions, RouteParams, QueryParams } from "./types.js"
 import { RouteMatcher } from "./matcher.js"
 
 const RouterContext = createContext<RouterContextValue | null>(null)
@@ -12,17 +12,21 @@ export const RouterProvider: React.FC<{
 	const [lastPath, setLastPath] = useState(initialPath)
 	const [history, setHistory] = useState<string[]>([initialPath])
 	const [params, setParams] = useState<RouteParams>({})
+	const [query, setQuery] = useState<QueryParams>({})
 
-	const navigate = useCallback((path: string, options?: NavigateOptions) => {
-		if (options?.replace) {
-			setHistory((prev) => [...prev.slice(0, -1), path])
-		} else {
-			setHistory((prev) => [...prev, path])
-		}
-		setLastPath(currentPath)
-		setCurrentPath(path)
-		// Params will be updated by the Routes component when it matches routes
-	}, [])
+	const navigate = useCallback(
+		(path: string, options?: NavigateOptions) => {
+			if (options?.replace) {
+				setHistory((prev) => [...prev.slice(0, -1), path])
+			} else {
+				setHistory((prev) => [...prev, path])
+			}
+			setLastPath(currentPath)
+			setCurrentPath(path)
+			// Params and query will be updated by the Routes component when it matches routes
+		},
+		[currentPath],
+	)
 
 	const goBack = useCallback(() => {
 		if (history.length > 1) {
@@ -34,21 +38,30 @@ export const RouterProvider: React.FC<{
 				setCurrentPath(previousPath)
 			}
 		}
-	}, [history])
+	}, [history, currentPath])
 
 	const updateParams = useCallback((newParams: RouteParams) => {
 		setParams(newParams)
 	}, [])
 
-	const contextValue: RouterContextValue & { updateParams: (params: RouteParams) => void } = {
+	const updateQuery = useCallback((newQuery: QueryParams) => {
+		setQuery(newQuery)
+	}, [])
+
+	const contextValue: RouterContextValue & {
+		updateParams: (params: RouteParams) => void
+		updateQuery: (query: QueryParams) => void
+	} = {
 		currentPath,
 		lastPath,
 		params,
+		query,
 		navigate,
 		goBack,
 		canGoBack: history.length > 1,
 		history,
 		updateParams,
+		updateQuery,
 	}
 
 	return <RouterContext.Provider value={contextValue}>{children}</RouterContext.Provider>
@@ -70,6 +83,11 @@ export const useNavigate = () => {
 export const useParams = () => {
 	const { params } = useRouter()
 	return params
+}
+
+export const useQuery = () => {
+	const { query } = useRouter()
+	return query
 }
 
 export const useCurrentPath = () => {

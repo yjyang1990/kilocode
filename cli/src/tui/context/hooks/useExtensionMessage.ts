@@ -12,5 +12,6 @@ export const useExtensionMessage = (): UseExtensionMessageReturn => {
 		sendMessage: actions.sendMessage,
 		lastMessage: state.lastExtensionMessage,
 		handleMessage: actions.handleExtensionMessage,
+		requestRouterModels: actions.requestRouterModels,
 	}
 }

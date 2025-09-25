@@ -1,6 +1,12 @@
 // Local type definitions for CLI application
 // These mirror the types from the main extension but are defined locally to avoid import issues
 
+// Import model-related types
+import type { RouterName, ModelInfo, ModelRecord, RouterModels } from "../constants/providers/models.js"
+
+// Re-export for external use
+export type { RouterName, ModelInfo, ModelRecord, RouterModels }
+
 export interface ExtensionMessage {
 	type: string
 	action?: string
@@ -379,6 +385,7 @@ export interface ExtensionState {
 	renderContext: "sidebar" | "editor" | "cli"
 	cwd?: string
 	organizationAllowList?: OrganizationAllowList
+	routerModels?: RouterModels
 	[key: string]: any
 }
 

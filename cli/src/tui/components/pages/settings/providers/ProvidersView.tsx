@@ -9,6 +9,8 @@ import { SettingsLayout } from "../common/SettingsLayout.js"
 import {
 	getProviderLabel,
 	getProviderSettings,
+	providerSupportsModelList,
+	getModelFieldForProvider,
 	type ProviderSettingConfig,
 } from "../../../../../constants/providers/index.js"
 import type { ProviderName, ProviderSettingsEntry } from "../../../../../types/messages.js"
@@ -109,15 +111,37 @@ export const ProvidersView: React.FC = () => {
 		// Provider-specific settings
 		if (currentProvider) {
 			const providerSettings = getProviderSettings(currentProvider, apiConfig)
+			const supportsModelList = providerSupportsModelList(currentProvider)
+			const modelField = getModelFieldForProvider(currentProvider)
+
 			providerSettings.forEach((setting: ProviderSettingConfig) => {
+				const isModelField = supportsModelList && setting.field === modelField
+
+				// DEBUG LOGGING for model fields
+				if (isModelField) {
+					console.log(`DEBUG ProvidersView: Model field detected - ${setting.field} (${setting.label})`)
+					console.log(
+						`DEBUG ProvidersView: Will navigate to /settings/providers/choose-model?provider=${currentProvider}&field=${setting.field}`,
+					)
+				}
+
 				options.push({
 					id: "provider-setting",
 					type: "field" as const,
 					label: setting.label,
-					value: setting.value,
+					value: isModelField ? `${setting.value} 📋` : setting.value,
 					field: setting.field,
 					actualValue: setting.actualValue,
-					action: () => navigate(`/settings/providers/field/${setting.field}`),
+					action: () => {
+						if (isModelField) {
+							console.log(`DEBUG ProvidersView: Navigating to model selector for ${setting.field}`)
+							navigate(
+								`/settings/providers/choose-model?provider=${currentProvider}&field=${setting.field}`,
+							)
+						} else {
+							navigate(`/settings/providers/field/${setting.field}`)
+						}
+					},
 				})
 			})
 		}

@@ -1,15 +1,17 @@
 import React from "react"
 import { Box, Text } from "ink"
 import TextInput from "ink-text-input"
-import type { ProviderSettings } from "../../../../../../types/messages.js"
+import type { ProviderSettings, ProviderName } from "../../../../../../types/messages.js"
 import {
 	getProviderSettings,
 	providerSupportsModelList,
 	getModelFieldForProvider,
+	isModelField,
 } from "../../../../../../constants/index.js"
 import { useRouter } from "../../../../../router/index.js"
 
-interface KilocodeTUIProps {
+interface GenericProviderTUIProps {
+	provider: ProviderName
 	apiConfiguration: ProviderSettings
 	editingField: string | null
 	editingValue: string
@@ -18,7 +20,8 @@ interface KilocodeTUIProps {
 	onEditingValueChange: (value: string) => void
 }
 
-export const KilocodeTUI: React.FC<KilocodeTUIProps> = ({
+export const GenericProviderTUI: React.FC<GenericProviderTUIProps> = ({
+	provider,
 	apiConfiguration,
 	editingField,
 	editingValue,
@@ -29,14 +32,14 @@ export const KilocodeTUI: React.FC<KilocodeTUIProps> = ({
 	const router = useRouter()
 
 	// Use the unified provider settings system
-	const settings = getProviderSettings("kilocode", apiConfiguration)
-	const supportsModelList = providerSupportsModelList("kilocode")
-	const modelField = getModelFieldForProvider("kilocode")
+	const settings = getProviderSettings(provider, apiConfiguration)
+	const supportsModelList = providerSupportsModelList(provider)
+	const modelField = getModelFieldForProvider(provider)
 
 	// Handle field selection - redirect to model selector for model fields
 	const handleFieldSelect = (field: string, currentValue: string) => {
 		if (supportsModelList && field === modelField) {
-			router.navigate(`/settings/providers/choose-model?provider=kilocode&field=${field}`)
+			router.navigate(`/settings/providers/choose-model?provider=${provider}&field=${field}`)
 		} else {
 			onFieldEdit(field, currentValue)
 		}
@@ -51,6 +54,8 @@ export const KilocodeTUI: React.FC<KilocodeTUIProps> = ({
 					<Text>Value: </Text>
 					{editingSetting?.type === "password" ? (
 						<TextInput value={editingValue} onChange={onEditingValueChange} mask="*" />
+					) : editingSetting?.type === "boolean" ? (
+						<TextInput value={editingValue} onChange={onEditingValueChange} placeholder="true/false" />
 					) : (
 						<TextInput value={editingValue} onChange={onEditingValueChange} />
 					)}
@@ -62,15 +67,26 @@ export const KilocodeTUI: React.FC<KilocodeTUIProps> = ({
 		)
 	}
 
+	// Get provider display name
+	const providerDisplayName = provider.charAt(0).toUpperCase() + provider.slice(1).replace(/-/g, " ")
+
+	// Check if provider needs API key and show warning
+	const needsApiKey = settings.some(
+		(s) => s.field.toLowerCase().includes("apikey") || s.field.toLowerCase().includes("token"),
+	)
+	const hasApiKey = settings.some(
+		(s) => (s.field.toLowerCase().includes("apikey") || s.field.toLowerCase().includes("token")) && s.actualValue,
+	)
+
 	return (
 		<Box flexDirection="column" gap={1}>
-			<Text bold>Kilo Code Settings</Text>
+			<Text bold>{providerDisplayName} Settings</Text>
 
-			{!apiConfiguration.kilocodeToken && (
+			{needsApiKey && !hasApiKey && (
 				<Box flexDirection="column" gap={1} marginBottom={1}>
-					<Text color="yellow">⚠ No Kilo Code token configured</Text>
+					<Text color="yellow">⚠ No API key configured</Text>
 					<Text color="gray" dimColor>
-						Get your token at: https://app.kilocode.ai/profile
+						Configure your API key to use this provider
 					</Text>
 				</Box>
 			)}

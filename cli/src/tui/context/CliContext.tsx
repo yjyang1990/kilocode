@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react"
 import { useApp } from "ink"
-import type { ExtensionMessage, WebviewMessage } from "../../types/messages.js"
+import type { ExtensionMessage, WebviewMessage, RouterModels } from "../../types/messages.js"
 import type { CliContextValue, CliState, CliActions, TUIApplicationOptions } from "./types.js"
 import { logService } from "../../services/LogService.js"
 
@@ -21,6 +21,9 @@ export const CliContextProvider: React.FC<{
 		error: null,
 		lastExtensionMessage: null,
 		sidebarVisible: false,
+		routerModels: null,
+		isLoadingModels: false,
+		modelLoadingError: null,
 		workspace: options.workspace,
 		autoApprove: options.autoApprove,
 		initialMode: options.initialMode,
@@ -46,6 +49,8 @@ export const CliContextProvider: React.FC<{
 							...prev,
 							extensionState: message.state || null,
 							isLoading: false,
+							// Update routerModels if present in the state
+							routerModels: message.state?.routerModels || prev.routerModels,
 						}
 						logService.debug(
 							`New state - isLoading: ${newState.isLoading}, extensionState: ${newState.extensionState ? "present" : "null"}`,
@@ -53,6 +58,15 @@ export const CliContextProvider: React.FC<{
 						)
 						return newState
 					})
+					break
+				case "routerModels":
+					logService.debug("Processing routerModels message", "CLI Context")
+					setState((prev) => ({
+						...prev,
+						routerModels: message.routerModels || null,
+						isLoadingModels: false,
+						modelLoadingError: null,
+					}))
 					break
 				case "action":
 					// Action handling will be managed by router navigation
@@ -209,6 +223,33 @@ export const CliContextProvider: React.FC<{
 		setState((prev) => ({ ...prev, error }))
 	}, [])
 
+	// Model management actions
+	const requestRouterModels = useCallback(async () => {
+		setState((prev) => ({ ...prev, isLoadingModels: true, modelLoadingError: null }))
+		try {
+			await sendMessage({ type: "requestRouterModels" })
+		} catch (error) {
+			logService.error("Failed to request router models", "CLI Context", { error })
+			setState((prev) => ({
+				...prev,
+				isLoadingModels: false,
+				modelLoadingError: "Failed to load models",
+			}))
+		}
+	}, [sendMessage])
+
+	const setRouterModels = useCallback((models: RouterModels | null) => {
+		setState((prev) => ({ ...prev, routerModels: models }))
+	}, [])
+
+	const setModelLoadingState = useCallback((loading: boolean) => {
+		setState((prev) => ({ ...prev, isLoadingModels: loading }))
+	}, [])
+
+	const setModelLoadingError = useCallback((error: string | null) => {
+		setState((prev) => ({ ...prev, modelLoadingError: error }))
+	}, [])
+
 	// Create actions object
 	const actions: CliActions = {
 		sendMessage,
@@ -218,6 +259,10 @@ export const CliContextProvider: React.FC<{
 		handleSidebarSelect,
 		setLoading,
 		setError,
+		requestRouterModels,
+		setRouterModels,
+		setModelLoadingState,
+		setModelLoadingError,
 		exit,
 	}
 

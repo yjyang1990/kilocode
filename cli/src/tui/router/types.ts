@@ -2,9 +2,14 @@ export interface RouteParams {
 	[key: string]: string
 }
 
+export interface QueryParams {
+	[key: string]: string
+}
+
 export interface RouteMatch {
 	path: string
 	params: RouteParams
+	query: QueryParams
 	isExact: boolean
 }
 
@@ -19,6 +24,7 @@ export interface RouterState {
 	currentPath: string
 	history: string[]
 	params: RouteParams
+	query: QueryParams
 }
 
 export interface NavigateOptions {
@@ -30,6 +36,7 @@ export interface RouterContextValue {
 	currentPath: string
 	lastPath: string
 	params: RouteParams
+	query: QueryParams
 	navigate: (path: string, options?: NavigateOptions) => void
 	goBack: () => void
 	canGoBack: boolean

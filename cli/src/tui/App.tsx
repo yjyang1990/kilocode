@@ -11,6 +11,7 @@ import {
 	CreateProviderPage,
 	EditProviderPage,
 	ChooseProviderPage,
+	ChooseModelPage,
 	RemoveProviderPage,
 	EditFieldPage,
 } from "./components/pages/settings/providers/pages/index.js"
@@ -126,6 +127,7 @@ const AppContent: React.FC = () => {
 							<Route path="/settings/providers/create" component={CreateProviderPage} exact />
 							<Route path="/settings/providers/edit" component={EditProviderPage} exact />
 							<Route path="/settings/providers/choose" component={ChooseProviderPage} exact />
+							<Route path="/settings/providers/choose-model" component={ChooseModelPage} exact />
 							<Route path="/settings/providers/remove" component={RemoveProviderPage} exact />
 							<Route path="/settings/providers/field/:field" component={EditFieldPage} exact />
 							<Route path="/settings/about" component={AboutView} exact />
