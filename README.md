@@ -114,7 +114,6 @@ Thanks to all the contributors who help make Kilo Code better!
     </td>    <td align="center">
       <a href="https://github.com/possible055">
         <img src="https://avatars.githubusercontent.com/u/38576169?size=100" width="100" height="100" alt="possible055" style="border-radius: 50%;" />
-        <br />
         <sub><b>possible055</b></sub>
       </a>
     </td>    <td align="center">
