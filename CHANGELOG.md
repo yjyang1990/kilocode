@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.97.2
-
-### Patch Changes
+## [v4.97.2]
 
 - [#2655](https://github.com/Kilo-Org/kilocode/pull/2655) [`3f83727`](https://github.com/Kilo-Org/kilocode/commit/3f8372708344171f4b379b90ad04693e1f67be39) Thanks [@PierreAncey](https://github.com/PierreAncey)! - Add Grok 4 Fast model to xAI provider
 
