@@ -24,10 +24,6 @@ import { getOllamaModels } from "./ollama"
 import { getLMStudioModels } from "./lmstudio"
 import { getIOIntelligenceModels } from "./io-intelligence"
 
-// kilocode_change start
-import { cerebrasModels } from "@roo-code/types"
-// kilocode_change end
-
 import { getDeepInfraModels } from "./deepinfra"
 import { getHuggingFaceModels } from "./huggingface"
 
@@ -104,9 +100,6 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 				})
 				break
 			// kilocode_change end
-			case "cerebras":
-				models = cerebrasModels
-				break
 			case "ollama":
 				models = await getOllamaModels(options.baseUrl, options.apiKey)
 				break
