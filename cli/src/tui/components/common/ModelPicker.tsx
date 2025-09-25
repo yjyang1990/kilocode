@@ -138,7 +138,6 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
 								{isSelected ? "❯ " : "  "}
 								{modelInfo?.displayName || modelId}
 								{isCurrentModel ? " (current)" : ""}
-								{isPreferred ? " ⭐" : ""}
 							</Text>
 						</Box>
 					)
@@ -148,7 +147,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
 			{/* Scroll indicators */}
 			<Box justifyContent="center" marginTop={1}>
 				<Text color="gray" dimColor>
-					{selectedIndex + 1} of {filteredModelIds.length}
+					{`${selectedIndex + 1} of ${filteredModelIds.length}`}
 					{visibleModels.startIndex > 0 && " ↑"}
 					{visibleModels.endIndex < filteredModelIds.length && " ↓"}
 				</Text>
@@ -165,38 +164,6 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
 					[Esc] Cancel
 				</Text>
 			</Box>
-
-			{/* Show model info for selected model */}
-			{filteredModelIds[selectedIndex] && (
-				<Box flexDirection="column" marginTop={1} paddingTop={1} borderStyle="single" borderTop>
-					{(() => {
-						const modelId = filteredModelIds[selectedIndex]
-						const modelInfo = models[modelId]
-						return (
-							<Box flexDirection="column" gap={1}>
-								<Text bold color="cyan">
-									{modelInfo?.displayName || modelId}
-								</Text>
-								{modelInfo?.description && (
-									<Text color="gray" dimColor>
-										{modelInfo.description}
-									</Text>
-								)}
-								<Box justifyContent="space-between">
-									<Text color="gray" dimColor>
-										Context: {modelInfo?.contextWindow?.toLocaleString() || "Unknown"}
-									</Text>
-									{modelInfo?.inputPrice && modelInfo?.outputPrice && (
-										<Text color="gray" dimColor>
-											${modelInfo.inputPrice}/${modelInfo.outputPrice} per 1M tokens
-										</Text>
-									)}
-								</Box>
-							</Box>
-						)
-					})()}
-				</Box>
-			)}
 		</Box>
 	)
 }

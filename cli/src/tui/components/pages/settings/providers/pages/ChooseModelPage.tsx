@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react"
-import { Box, Text } from "ink"
+import { Box, Text, useInput } from "ink"
 import { PageHeader } from "../../../../generic/PageHeader.js"
 import { PageLayout } from "../../../../layout/PageLayout.js"
 import { SettingsLayout } from "../../common/SettingsLayout.js"
 import { SectionHeader } from "../../common/SectionHeader.js"
 import { Section } from "../../common/Section.js"
 import { ModelPicker } from "../../../../common/ModelPicker.js"
-import { useExtensionState, useExtensionMessage, useSidebar } from "../../../../../context/index.js"
+import { useExtensionState, useExtensionMessage, useSidebar, useRouterModels } from "../../../../../context/index.js"
 import { useRouter, useQuery } from "../../../../../router/index.js"
-import { getRouterNameForProvider, getModelFieldForProvider } from "../../../../../../constants/index.js"
+import { getModelFieldForProvider } from "../../../../../../constants/index.js"
 import { getProviderDefaultModel } from "../../../../../../constants/providers/settings.js"
 import { logService } from "../../../../../../services/LogService.js"
-import type { ProviderName, RouterModels, ModelRecord } from "../../../../../../types/messages.js"
+import type { ProviderName } from "../../../../../../types/messages.js"
 
 export const ChooseModelPage: React.FC = () => {
 	logService.debug("Component starting to render", "ChooseModelPage")
@@ -37,24 +37,40 @@ export const ChooseModelPage: React.FC = () => {
 			query,
 		})
 
-		const [isLoading, setIsLoading] = useState(false)
-		const [error, setError] = useState<string | null>(null)
-
 		logService.debug("All hooks initialized successfully", "ChooseModelPage")
 
 		const apiConfig = extensionState?.apiConfiguration || {}
 		const currentApiConfigName = extensionState?.currentApiConfigName || "default"
-		const routerModels: RouterModels = extensionState?.routerModels || ({} as RouterModels)
 
 		// Get provider and field from query params or current config
 		const provider = (query.provider || apiConfig.apiProvider) as ProviderName
 		const field = query.field || getModelFieldForProvider(provider)
-		const routerName = getRouterNameForProvider(provider)
+
+		// Use the new router models hook with proper race condition handling
+		const {
+			availableModels,
+			isLoading: hookIsLoading,
+			isLoadingModels,
+			hasInitialLoad,
+			error: routerModelsError,
+			modelLoadingError,
+			requestModels,
+			debugInfo,
+		} = useRouterModels({
+			provider,
+			autoLoad: true,
+		})
 
 		const currentModelId = field ? (apiConfig as any)[field] : ""
-		const availableModels: ModelRecord = routerName && routerModels[routerName] ? routerModels[routerName] : {}
+		const [localError, setLocalError] = useState<string | null>(null)
 
-		// DEBUG LOGGING
+		// Use the loading state from the hook directly - it already handles the race condition properly
+		const isLoading = hookIsLoading
+
+		// Combined error state
+		const error = localError || routerModelsError || modelLoadingError
+
+		// DEBUG LOGGING - Enhanced with new hook debug info
 		logService.debug("Model selector debug info", "ChooseModelPage", {
 			currentPath: router.currentPath,
 			query,
@@ -63,34 +79,16 @@ export const ChooseModelPage: React.FC = () => {
 			apiConfigProvider: apiConfig.apiProvider,
 			finalProvider: provider,
 			finalField: field,
-			routerName,
 			currentModelId,
 			hasExtensionState: !!extensionState,
-			routerModelsKeys: Object.keys(routerModels),
 			availableModelsCount: Object.keys(availableModels).length,
-			shouldShowSelector: !!(routerName && field),
+			shouldShowSelector: !!(debugInfo.routerName && field),
+			isLoading,
+			isLoadingModels,
+			error,
+			// Include debug info from the hook
+			hookDebugInfo: debugInfo,
 		})
-
-		// Load models when component mounts
-		useEffect(() => {
-			const loadModels = async () => {
-				if (!routerName) return
-
-				setIsLoading(true)
-				setError(null)
-
-				try {
-					await requestRouterModels()
-				} catch (err) {
-					setError("Failed to load models")
-					logService.error("Failed to load models", "ChooseModelPage", { error: err })
-				} finally {
-					setIsLoading(false)
-				}
-			}
-
-			loadModels()
-		}, [routerName, requestRouterModels])
 
 		const handleModelSelect = async (modelId: string) => {
 			if (!field) return
@@ -110,7 +108,7 @@ export const ChooseModelPage: React.FC = () => {
 				router.goBack()
 			} catch (error) {
 				logService.error("Failed to update model", "ChooseModelPage", { error })
-				setError("Failed to update model")
+				setLocalError("Failed to update model")
 			}
 		}
 
@@ -118,9 +116,22 @@ export const ChooseModelPage: React.FC = () => {
 			router.goBack()
 		}
 
+		// Add keyboard handling for retry when no models are available
+		useInput((input, key) => {
+			// Only handle input when not loading and when we have no models
+			if (!isLoading && Object.keys(availableModels).length === 0) {
+				if (input.toLowerCase() === "r") {
+					logService.debug("Retrying model fetch", "ChooseModelPage", { provider })
+					requestModels()
+				} else if (key.escape) {
+					router.goBack()
+				}
+			}
+		})
+
 		const header = <PageHeader title={`Settings - Providers - Choose Model (${provider})`} />
 
-		if (!routerName || !field) {
+		if (!debugInfo.routerName || !field) {
 			const content = (
 				<SettingsLayout isIndexPage={false}>
 					<Box flexDirection="column">
@@ -158,6 +169,16 @@ export const ChooseModelPage: React.FC = () => {
 								<Text color="gray" dimColor>
 									Fetching available models from {provider}...
 								</Text>
+								{isLoadingModels && (
+									<Text color="gray" dimColor>
+										This may take a few seconds on first load
+									</Text>
+								)}
+								<Box marginTop={1}>
+									<Text color="gray" dimColor>
+										[Esc] Cancel
+									</Text>
+								</Box>
 							</Box>
 						) : error ? (
 							<Box flexDirection="column" gap={1}>
@@ -173,24 +194,54 @@ export const ChooseModelPage: React.FC = () => {
 							<Box flexDirection="column" gap={1}>
 								<Text color="yellow">No models available</Text>
 								<Text color="gray" dimColor>
-									Make sure your API credentials are configured correctly
+									This could mean:
 								</Text>
-								<Text color="gray" dimColor>
-									You can still enter a model name manually in the provider settings
-								</Text>
-								<Text color="gray" dimColor>
-									[Esc] Go Back
-								</Text>
+								<Box marginLeft={2} flexDirection="column">
+									<Text color="gray" dimColor>
+										• API credentials are not configured
+									</Text>
+									<Text color="gray" dimColor>
+										• The provider service is unavailable
+									</Text>
+									<Text color="gray" dimColor>
+										• Network connection issues
+									</Text>
+								</Box>
+								<Box marginTop={1}>
+									<Text color="gray" dimColor>
+										You can still enter a model name manually in the provider settings
+									</Text>
+								</Box>
+								<Box marginTop={1}>
+									<Text color="gray" dimColor>
+										Data source: {debugInfo.dataSource} | Router: {debugInfo.routerName || "none"}
+									</Text>
+								</Box>
+								<Box marginTop={1}>
+									<Text color="gray" dimColor>
+										[R] Retry | [Esc] Go Back
+									</Text>
+								</Box>
 							</Box>
 						) : (
-							<ModelPicker
-								models={availableModels}
-								selectedModel={currentModelId}
-								onModelSelect={handleModelSelect}
-								onCancel={handleCancel}
-								title={`Select Model for ${provider}`}
-								description={`Current: ${currentModelId || "Not set"} | Available: ${Object.keys(availableModels).length} models`}
-							/>
+							(() => {
+								// Safely construct the description to avoid text rendering errors
+								const modelCount = Object.keys(availableModels).length
+								const modelCountText = modelCount === 1 ? "1 model" : `${modelCount} models`
+								const currentText = currentModelId || "Not set"
+								const descriptionText = `Current: ${currentText} | Available: ${modelCountText}`
+
+								return (
+									<ModelPicker
+										models={availableModels}
+										selectedModel={currentModelId}
+										onModelSelect={handleModelSelect}
+										onCancel={handleCancel}
+										title={`Select Model for ${provider}`}
+										description={descriptionText}
+									/>
+								)
+							})()
 						)}
 					</Section>
 				</Box>
@@ -206,7 +257,7 @@ export const ChooseModelPage: React.FC = () => {
 		const errorContent = (
 			<SettingsLayout isIndexPage={false}>
 				<Box flexDirection="column" gap={1}>
-					<Text color="red">❌ Component Error: {errorMessage}</Text>
+					<Text color="red">Component Error: {errorMessage}</Text>
 					<Text color="gray">Check console for details</Text>
 					<Text color="gray">[Esc] Go Back</Text>
 				</Box>

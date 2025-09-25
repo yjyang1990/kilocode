@@ -7,6 +7,7 @@ export { useCliActions } from "./hooks/useCliActions.js"
 export { useExtensionState } from "./hooks/useExtensionState.js"
 export { useSidebar } from "./hooks/useSidebar.js"
 export { useExtensionMessage } from "./hooks/useExtensionMessage.js"
+export { useRouterModels } from "./hooks/useRouterModels.js"
 
 // Type exports
 export type {
@@ -16,3 +17,4 @@ export type {
 	CliContextValue,
 	UseExtensionMessageReturn,
 } from "./types.js"
+export type { UseRouterModelsOptions, UseRouterModelsReturn } from "./hooks/useRouterModels.js"

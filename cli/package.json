@@ -129,6 +129,7 @@
 		"@types/node": "20.x",
 		"@types/react": "^18.3.23",
 		"eslint": "^9.27.0",
+		"ink-testing-library": "^4.0.0",
 		"prettier": "^3.4.2",
 		"rimraf": "^6.0.1",
 		"tsx": "^4.19.3",

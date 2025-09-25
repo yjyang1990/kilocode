@@ -117,19 +117,11 @@ export const ProvidersView: React.FC = () => {
 			providerSettings.forEach((setting: ProviderSettingConfig) => {
 				const isModelField = supportsModelList && setting.field === modelField
 
-				// DEBUG LOGGING for model fields
-				if (isModelField) {
-					console.log(`DEBUG ProvidersView: Model field detected - ${setting.field} (${setting.label})`)
-					console.log(
-						`DEBUG ProvidersView: Will navigate to /settings/providers/choose-model?provider=${currentProvider}&field=${setting.field}`,
-					)
-				}
-
 				options.push({
 					id: "provider-setting",
 					type: "field" as const,
 					label: setting.label,
-					value: isModelField ? `${setting.value} 📋` : setting.value,
+					value: isModelField ? `${setting.value}` : setting.value,
 					field: setting.field,
 					actualValue: setting.actualValue,
 					action: () => {
