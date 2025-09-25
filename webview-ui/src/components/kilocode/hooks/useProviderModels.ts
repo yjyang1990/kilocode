@@ -184,7 +184,7 @@ export const getModelsByProvider = ({
 		}
 		case "kilocode": {
 			return {
-				models: routerModels["kilocode-openrouter"],
+				models: routerModels["kilocode"],
 				defaultModel: kilocodeDefaultModel,
 			}
 		}

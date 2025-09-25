@@ -39,7 +39,7 @@ export const KiloCode = ({
 	kilocodeDefaultModel,
 }: KiloCodeProps) => {
 	const { t } = useAppTranslation()
-	
+
 	const handleInputChange = useCallback(
 		<K extends keyof ProviderSettings, E>(
 			field: K,
@@ -115,7 +115,7 @@ export const KiloCode = ({
 				apiConfiguration={apiConfiguration}
 				setApiConfigurationField={setApiConfigurationField}
 				defaultModelId={kilocodeDefaultModel}
-				models={routerModels?.["kilocode-openrouter"] ?? {}}
+				models={routerModels?.["kilocode"] ?? {}}
 				modelIdKey="kilocodeModel"
 				serviceName="Kilo Code"
 				serviceUrl="https://kilocode.ai"
