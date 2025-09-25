@@ -49,46 +49,9 @@ export const PROVIDER_LABELS: Record<ProviderName, string> = {
  * Provider list with value and label pairs
  * Used for selection components and dropdowns
  */
-export const PROVIDER_OPTIONS: Array<{ value: ProviderName; label: string }> = [
-	{ value: "kilocode", label: "Kilo Code" },
-	{ value: "anthropic", label: "Anthropic" },
-	{ value: "openai-native", label: "OpenAI" },
-	{ value: "openrouter", label: "OpenRouter" },
-	{ value: "bedrock", label: "Amazon Bedrock" },
-	{ value: "gemini", label: "Google Gemini" },
-	{ value: "vertex", label: "GCP Vertex AI" },
-	{ value: "claude-code", label: "Claude Code" },
-	{ value: "mistral", label: "Mistral" },
-	{ value: "groq", label: "Groq" },
-	{ value: "deepseek", label: "DeepSeek" },
-	{ value: "xai", label: "xAI (Grok)" },
-	{ value: "cerebras", label: "Cerebras" },
-	{ value: "ollama", label: "Ollama" },
-	{ value: "lmstudio", label: "LM Studio" },
-	{ value: "vscode-lm", label: "VS Code LM API" },
-	{ value: "openai", label: "OpenAI Compatible" },
-	{ value: "glama", label: "Glama" },
-	{ value: "huggingface", label: "Hugging Face" },
-	{ value: "litellm", label: "LiteLLM" },
-	{ value: "moonshot", label: "Moonshot" },
-	{ value: "doubao", label: "Doubao" },
-	{ value: "chutes", label: "Chutes AI" },
-	{ value: "sambanova", label: "SambaNova" },
-	{ value: "fireworks", label: "Fireworks" },
-	{ value: "featherless", label: "Featherless" },
-	{ value: "deepinfra", label: "DeepInfra" },
-	{ value: "io-intelligence", label: "IO Intelligence" },
-	{ value: "qwen-code", label: "Qwen Code" },
-	{ value: "gemini-cli", label: "Gemini CLI" },
-	{ value: "zai", label: "Zai" },
-	{ value: "unbound", label: "Unbound" },
-	{ value: "requesty", label: "Requesty" },
-	{ value: "roo", label: "Roo" },
-	{ value: "vercel-ai-gateway", label: "Vercel AI Gateway" },
-	{ value: "virtual-quota-fallback", label: "Virtual Quota Fallback" },
-	{ value: "human-relay", label: "Human Relay" },
-	{ value: "fake-ai", label: "Fake AI" },
-]
+export const PROVIDER_OPTIONS: Array<{ value: ProviderName; label: string }> = Object.entries(PROVIDER_LABELS).map(
+	([value, label]) => ({ value: value as ProviderName, label }),
+)
 
 /**
  * Get provider display label by provider name
