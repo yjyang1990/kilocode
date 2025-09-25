@@ -13,6 +13,7 @@
 	"command.terminal.addToContext.title": "將終端內容新增到上下文",
 	"command.terminal.fixCommand.title": "修復此命令",
 	"command.terminal.explainCommand.title": "解釋此命令",
+	"command.terminal.generateCommand.title": "Kilo Code: 生成終端機命令",
 	"command.acceptInput.title": "接受輸入/建議",
 	"command.toggleAutoApprove.title": "切換自動批准",
 	"command.generateCommitMessage.title": "使用 Kilo 生成提交訊息",

@@ -238,9 +238,17 @@
 			"confirm": "Smazat"
 		}
 	},
+	"interruption": {
+		"responseInterruptedByUser": "Odpověď přerušena uživatelem",
+		"responseInterruptedByApiError": "Odpověď přerušena chybou API"
+	},
 	"commands": {
 		"preventCompletionWithOpenTodos": {
 			"description": "Zabránit dokončení úlohy, když jsou v seznamu úkolů neúplné položky"
 		}
+	},
+	"docsLink": {
+		"label": "Dokumentace",
+		"url": "https://docs.roocode.com"
 	}
 }
