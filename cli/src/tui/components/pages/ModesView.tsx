@@ -8,6 +8,7 @@ import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
 import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
 import { useRouter } from "../../router/index.js"
+import { DEFAULT_MODES, DEFAULT_MODE_SLUG, createModeItems } from "../../../constants/index.js"
 
 interface ModesState {
 	modes: ModeConfig[]
@@ -15,34 +16,26 @@ interface ModesState {
 	selectedIndex: number
 }
 
-const defaultModes = [
-	{ slug: "code", name: "Code", description: "Write, modify, and refactor code" },
-	{ slug: "architect", name: "Architect", description: "Plan and design system architecture" },
-	{ slug: "debug", name: "Debug", description: "Troubleshoot and fix issues" },
-	{ slug: "ask", name: "Ask", description: "Get explanations and answers" },
-	{ slug: "test", name: "Test", description: "Write and maintain tests" },
-]
-
 export const ModesView: React.FC = () => {
 	const extensionState = useExtensionState()
 	const { sendMessage } = useExtensionMessage()
 	const { visible: sidebarVisible } = useSidebar()
 	const { goBack } = useRouter()
 	const [modesState, setModesState] = useState<ModesState>({
-		modes: defaultModes,
-		currentMode: extensionState?.mode || "code",
+		modes: DEFAULT_MODES,
+		currentMode: extensionState?.mode || DEFAULT_MODE_SLUG,
 		selectedIndex: 0,
 	})
 
 	useEffect(() => {
 		// Combine default modes with custom modes
 		const customModes = extensionState?.customModes || []
-		const allModes = [...defaultModes, ...customModes]
+		const allModes = [...DEFAULT_MODES, ...customModes]
 
 		setModesState((prev) => ({
 			...prev,
 			modes: allModes,
-			currentMode: extensionState?.mode || "code",
+			currentMode: extensionState?.mode || DEFAULT_MODE_SLUG,
 		}))
 	}, [extensionState?.customModes, extensionState?.mode])
 
@@ -70,10 +63,7 @@ export const ModesView: React.FC = () => {
 		},
 	})
 
-	const modeItems = modesState.modes.map((mode) => ({
-		label: `${mode.name} - ${mode.description || "No description"}`,
-		value: mode.slug,
-	}))
+	const modeItems = createModeItems(modesState.modes)
 
 	// Create header
 	const header = <PageHeader title="Modes" subtitle={`Current: ${modesState.currentMode}`} />

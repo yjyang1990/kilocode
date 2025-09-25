@@ -1,136 +1,169 @@
 import React, { useState, useEffect, useRef } from "react"
 import { PageHeader } from "../../../generic/PageHeader.js"
-import { PageFooter } from "../../../generic/PageFooter.js"
 import { PageLayout } from "../../../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../../../hooks/useKeyboardNavigation.js"
 import { useExtensionState, useExtensionMessage, useSidebar } from "../../../../context/index.js"
+import { useNavigate } from "../../../../router/index.js"
 import { ProvidersSection } from "./ProvidersSection.js"
 import { SettingsLayout } from "../common/SettingsLayout.js"
+import {
+	getProviderLabel,
+	getProviderSettings,
+	type ProviderSettingConfig,
+} from "../../../../../constants/providers/index.js"
+import type { ProviderName, ProviderSettingsEntry } from "../../../../../types/messages.js"
 
 interface ProvidersState {
-	editingField: string | null
-	editingValue: string
-	focusMode: "sidebar" | "content"
-	selectedSettingIndex: number
+	selectedIndex: number
 }
 
 export const ProvidersView: React.FC = () => {
 	const extensionState = useExtensionState()
 	const { sendMessage } = useExtensionMessage()
 	const { visible: sidebarVisible } = useSidebar()
+	const navigate = useNavigate()
 	const [providersState, setProvidersState] = useState<ProvidersState>({
-		editingField: null,
-		editingValue: "",
-		focusMode: "content", // Start with content focused for this specific section
-		selectedSettingIndex: 0,
+		selectedIndex: 0,
 	})
 
 	const apiConfig = extensionState?.apiConfiguration || {}
 	const currentApiConfigName = extensionState?.currentApiConfigName || "default"
+	const listApiConfigMeta = extensionState?.listApiConfigMeta || []
 
 	// Track the previous API config name to detect when it changes (indicating a successful save)
 	const prevApiConfigName = useRef(currentApiConfigName)
 
-	// Update the editing state when the API configuration changes (after successful save)
+	// Track API config changes
 	useEffect(() => {
-		// If we were editing a field and the API config name changed, it means the save was successful
-		if (providersState.editingField && prevApiConfigName.current !== currentApiConfigName) {
-			setProvidersState((prev) => ({
-				...prev,
-				editingField: null,
-				editingValue: "",
-			}))
-		}
 		prevApiConfigName.current = currentApiConfigName
-	}, [currentApiConfigName, providersState.editingField])
+	}, [currentApiConfigName])
 
-	const handleFieldEdit = (field: string, currentValue: string) => {
-		setProvidersState((prev) => ({
-			...prev,
-			editingField: field,
-			editingValue: currentValue || "",
-		}))
+	// Helper functions (moved before usage) - now using centralized constants
+
+	// Build the linear navigation options
+	const buildNavigationOptions = (): Array<{
+		id: string
+		type: "field" | "action"
+		label: string
+		value: string
+		field?: string
+		actualValue?: string
+		action?: () => void
+	}> => {
+		const options = []
+
+		// Profile management options
+		options.push({
+			id: "profile-select",
+			type: "field" as const,
+			label: "Profile",
+			value: currentApiConfigName,
+			action: () => {
+				// Cycle through profiles
+				const currentIndex = listApiConfigMeta.findIndex((p) => p.name === currentApiConfigName)
+				const nextIndex = (currentIndex + 1) % Math.max(1, listApiConfigMeta.length)
+				if (listApiConfigMeta[nextIndex]) {
+					handleSelectProfile(listApiConfigMeta[nextIndex].name)
+				}
+			},
+		})
+
+		options.push({
+			id: "profile-create",
+			type: "action" as const,
+			label: "Create New Profile",
+			value: "",
+			action: () => navigate("/settings/providers/create"),
+		})
+
+		options.push({
+			id: "profile-rename",
+			type: "action" as const,
+			label: "Rename Profile",
+			value: "",
+			action: () => navigate("/settings/providers/edit"),
+		})
+
+		if (listApiConfigMeta.length > 1) {
+			options.push({
+				id: "profile-delete",
+				type: "action" as const,
+				label: "Delete Profile",
+				value: "",
+				action: () => navigate("/settings/providers/remove"),
+			})
+		}
+
+		// Provider selection
+		const currentProvider = apiConfig.apiProvider as ProviderName
+		const providerLabel = getProviderLabel(currentProvider)
+
+		options.push({
+			id: "provider-select",
+			type: "field" as const,
+			label: "Provider",
+			value: providerLabel,
+			action: () => navigate("/settings/providers/choose"),
+		})
+
+		// Provider-specific settings
+		if (currentProvider) {
+			const providerSettings = getProviderSettings(currentProvider, apiConfig)
+			providerSettings.forEach((setting: ProviderSettingConfig) => {
+				options.push({
+					id: "provider-setting",
+					type: "field" as const,
+					label: setting.label,
+					value: setting.value,
+					field: setting.field,
+					actualValue: setting.actualValue,
+					action: () => navigate(`/settings/providers/field/${setting.field}`),
+				})
+			})
+		}
+
+		return options
 	}
 
-	const handleSaveField = async () => {
-		if (!providersState.editingField) return
+	const navigationOptions = buildNavigationOptions()
 
+	// Profile management functions
+	const handleSelectProfile = async (profileName: string) => {
 		try {
-			const updatedConfig = {
-				...apiConfig,
-				[providersState.editingField]: providersState.editingValue,
-			}
-
 			await sendMessage({
-				type: "upsertApiConfiguration",
-				text: extensionState?.currentApiConfigName || "default",
-				apiConfiguration: updatedConfig,
+				type: "loadApiConfiguration",
+				text: profileName,
 			})
-
-			setProvidersState((prev) => ({
-				...prev,
-				editingField: null,
-				editingValue: "",
-			}))
 		} catch (error) {
-			console.error("Failed to save setting:", error)
+			console.error("Failed to load profile:", error)
 		}
 	}
 
-	const handleCancelEdit = () => {
-		setProvidersState((prev) => ({
-			...prev,
-			editingField: null,
-			editingValue: "",
-		}))
-	}
-
-	const handleEditingValueChange = (value: string) => {
-		setProvidersState((prev) => ({ ...prev, editingValue: value }))
-	}
-
-	// Keyboard navigation handlers
+	// Simple keyboard navigation - just ↑/↓ and Enter
 	useKeyboardNavigation({
 		sidebarVisible,
 		customHandlers: {
 			return: () => {
-				if (providersState.editingField) {
-					handleSaveField()
-				} else if (providersState.focusMode === "content") {
-					const settings = [
-						{ field: "apiProvider", value: apiConfig.apiProvider || "" },
-						{ field: "kilocodeToken", value: apiConfig.kilocodeToken || "" },
-						{ field: "kilocodeModel", value: apiConfig.kilocodeModel || "" },
-						{ field: "kilocodeOrganizationId", value: apiConfig.kilocodeOrganizationId || "" },
-					]
-					const selectedSetting = settings[providersState.selectedSettingIndex]
-					if (selectedSetting) {
-						handleFieldEdit(selectedSetting.field, selectedSetting.value)
-					}
+				// Execute the action for the selected option
+				const selectedOption = navigationOptions[providersState.selectedIndex]
+				if (selectedOption?.action) {
+					selectedOption.action()
 				}
 			},
 			escape: () => {
-				if (providersState.editingField) {
-					handleCancelEdit()
-				}
+				// Note: App.tsx handles Esc for going back to previous route
 			},
-			// Remove left/right arrow handlers - column switching disabled in subsections
 			upArrow: () => {
-				if (providersState.focusMode === "content" && !providersState.editingField) {
-					setProvidersState((prev) => ({
-						...prev,
-						selectedSettingIndex: Math.max(0, prev.selectedSettingIndex - 1),
-					}))
-				}
+				setProvidersState((prev) => ({
+					...prev,
+					selectedIndex: Math.max(0, prev.selectedIndex - 1),
+				}))
 			},
 			downArrow: () => {
-				if (providersState.focusMode === "content" && !providersState.editingField) {
-					const maxIndex = 3 // 4 settings (0-3)
-					setProvidersState((prev) => ({
-						...prev,
-						selectedSettingIndex: Math.min(maxIndex, prev.selectedSettingIndex + 1),
-					}))
-				}
+				setProvidersState((prev) => ({
+					...prev,
+					selectedIndex: Math.min(navigationOptions.length - 1, prev.selectedIndex + 1),
+				}))
 			},
 		},
 	})
@@ -139,15 +172,7 @@ export const ProvidersView: React.FC = () => {
 
 	const content = (
 		<SettingsLayout isIndexPage={false}>
-			<ProvidersSection
-				apiConfig={apiConfig}
-				editingField={providersState.editingField}
-				editingValue={providersState.editingValue}
-				selectedSettingIndex={providersState.selectedSettingIndex}
-				onFieldEdit={handleFieldEdit}
-				onSaveField={handleSaveField}
-				onEditingValueChange={handleEditingValueChange}
-			/>
+			<ProvidersSection navigationOptions={navigationOptions} selectedIndex={providersState.selectedIndex} />
 		</SettingsLayout>
 	)
 

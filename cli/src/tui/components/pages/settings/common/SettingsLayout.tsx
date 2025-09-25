@@ -6,6 +6,7 @@ import { useKeyboardNavigation } from "../../../../hooks/useKeyboardNavigation.j
 import { useSidebar } from "../../../../context/index.js"
 import { useLastPath } from "../../../../router/RouterContext.js"
 import { logService } from "../../../../../services/LogService.js"
+import { DEFAULT_SECTION } from "../../../../../constants/index.js"
 
 interface SettingsLayoutProps {
 	children: React.ReactNode
@@ -26,8 +27,6 @@ type SettingSection =
 	| "language"
 	| "mcpServers"
 	| "about"
-
-const DEFAULT_SECTION = "providers"
 
 const sections: { value: SettingSection; label: string; path: string }[] = [
 	{ value: "providers", label: "Providers", path: "/settings/providers" },

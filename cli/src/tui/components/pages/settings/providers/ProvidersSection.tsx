@@ -1,86 +1,63 @@
 import React from "react"
 import { Box, Text } from "ink"
 import TextInput from "ink-text-input"
-import type { ProviderSettings } from "../../../../../types/messages.js"
 import { SectionHeader } from "../common/SectionHeader.js"
 import { Section } from "../common/Section.js"
-import { SettingRow } from "../common/SettingRow.js"
 
-interface ProvidersSectionProps {
-	apiConfig: ProviderSettings
-	editingField: string | null
-	editingValue: string
-	selectedSettingIndex: number
-	onFieldEdit: (field: string, currentValue: string) => void
-	onSaveField: () => void
-	onEditingValueChange: (value: string) => void
+interface NavigationOption {
+	id: string
+	type: "field" | "action"
+	label: string
+	value: string
+	field?: string
+	actualValue?: string
+	action?: () => void
 }
 
-export const ProvidersSection: React.FC<ProvidersSectionProps> = ({
-	apiConfig,
-	editingField,
-	editingValue,
-	selectedSettingIndex,
-	onFieldEdit,
-	onSaveField,
-	onEditingValueChange,
-}) => {
-	const settings = [
-		{
-			field: "apiProvider",
-			label: "API Provider",
-			value: apiConfig.apiProvider || "kilocode",
-			onEdit: () => onFieldEdit("apiProvider", apiConfig.apiProvider || ""),
-		},
-		{
-			field: "kilocodeToken",
-			label: "Kilo Code Token",
-			value: apiConfig.kilocodeToken ? "••••••••" : "Not set",
-			onEdit: () => onFieldEdit("kilocodeToken", apiConfig.kilocodeToken || ""),
-		},
-		{
-			field: "kilocodeModel",
-			label: "Model",
-			value: apiConfig.kilocodeModel || "anthropic/claude-sonnet-4",
-			onEdit: () => onFieldEdit("kilocodeModel", apiConfig.kilocodeModel || ""),
-		},
-		{
-			field: "kilocodeOrganizationId",
-			label: "Organization ID",
-			value: apiConfig.kilocodeOrganizationId || "personal",
-			onEdit: () => onFieldEdit("kilocodeOrganizationId", apiConfig.kilocodeOrganizationId || ""),
-		},
-	]
+interface ProvidersSectionProps {
+	navigationOptions: NavigationOption[]
+	selectedIndex: number
+}
 
+export const ProvidersSection: React.FC<ProvidersSectionProps> = ({ navigationOptions, selectedIndex }) => {
 	return (
 		<Box flexDirection="column">
 			<SectionHeader title="Providers" description="Configure your AI provider settings" />
 			<Section>
-				{editingField ? (
-					<Box flexDirection="column" gap={1}>
-						<Text color="blue">Editing: {editingField}</Text>
-						<Box>
-							<Text>Value: </Text>
-							<TextInput value={editingValue} onChange={onEditingValueChange} onSubmit={onSaveField} />
-						</Box>
+				<Box flexDirection="column" gap={1}>
+					{navigationOptions.map((option, index) => {
+						const isAction = option.type === "action"
+						return (
+							<Box
+								key={`${option.id}-${option.label}`}
+								justifyContent={isAction ? "flex-start" : "space-between"}
+								paddingX={selectedIndex === index ? 1 : 0}>
+								<Text color={selectedIndex === index ? "cyan" : "white"}>
+									{selectedIndex === index ? "❯ " : "  "}
+									{option.label}
+									{isAction ? "" : ":"}
+								</Text>
+								{!isAction && (
+									<Text color={selectedIndex === index ? "cyan" : "gray"}>
+										{option.value || "Not set"}
+									</Text>
+								)}
+							</Box>
+						)
+					})}
+
+					{navigationOptions.length === 0 && (
 						<Text color="gray" dimColor>
-							Press Enter to save, Escape to cancel
+							No options available
+						</Text>
+					)}
+
+					<Box marginTop={1}>
+						<Text color="gray" dimColor>
+							↑/↓ Navigate • Enter Select/Edit • Esc Back
 						</Text>
 					</Box>
-				) : (
-					<Box flexDirection="column" gap={1}>
-						{settings.map((setting, index) => (
-							<SettingRow
-								key={setting.field}
-								label={setting.label}
-								value={setting.value}
-								onEdit={setting.onEdit}
-								isEditing={editingField === setting.field}
-								isSelected={selectedSettingIndex === index}
-							/>
-						))}
-					</Box>
-				)}
+				</Box>
 			</Section>
 		</Box>
 	)

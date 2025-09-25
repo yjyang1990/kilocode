@@ -8,6 +8,13 @@ import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
 import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
 import { useRouter } from "../../router/index.js"
+import {
+	LOG_LEVEL_COLORS,
+	LOG_LEVEL_ICONS,
+	LOG_LEVELS,
+	DEFAULT_LOG_LEVELS,
+	UI_CONSTANTS,
+} from "../../../constants/index.js"
 
 interface LogsState {
 	logs: LogEntry[]
@@ -15,20 +22,6 @@ interface LogsState {
 	selectedLevels: Set<LogLevel>
 	autoScroll: boolean
 	showingCount: number
-}
-
-const LOG_LEVEL_COLORS: Record<LogLevel, string> = {
-	info: "blue",
-	debug: "yellow",
-	warn: "magenta",
-	error: "red",
-}
-
-const LOG_LEVEL_ICONS: Record<LogLevel, string> = {
-	info: "🔵",
-	debug: "🟡",
-	warn: "🟠",
-	error: "🔴",
 }
 
 export const LogsView: React.FC = () => {
@@ -39,9 +32,9 @@ export const LogsView: React.FC = () => {
 	const [logsState, setLogsState] = useState<LogsState>({
 		logs: [],
 		filter: {},
-		selectedLevels: new Set(["info", "debug", "warn", "error"]),
+		selectedLevels: DEFAULT_LOG_LEVELS,
 		autoScroll: true,
-		showingCount: 50, // Show last 50 logs by default
+		showingCount: UI_CONSTANTS.DEFAULT_LOG_COUNT,
 	})
 
 	const [scrollOffset, setScrollOffset] = useState(0)
@@ -105,7 +98,10 @@ export const LogsView: React.FC = () => {
 	// Increase/decrease showing count
 	const adjustShowingCount = useCallback((delta: number) => {
 		setLogsState((prev) => {
-			const newCount = Math.max(10, Math.min(500, prev.showingCount + delta))
+			const newCount = Math.max(
+				UI_CONSTANTS.LOG_COUNT_MIN,
+				Math.min(UI_CONSTANTS.LOG_COUNT_MAX, prev.showingCount + delta),
+			)
 			const filter: LogFilter = {
 				levels: Array.from(prev.selectedLevels),
 			}
@@ -128,8 +124,8 @@ export const LogsView: React.FC = () => {
 			d: () => toggleLogLevel("debug"),
 			w: () => toggleLogLevel("warn"),
 			e: () => toggleLogLevel("error"),
-			"+": () => adjustShowingCount(25),
-			"-": () => adjustShowingCount(-25),
+			"+": () => adjustShowingCount(UI_CONSTANTS.LOG_COUNT_STEP),
+			"-": () => adjustShowingCount(-UI_CONSTANTS.LOG_COUNT_STEP),
 			upArrow: () => {
 				if (logsState.logs.length > 0) {
 					setScrollOffset((prev) => Math.max(0, prev - 1))
@@ -175,7 +171,7 @@ export const LogsView: React.FC = () => {
 				<Text color="gray" bold>
 					Filters:
 				</Text>
-				{(["info", "debug", "warn", "error"] as LogLevel[]).map((level) => (
+				{LOG_LEVELS.map((level) => (
 					<Text key={level}>
 						<Text color={logsState.selectedLevels.has(level) ? LOG_LEVEL_COLORS[level] : "gray"}>
 							{LOG_LEVEL_ICONS[level]} {level.toUpperCase()}

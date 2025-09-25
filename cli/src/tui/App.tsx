@@ -7,6 +7,13 @@ import { ChatView } from "./components/pages/ChatView.js"
 import { HistoryView } from "./components/pages/HistoryView.js"
 import { SettingsIndex } from "./components/pages/SettingsIndex.js"
 import { ProvidersView } from "./components/pages/settings/providers/ProvidersView.js"
+import {
+	CreateProviderPage,
+	EditProviderPage,
+	ChooseProviderPage,
+	RemoveProviderPage,
+	EditFieldPage,
+} from "./components/pages/settings/providers/pages/index.js"
 import { AboutView } from "./components/pages/settings/about/AboutView.js"
 import { GenericSettingsView } from "./components/pages/GenericSettingsView.js"
 import { ModesView } from "./components/pages/ModesView.js"
@@ -116,6 +123,11 @@ const AppContent: React.FC = () => {
 							<Route path="/history/:taskId" component={HistoryView} />
 							<Route path="/settings" component={SettingsIndex} exact />
 							<Route path="/settings/providers" component={ProvidersView} exact />
+							<Route path="/settings/providers/create" component={CreateProviderPage} exact />
+							<Route path="/settings/providers/edit" component={EditProviderPage} exact />
+							<Route path="/settings/providers/choose" component={ChooseProviderPage} exact />
+							<Route path="/settings/providers/remove" component={RemoveProviderPage} exact />
+							<Route path="/settings/providers/field/:field" component={EditFieldPage} exact />
 							<Route path="/settings/about" component={AboutView} exact />
 							<Route
 								path="/settings/auto-approve"
