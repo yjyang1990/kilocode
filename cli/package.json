@@ -16,7 +16,9 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"check-types": "tsc --noEmit",
-		"format": "prettier --write src"
+		"format": "prettier --write src",
+		"logs": "clear && tail -f .kilocode-cli/logs/cli.txt",
+		"logs:clear": "rimraf .kilocode-cli/logs/*"
 	},
 	"dependencies": {
 		"@anthropic-ai/bedrock-sdk": "^0.22.0",

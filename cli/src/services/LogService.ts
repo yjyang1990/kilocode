@@ -1,3 +1,7 @@
+import * as fs from "fs-extra"
+import { appendFile } from "fs/promises"
+import * as path from "path"
+
 export type LogLevel = "info" | "debug" | "error" | "warn"
 
 export interface LogEntry {
@@ -30,6 +34,8 @@ export class LogService {
 		debug: typeof console.debug
 		info: typeof console.info
 	} | null = null
+	private logFilePath: string
+	private fileLoggingEnabled: boolean = true
 
 	private constructor() {
 		// Private constructor for singleton pattern
@@ -41,6 +47,13 @@ export class LogService {
 			debug: console.debug,
 			info: console.info,
 		}
+
+		// Initialize file logging
+		this.logFilePath = path.join(process.cwd(), ".kilocode-cli", "logs", "cli.txt")
+		// Initialize file logging asynchronously (don't await to avoid blocking constructor)
+		this.initializeFileLogging().catch(() => {
+			// Error handling is done within initializeFileLogging
+		})
 	}
 
 	/**
@@ -76,6 +89,11 @@ export class LogService {
 
 		// Notify listeners
 		this.listeners.forEach((listener) => listener(entry))
+
+		// Write to file asynchronously (don't await to avoid blocking)
+		this.writeToFile(entry).catch(() => {
+			// Error handling is done within writeToFile
+		})
 
 		// Also output to console for development
 		// this.outputToConsole(entry)
@@ -130,6 +148,66 @@ export class LogService {
 		} finally {
 			// Always clear the flag
 			;(this as any)._isLogging = false
+		}
+	}
+
+	/**
+	 * Initialize file logging by ensuring the log directory exists
+	 */
+	private async initializeFileLogging(): Promise<void> {
+		try {
+			const logDir = path.dirname(this.logFilePath)
+			await fs.ensureDir(logDir)
+		} catch (error) {
+			// Disable file logging if initialization fails
+			this.fileLoggingEnabled = false
+			// Use original console to avoid circular dependency
+			if (this.originalConsole) {
+				this.originalConsole.error("Failed to initialize file logging:", error)
+			}
+		}
+	}
+
+	/**
+	 * Format log entry for file output (same format as outputToConsole)
+	 */
+	private formatLogEntryForFile(entry: LogEntry): string {
+		const timestamp = new Date(entry.timestamp).toISOString()
+		const source = entry.source ? `[${entry.source}]` : ""
+		const prefix = `${timestamp} ${source}`
+		const contextStr = entry.context ? ` ${JSON.stringify(entry.context)}` : ""
+
+		switch (entry.level) {
+			case "error":
+				return `${prefix} ERROR: ${entry.message}${contextStr}`
+			case "warn":
+				return `${prefix} WARN: ${entry.message}${contextStr}`
+			case "debug":
+				return `${prefix} DEBUG: ${entry.message}${contextStr}`
+			case "info":
+			default:
+				return `${prefix} INFO: ${entry.message}${contextStr}`
+		}
+	}
+
+	/**
+	 * Write log entry to file asynchronously
+	 */
+	private async writeToFile(entry: LogEntry): Promise<void> {
+		if (!this.fileLoggingEnabled) {
+			return
+		}
+
+		try {
+			const logLine = this.formatLogEntryForFile(entry) + "\n"
+			await appendFile(this.logFilePath, logLine, "utf8")
+		} catch (error) {
+			// Disable file logging on write errors to prevent spam
+			this.fileLoggingEnabled = false
+			// Use original console to avoid circular dependency
+			if (this.originalConsole) {
+				this.originalConsole.error("Failed to write to log file:", error)
+			}
 		}
 	}
 
@@ -237,11 +315,27 @@ export class LogService {
 	/**
 	 * Get current configuration
 	 */
-	public getConfig(): { maxEntries: number; totalLogs: number } {
+	public getConfig(): { maxEntries: number; totalLogs: number; fileLoggingEnabled: boolean; logFilePath: string } {
 		return {
 			maxEntries: this.maxEntries,
 			totalLogs: this.logs.length,
+			fileLoggingEnabled: this.fileLoggingEnabled,
+			logFilePath: this.logFilePath,
 		}
+	}
+
+	/**
+	 * Get the log file path
+	 */
+	public getLogFilePath(): string {
+		return this.logFilePath
+	}
+
+	/**
+	 * Check if file logging is enabled
+	 */
+	public isFileLoggingEnabled(): boolean {
+		return this.fileLoggingEnabled
 	}
 }
 
