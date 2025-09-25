@@ -14,6 +14,5 @@ export type {
 	CliState,
 	CliActions,
 	CliContextValue,
-	UseSidebarReturn,
 	UseExtensionMessageReturn,
 } from "./types.js"

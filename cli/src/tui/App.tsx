@@ -1,5 +1,6 @@
 import React from "react"
 import { render, Box, Text, useInput } from "ink"
+import { Provider as JotaiProvider } from "jotai"
 import { EventEmitter } from "events"
 import type { MessageBridge } from "../communication/ipc.js"
 import type { ExtensionMessage } from "../types/messages.js"
@@ -206,11 +207,13 @@ const App: React.FC<{ options: TUIApplicationOptions }> = ({ options }) => {
 	const initialPath = options.initialPath || "/chat"
 
 	return (
-		<CliContextProvider options={options}>
-			<RouterProvider initialPath={initialPath}>
-				<AppContent />
-			</RouterProvider>
-		</CliContextProvider>
+		<JotaiProvider>
+			<CliContextProvider options={options}>
+				<RouterProvider initialPath={initialPath}>
+					<AppContent />
+				</RouterProvider>
+			</CliContextProvider>
+		</JotaiProvider>
 	)
 }
 

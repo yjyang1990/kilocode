@@ -20,7 +20,6 @@ export const CliContextProvider: React.FC<{
 		isLoading: true,
 		error: null,
 		lastExtensionMessage: null,
-		sidebarVisible: false,
 		routerModels: null,
 		isLoadingModels: false,
 		modelLoadingError: null,
@@ -192,27 +191,7 @@ export const CliContextProvider: React.FC<{
 	)
 
 	// Navigation actions removed - handled by router
-
-	// Sidebar actions
-	const toggleSidebar = useCallback(() => {
-		setState((prev) => ({ ...prev, sidebarVisible: !prev.sidebarVisible }))
-	}, [])
-
-	const closeSidebar = useCallback(() => {
-		setState((prev) => ({ ...prev, sidebarVisible: false }))
-	}, [])
-
-	const handleSidebarSelect = useCallback(
-		(item: string) => {
-			if (item === "exit") {
-				exit()
-			} else {
-				// Close sidebar - navigation will be handled by the sidebar component using router
-				setState((prev) => ({ ...prev, sidebarVisible: false }))
-			}
-		},
-		[exit],
-	)
+	// Sidebar actions removed - now handled by useSidebar hook with Jotai atom
 
 	// State management actions
 	const setLoading = useCallback((loading: boolean) => {
@@ -254,9 +233,6 @@ export const CliContextProvider: React.FC<{
 	const actions: CliActions = {
 		sendMessage,
 		handleExtensionMessage,
-		toggleSidebar,
-		closeSidebar,
-		handleSidebarSelect,
 		setLoading,
 		setError,
 		requestRouterModels,

@@ -17,7 +17,6 @@ export interface CliState {
 	isLoading: boolean
 	error: string | null
 	lastExtensionMessage: ExtensionMessage | null
-	sidebarVisible: boolean
 
 	// Model Management
 	routerModels: RouterModels | null
@@ -36,11 +35,6 @@ export interface CliActions {
 	sendMessage: (message: WebviewMessage) => Promise<void>
 	handleExtensionMessage: (message: ExtensionMessage) => void
 
-	// Sidebar Management
-	toggleSidebar: () => void
-	closeSidebar: () => void
-	handleSidebarSelect: (item: string) => void
-
 	// State Management
 	setLoading: (loading: boolean) => void
 	setError: (error: string | null) => void
@@ -58,14 +52,6 @@ export interface CliActions {
 export interface CliContextValue {
 	state: CliState
 	actions: CliActions
-}
-
-// Hook return types
-export interface UseSidebarReturn {
-	visible: boolean
-	toggle: () => void
-	close: () => void
-	handleSelect: (item: string) => void
 }
 
 // UseCurrentViewReturn removed - replaced by router hooks

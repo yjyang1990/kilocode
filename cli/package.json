@@ -70,6 +70,7 @@
 		"ink-text-input": "^5.0.1",
 		"is-wsl": "^3.1.0",
 		"isbinaryfile": "^5.0.2",
+		"jotai": "^2.14.0",
 		"jsdom": "^26.0.0",
 		"json5": "^2.2.3",
 		"jwt-decode": "^4.0.0",
