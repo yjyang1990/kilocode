@@ -39,35 +39,20 @@ function makeRequest(url) {
 	})
 }
 
-// Function to check if a user is a bot
-function isBotUser(username) {
-	if (!username) return false
-	const botIndicators = ["bot", "dependabot", "renovate", "github-actions", "action"]
-	return botIndicators.some((indicator) => username.toLowerCase().includes(indicator))
-}
-
 // Function to generate Markdown contributor list
 function generateContributorMarkdown(contributors) {
 	let markdown = "## Contributors\n\n"
 	markdown += "Thanks to all the contributors who help make Kilo Code better!\n\n"
 
-	// Map the kilocode.ai format to expected format and filter out bots
-	const validContributors = contributors
-		.map((contributor) => {
-			// Convert kilocode.ai format to GitHub-like format
-			return {
-				login: contributor.username,
-				html_url: `https://github.com/${contributor.username}`,
-				avatar_url: `https://avatars.githubusercontent.com/u/${contributor.avatarId}`,
-			}
-		})
-		.filter((contributor) => {
-			// Check if contributor has required fields
-			if (!contributor.login) {
-				return false
-			}
-			return !isBotUser(contributor.login)
-		})
+	// Map the kilocode.ai format to expected format
+	const validContributors = contributors.map((contributor) => {
+		// Convert kilocode.ai format to GitHub-like format
+		return {
+			login: contributor.username,
+			html_url: `https://github.com/${contributor.username}`,
+			avatar_url: `https://avatars.githubusercontent.com/u/${contributor.avatarId}`,
+		}
+	})
 
 	// Limit to MAX_CONTRIBUTORS_DISPLAY contributors
 	const displayContributors = validContributors.slice(0, MAX_CONTRIBUTORS_DISPLAY)
