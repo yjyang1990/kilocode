@@ -2,14 +2,7 @@ import type { TextDocument, Range, Diagnostic } from "vscode"
 import { GhostSuggestionContext } from "../types"
 import { PromptStrategy, UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
-
-// Local mapping for DiagnosticSeverity since we're using type-only imports
-const DiagnosticSeverityNames: Record<number, string> = {
-	0: "Error",
-	1: "Warning",
-	2: "Information",
-	3: "Hint",
-}
+import { DiagnosticSeverityNames } from "./diagnostics"
 
 /**
  * Abstract base class for all prompt strategies
