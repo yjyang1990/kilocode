@@ -11,6 +11,7 @@ const Package = {
 }
 
 const program = new Command()
+let cli: KiloCodeCLI | null = null
 
 program
 	.name("kilocode")
@@ -24,8 +25,9 @@ program
 	.option("-w, --workspace <path>", "Set workspace directory", process.cwd())
 	.option("--config <path>", "Path to configuration file")
 	.action(async (options) => {
-		const cli = new KiloCodeCLI(options)
+		cli = new KiloCodeCLI(options)
 		await cli.startChatSession()
+		await cli.dispose()
 	})
 
 program
@@ -35,8 +37,9 @@ program
 	.option("-w, --workspace <path>", "Set workspace directory", process.cwd())
 	.option("--auto-approve", "Auto-approve all operations", false)
 	.action(async (message, options) => {
-		const cli = new KiloCodeCLI(options)
+		cli = new KiloCodeCLI(options)
 		await cli.executeTask(message)
+		await cli.dispose()
 	})
 
 program
@@ -45,33 +48,43 @@ program
 	.option("-w, --workspace <path>", "Filter by workspace directory")
 	.option("--favorites", "Show only favorited tasks", false)
 	.action(async (options) => {
-		const cli = new KiloCodeCLI(options)
+		cli = new KiloCodeCLI(options)
 		await cli.showHistory()
+		await cli.dispose()
 	})
 
 program
 	.command("settings")
 	.description("Configure Kilo Code settings")
 	.action(async () => {
-		const cli = new KiloCodeCLI({})
+		cli = new KiloCodeCLI({})
 		await cli.showSettings()
+		await cli.dispose()
 	})
 
 program
 	.command("modes")
 	.description("Manage custom modes")
 	.action(async () => {
-		const cli = new KiloCodeCLI({})
+		cli = new KiloCodeCLI({})
 		await cli.showModes()
+		await cli.dispose()
 	})
 
-program
-	.command("mcp")
-	.description("Manage MCP servers")
-	.action(async () => {
-		const cli = new KiloCodeCLI({})
-		await cli.showMcp()
-	})
+// Handle process termination signals
+process.on("SIGINT", async () => {
+	if (cli) {
+		await cli.dispose()
+	}
+	process.exit(0)
+})
+
+process.on("SIGTERM", async () => {
+	if (cli) {
+		await cli.dispose()
+	}
+	process.exit(0)
+})
 
 // Parse command line arguments
 program.parse()

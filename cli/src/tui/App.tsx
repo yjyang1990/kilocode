@@ -2,7 +2,6 @@ import React from "react"
 import { render, Box, Text, useInput } from "ink"
 import { Provider as JotaiProvider } from "jotai"
 import { EventEmitter } from "events"
-import type { MessageBridge } from "../communication/ipc.js"
 import type { ExtensionMessage } from "../types/messages.js"
 import { ChatView } from "./components/pages/ChatView.js"
 import { HistoryView } from "./components/pages/HistoryView.js"
@@ -60,20 +59,23 @@ const AppContent: React.FC = () => {
 				return
 			}
 
-			// Only process Ctrl key combinations when sidebar is not visible
-			if (key.ctrl && !sidebar.visible) {
+			// Process Ctrl key combinations regardless of sidebar visibility for exit commands
+			if (key.ctrl) {
 				logService.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
 				switch (input) {
 					case "c":
 						actions.exit()
-						break
+						return
 					case "q":
 						actions.exit()
-						break
+						return
 					default:
-						logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
+						// Only consume other Ctrl combinations when sidebar is not visible
+						if (!sidebar.visible) {
+							logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
+							return
+						}
 				}
-				return // Consume the input when it's a Ctrl combination
 			}
 			// For non-Ctrl input, don't consume it - let child components handle it
 		},
@@ -226,15 +228,33 @@ export class TUIApplication extends EventEmitter {
 		this.options = options
 	}
 
+	handleExtensionMessage(message: ExtensionMessage): void {
+		this.emit("extensionMessage", message)
+	}
+
+	// Method to forward messages to the currently active view
+	forwardMessageToActiveView(message: ExtensionMessage): void {
+		// This could be enhanced to forward messages to the appropriate view
+		// For now, we'll let the App component handle it through the callback
+		logService.debug("Forwarding message to active view", "TUIApplication", { type: message.type })
+	}
+
+	async dispose(): Promise<void> {
+		if (this.renderInstance) {
+			this.renderInstance.unmount()
+			this.renderInstance = null
+		}
+		this.removeAllListeners()
+	}
+
+	async waitManualExit(): Promise<void> {
+		await this.renderInstance.waitUntilExit()
+		await this.dispose()
+	}
+
 	async startChatMode(): Promise<void> {
 		this.renderInstance = render(<App options={this.options} />)
-
-		// Wait for user to exit
-		return new Promise<void>((resolve) => {
-			this.renderInstance.waitUntilExit().then(() => {
-				resolve()
-			})
-		})
+		return this.waitManualExit()
 	}
 
 	async executeTask(message: string): Promise<void> {
@@ -259,60 +279,21 @@ export class TUIApplication extends EventEmitter {
 
 	async showHistory(): Promise<void> {
 		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/history" }} />)
-
-		return new Promise<void>((resolve) => {
-			this.renderInstance.waitUntilExit().then(() => {
-				resolve()
-			})
-		})
+		return this.waitManualExit()
 	}
 
 	async showSettings(): Promise<void> {
 		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/settings" }} />)
-
-		return new Promise<void>((resolve) => {
-			this.renderInstance.waitUntilExit().then(() => {
-				resolve()
-			})
-		})
+		return this.waitManualExit()
 	}
 
 	async showModes(): Promise<void> {
 		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/modes" }} />)
-
-		return new Promise<void>((resolve) => {
-			this.renderInstance.waitUntilExit().then(() => {
-				resolve()
-			})
-		})
+		return this.waitManualExit()
 	}
 
 	async showMcp(): Promise<void> {
 		this.renderInstance = render(<App options={{ ...this.options, initialPath: "/mcp" }} />)
-
-		return new Promise<void>((resolve) => {
-			this.renderInstance.waitUntilExit().then(() => {
-				resolve()
-			})
-		})
-	}
-
-	handleExtensionMessage(message: ExtensionMessage): void {
-		this.emit("extensionMessage", message)
-	}
-
-	// Method to forward messages to the currently active view
-	forwardMessageToActiveView(message: ExtensionMessage): void {
-		// This could be enhanced to forward messages to the appropriate view
-		// For now, we'll let the App component handle it through the callback
-		logService.debug("Forwarding message to active view", "TUIApplication", { type: message.type })
-	}
-
-	async dispose(): Promise<void> {
-		if (this.renderInstance) {
-			this.renderInstance.unmount()
-			this.renderInstance = null
-		}
-		this.removeAllListeners()
+		return this.waitManualExit()
 	}
 }

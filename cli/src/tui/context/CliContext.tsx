@@ -229,7 +229,16 @@ export const CliContextProvider: React.FC<{
 		setState((prev) => ({ ...prev, modelLoadingError: error }))
 	}, [])
 
-	// Create actions object
+	const gracefulExit = () => {
+		options.messageBridge.removeAllListeners()
+		exit()
+		// setTimeout(() => {
+		// 		logService.info("Forcing process exit", "CliContext")
+		// 		process.exit(0)
+		// 	}, 100)
+	}
+
+	// Create actions object with enhanced exit handling
 	const actions: CliActions = {
 		sendMessage,
 		handleExtensionMessage,
@@ -239,7 +248,7 @@ export const CliContextProvider: React.FC<{
 		setRouterModels,
 		setModelLoadingState,
 		setModelLoadingError,
-		exit,
+		exit: gracefulExit,
 	}
 
 	// Initialize extension state and listen for messages

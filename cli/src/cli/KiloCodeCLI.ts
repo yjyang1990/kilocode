@@ -227,8 +227,6 @@ export class KiloCodeCLI extends EventEmitter {
 	}
 
 	async dispose(): Promise<void> {
-		logService.info("Cleaning up CLI...", "KiloCodeCLI")
-
 		if (this.tuiApp) {
 			await this.tuiApp.dispose()
 			this.tuiApp = null
@@ -238,6 +236,6 @@ export class KiloCodeCLI extends EventEmitter {
 		await this.extensionHost.deactivate()
 
 		this.removeAllListeners()
-		logService.info("CLI cleanup complete", "KiloCodeCLI")
+		process.exit(0)
 	}
 }
