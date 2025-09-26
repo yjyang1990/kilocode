@@ -1,5 +1,5 @@
+import { appendFileSync } from "fs"
 import * as fs from "fs-extra"
-import { appendFile } from "fs/promises"
 import * as path from "path"
 
 export type LogLevel = "info" | "debug" | "error" | "warn"
@@ -200,7 +200,7 @@ export class LogService {
 
 		try {
 			const logLine = this.formatLogEntryForFile(entry) + "\n"
-			await appendFile(this.logFilePath, logLine, "utf8")
+			appendFileSync(this.logFilePath, logLine, "utf8")
 		} catch (error) {
 			// Disable file logging on write errors to prevent spam
 			this.fileLoggingEnabled = false
