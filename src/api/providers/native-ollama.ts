@@ -210,11 +210,12 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		]
 
 		// kilocode_change start
+		// it is tedious we have to check this, but Ollama's quiet prompt-truncating behavior is a support nightmare otherwise
 		const estimatedTokenCount = estimateOllamaTokenCount(ollamaMessages)
 		const maxTokens = this.options.ollamaNumCtx ?? modelInfo.contextWindow
-		if (maxTokens && estimatedTokenCount > maxTokens) {
+		if (estimatedTokenCount > maxTokens) {
 			throw new Error(
-				`Input message is too long for the selected model. Estimated tokens: ${estimatedTokenCount}, Max tokens: ${maxTokens}. To increase the context window size, see: https://kilocode.ai/docs/providers/ollama#configure-the-context-size`,
+				`Prompt is too long (estimated tokens: ${estimatedTokenCount}, max tokens: ${maxTokens}). Increase the Context Window Size in Settings.`,
 			)
 		}
 		// kilocode_change end
