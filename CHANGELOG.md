@@ -1,5 +1,21 @@
 # kilo-code
 
+## [v4.97.2]
+
+- [#2655](https://github.com/Kilo-Org/kilocode/pull/2655) [`3f83727`](https://github.com/Kilo-Org/kilocode/commit/3f8372708344171f4b379b90ad04693e1f67be39) Thanks [@PierreAncey](https://github.com/PierreAncey)! - Add Grok 4 Fast model to xAI provider
+
+- [#2648](https://github.com/Kilo-Org/kilocode/pull/2648) [`6f3f9fb`](https://github.com/Kilo-Org/kilocode/commit/6f3f9fba397ad34430c98a6db7ef535fe32622e8) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Fix error logging behavior in JetBrains plugin by updating console bridge log levels
+
+- [#2617](https://github.com/Kilo-Org/kilocode/pull/2617) [`a94bf01`](https://github.com/Kilo-Org/kilocode/commit/a94bf01f7df542ffd372bbb0d385b39941187b0d) Thanks [@RSO](https://github.com/RSO)! - JetBrains: Fix terminal not having complete path
+
+## [v4.97.1]
+
+- [#2625](https://github.com/Kilo-Org/kilocode/pull/2625) [`3409665`](https://github.com/Kilo-Org/kilocode/commit/340966544bda3a069f9cf2478658bf58f5e2cf3c) Thanks [@kevinvandijk](https://github.com/kevinvandijk)! - Add fix for Gemini CLI not being able to refresh access token anymore
+
+- [#2536](https://github.com/Kilo-Org/kilocode/pull/2536) [`1a01114`](https://github.com/Kilo-Org/kilocode/commit/1a011145572333d053b8999c3f38bf718bbedf66) Thanks [@mcowger](https://github.com/mcowger)! - Only validate embedders when they match the currently configured provider
+
+- [#2491](https://github.com/Kilo-Org/kilocode/pull/2491) [`06afc76`](https://github.com/Kilo-Org/kilocode/commit/06afc769d29740083027a1caa6195edcfbbb94e2) Thanks [@Thireus](https://github.com/Thireus)! - Increase OpenAI Compatible timeout
+
 ## [v4.97.0]
 
 - [#2505](https://github.com/Kilo-Org/kilocode/pull/2505) [`a59e7f5`](https://github.com/Kilo-Org/kilocode/commit/a59e7f565478c7405e62c59448bf7667e4b26c8f) Thanks [@markijbema](https://github.com/markijbema)! - Added option to the Display tab of the settings to disable autocomplete gutter animation
