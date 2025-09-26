@@ -26,7 +26,7 @@ import {
 	MessageSquare,
 	Monitor,
 	LucideIcon,
-	SquareSlash,
+	// SquareSlash, // kilocode_change
 	Glasses,
 } from "lucide-react"
 
@@ -559,7 +559,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		() => [
 			{ id: "providers", icon: Webhook },
 			{ id: "autoApprove", icon: CheckCheck },
-			{ id: "slashCommands", icon: SquareSlash },
+			// { id: "slashCommands", icon: SquareSlash }, // kilocode_change: needs work to be re-introduced
 			{ id: "browser", icon: SquareMousePointer },
 			{ id: "checkpoints", icon: GitBranch },
 			{ id: "display", icon: Monitor }, // kilocode_change
