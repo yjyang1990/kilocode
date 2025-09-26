@@ -114,17 +114,12 @@ import { parseMentions } from "../mentions" // kilocode_change
 import { parseKiloSlashCommands } from "../slash-commands/kilo" // kilocode_change
 import { GlobalFileNames } from "../../shared/globalFileNames" // kilocode_change
 import { ensureLocalKilorulesDirExists } from "../context/instructions/kilo-rules" // kilocode_change
-import { reportExcessiveRecursion, yieldPromise } from "../kilocode" // kilocode_change
 import { getMessagesSinceLastSummary, summarizeConversation } from "../condense"
 import { Gpt5Metadata, ClineMessageWithMetadata } from "./types"
 import { MessageQueueService } from "../message-queue/MessageQueueService"
 
 import { AutoApprovalHandler } from "./AutoApprovalHandler"
-import {
-	isAlphaPeriodEndedError,
-	isAnyRecognizedKiloCodeError,
-	isPaymentRequiredError,
-} from "../../shared/kilocode/errorUtils"
+import { isAnyRecognizedKiloCodeError, isPaymentRequiredError } from "../../shared/kilocode/errorUtils"
 
 const MAX_EXPONENTIAL_BACKOFF_SECONDS = 600 // 10 minutes
 const DEFAULT_USAGE_COLLECTION_TIMEOUT_MS = 5000 // 5 seconds
@@ -878,9 +873,19 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			const message = this.messageQueueService.dequeueMessage()
 
 			if (message) {
-				setTimeout(async () => {
-					await this.submitUserMessage(message.text, message.images)
-				}, 0)
+				// Check if this is a tool approval ask that needs to be handled
+				if (
+					type === "tool" ||
+					type === "command" ||
+					type === "browser_action_launch" ||
+					type === "use_mcp_server"
+				) {
+					// For tool approvals, we need to approve first, then send the message if there's text/images
+					this.handleWebviewAskResponse("yesButtonClicked", message.text, message.images)
+				} else {
+					// For other ask types (like followup), fulfill the ask directly
+					this.setMessageResponse(message.text, message.images)
+				}
 			}
 		}
 
@@ -1878,7 +1883,11 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				let inputTokens = 0
 				let outputTokens = 0
 				let totalCost: number | undefined
-				let usageMissing = false // kilocode_change
+
+				// kilocode_change start
+				let usageMissing = false
+				const apiRequestStartTime = performance.now()
+				// kilocode_change end
 
 				// We can't use `api_req_finished` anymore since it's a unique case
 				// where it could come after a streaming message (i.e. in the middle
@@ -2147,6 +2156,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 											tokens.cacheWrite,
 											tokens.cacheRead,
 										),
+									completionTime: performance.now() - apiRequestStartTime, // kilocode_change
 								})
 							}
 						}
@@ -2689,10 +2699,19 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		// Use the shared timestamp so that subtasks respect the same rate-limit
 		// window as their parent tasks.
 		if (Task.lastGlobalApiRequestTime) {
-			const now = Date.now()
+			const now = performance.now() // kilocode_change
 			const timeSinceLastRequest = now - Task.lastGlobalApiRequestTime
 			const rateLimit = apiConfiguration?.rateLimitSeconds || 0
 			rateLimitDelay = Math.ceil(Math.max(0, rateLimit * 1000 - timeSinceLastRequest) / 1000)
+
+			// kilocode_change start
+			if (rateLimitDelay > rateLimit) {
+				console.warn(
+					`rateLimitDelay ${rateLimitDelay}s is larger than the configured rateLimit ${rateLimit}s; this makes no sense`,
+				)
+				rateLimitDelay = rateLimit
+			}
+			// kilocode_change end
 		}
 
 		// Only show rate limiting message if we're not retrying. If retrying, we'll include the delay there.
@@ -2707,7 +2726,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 
 		// Update last request time before making the request so that subsequent
 		// requests — even from new subtasks — will honour the provider's rate-limit.
-		Task.lastGlobalApiRequestTime = Date.now()
+		Task.lastGlobalApiRequestTime = performance.now() // kilocode_change
 
 		const systemPrompt = await this.getSystemPrompt()
 		this.lastUsedInstructions = systemPrompt
@@ -2999,6 +3018,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		if (error) {
 			this.emit(RooCodeEventName.TaskToolFailed, this.taskId, toolName, error)
 		}
+		TelemetryService.instance.captureEvent(TelemetryEventName.TOOL_ERROR, { toolName, error }) // kilocode_change
 	}
 
 	/**
@@ -3075,5 +3095,29 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 
 	public get cwd() {
 		return this.workspacePath
+	}
+
+	/**
+	 * Process any queued messages by dequeuing and submitting them.
+	 * This ensures that queued user messages are sent when appropriate,
+	 * preventing them from getting stuck in the queue.
+	 *
+	 * @param context - Context string for logging (e.g., the calling tool name)
+	 */
+	public processQueuedMessages(): void {
+		try {
+			if (!this.messageQueueService.isEmpty()) {
+				const queued = this.messageQueueService.dequeueMessage()
+				if (queued) {
+					setTimeout(() => {
+						this.submitUserMessage(queued.text, queued.images).catch((err) =>
+							console.error(`[Task] Failed to submit queued message:`, err),
+						)
+					}, 0)
+				}
+			}
+		} catch (e) {
+			console.error(`[Task] Queue processing error:`, e)
+		}
 	}
 }
