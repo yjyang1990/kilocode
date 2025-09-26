@@ -880,6 +880,9 @@ importers:
       eslint:
         specifier: ^9.27.0
         version: 9.28.0(jiti@2.4.2)
+      ink-testing-library:
+        specifier: ^4.0.0
+        version: 4.0.0(@types/react@18.3.23)
       prettier:
         specifier: ^3.4.2
         version: 3.5.3
@@ -12047,6 +12050,15 @@ packages:
     peerDependencies:
       ink: '>=3.0.0'
       react: '>=16.8.0'
+
+  ink-testing-library@4.0.0:
+    resolution: {integrity: sha512-yF92kj3pmBvk7oKbSq5vEALO//o7Z9Ck/OaLNlkzXNeYdwfpxMQkSowGTFUCS5MSu9bWfSZMewGpp7bFc66D7Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   ink-text-input@5.0.1:
     resolution: {integrity: sha512-crnsYJalG4EhneOFnr/q+Kzw1RgmXI2KsBaLFE6mpiIKxAtJLUnvygOF2IUKO8z4nwkSkveGRBMd81RoYdRSag==}
@@ -31454,6 +31466,10 @@ snapshots:
       ink: 4.4.1(@types/react@18.3.23)(react@18.3.1)
       object-hash: 2.2.0
       react: 18.3.1
+
+  ink-testing-library@4.0.0(@types/react@18.3.23):
+    optionalDependencies:
+      '@types/react': 18.3.23
 
   ink-text-input@5.0.1(ink@4.4.1(@types/react@18.3.23)(react@18.3.1))(react@18.3.1):
     dependencies:
