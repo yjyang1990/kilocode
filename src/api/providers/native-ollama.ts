@@ -211,9 +211,10 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 
 		// kilocode_change start
 		const estimatedTokenCount = estimateOllamaTokenCount(ollamaMessages)
-		if (modelInfo.maxTokens && estimatedTokenCount > modelInfo.maxTokens) {
+		const maxTokens = this.options.ollamaNumCtx ?? modelInfo.contextWindow
+		if (maxTokens && estimatedTokenCount > maxTokens) {
 			throw new Error(
-				`Input message is too long for the selected model. Estimated tokens: ${estimatedTokenCount}, Max tokens: ${modelInfo.maxTokens}. To increase the context window size, see: https://kilocode.ai/docs/providers/ollama#configure-the-context-size`,
+				`Input message is too long for the selected model. Estimated tokens: ${estimatedTokenCount}, Max tokens: ${maxTokens}. To increase the context window size, see: https://kilocode.ai/docs/providers/ollama#configure-the-context-size`,
 			)
 		}
 		// kilocode_change end
@@ -307,8 +308,14 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 	}
 
 	async fetchModel() {
-		this.models = await getOllamaModels(this.options.ollamaBaseUrl, this.options.ollamaApiKey)
-		return this.models // kilocode_change
+		// kilocode_change start
+		this.models = await getOllamaModels(
+			this.options.ollamaBaseUrl,
+			this.options.ollamaApiKey,
+			this.options.ollamaNumCtx,
+		)
+		return this.models
+		// kilocode_change end
 	}
 
 	override getModel(): { id: string; info: ModelInfo } {
