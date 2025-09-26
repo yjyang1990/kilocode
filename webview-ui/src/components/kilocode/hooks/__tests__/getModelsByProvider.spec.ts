@@ -20,13 +20,12 @@ describe("getModelsByProvider", () => {
 			glama: { "test-model": testModel },
 			unbound: { "test-model": testModel },
 			litellm: { "test-model": testModel },
-			kilocode: { "test-model": testModel }, // kilocode_change
+			"kilocode-openrouter": { "test-model": testModel },
 			ollama: { "test-model": testModel },
 			lmstudio: { "test-model": testModel },
 			"io-intelligence": { "test-model": testModel },
 			deepinfra: { "test-model": testModel },
 			"vercel-ai-gateway": { "test-model": testModel },
-			huggingface: { "test-model": testModel }, // kilocode_change
 		}
 
 		const exceptions = [

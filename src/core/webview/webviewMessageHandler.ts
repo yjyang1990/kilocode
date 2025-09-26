@@ -791,7 +791,7 @@ export const webviewMessageHandler = async (
 				"vercel-ai-gateway": {},
 				huggingface: {},
 				litellm: {},
-				kilocode: {}, // kilocode_change
+				"kilocode-openrouter": {}, // kilocode_change
 				deepinfra: {},
 				"io-intelligence": {},
 				requesty: {},
@@ -834,9 +834,9 @@ export const webviewMessageHandler = async (
 				{ key: "glama", options: { provider: "glama" } },
 				{ key: "unbound", options: { provider: "unbound", apiKey: apiConfiguration.unboundApiKey } },
 				{
-					key: "kilocode",
+					key: "kilocode-openrouter",
 					options: {
-						provider: "kilocode",
+						provider: "kilocode-openrouter",
 						kilocodeToken: apiConfiguration.kilocodeToken,
 						kilocodeOrganizationId: apiConfiguration.kilocodeOrganizationId,
 					},
@@ -2009,15 +2009,15 @@ export const webviewMessageHandler = async (
 						configToSave = { ...message.apiConfiguration, kilocodeOrganizationId: undefined }
 					}
 					if (currentConfig.kilocodeOrganizationId !== message.apiConfiguration.kilocodeOrganizationId) {
-						await flushModels("kilocode")
+						await flushModels("kilocode-openrouter")
 						const models = await getModels({
-							provider: "kilocode",
+							provider: "kilocode-openrouter",
 							kilocodeOrganizationId: message.apiConfiguration.kilocodeOrganizationId,
 							kilocodeToken: message.apiConfiguration.kilocodeToken,
 						})
 						provider.postMessageToWebview({
 							type: "routerModels",
-							routerModels: { kilocode: models } as Record<RouterName, ModelRecord>,
+							routerModels: { "kilocode-openrouter": models } as Record<RouterName, ModelRecord>,
 						})
 					}
 				} catch (error) {

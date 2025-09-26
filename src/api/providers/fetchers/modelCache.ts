@@ -89,7 +89,7 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 				models = await getLiteLLMModels(options.apiKey, options.baseUrl)
 				break
 			// kilocode_change start
-			case "kilocode":
+			case "kilocode-openrouter":
 				models = await getOpenRouterModels({
 					openRouterBaseUrl:
 						getKiloBaseUriFromToken(options.kilocodeToken ?? "") +

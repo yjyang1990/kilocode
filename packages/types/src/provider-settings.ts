@@ -49,7 +49,6 @@ export const dynamicProviders = [
 	"requesty",
 	"unbound",
 	"glama",
-	"kilocode", // kilocode_change
 ] as const
 
 export type DynamicProvider = (typeof dynamicProviders)[number]
@@ -135,7 +134,7 @@ export const providerNames = [
 	"openai-native",
 	"qwen-code",
 	// kilocode_change start
-	"roo",
+	// "roo",
 	"kilocode",
 	"gemini-cli",
 	"virtual-quota-fallback",
@@ -583,7 +582,6 @@ export const modelIdKeys = [
 	"ioIntelligenceModelId",
 	"vercelAiGatewayModelId",
 	"deepInfraModelId",
-	"kilocodeModel", // kilocode_change
 ] as const satisfies readonly (keyof ProviderSettings)[]
 
 export type ModelIdKey = (typeof modelIdKeys)[number]
@@ -634,10 +632,6 @@ export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	featherless: "apiModelId",
 	"io-intelligence": "ioIntelligenceModelId",
 	roo: "apiModelId",
-	// kilocode_change start
-	kilocode: "kilocodeModel",
-	"virtual-quota-fallback": "apiModelId",
-	// kilocode_change end
 	"vercel-ai-gateway": "vercelAiGatewayModelId",
 }
 

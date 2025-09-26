@@ -2748,7 +2748,7 @@ describe("ClineProvider - Router Models", () => {
 				glama: mockModels,
 				unbound: mockModels,
 				litellm: mockModels,
-				kilocode: mockModels,
+				"kilocode-openrouter": mockModels,
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
@@ -2804,7 +2804,7 @@ describe("ClineProvider - Router Models", () => {
 				ollama: {},
 				lmstudio: {},
 				litellm: {},
-				kilocode: {},
+				"kilocode-openrouter": {},
 				"vercel-ai-gateway": mockModels,
 				huggingface: {},
 				"io-intelligence": {},
@@ -2830,7 +2830,7 @@ describe("ClineProvider - Router Models", () => {
 			type: "singleRouterModelFetchResponse",
 			success: false,
 			error: "Kilocode-OpenRouter API error",
-			values: { provider: "kilocode" },
+			values: { provider: "kilocode-openrouter" },
 		})
 
 		expect(mockPostMessage).toHaveBeenCalledWith({
@@ -2924,7 +2924,7 @@ describe("ClineProvider - Router Models", () => {
 				glama: mockModels,
 				unbound: mockModels,
 				litellm: {},
-				kilocode: mockModels,
+				"kilocode-openrouter": mockModels,
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,

@@ -330,9 +330,9 @@ function getSelectedModel({
 		// kilocode_change begin
 		case "kilocode": {
 			// Use the fetched models from routerModels
-			if (routerModels["kilocode"] && apiConfiguration.kilocodeModel) {
+			if (routerModels["kilocode-openrouter"] && apiConfiguration.kilocodeModel) {
 				// Find the model in the fetched models
-				const modelEntries = Object.entries(routerModels["kilocode"])
+				const modelEntries = Object.entries(routerModels["kilocode-openrouter"])
 
 				const selectedModelId = apiConfiguration.kilocodeModel.toLowerCase()
 
@@ -358,7 +358,7 @@ function getSelectedModel({
 			const invalidOrDefaultModel = apiConfiguration.kilocodeModel ?? kilocodeDefaultModel
 			return {
 				id: invalidOrDefaultModel,
-				info: routerModels["kilocode"][invalidOrDefaultModel],
+				info: routerModels["kilocode-openrouter"][invalidOrDefaultModel],
 			}
 		}
 		case "gemini-cli": {
