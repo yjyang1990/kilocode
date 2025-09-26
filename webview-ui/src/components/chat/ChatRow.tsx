@@ -77,6 +77,7 @@ interface ChatRowProps {
 	onBatchFileResponse?: (response: { [key: string]: boolean }) => void
 	highlighted?: boolean // kilocode_change: Add highlighted prop
 	onChatReset?: () => void // kilocode_change
+	enableCheckpoints?: boolean // kilocode_change
 	onFollowUpUnmount?: () => void
 	isFollowUpAnswered?: boolean
 	editable?: boolean
@@ -138,6 +139,7 @@ export const ChatRowContent = ({
 	onFollowUpUnmount,
 	onBatchFileResponse,
 	onChatReset, // kilocode_change
+	enableCheckpoints, // kilocode_change
 	isFollowUpAnswered,
 	editable,
 }: ChatRowContentProps) => {
@@ -1158,7 +1160,7 @@ export const ChatRowContent = ({
 							</div>
 							{
 								// kilocode_change start
-								!message.partial && commitRange ? (
+								!message.partial && enableCheckpoints !== false && commitRange ? (
 									<div>
 										<VSCodeButton
 											className="w-full mt-2"
