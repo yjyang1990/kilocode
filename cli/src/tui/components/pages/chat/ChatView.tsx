@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { Box, Text, useInput } from "ink"
+import { Box, Text } from "ink"
 import TextInput from "ink-text-input"
-import Spinner from "ink-spinner"
 import { ScrollBox } from "@sasaplus1/ink-scroll-box"
-import { logService } from "../../../services/LogService.js"
-import type { ExtensionMessage, ClineMessage } from "../../../types/messages.js"
-import { PageHeader } from "../generic/PageHeader.js"
-import { EmptyState } from "../generic/EmptyState.js"
-import { PageLayout } from "../layout/PageLayout.js"
-import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
-import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
+import { logService } from "../../../../services/LogService.js"
+import type { ExtensionMessage, ClineMessage } from "../../../../types/messages.js"
+import { PageHeader } from "../../generic/PageHeader.js"
+import { EmptyState } from "../../generic/EmptyState.js"
+import { PageLayout } from "../../layout/PageLayout.js"
+import { useKeyboardNavigation } from "../../../hooks/useKeyboardNavigation.js"
+import { useExtensionState, useExtensionMessage, useSidebar } from "../../../context/index.js"
+import { ChatMessageRow } from "./ChatMessageRow.js"
 
 interface ChatState {
 	messages: ClineMessage[]
@@ -231,7 +231,7 @@ export const ChatView: React.FC = () => {
 
 	// Determine if we have an active ask
 	const lastMessage = chatState.messages[chatState.messages.length - 1]
-	const hasActiveAsk = lastMessage?.type === "ask" && !lastMessage.partial
+	const hasActiveAsk = lastMessage?.type === "ask" && lastMessage?.ask === "" && !lastMessage.partial
 
 	// Create header with streaming status
 	const header = (
@@ -253,7 +253,6 @@ export const ChatView: React.FC = () => {
 		<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
 			{chatState.messages.length === 0 ? (
 				<EmptyState
-					icon="🚀"
 					title="Welcome to Kilo Code CLI!"
 					description={[
 						"Type your task or question and press Enter to start.",
@@ -265,19 +264,7 @@ export const ChatView: React.FC = () => {
 				/>
 			) : (
 				<ScrollBox height="100%" offset={scrollOffset}>
-					{[
-						...(chatState.isStreaming
-							? [
-									<Box key="spinner" paddingX={1} marginBottom={1}>
-										<Spinner type="dots" />
-										<Text color="yellow"> Thinking...</Text>
-									</Box>,
-								]
-							: []),
-						...chatState.messages.map((message, index) => (
-							<MessageRow key={message.ts} message={message} />
-						)),
-					]}
+					{[...chatState.messages.map((message, index) => <ChatMessageRow key={index} message={message} />)]}
 				</ScrollBox>
 			)}
 		</Box>
@@ -288,7 +275,6 @@ export const ChatView: React.FC = () => {
 		<Box borderStyle="single" borderColor="gray" paddingX={1} flexGrow={1} flexShrink={0}>
 			{inputMode === "input" ? (
 				<Box>
-					<Text color="blue">💭 </Text>
 					<TextInput
 						value={chatState.inputValue}
 						onChange={(value) => setChatState((prev) => ({ ...prev, inputValue: value }))}
@@ -300,7 +286,7 @@ export const ChatView: React.FC = () => {
 				<Box>
 					{hasActiveAsk ? (
 						<Box gap={2}>
-							<Text color="yellow">⚡ Action required:</Text>
+							<Text color="yellow">Action required:</Text>
 							<Text color="green">[y]es</Text>
 							<Text color="red">[n]o</Text>
 						</Box>
@@ -319,117 +305,5 @@ export const ChatView: React.FC = () => {
 			{content}
 			{inputArea}
 		</PageLayout>
-	)
-}
-
-// Helper component for rendering individual messages
-const MessageRow: React.FC<{ message: ClineMessage }> = ({ message }) => {
-	const getMessageDisplay = () => {
-		if (message.type === "say") {
-			switch (message.say) {
-				case "user_feedback":
-					return {
-						icon: "👤",
-						color: "blue",
-						text: message.text || "User message",
-						label: "You",
-					}
-				case "text":
-					return {
-						icon: "🤖",
-						color: "white",
-						text: message.text || "AI response",
-						label: "Assistant",
-					}
-				case "api_req_started":
-					const apiInfo = message.text ? JSON.parse(message.text) : {}
-					const isProcessing = message.partial || !apiInfo.cost
-					return {
-						icon: isProcessing ? "⚡" : "✅",
-						color: isProcessing ? "yellow" : "green",
-						text: isProcessing ? "Thinking..." : `Request completed (cost: $${apiInfo.cost || 0})`,
-						label: "System",
-					}
-				case "error":
-					return {
-						icon: "❌",
-						color: "red",
-						text: message.text || "An error occurred",
-						label: "Error",
-					}
-				default:
-					return {
-						icon: "🤖",
-						color: "white",
-						text: message.text || "Processing...",
-						label: "System",
-					}
-			}
-		} else if (message.type === "ask") {
-			switch (message.ask) {
-				case "followup":
-					return {
-						icon: "❓",
-						color: "cyan",
-						text: message.text || "Question",
-						label: "Question",
-					}
-				case "tool":
-				case "command":
-				case "browser_action_launch":
-					return {
-						icon: "⚡",
-						color: "yellow",
-						text: message.text || "Action required",
-						label: "Action",
-					}
-				case "completion_result":
-					return {
-						icon: "✅",
-						color: "green",
-						text: message.text || "Task completed",
-						label: "Completed",
-					}
-				default:
-					return {
-						icon: "❓",
-						color: "cyan",
-						text: message.text || "Question",
-						label: "Question",
-					}
-			}
-		}
-
-		return {
-			icon: "🤖",
-			color: "white",
-			text: message.text || "No content",
-			label: "Unknown",
-		}
-	}
-
-	const { icon, color, text, label } = getMessageDisplay()
-
-	return (
-		<Box marginBottom={1}>
-			<Box marginRight={1} minWidth={3}>
-				<Text color={color}>{icon}</Text>
-			</Box>
-			<Box flexDirection="column" flexGrow={1}>
-				<Box marginBottom={0}>
-					<Text color={color} bold>
-						{label}:
-					</Text>
-				</Box>
-				<Text color={color}>{text}</Text>
-				{message.partial && (
-					<Box marginTop={0}>
-						<Text color="gray" dimColor>
-							<Spinner type="dots" /> Streaming...
-						</Text>
-					</Box>
-				)}
-			</Box>
-		</Box>
 	)
 }

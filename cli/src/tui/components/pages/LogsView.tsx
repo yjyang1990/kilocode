@@ -198,7 +198,6 @@ export const LogsView: React.FC = () => {
 			<PageLayout header={header}>
 				{filterControls}
 				<EmptyState
-					icon="📭"
 					title="No logs to display"
 					description={
 						logsState.selectedLevels.size === 0

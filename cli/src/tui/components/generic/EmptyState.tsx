@@ -8,7 +8,6 @@ import type { EmptyStateProps } from "../../types/components.js"
  * for loading states, empty lists, and error states across the TUI
  */
 export const EmptyState: React.FC<EmptyStateProps> = ({
-	icon,
 	title,
 	description,
 	isLoading = false,
@@ -27,7 +26,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 			) : (
 				<>
 					<Text color="gray" bold>
-						{icon} {title}
+						{title}
 					</Text>
 					{description && (
 						<Box flexDirection="column" alignItems="center" marginTop={1}>

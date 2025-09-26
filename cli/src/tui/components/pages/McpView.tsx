@@ -179,7 +179,6 @@ export const McpView: React.FC = () => {
 		return (
 			<PageLayout header={header} footer={footer}>
 				<EmptyState
-					icon="🔌"
 					title="No MCP servers configured"
 					description="Configure MCP servers in settings to extend functionality"
 				/>

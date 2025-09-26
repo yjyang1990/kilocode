@@ -46,7 +46,6 @@ export interface PageFooterProps {
 
 // Props for the reusable EmptyState component
 export interface EmptyStateProps {
-	icon: string
 	title: string
 	description?: string | string[]
 	isLoading?: boolean

@@ -10,7 +10,7 @@ import { PageLayout } from "../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
 import { useLoadingState } from "../../hooks/usePageState.js"
 import { useExtensionState, useExtensionMessage, useSidebar } from "../../context/index.js"
-import { useParams, useNavigate, useRouter } from "../../router/index.js"
+import { useRouter } from "../../router/index.js"
 
 interface HistoryState {
 	tasks: HistoryItem[]
@@ -134,7 +134,7 @@ export const HistoryView: React.FC = () => {
 	if (isLoading) {
 		return (
 			<PageLayout header={header} footer={footer}>
-				<EmptyState icon="📂" title="Loading task history..." isLoading={true} />
+				<EmptyState title="Loading task history..." isLoading={true} />
 			</PageLayout>
 		)
 	}
@@ -144,7 +144,6 @@ export const HistoryView: React.FC = () => {
 		return (
 			<PageLayout header={header} footer={footer}>
 				<EmptyState
-					icon="📭"
 					title="No tasks found"
 					description={["Create your first task in the chat view", "Use the navigation menu to switch views"]}
 				/>
