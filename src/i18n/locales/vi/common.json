@@ -267,5 +267,13 @@
 	"docsLink": {
 		"label": "Docs",
 		"url": "https://kilocode.ai/docs"
+	},
+	"errorBoundary": {
+		"title": "Lỗi",
+		"reportText": "Vui lòng báo cáo lỗi này để giúp chúng tôi cải thiện ứng dụng.",
+		"githubText": "Báo cáo trên GitHub",
+		"copyInstructions": "Sao chép chi tiết lỗi bên dưới:",
+		"errorStack": "Stack lỗi",
+		"componentStack": "Stack thành phần"
 	}
 }

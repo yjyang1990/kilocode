@@ -260,5 +260,13 @@
 	"docsLink": {
 		"label": "Docs",
 		"url": "https://kilocode.ai/docs"
+	},
+	"errorBoundary": {
+		"title": "錯誤",
+		"reportText": "請回報此錯誤以協助我們改進應用程式。",
+		"githubText": "在 GitHub 上回報",
+		"copyInstructions": "複製下方的錯誤詳情：",
+		"errorStack": "錯誤堆疊",
+		"componentStack": "元件堆疊"
 	}
 }

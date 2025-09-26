@@ -386,6 +386,7 @@
 			"baseUrl": "Basis-URL (optional)",
 			"modelId": "Modell-ID",
 			"apiKey": "Ollama API-Schlüssel",
+			"apiKeyPlaceholder": "Gib deinen API-Schlüssel ein",
 			"apiKeyHelp": "Optionaler API-Schlüssel für authentifizierte Ollama-Instanzen oder Cloud-Services. Leer lassen für lokale Installationen.",
 			"numCtx": "Kontextfenstergröße (num_ctx)",
 			"numCtxHelp": "Überschreibt die Standard-Kontextfenstergröße des Modells. Lassen Sie das Feld leer, um die Modelfile-Konfiguration des Modells zu verwenden. Der Mindestwert ist 128.",

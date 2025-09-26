@@ -386,6 +386,7 @@
 			"baseUrl": "URL Base (opcional)",
 			"modelId": "ID do Modelo",
 			"apiKey": "Chave API Ollama",
+			"apiKeyPlaceholder": "Digite sua chave de API",
 			"apiKeyHelp": "Chave API opcional para instâncias Ollama autenticadas ou serviços em nuvem. Deixe vazio para instalações locais.",
 			"numCtx": "Tamanho da janela de contexto (num_ctx)",
 			"numCtxHelp": "Substitui o tamanho da janela de contexto padrão do modelo. Deixe em branco para usar a configuração do Modelfile do modelo. O valor mínimo é 128.",

@@ -260,5 +260,13 @@
 	"docsLink": {
 		"label": "Docs",
 		"url": "https://kilocode.ai/docs"
+	},
+	"errorBoundary": {
+		"title": "त्रुटि",
+		"reportText": "कृपया इस त्रुटि की रिपोर्ट करें ताकि हम एप्लिकेशन को बेहतर बना सकें।",
+		"githubText": "GitHub पर रिपोर्ट करें",
+		"copyInstructions": "नीचे त्रुटि विवरण कॉपी करें:",
+		"errorStack": "त्रुटि स्टैक",
+		"componentStack": "कॉम्पोनेंट स्टैक"
 	}
 }

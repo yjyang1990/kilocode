@@ -260,5 +260,13 @@
 	"docsLink": {
 		"label": "Docs",
 		"url": "https://kilocode.ai/docs"
+	},
+	"errorBoundary": {
+		"title": "Błąd",
+		"reportText": "Zgłoś ten błąd, aby pomóc nam ulepszać aplikację.",
+		"githubText": "Zgłoś na GitHub",
+		"copyInstructions": "Skopiuj szczegóły błędu poniżej:",
+		"errorStack": "Stos błędu",
+		"componentStack": "Stos komponentów"
 	}
 }

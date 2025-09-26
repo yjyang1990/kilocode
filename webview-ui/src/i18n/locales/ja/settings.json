@@ -387,6 +387,7 @@
 			"baseUrl": "ベースURL（オプション）",
 			"modelId": "モデルID",
 			"apiKey": "Ollama APIキー",
+			"apiKeyPlaceholder": "APIキーを入力してください",
 			"apiKeyHelp": "認証されたOllamaインスタンスやクラウドサービス用のオプションAPIキー。ローカルインストールの場合は空のままにしてください。",
 			"numCtx": "コンテキストウィンドウサイズ (num_ctx)",
 			"numCtxHelp": "モデルのデフォルトのコンテキストウィンドウサイズを上書きします。モデルのModelfile構成を使用するには、空のままにします。最小値は128です。",

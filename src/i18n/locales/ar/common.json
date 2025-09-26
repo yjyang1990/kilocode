@@ -250,5 +250,13 @@
 	"docsLink": {
 		"label": "مستندات",
 		"url": "https://docs.roocode.com"
+	},
+	"errorBoundary": {
+		"title": "خطأ",
+		"reportText": "يرجى الإبلاغ عن هذا الخطأ لمساعدتنا في تحسين التطبيق.",
+		"githubText": "إبلاغ على GitHub",
+		"copyInstructions": "انسخ تفاصيل الخطأ أدناه:",
+		"errorStack": "مجموعة الأخطاء",
+		"componentStack": "مجموعة المكونات"
 	}
 }

@@ -260,5 +260,13 @@
 	"docsLink": {
 		"label": "Docs",
 		"url": "https://kilocode.ai/docs"
+	},
+	"errorBoundary": {
+		"title": "エラー",
+		"reportText": "アプリケーションの改善にご協力いただくため、このエラーを報告してください。",
+		"githubText": "GitHubで報告",
+		"copyInstructions": "以下のエラーの詳細をコピーしてください：",
+		"errorStack": "エラースタック",
+		"componentStack": "コンポーネントスタック"
 	}
 }

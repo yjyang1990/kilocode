@@ -250,5 +250,13 @@
 	"docsLink": {
 		"label": "Документація",
 		"url": "https://kilocode.ai/docs"
+	},
+	"errorBoundary": {
+		"title": "Помилка",
+		"reportText": "Будь ласка, повідомте про цю помилку, щоб допомогти нам покращити додаток.",
+		"githubText": "Повідомити на GitHub",
+		"copyInstructions": "Скопіюйте деталі помилки нижче:",
+		"errorStack": "Стек помилки",
+		"componentStack": "Стек компонентів"
 	}
 }
