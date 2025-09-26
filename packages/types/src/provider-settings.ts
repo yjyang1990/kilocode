@@ -44,6 +44,7 @@ export const dynamicProviders = [
 	"vercel-ai-gateway",
 	"huggingface",
 	"litellm",
+	"kilocode-openrouter",
 	"deepinfra",
 	"io-intelligence",
 	"requesty",
@@ -133,8 +134,8 @@ export const providerNames = [
 	"moonshot",
 	"openai-native",
 	"qwen-code",
+	"roo",
 	// kilocode_change start
-	// "roo",
 	"kilocode",
 	"gemini-cli",
 	"virtual-quota-fallback",
@@ -582,6 +583,7 @@ export const modelIdKeys = [
 	"ioIntelligenceModelId",
 	"vercelAiGatewayModelId",
 	"deepInfraModelId",
+	"kilocodeModel",
 ] as const satisfies readonly (keyof ProviderSettings)[]
 
 export type ModelIdKey = (typeof modelIdKeys)[number]
@@ -605,6 +607,7 @@ export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	"claude-code": "apiModelId",
 	glama: "glamaModelId",
 	openrouter: "openRouterModelId",
+	"kilocode-openrouter": "openRouterModelId",
 	bedrock: "apiModelId",
 	vertex: "apiModelId",
 	"openai-native": "openAiModelId",
@@ -633,6 +636,8 @@ export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	"io-intelligence": "ioIntelligenceModelId",
 	roo: "apiModelId",
 	"vercel-ai-gateway": "vercelAiGatewayModelId",
+	kilocode: "kilocodeModel",
+	"virtual-quota-fallback": "apiModelId",
 }
 
 /**
@@ -760,6 +765,7 @@ export const MODELS_BY_PROVIDER: Record<
 
 	// kilocode_change start
 	kilocode: { id: "kilocode", label: "Kilocode", models: [] },
+	"kilocode-openrouter": { id: "kilocode-openrouter", label: "Kilocode", models: [] }, // temporarily needed to satisfy because we're using 2 inconsistent names apparently
 	"virtual-quota-fallback": { id: "virtual-quota-fallback", label: "Virtual Quota Fallback", models: [] },
 	// kilocode_change end
 	deepinfra: { id: "deepinfra", label: "DeepInfra", models: [] },

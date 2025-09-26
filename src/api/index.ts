@@ -181,7 +181,7 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 		case "vercel-ai-gateway":
 			return new VercelAiGatewayHandler(options)
 		default:
-			apiProvider satisfies "gemini-cli" | undefined
+			apiProvider satisfies "gemini-cli" | "kilocode-openrouter" | undefined
 			return new AnthropicHandler(options)
 	}
 }
