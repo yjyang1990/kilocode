@@ -73,16 +73,5 @@ program
 		await cli.showMcp()
 	})
 
-// Global error handler
-process.on("uncaughtException", (error) => {
-	logService.error("Uncaught Exception", "Process", { error })
-	process.exit(1)
-})
-
-process.on("unhandledRejection", (reason, promise) => {
-	logService.error("Unhandled Rejection", "Process", { promise, reason })
-	process.exit(1)
-})
-
 // Parse command line arguments
 program.parse()
