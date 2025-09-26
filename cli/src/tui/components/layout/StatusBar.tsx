@@ -1,13 +1,14 @@
 import React from "react"
 import { Box, Text } from "ink"
 import { useExtensionState, useCliState } from "../../context/index.js"
+import { getSelectedModelId } from "../../../utils/providers.js"
 
 export const StatusBar: React.FC = () => {
 	const extensionState = useExtensionState()
 	const { workspace } = useCliState()
 	const currentMode = extensionState?.mode || "unknown"
 	const apiProvider = extensionState?.apiConfiguration?.apiProvider || "unknown"
-	const model = extensionState?.apiConfiguration?.kilocodeModel || "unknown"
+	const model = getSelectedModelId(apiProvider, extensionState?.apiConfiguration)
 	const projectName = workspace.split("/").pop() || "unknown"
 
 	// Get current time in user's timezone

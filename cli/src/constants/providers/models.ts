@@ -108,7 +108,7 @@ export const PROVIDER_MODEL_FIELD: Record<ProviderName, string | null> = {
 	bedrock: null,
 	vertex: null,
 	openai: null,
-	"vscode-lm": null,
+	"vscode-lm": "vsCodeLmModelSelector",
 	gemini: null,
 	"openai-native": null,
 	mistral: null,

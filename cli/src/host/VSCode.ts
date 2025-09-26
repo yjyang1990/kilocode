@@ -235,12 +235,9 @@ export class ExtensionContext {
 		this.extensionPath = extensionPath
 		this.extensionUri = Uri.file(extensionPath)
 
-		// Setup storage paths
-		const globalStoragePath = path.join(
-			process.env.HOME || process.env.USERPROFILE || "/tmp",
-			".kilocode-cli",
-			"global-storage",
-		)
+		// Setup storage paths - use HOME for global storage to ensure it's shared across workspaces
+		const homeDir = process.env.HOME || process.env.USERPROFILE || "/tmp"
+		const globalStoragePath = path.join(homeDir, ".kilocode-cli", "global-storage")
 		const workspaceStoragePath = path.join(workspacePath, ".kilocode-cli", "workspace-storage")
 		const logPath = path.join(workspacePath, ".kilocode-cli", "logs")
 
@@ -261,7 +258,7 @@ export class ExtensionContext {
 		this.globalState = new MemoryMemento(path.join(globalStoragePath, "global-state.json")) as any
 		this.globalState.setKeysForSync = () => {} // No-op for CLI
 
-		this.secrets = new MockSecretStorage()
+		this.secrets = new MockSecretStorage(globalStoragePath)
 	}
 
 	private ensureDirectoryExists(dirPath: string): void {
@@ -345,6 +342,37 @@ export interface SecretStorage {
 class MockSecretStorage implements SecretStorage {
 	private secrets: Record<string, string> = {}
 	private _onDidChange = new EventEmitter<any>()
+	private filePath: string
+
+	constructor(storagePath: string) {
+		this.filePath = path.join(storagePath, "secrets.json")
+		this.loadFromFile()
+	}
+
+	private loadFromFile(): void {
+		try {
+			if (fs.existsSync(this.filePath)) {
+				const content = fs.readFileSync(this.filePath, "utf-8")
+				this.secrets = JSON.parse(content)
+			}
+		} catch (error) {
+			logService.warn(`Failed to load secrets from ${this.filePath}`, "VSCode.MockSecretStorage", { error })
+			this.secrets = {}
+		}
+	}
+
+	private saveToFile(): void {
+		try {
+			// Ensure directory exists
+			const dir = path.dirname(this.filePath)
+			if (!fs.existsSync(dir)) {
+				fs.mkdirSync(dir, { recursive: true })
+			}
+			fs.writeFileSync(this.filePath, JSON.stringify(this.secrets, null, 2))
+		} catch (error) {
+			logService.warn(`Failed to save secrets to ${this.filePath}`, "VSCode.MockSecretStorage", { error })
+		}
+	}
 
 	async get(key: string): Promise<string | undefined> {
 		return this.secrets[key]
@@ -352,11 +380,13 @@ class MockSecretStorage implements SecretStorage {
 
 	async store(key: string, value: string): Promise<void> {
 		this.secrets[key] = value
+		this.saveToFile()
 		this._onDidChange.fire({ key })
 	}
 
 	async delete(key: string): Promise<void> {
 		delete this.secrets[key]
+		this.saveToFile()
 		this._onDidChange.fire({ key })
 	}
 
@@ -703,20 +733,26 @@ export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 		logService.debug("Configuration reload requested", "VSCode.MockWorkspaceConfiguration")
 	}
 
-	// Method to get all configuration data (useful for debugging)
+	// Method to get all configuration data (useful for debugging and generic config loading)
 	public getAllConfig(): Record<string, any> {
 		const globalKeys = this.globalMemento.keys()
 		const workspaceKeys = this.workspaceMemento.keys()
 		const allConfig: Record<string, any> = {}
 
-		// Add global settings
+		// Add global settings first
 		for (const key of globalKeys) {
-			allConfig[key] = this.globalMemento.get(key)
+			const value = this.globalMemento.get(key)
+			if (value !== undefined && value !== null) {
+				allConfig[key] = value
+			}
 		}
 
 		// Add workspace settings (these override global)
 		for (const key of workspaceKeys) {
-			allConfig[key] = this.workspaceMemento.get(key)
+			const value = this.workspaceMemento.get(key)
+			if (value !== undefined && value !== null) {
+				allConfig[key] = value
+			}
 		}
 
 		return allConfig

@@ -195,10 +195,19 @@ export class ExtensionHost extends EventEmitter {
 					break
 
 				case "upsertApiConfiguration":
-					// Handle API configuration updates with persistence
+					// Handle API configuration updates - forward to extension for proper handling
 					if (message.text && message.apiConfiguration) {
 						try {
-							// Update local state immediately
+							logService.debug(
+								`Forwarding upsertApiConfiguration to extension: ${message.text}`,
+								"ExtensionHost",
+							)
+
+							// Forward the message to the extension's webview handler
+							// The extension will handle updating ProviderSettingsManager
+							this.emit("webviewMessage", message)
+
+							// Also update local state for CLI display purposes
 							if (this.currentState) {
 								this.currentState.apiConfiguration = {
 									...this.currentState.apiConfiguration,
@@ -206,13 +215,14 @@ export class ExtensionHost extends EventEmitter {
 								}
 								this.currentState.currentApiConfigName = message.text
 
-								// Persist the API configuration to VSCode configuration
+								// Persist locally for CLI state
 								await this.persistApiConfiguration(message.text, message.apiConfiguration)
 
 								this.broadcastStateUpdate()
 							}
+
 							logService.debug(
-								`Updated and persisted API configuration: ${message.text}`,
+								`Forwarded and updated API configuration: ${message.text}`,
 								"ExtensionHost",
 							)
 						} catch (error) {
@@ -221,12 +231,44 @@ export class ExtensionHost extends EventEmitter {
 					}
 					break
 
-				default:
-					logService.debug(`Unhandled webview message type: ${message.type}`, "ExtensionHost")
-			}
+				case "loadApiConfiguration":
+					// Handle profile switching in CLI
+					if (message.text) {
+						logService.debug(`Loading API configuration profile: ${message.text}`, "ExtensionHost")
 
-			// Also emit the message for the webview provider to handle
-			this.emit("webviewMessage", message)
+						try {
+							await this.handleLoadApiConfiguration(message.text)
+						} catch (error) {
+							logService.error("Error loading API configuration", "ExtensionHost", { error })
+						}
+
+						// Also forward to extension for consistency
+						this.emit("webviewMessage", message)
+					}
+					break
+
+				case "showTaskWithId":
+					// Forward task loading request to extension
+					if (message.text) {
+						logService.debug(`Forwarding showTaskWithId to extension: ${message.text}`, "ExtensionHost")
+
+						// Forward to extension
+						this.emit("webviewMessage", message)
+					}
+					break
+
+				case "taskHistoryRequest":
+					// Forward task history request to extension
+					logService.debug("Forwarding taskHistoryRequest to extension", "ExtensionHost")
+					this.emit("webviewMessage", message)
+					break
+
+				default:
+					// For unhandled message types, forward them to the extension
+					logService.debug(`Forwarding unhandled message type to extension: ${message.type}`, "ExtensionHost")
+					this.emit("webviewMessage", message)
+					break
+			}
 		} catch (error) {
 			logService.error("Error handling webview message", "ExtensionHost", { error })
 			this.emit("error", error)
@@ -460,6 +502,20 @@ export class ExtensionHost extends EventEmitter {
 			// Call the extension's activate function with our mocked context
 			this.extensionAPI = await this.extensionModule.activate(this.vscodeAPI.context)
 
+			// Log available API methods for debugging
+			if (this.extensionAPI) {
+				logService.info("Extension API methods available:", "ExtensionHost", {
+					hasStartNewTask: typeof this.extensionAPI.startNewTask === "function",
+					hasSendMessage: typeof this.extensionAPI.sendMessage === "function",
+					hasCancelTask: typeof this.extensionAPI.cancelTask === "function",
+					hasCondense: typeof this.extensionAPI.condense === "function",
+					hasCondenseTaskContext: typeof this.extensionAPI.condenseTaskContext === "function",
+					hasHandleTerminalOperation: typeof this.extensionAPI.handleTerminalOperation === "function",
+				})
+			} else {
+				logService.warn("Extension API is null or undefined", "ExtensionHost")
+			}
+
 			logService.info("Extension activate function completed", "ExtensionHost")
 
 			// Initialize state from extension
@@ -508,11 +564,16 @@ export class ExtensionHost extends EventEmitter {
 					case "state":
 						// Extension is sending a full state update
 						if (message.state && this.currentState) {
-							// Update our state with the extension's state, particularly clineMessages
+							// Update our state with the extension's state, particularly clineMessages and apiConfiguration
 							this.currentState = {
 								...this.currentState,
 								...message.state,
 								clineMessages: message.state.clineMessages || this.currentState.clineMessages,
+								apiConfiguration: message.state.apiConfiguration || this.currentState.apiConfiguration,
+								currentApiConfigName:
+									message.state.currentApiConfigName || this.currentState.currentApiConfigName,
+								listApiConfigMeta:
+									message.state.listApiConfigMeta || this.currentState.listApiConfigMeta,
 							}
 
 							// Forward the updated state to the CLI
@@ -545,10 +606,18 @@ export class ExtensionHost extends EventEmitter {
 						}
 						break
 
+					// Handle configuration-related messages from extension
+					case "listApiConfig":
+						// Extension is sending updated API configuration list
+						if (message.listApiConfigMeta && this.currentState) {
+							this.currentState.listApiConfigMeta = message.listApiConfigMeta
+							logService.debug("Updated listApiConfigMeta from extension", "ExtensionHost")
+						}
+						break
+
 					// Don't forward these message types as they can cause loops
 					case "mcpServers":
 					case "theme":
-					case "listApiConfig":
 					case "rulesData":
 						logService.debug(
 							`Ignoring extension message type to prevent loops: ${message.type}`,
@@ -593,16 +662,68 @@ export class ExtensionHost extends EventEmitter {
 			telemetrySetting: "disabled",
 			cwd: this.options.workspacePath,
 			mcpServers: [],
+			listApiConfigMeta: [],
+			currentApiConfigName: "default",
 		}
 
-		// Load persisted configuration and then broadcast state
-		setTimeout(async () => {
-			await this.loadPersistedConfiguration()
-			this.broadcastStateUpdate()
-		}, 200)
+		// Load persisted configuration immediately and sync with extension
+		this.loadPersistedConfiguration()
+			.then(() => {
+				// Try to sync with extension state if available
+				if (this.extensionAPI && typeof this.extensionAPI.getState === "function") {
+					try {
+						const extensionState = this.extensionAPI.getState()
+						if (extensionState) {
+							logService.debug("Syncing with extension state during initialization", "ExtensionHost")
+							// Merge extension state but preserve CLI-set values
+							this.currentState = {
+								...this.currentState,
+								...extensionState,
+								// Preserve CLI-specific values
+								renderContext: "cli",
+								cwd: this.options.workspacePath,
+							}
+						}
+					} catch (error) {
+						logService.warn("Failed to sync with extension state during initialization", "ExtensionHost", {
+							error,
+						})
+					}
+				}
+
+				this.broadcastStateUpdate()
+			})
+			.catch((error) => {
+				logService.error("Failed to load persisted configuration during initialization", "ExtensionHost", {
+					error,
+				})
+				this.broadcastStateUpdate()
+			})
 	}
 
 	private async handleWebviewLaunch(): Promise<void> {
+		// Sync with extension state when webview launches
+		if (this.extensionAPI && typeof this.extensionAPI.getState === "function") {
+			try {
+				const extensionState = this.extensionAPI.getState()
+				if (extensionState && this.currentState) {
+					// Merge extension state with current state, preserving CLI context
+					this.currentState = {
+						...this.currentState,
+						apiConfiguration: extensionState.apiConfiguration || this.currentState.apiConfiguration,
+						currentApiConfigName:
+							extensionState.currentApiConfigName || this.currentState.currentApiConfigName,
+						listApiConfigMeta: extensionState.listApiConfigMeta || this.currentState.listApiConfigMeta,
+						mode: extensionState.mode || this.currentState.mode,
+						clineMessages: extensionState.clineMessages || this.currentState.clineMessages,
+					}
+					logService.debug("Synced state with extension on webview launch", "ExtensionHost")
+				}
+			} catch (error) {
+				logService.warn("Failed to sync with extension state on webview launch", "ExtensionHost", { error })
+			}
+		}
+
 		// Send initial state when webview launches
 		this.broadcastStateUpdate()
 	}
@@ -753,6 +874,66 @@ export class ExtensionHost extends EventEmitter {
 		}
 	}
 
+	private async handleLoadApiConfiguration(profileName: string): Promise<void> {
+		try {
+			const secretsKey = "roo_cline_config_api_config"
+
+			// Load profiles from secrets storage
+			const content = await this.vscodeAPI.context.secrets.get(secretsKey)
+			if (!content) {
+				logService.warn(`No profiles found when trying to load profile: ${profileName}`, "ExtensionHost")
+				return
+			}
+
+			const providerProfiles = JSON.parse(content)
+
+			// Check if the requested profile exists
+			if (!providerProfiles.apiConfigs[profileName]) {
+				logService.warn(`Profile '${profileName}' not found`, "ExtensionHost")
+				return
+			}
+
+			// Update current profile name
+			providerProfiles.currentApiConfigName = profileName
+
+			// Save the updated profiles back to secrets
+			await this.vscodeAPI.context.secrets.store(secretsKey, JSON.stringify(providerProfiles, null, 2))
+
+			// Update current state
+			if (this.currentState) {
+				const selectedProfile = providerProfiles.apiConfigs[profileName]
+				this.currentState.apiConfiguration = {
+					...this.currentState.apiConfiguration,
+					...selectedProfile,
+				}
+				this.currentState.currentApiConfigName = profileName
+
+				// Update the profile list metadata
+				const listApiConfigMeta = Object.entries(providerProfiles.apiConfigs).map(
+					([name, profile]: [string, any]) => ({
+						id: profile.id || "",
+						name,
+						apiProvider: profile.apiProvider,
+						modelId:
+							this.cleanModelId(
+								profile.apiModelId ||
+									profile.kilocodeModel ||
+									profile.openAiModelId ||
+									profile.anthropicModel,
+							) || "",
+					}),
+				)
+				this.currentState.listApiConfigMeta = listApiConfigMeta
+
+				this.broadcastStateUpdate()
+			}
+
+			logService.debug(`Successfully loaded API configuration profile: ${profileName}`, "ExtensionHost")
+		} catch (error) {
+			logService.error("Failed to load API configuration profile", "ExtensionHost", { error })
+		}
+	}
+
 	private broadcastStateUpdate(): void {
 		if (this.currentState) {
 			const stateMessage: ExtensionMessage = {
@@ -769,20 +950,83 @@ export class ExtensionHost extends EventEmitter {
 
 	private async persistApiConfiguration(configName: string, apiConfiguration: any): Promise<void> {
 		try {
-			// Get the workspace configuration and persist the API settings
-			const config = this.vscodeAPI.workspace.getConfiguration("kilo-code")
+			const secretsKey = "roo_cline_config_api_config"
 
-			// Store individual API configuration fields
-			for (const [key, value] of Object.entries(apiConfiguration)) {
-				if (value !== undefined && value !== null) {
-					await config.update(key, value, this.vscodeAPI.ConfigurationTarget.Global)
+			// Load existing profiles
+			let providerProfiles: any
+			try {
+				const existingContent = await this.vscodeAPI.context.secrets.get(secretsKey)
+				providerProfiles = existingContent ? JSON.parse(existingContent) : null
+			} catch (error) {
+				logService.warn("Failed to load existing profiles", "ExtensionHost", { error })
+				providerProfiles = null
+			}
+
+			// Initialize default structure if no profiles exist
+			if (!providerProfiles) {
+				providerProfiles = {
+					currentApiConfigName: configName,
+					apiConfigs: {},
+					modeApiConfigs: {},
+					migrations: {
+						rateLimitSecondsMigrated: true,
+						diffSettingsMigrated: true,
+						openAiHeadersMigrated: true,
+						consecutiveMistakeLimitMigrated: true,
+						todoListEnabledMigrated: true,
+						morphApiKeyMigrated: true,
+					},
 				}
 			}
 
-			// Store the current API configuration name
-			await config.update("currentApiConfigName", configName, this.vscodeAPI.ConfigurationTarget.Global)
+			// Generate ID for new profiles or preserve existing ID
+			let profileId = providerProfiles.apiConfigs[configName]?.id
+			if (!profileId) {
+				profileId = Math.random().toString(36).substring(2, 15)
+			}
 
-			logService.debug(`Persisted API configuration: ${configName}`, "ExtensionHost")
+			// Update the specific profile
+			providerProfiles.apiConfigs[configName] = {
+				...apiConfiguration,
+				id: profileId,
+			}
+
+			// Update current profile name
+			providerProfiles.currentApiConfigName = configName
+
+			// Save back to secrets
+			await this.vscodeAPI.context.secrets.store(secretsKey, JSON.stringify(providerProfiles, null, 2))
+
+			// Update current state immediately
+			if (this.currentState) {
+				this.currentState.apiConfiguration = {
+					...this.currentState.apiConfiguration,
+					...apiConfiguration,
+				}
+				this.currentState.currentApiConfigName = configName
+
+				// Update the profile list metadata
+				const listApiConfigMeta = Object.entries(providerProfiles.apiConfigs).map(
+					([name, profile]: [string, any]) => ({
+						id: profile.id || "",
+						name,
+						apiProvider: profile.apiProvider,
+						modelId:
+							this.cleanModelId(
+								profile.apiModelId ||
+									profile.kilocodeModel ||
+									profile.openAiModelId ||
+									profile.anthropicModel,
+							) || "",
+					}),
+				)
+				this.currentState.listApiConfigMeta = listApiConfigMeta
+			}
+
+			logService.debug(`Persisted API configuration profile: ${configName}`, "ExtensionHost", {
+				profileId,
+				fields: Object.keys(apiConfiguration),
+			})
 		} catch (error) {
 			logService.error("Failed to persist API configuration", "ExtensionHost", { error })
 			throw error
@@ -791,36 +1035,107 @@ export class ExtensionHost extends EventEmitter {
 
 	private async loadPersistedConfiguration(): Promise<void> {
 		try {
-			const config = this.vscodeAPI.workspace.getConfiguration("kilo-code")
+			const secretsKey = "roo_cline_config_api_config"
 
-			// Load persisted API configuration
-			const persistedConfig = {
-				apiProvider: config.get("apiProvider", "kilocode"),
-				kilocodeToken: config.get("kilocodeToken", process.env.KILOCODE_TOKEN || ""),
-				kilocodeModel: config.get("kilocodeModel", "anthropic/claude-sonnet-4"),
-				kilocodeOrganizationId: config.get("kilocodeOrganizationId", ""),
+			// Load profiles from secrets storage
+			let providerProfiles: any = null
+			try {
+				const content = await this.vscodeAPI.context.secrets.get(secretsKey)
+				if (content) {
+					providerProfiles = JSON.parse(content)
+				}
+			} catch (error) {
+				logService.warn("Failed to load profiles from secrets", "ExtensionHost", { error })
 			}
 
-			const currentApiConfigName = config.get("currentApiConfigName", "default")
+			// Initialize default profile if no profiles exist
+			if (
+				!providerProfiles ||
+				!providerProfiles.apiConfigs ||
+				Object.keys(providerProfiles.apiConfigs).length === 0
+			) {
+				const defaultId = Math.random().toString(36).substring(2, 15)
+				providerProfiles = {
+					currentApiConfigName: "default",
+					apiConfigs: {
+						default: {
+							id: defaultId,
+							apiProvider: "kilocode",
+							kilocodeToken: process.env.KILOCODE_TOKEN || "",
+							kilocodeModel: "anthropic/claude-sonnet-4",
+							kilocodeOrganizationId: "",
+						},
+					},
+					modeApiConfigs: {},
+					migrations: {
+						rateLimitSecondsMigrated: true,
+						diffSettingsMigrated: true,
+						openAiHeadersMigrated: true,
+						consecutiveMistakeLimitMigrated: true,
+						todoListEnabledMigrated: true,
+						morphApiKeyMigrated: true,
+					},
+				}
 
-			// Update current state with persisted configuration
+				// Save the default profile
+				await this.vscodeAPI.context.secrets.store(secretsKey, JSON.stringify(providerProfiles, null, 2))
+			}
+
+			const currentApiConfigName = providerProfiles.currentApiConfigName || "default"
+			const currentProfile =
+				providerProfiles.apiConfigs[currentApiConfigName] || Object.values(providerProfiles.apiConfigs)[0]
+
+			// Build list of profile metadata
+			const listApiConfigMeta = Object.entries(providerProfiles.apiConfigs).map(
+				([name, profile]: [string, any]) => ({
+					id: profile.id || "",
+					name,
+					apiProvider: profile.apiProvider,
+					modelId:
+						this.cleanModelId(
+							profile.apiModelId ||
+								profile.kilocodeModel ||
+								profile.openAiModelId ||
+								profile.anthropicModel,
+						) || "",
+				}),
+			)
+
+			// Update current state with loaded configuration
 			if (this.currentState) {
 				this.currentState.apiConfiguration = {
 					...this.currentState.apiConfiguration,
-					...persistedConfig,
+					...currentProfile,
 				}
 				this.currentState.currentApiConfigName = currentApiConfigName
+				this.currentState.listApiConfigMeta = listApiConfigMeta
 			}
 
-			logService.debug("Loaded persisted configuration from MemoryMemento", "ExtensionHost", {
+			logService.debug("Loaded persisted configuration from secrets storage", "ExtensionHost", {
 				currentApiConfigName,
+				profileCount: Object.keys(providerProfiles.apiConfigs).length,
+				loadedFields: Object.keys(currentProfile || {}),
 			})
 		} catch (error) {
 			logService.warn("Failed to load persisted configuration", "ExtensionHost", { error })
 		}
 	}
 
-	private getAPI(): ExtensionAPI {
+	/**
+	 * Clean model ID by removing prefix before "/"
+	 */
+	private cleanModelId(modelId: string | undefined): string | undefined {
+		if (!modelId) return undefined
+
+		// Check for "/" and take the part after it
+		if (modelId.includes("/")) {
+			return modelId.split("/").pop()
+		}
+
+		return modelId
+	}
+
+	public getAPI(): ExtensionAPI {
 		return {
 			getState: () => this.currentState,
 			sendMessage: (message: ExtensionMessage) => {

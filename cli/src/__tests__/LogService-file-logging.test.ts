@@ -50,7 +50,7 @@ describe("LogService File Logging", () => {
 		expect(await fs.pathExists(logDir)).toBe(true)
 
 		// Check if log file exists
-		const logFile = path.join(logDir, "logs.txt")
+		const logFile = path.join(logDir, "cli.txt")
 		expect(await fs.pathExists(logFile)).toBe(true)
 	})
 
@@ -65,7 +65,7 @@ describe("LogService File Logging", () => {
 		await new Promise((resolve) => setTimeout(resolve, 200))
 
 		// Read log file
-		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "logs.txt")
+		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "cli.txt")
 		const logContent = await fs.readFile(logFile, "utf8")
 		const logLines = logContent.trim().split("\n")
 
@@ -95,7 +95,7 @@ describe("LogService File Logging", () => {
 		await new Promise((resolve) => setTimeout(resolve, 100))
 
 		// Read log file
-		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "logs.txt")
+		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "cli.txt")
 		const logContent = await fs.readFile(logFile, "utf8")
 		const logLines = logContent.trim().split("\n")
 
@@ -119,7 +119,7 @@ describe("LogService File Logging", () => {
 	})
 
 	it("should provide correct log file path", () => {
-		const expectedPath = path.join(tempDir, ".kilocode-cli", "logs", "logs.txt")
+		const expectedPath = path.join(tempDir, ".kilocode-cli", "logs", "cli.txt")
 		expect(logService.getLogFilePath()).toBe(expectedPath)
 	})
 
@@ -143,7 +143,7 @@ describe("LogService File Logging", () => {
 
 		// File logging should be enabled in normal conditions
 		expect(newLogService.isFileLoggingEnabled()).toBe(true)
-		expect(newLogService.getLogFilePath()).toContain("logs.txt")
+		expect(newLogService.getLogFilePath()).toContain("cli.txt")
 	})
 
 	it("should format log entries without source correctly", async () => {
@@ -153,7 +153,7 @@ describe("LogService File Logging", () => {
 		await new Promise((resolve) => setTimeout(resolve, 100))
 
 		// Read log file
-		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "logs.txt")
+		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "cli.txt")
 		const logContent = await fs.readFile(logFile, "utf8")
 
 		// Should have correct format without source brackets
@@ -168,7 +168,7 @@ describe("LogService File Logging", () => {
 		await new Promise((resolve) => setTimeout(resolve, 100))
 
 		// Read log file
-		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "logs.txt")
+		const logFile = path.join(tempDir, ".kilocode-cli", "logs", "cli.txt")
 		const logContent = await fs.readFile(logFile, "utf8")
 
 		// Should include JSON stringified context
