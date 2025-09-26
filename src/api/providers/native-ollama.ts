@@ -171,7 +171,7 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 			try {
 				// kilocode_change start
 				const headers = this.options.ollamaApiKey
-					? { Authorization: this.options.ollamaApiKey } // Yes, this is weird, its not a Bearer token
+					? { Authorization: `Bearer ${this.options.ollamaApiKey}` }
 					: undefined
 				// kilocode_change end
 
@@ -210,10 +210,12 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 		]
 
 		// kilocode_change start
+		// it is tedious we have to check this, but Ollama's quiet prompt-truncating behavior is a support nightmare otherwise
 		const estimatedTokenCount = estimateOllamaTokenCount(ollamaMessages)
-		if (modelInfo.maxTokens && estimatedTokenCount > modelInfo.maxTokens) {
+		const maxTokens = this.options.ollamaNumCtx ?? modelInfo.contextWindow
+		if (estimatedTokenCount > maxTokens) {
 			throw new Error(
-				`Input message is too long for the selected model. Estimated tokens: ${estimatedTokenCount}, Max tokens: ${modelInfo.maxTokens}. To increase the context window size, see: https://kilocode.ai/docs/providers/ollama#configure-the-context-size`,
+				`Prompt is too long (estimated tokens: ${estimatedTokenCount}, max tokens: ${maxTokens}). Increase the Context Window Size in Settings.`,
 			)
 		}
 		// kilocode_change end
@@ -307,8 +309,14 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 	}
 
 	async fetchModel() {
-		this.models = await getOllamaModels(this.options.ollamaBaseUrl, this.options.ollamaApiKey)
-		return this.models // kilocode_change
+		// kilocode_change start
+		this.models = await getOllamaModels(
+			this.options.ollamaBaseUrl,
+			this.options.ollamaApiKey,
+			this.options.ollamaNumCtx,
+		)
+		return this.models
+		// kilocode_change end
 	}
 
 	override getModel(): { id: string; info: ModelInfo } {

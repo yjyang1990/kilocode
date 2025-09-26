@@ -931,6 +931,7 @@ export const webviewMessageHandler = async (
 					provider: "ollama",
 					baseUrl: ollamaApiConfig.ollamaBaseUrl,
 					apiKey: ollamaApiConfig.ollamaApiKey,
+					numCtx: ollamaApiConfig.ollamaNumCtx, // kilocode_change
 				})
 
 				if (Object.keys(ollamaModels).length > 0) {
