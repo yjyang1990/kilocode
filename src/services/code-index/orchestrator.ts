@@ -15,7 +15,7 @@ import { t } from "../../i18n"
 export class CodeIndexOrchestrator {
 	private _fileWatcherSubscriptions: vscode.Disposable[] = []
 	private _isProcessing: boolean = false
-	private _cancelRequested: boolean = false
+	private _cancelRequested: boolean = false // kilocode_change
 
 	constructor(
 		private readonly configManager: CodeIndexConfigManager,
@@ -121,7 +121,7 @@ export class CodeIndexOrchestrator {
 			return
 		}
 
-		this._cancelRequested = false
+		this._cancelRequested = false // kilocode_change
 		this._isProcessing = true
 		this.stateManager.setSystemState("Indexing", "Initializing services...")
 
@@ -132,11 +132,14 @@ export class CodeIndexOrchestrator {
 				await this.cacheManager.clearCacheFile()
 			}
 
+			// kilocode_change start
 			if (this._cancelRequested) {
 				this._isProcessing = false
 				this.stateManager.setSystemState("Standby", t("embeddings:orchestrator.indexingCancelled"))
 				return
 			}
+			// kilocode_change end
+
 			this.stateManager.setSystemState("Indexing", "Services ready. Starting workspace scan...")
 
 			let cumulativeBlocksIndexed = 0
@@ -144,13 +147,13 @@ export class CodeIndexOrchestrator {
 			let batchErrors: Error[] = []
 
 			const handleFileParsed = (fileBlockCount: number) => {
-				if (this._cancelRequested) return
+				if (this._cancelRequested) return // kilocode_change
 				cumulativeBlocksFoundSoFar += fileBlockCount
 				this.stateManager.reportBlockIndexingProgress(cumulativeBlocksIndexed, cumulativeBlocksFoundSoFar)
 			}
 
 			const handleBlocksIndexed = (indexedCount: number) => {
-				if (this._cancelRequested) return
+				if (this._cancelRequested) return // kilocode_change
 				cumulativeBlocksIndexed += indexedCount
 				this.stateManager.reportBlockIndexingProgress(cumulativeBlocksIndexed, cumulativeBlocksFoundSoFar)
 			}
@@ -172,6 +175,7 @@ export class CodeIndexOrchestrator {
 				throw new Error("Scan failed, is scanner initialized?")
 			}
 
+			// kilocode_change start
 			if (this._cancelRequested || this.scanner.isCancelled) {
 				this._isProcessing = false
 				if (this.stateManager.state !== "Error") {
@@ -179,6 +183,7 @@ export class CodeIndexOrchestrator {
 				}
 				return
 			}
+			// kilocode_change end
 
 			const { stats } = result
 
@@ -266,6 +271,7 @@ export class CodeIndexOrchestrator {
 		this._isProcessing = false
 	}
 
+	// kilocode_change start
 	/**
 	 * Gracefully cancels any ongoing indexing work.
 	 * - Stops the watcher if active
@@ -289,6 +295,7 @@ export class CodeIndexOrchestrator {
 		// Clear processing flag
 		this._isProcessing = false
 	}
+	// kilocode_change end
 
 	/**
 	 * Clears all index data by stopping the watcher, clearing the vector store,

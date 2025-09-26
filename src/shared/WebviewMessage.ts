@@ -227,7 +227,7 @@ export interface WebviewMessage {
 		| "condenseTaskContextRequest"
 		| "requestIndexingStatus"
 		| "startIndexing"
-		| "cancelIndexing"
+		| "cancelIndexing" // kilocode_change
 		| "clearIndexData"
 		| "indexingStatusUpdate"
 		| "indexCleared"

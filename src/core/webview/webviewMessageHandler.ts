@@ -3059,6 +3059,7 @@ export const webviewMessageHandler = async (
 			}
 			break
 		}
+		// kilocode_change start
 		case "cancelIndexing": {
 			try {
 				const manager = provider.getCurrentWorkspaceCodeIndexManager()
@@ -3089,6 +3090,7 @@ export const webviewMessageHandler = async (
 			}
 			break
 		}
+		// kilocode_change end
 		case "clearIndexData": {
 			try {
 				const manager = provider.getCurrentWorkspaceCodeIndexManager()

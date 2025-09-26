@@ -203,6 +203,7 @@ export class CodeIndexManager {
 		}
 	}
 
+	// kilocode_change start
 	/**
 	 * Cancel any active indexing activity immediately.
 	 */
@@ -214,6 +215,7 @@ export class CodeIndexManager {
 			this._orchestrator.cancelIndexing()
 		}
 	}
+	// kilocode_change end
 
 	/**
 	 * Recovers from error state by clearing the error and resetting internal state.
