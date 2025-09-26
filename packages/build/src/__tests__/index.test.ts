@@ -35,7 +35,7 @@ describe("generatePackageJson", () => {
 						{
 							command: "roo-cline.plusButtonClicked",
 							title: "%command.newTask.title%",
-							icon: "$(edit)",
+							icon: "$(add)",
 						},
 						{
 							command: "roo-cline.openInNewTab",

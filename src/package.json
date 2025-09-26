@@ -132,7 +132,7 @@
 			{
 				"command": "kilo-code.plusButtonClicked",
 				"title": "%command.newTask.title%",
-				"icon": "$(edit)"
+				"icon": "$(add)"
 			},
 			{
 				"command": "kilo-code.mcpButtonClicked",
