@@ -171,7 +171,7 @@ export class NativeOllamaHandler extends BaseProvider implements SingleCompletio
 			try {
 				// kilocode_change start
 				const headers = this.options.ollamaApiKey
-					? { Authorization: this.options.ollamaApiKey } // Yes, this is weird, its not a Bearer token
+					? { Authorization: `Bearer ${this.options.ollamaApiKey}` }
 					: undefined
 				// kilocode_change end
 
