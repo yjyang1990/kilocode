@@ -3110,6 +3110,38 @@ export const webviewMessageHandler = async (
 			}
 			break
 		}
+		// kilocode_change start
+		case "cancelIndexing": {
+			try {
+				const manager = provider.getCurrentWorkspaceCodeIndexManager()
+				if (!manager) {
+					provider.postMessageToWebview({
+						type: "indexingStatusUpdate",
+						values: {
+							systemStatus: "Error",
+							message: t("embeddings:orchestrator.indexingRequiresWorkspace"),
+							processedItems: 0,
+							totalItems: 0,
+							currentItemUnit: "items",
+						},
+					})
+					provider.log("Cannot cancel indexing: No workspace folder open")
+					return
+				}
+				if (manager.isFeatureEnabled && manager.isFeatureConfigured) {
+					manager.cancelIndexing()
+					// Immediately reflect updated status to UI
+					provider.postMessageToWebview({
+						type: "indexingStatusUpdate",
+						values: manager.getCurrentStatus(),
+					})
+				}
+			} catch (error) {
+				provider.log(`Error canceling indexing: ${error instanceof Error ? error.message : String(error)}`)
+			}
+			break
+		}
+		// kilocode_change end
 		case "clearIndexData": {
 			try {
 				const manager = provider.getCurrentWorkspaceCodeIndexManager()
