@@ -10,6 +10,9 @@ import { PageLayout } from "../../layout/PageLayout.js"
 import { useKeyboardNavigation } from "../../../hooks/useKeyboardNavigation.js"
 import { useExtensionState, useExtensionMessage, useSidebar } from "../../../context/index.js"
 import { ChatMessageRow } from "./ChatMessageRow.js"
+import { BrowserSessionGroup } from "./components/BrowserSessionGroup.js"
+import { TaskHeader } from "./components/TaskHeader.js"
+import { groupMessages, getApiMetrics, getLatestTodos, type MessageGroup } from "./utils/messageGrouping.js"
 
 interface ChatState {
 	messages: ClineMessage[]
@@ -45,6 +48,12 @@ export const ChatView: React.FC = () => {
 			}))
 		}
 	}, [extensionState?.clineMessages])
+
+	// Group messages for enhanced display
+	const groupedMessages = groupMessages(chatState.messages.slice(1)) // Skip first message (task)
+	const apiMetrics = getApiMetrics(chatState.messages)
+	const latestTodos = getLatestTodos(chatState.messages)
+	const task = chatState.messages[0] // First message is the task
 
 	// Handle extension messages - improved message handling
 	useEffect(() => {
@@ -233,8 +242,20 @@ export const ChatView: React.FC = () => {
 	const lastMessage = chatState.messages[chatState.messages.length - 1]
 	const hasActiveAsk = lastMessage?.type === "ask" && lastMessage?.ask === "" && !lastMessage.partial
 
-	// Create header with streaming status
-	const header = (
+	// Create header with streaming status - use TaskHeader when task is available
+	const header = task ? (
+		<TaskHeader
+			task={task}
+			tokensIn={apiMetrics.totalTokensIn}
+			tokensOut={apiMetrics.totalTokensOut}
+			totalCost={apiMetrics.totalCost}
+			contextTokens={apiMetrics.contextTokens}
+			todos={latestTodos}
+			mode={extensionState?.mode || "code"}
+			isStreaming={chatState.isStreaming}
+			asPageHeader={true}
+		/>
+	) : (
 		<PageHeader
 			title="Chat"
 			subtitle={`Mode: ${extensionState?.mode || "code"}`}
@@ -263,12 +284,38 @@ export const ChatView: React.FC = () => {
 					loadingText="Thinking..."
 				/>
 			) : (
-				<Box flexGrow={1}>
-					<ScrollBox height="100%" offset={scrollOffset}>
-						{chatState.messages.map((message, index) => (
-							<ChatMessageRow key={`${message.ts}-${index}`} message={message} />
-						))}
-					</ScrollBox>
+				<Box flexDirection="column" flexGrow={1}>
+					{/* Messages - scrollable area */}
+					<Box flexGrow={1}>
+						<ScrollBox height="100%" offset={scrollOffset}>
+							{groupedMessages.map((group: MessageGroup, index: number) => {
+								if (group.type === "browser_session") {
+									return (
+										<BrowserSessionGroup
+											key={group.id}
+											messages={group.messages}
+											isLast={index === groupedMessages.length - 1}
+											isStreaming={chatState.isStreaming}
+										/>
+									)
+								} else {
+									// Single message
+									const message = group.messages[0]
+									if (!message) return null
+
+									return (
+										<ChatMessageRow
+											key={`${message.ts}-${index}`}
+											message={message}
+											isLast={index === groupedMessages.length - 1}
+											isStreaming={chatState.isStreaming}
+											lastModifiedMessage={chatState.messages[chatState.messages.length - 1]}
+										/>
+									)
+								}
+							})}
+						</ScrollBox>
+					</Box>
 				</Box>
 			)}
 		</Box>
