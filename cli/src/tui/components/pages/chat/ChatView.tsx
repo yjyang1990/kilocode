@@ -250,7 +250,7 @@ export const ChatView: React.FC = () => {
 
 	// Create main content
 	const content = (
-		<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
+		<Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1} overflow="hidden">
 			{chatState.messages.length === 0 ? (
 				<EmptyState
 					title="Welcome to Kilo Code CLI!"
@@ -263,16 +263,20 @@ export const ChatView: React.FC = () => {
 					loadingText="Thinking..."
 				/>
 			) : (
-				<ScrollBox height="100%" offset={scrollOffset}>
-					{[...chatState.messages.map((message, index) => <ChatMessageRow key={index} message={message} />)]}
-				</ScrollBox>
+				<Box flexGrow={1}>
+					<ScrollBox height="100%" offset={scrollOffset}>
+						{chatState.messages.map((message, index) => (
+							<ChatMessageRow key={`${message.ts}-${index}`} message={message} />
+						))}
+					</ScrollBox>
+				</Box>
 			)}
 		</Box>
 	)
 
 	// Create input area
 	const inputArea = (
-		<Box borderStyle="single" borderColor="gray" paddingX={1} flexGrow={1} flexShrink={0}>
+		<Box borderStyle="single" borderColor="gray" paddingX={1} flexShrink={0}>
 			{inputMode === "input" ? (
 				<Box>
 					<TextInput

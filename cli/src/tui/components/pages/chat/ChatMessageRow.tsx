@@ -94,14 +94,18 @@ export const ChatMessageRow: React.FC<{ message: ClineMessage }> = ({ message })
 	const { color, text, label } = getMessageDisplay()
 
 	return (
-		<Box marginBottom={1}>
-			<Box flexDirection="column" flexGrow={1} flexShrink={0}>
-				<Box marginBottom={0}>
-					<Text color={color} bold>
-						{label}
-					</Text>
+		<Box marginBottom={1} minHeight={1} flexShrink={0}>
+			<Box flexDirection="column" width="100%">
+				{label && (
+					<Box marginBottom={0}>
+						<Text color={color} bold>
+							{label}
+						</Text>
+					</Box>
+				)}
+				<Box>
+					<Text color={color}>{text}</Text>
 				</Box>
-				<Text color={color}>{text}</Text>
 				{message.partial && (
 					<Box marginTop={0}>
 						<Text color="gray" dimColor>
