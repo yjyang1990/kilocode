@@ -131,144 +131,24 @@ export class ExtensionHost extends EventEmitter {
 				return
 			}
 
-			// Handle different message types
-			switch (message.type) {
-				case "webviewDidLaunch":
-					// Prevent rapid-fire webviewDidLaunch messages
-					const now = Date.now()
-					if (now - this.lastWebviewLaunchTime < 1000) {
-						logService.debug("Ignoring webviewDidLaunch - too soon after last one", "ExtensionHost")
-						return
-					}
-					this.lastWebviewLaunchTime = now
-					await this.handleWebviewLaunch()
-					break
-
-				case "newTask":
-					if (message.text) {
-						await this.handleNewTask(message.text, message.images)
-					}
-					break
-
-				case "askResponse":
-					await this.handleAskResponse(
-						message.askResponse || message.text || "",
-						message.text,
-						message.images,
-					)
-					break
-
-				case "mode":
-					if (message.text) {
-						await this.handleModeChange(message.text)
-					}
-					break
-
-				case "clearTask":
-					await this.handleClearTask()
-					break
-
-				case "cancelTask":
-					await this.handleCancelTask()
-					break
-
-				case "selectImages":
-					await this.handleSelectImages()
-					break
-
-				case "terminalOperation":
-					if (message.terminalOperation) {
-						await this.handleTerminalOperation(message.terminalOperation)
-					}
-					break
-
-				case "condense":
-					if (message.text) {
-						await this.handleCondense(message.text)
-					}
-					break
-
-				case "condenseTaskContextRequest":
-					if (message.text) {
-						await this.handleCondenseTaskContextRequest(message.text)
-					}
-					break
-
-				case "upsertApiConfiguration":
-					// Handle API configuration updates - forward to extension for proper handling
-					if (message.text && message.apiConfiguration) {
-						try {
-							logService.debug(
-								`Forwarding upsertApiConfiguration to extension: ${message.text}`,
-								"ExtensionHost",
-							)
-
-							// Forward the message to the extension's webview handler
-							// The extension will handle updating ProviderSettingsManager
-							this.emit("webviewMessage", message)
-
-							// Also update local state for CLI display purposes
-							if (this.currentState) {
-								this.currentState.apiConfiguration = {
-									...this.currentState.apiConfiguration,
-									...message.apiConfiguration,
-								}
-								this.currentState.currentApiConfigName = message.text
-
-								// Persist locally for CLI state
-								await this.persistApiConfiguration(message.text, message.apiConfiguration)
-
-								this.broadcastStateUpdate()
-							}
-
-							logService.debug(
-								`Forwarded and updated API configuration: ${message.text}`,
-								"ExtensionHost",
-							)
-						} catch (error) {
-							logService.error("Error updating API configuration", "ExtensionHost", { error })
-						}
-					}
-					break
-
-				case "loadApiConfiguration":
-					// Handle profile switching in CLI
-					if (message.text) {
-						logService.debug(`Loading API configuration profile: ${message.text}`, "ExtensionHost")
-
-						try {
-							await this.handleLoadApiConfiguration(message.text)
-						} catch (error) {
-							logService.error("Error loading API configuration", "ExtensionHost", { error })
-						}
-
-						// Also forward to extension for consistency
-						this.emit("webviewMessage", message)
-					}
-					break
-
-				case "showTaskWithId":
-					// Forward task loading request to extension
-					if (message.text) {
-						logService.debug(`Forwarding showTaskWithId to extension: ${message.text}`, "ExtensionHost")
-
-						// Forward to extension
-						this.emit("webviewMessage", message)
-					}
-					break
-
-				case "taskHistoryRequest":
-					// Forward task history request to extension
-					logService.debug("Forwarding taskHistoryRequest to extension", "ExtensionHost")
-					this.emit("webviewMessage", message)
-					break
-
-				default:
-					// For unhandled message types, forward them to the extension
-					logService.debug(`Forwarding unhandled message type to extension: ${message.type}`, "ExtensionHost")
-					this.emit("webviewMessage", message)
-					break
+			// Handle webviewDidLaunch for CLI state synchronization
+			if (message.type === "webviewDidLaunch") {
+				// Prevent rapid-fire webviewDidLaunch messages
+				const now = Date.now()
+				if (now - this.lastWebviewLaunchTime < 1000) {
+					logService.debug("Ignoring webviewDidLaunch - too soon after last one", "ExtensionHost")
+					return
+				}
+				this.lastWebviewLaunchTime = now
+				await this.handleWebviewLaunch()
 			}
+
+			// Forward ALL messages to the extension's webview handler
+			logService.debug(`Forwarding message to extension: ${message.type}`, "ExtensionHost")
+			this.emit("webviewMessage", message)
+
+			// Handle local state updates for CLI display after forwarding
+			await this.handleLocalStateUpdates(message)
 		} catch (error) {
 			logService.error("Error handling webview message", "ExtensionHost", { error })
 			this.emit("error", error)
@@ -636,9 +516,33 @@ export class ExtensionHost extends EventEmitter {
 			})
 
 			// Set up webview message handler for messages TO the extension
-			this.on("webviewMessage", (message: any) => {
-				logService.debug(`Handling webview message from CLI to extension: ${message.type}`, "ExtensionHost")
-				// These are messages from the CLI that need to be sent to the extension
+			this.on("webviewMessage", async (message: any) => {
+				logService.debug(`Forwarding webview message to extension: ${message.type}`, "ExtensionHost")
+
+				// Find the registered webview provider (ClineProvider)
+				const webviewProvider = this.webviewProviders.get("kilo-code.SidebarProvider")
+
+				if (webviewProvider && typeof webviewProvider.handleMessage === "function") {
+					try {
+						// Call the webview provider's message handler (which should call webviewMessageHandler)
+						await webviewProvider.handleMessage(message)
+						logService.debug(
+							`Successfully forwarded message to webview provider: ${message.type}`,
+							"ExtensionHost",
+						)
+					} catch (error) {
+						logService.error(
+							`Error forwarding message to webview provider: ${message.type}`,
+							"ExtensionHost",
+							{ error },
+						)
+					}
+				} else {
+					logService.warn(
+						`No webview provider found or handleMessage not available for: ${message.type}`,
+						"ExtensionHost",
+					)
+				}
 			})
 		}
 	}
@@ -728,149 +632,67 @@ export class ExtensionHost extends EventEmitter {
 		this.broadcastStateUpdate()
 	}
 
-	private async handleNewTask(text: string, images?: string[]): Promise<void> {
-		logService.debug("Handling new task", "ExtensionHost", { text, images })
-
+	/**
+	 * Handle local state updates for CLI display purposes after forwarding to extension
+	 */
+	private async handleLocalStateUpdates(message: WebviewMessage): Promise<void> {
 		try {
-			// Forward the new task to the real extension API
-			if (this.extensionAPI && typeof this.extensionAPI.startNewTask === "function") {
-				await this.extensionAPI.startNewTask({
-					configuration: this.currentState?.apiConfiguration || {},
-					text,
-					images,
-				})
-				logService.debug("Successfully forwarded new task to extension API", "ExtensionHost")
-			} else {
-				logService.warn("Extension API startNewTask not available", "ExtensionHost")
+			switch (message.type) {
+				case "upsertApiConfiguration":
+					if (message.text && message.apiConfiguration && this.currentState) {
+						// Update local state for CLI display purposes
+						this.currentState.apiConfiguration = {
+							...this.currentState.apiConfiguration,
+							...message.apiConfiguration,
+						}
+						this.currentState.currentApiConfigName = message.text
 
-				// If extension API is not available, we need to handle this gracefully
-				// The extension should populate clineMessages through its normal flow
-				if (this.currentState) {
-					// Just broadcast current state to ensure UI is updated
-					this.broadcastStateUpdate()
-				}
+						// Persist locally for CLI state
+						await this.persistApiConfiguration(message.text, message.apiConfiguration)
+						this.broadcastStateUpdate()
+					}
+					break
+
+				case "loadApiConfiguration":
+					if (message.text) {
+						try {
+							await this.handleLoadApiConfiguration(message.text)
+						} catch (error) {
+							logService.error("Error loading API configuration", "ExtensionHost", { error })
+						}
+					}
+					break
+
+				case "mode":
+					if (message.text && this.currentState) {
+						this.currentState.mode = message.text
+						this.broadcastStateUpdate()
+					}
+					break
+
+				case "clearTask":
+					if (this.currentState) {
+						this.currentState.clineMessages = []
+						this.broadcastStateUpdate()
+					}
+					break
+
+				case "selectImages":
+					// For CLI, we don't support image selection - send empty response
+					this.emit("message", {
+						type: "selectedImages",
+						images: [],
+						context: message.context || "chat",
+						messageTs: message.messageTs,
+					})
+					break
+
+				default:
+					// No local state updates needed for other message types
+					break
 			}
 		} catch (error) {
-			logService.error("Error handling new task", "ExtensionHost", { error })
-
-			// Create error message for user if extension fails
-			if (this.currentState) {
-				const errorMessage = {
-					ts: Date.now(),
-					type: "say" as const,
-					say: "error" as const,
-					text: `Error starting task: ${error instanceof Error ? error.message : String(error)}`,
-				}
-
-				this.currentState.clineMessages = [...this.currentState.clineMessages, errorMessage]
-				this.broadcastStateUpdate()
-			}
-		}
-	}
-
-	private async handleAskResponse(askResponse: string, text?: string, images?: string[]): Promise<void> {
-		// Handle user response to AI questions
-		logService.debug(`Handling ask response: ${askResponse}`, "ExtensionHost", { text, images })
-
-		try {
-			// Forward the ask response to the real extension API
-			if (this.extensionAPI && typeof this.extensionAPI.sendMessage === "function") {
-				await this.extensionAPI.sendMessage({ askResponse, text, images })
-				logService.debug("Successfully forwarded ask response to extension API", "ExtensionHost")
-			} else {
-				logService.warn("Extension API sendMessage not available", "ExtensionHost")
-			}
-		} catch (error) {
-			logService.error("Error handling ask response", "ExtensionHost", { error })
-		}
-	}
-
-	private async handleClearTask(): Promise<void> {
-		// Handle clearing/resetting the current task
-		logService.debug("Handling clear task", "ExtensionHost")
-
-		if (this.currentState) {
-			this.currentState.clineMessages = []
-			this.broadcastStateUpdate()
-		}
-	}
-
-	private async handleCancelTask(): Promise<void> {
-		// Handle canceling the current task
-		logService.debug("Handling cancel task", "ExtensionHost")
-
-		if (this.extensionAPI && typeof this.extensionAPI.cancelTask === "function") {
-			try {
-				await this.extensionAPI.cancelTask()
-			} catch (error) {
-				logService.error("Error canceling task", "ExtensionHost", { error })
-			}
-		}
-	}
-
-	private async handleSelectImages(): Promise<void> {
-		// Handle image selection request
-		logService.debug("Handling select images", "ExtensionHost")
-
-		// For CLI, we might not support image selection or handle it differently
-		// Send empty images response for now
-		this.emit("message", {
-			type: "selectedImages",
-			images: [],
-			context: "chat",
-		})
-	}
-
-	private async handleTerminalOperation(operation: string): Promise<void> {
-		// Handle terminal operations (continue, abort)
-		logService.debug(`Handling terminal operation: ${operation}`, "ExtensionHost")
-
-		if (this.extensionAPI && typeof this.extensionAPI.handleTerminalOperation === "function") {
-			try {
-				await this.extensionAPI.handleTerminalOperation(operation)
-			} catch (error) {
-				logService.error("Error handling terminal operation", "ExtensionHost", { error })
-			}
-		}
-	}
-
-	private async handleCondense(text: string): Promise<void> {
-		// Handle context condensing
-		logService.debug("Handling condense", "ExtensionHost", { text })
-
-		if (this.extensionAPI && typeof this.extensionAPI.condense === "function") {
-			try {
-				await this.extensionAPI.condense(text)
-			} catch (error) {
-				logService.error("Error handling condense", "ExtensionHost", { error })
-			}
-		}
-	}
-
-	private async handleCondenseTaskContextRequest(taskId: string): Promise<void> {
-		// Handle task context condensing request
-		logService.debug("Handling condense task context request", "ExtensionHost", { taskId })
-
-		if (this.extensionAPI && typeof this.extensionAPI.condenseTaskContext === "function") {
-			try {
-				await this.extensionAPI.condenseTaskContext(taskId)
-
-				// Send response back
-				this.emit("message", {
-					type: "condenseTaskContextResponse",
-					text: taskId,
-				})
-			} catch (error) {
-				logService.error("Error handling condense task context", "ExtensionHost", { error })
-			}
-		}
-	}
-
-	private async handleModeChange(mode: string): Promise<void> {
-		// Handle mode changes
-		if (this.currentState) {
-			this.currentState.mode = mode
-			this.broadcastStateUpdate()
+			logService.error("Error handling local state updates", "ExtensionHost", { error })
 		}
 	}
 

@@ -1150,6 +1150,19 @@ export class ClineProvider
 	}
 
 	/**
+	 * Handle messages from CLI ExtensionHost
+	 * This method allows the CLI to send messages directly to the webviewMessageHandler
+	 */
+	public async handleMessage(message: WebviewMessage): Promise<void> {
+		try {
+			await webviewMessageHandler(this, message, this.marketplaceManager)
+		} catch (error) {
+			this.log(`Error handling CLI message: ${error instanceof Error ? error.message : String(error)}`)
+			throw error
+		}
+	}
+
+	/**
 	 * Handle switching to a new mode, including updating the associated API configuration
 	 * @param newMode The mode to switch to
 	 */
