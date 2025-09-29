@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.98.1
-
-### Patch Changes
+## [v4.98.1]
 
 - [#2695](https://github.com/Kilo-Org/kilocode/pull/2695) [`ab49c14`](https://github.com/Kilo-Org/kilocode/commit/ab49c141ca397a0af985341a1cfe907d586430ef) Thanks [@kevinvandijk](https://github.com/kevinvandijk)! - Add Claude 4.5 Sonnet to all supported providers (thanks Roo Code)
 
