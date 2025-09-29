@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.28.13
+
+### Patch Changes
+
+-   - Fix: Remove topP parameter from Bedrock inference config (#8377 by @ronyblum, PR by @daniel-lxs)
+
 ## [3.28.12] - 2025-09-29
 
 - Fix: Correct Anthropic Sonnet 4.5 model ID and add Bedrock 1M context checkbox (thanks @daniel-lxs!)
