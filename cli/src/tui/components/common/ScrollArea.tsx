@@ -1,5 +1,7 @@
 import { Box, DOMElement, measureElement, useFocus, useInput } from "ink"
 import React, { useEffect, useReducer, useRef, useCallback, useState } from "react"
+import { useAtomValue } from "jotai"
+import { sidebarVisibleAtom } from "../../atoms/index.js"
 
 interface ScrollAreaState {
 	innerHeight: number
@@ -130,6 +132,9 @@ export function ScrollArea({
 	scrollTop: externalScrollTop,
 	isFocused: isFocusedProp,
 }: ScrollAreaProps) {
+	// Check if sidebar is open
+	const isSidebarVisible = useAtomValue(sidebarVisibleAtom)
+
 	// Focus management for keyboard input
 	const { isFocused: autoFocus } = useFocus({ isActive: isActive && isFocusedProp === undefined })
 	const isFocused = isFocusedProp !== undefined ? isFocusedProp : autoFocus
@@ -334,7 +339,7 @@ export function ScrollArea({
 		}
 	}, [state.scrollTop, state.innerHeight, state.height, onScrollChange])
 
-	// Keyboard input handling
+	// Keyboard input handling - block when sidebar is visible
 	useInput(
 		(input, key) => {
 			if (key.downArrow) {
@@ -355,7 +360,7 @@ export function ScrollArea({
 				dispatch({ type: "SCROLL_TO_TOP" })
 			}
 		},
-		{ isActive: isActive && isFocused },
+		{ isActive: isActive && isFocused && !isSidebarVisible },
 	)
 
 	// Calculate if scrollbar should be shown
