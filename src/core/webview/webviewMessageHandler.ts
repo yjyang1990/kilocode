@@ -1429,6 +1429,16 @@ export const webviewMessageHandler = async (
 			await updateGlobalState("morphApiKey", message.text)
 			await provider.postStateToWebview()
 			break
+		case "fastApplyModel": {
+			const allowedFastApplyModels = ["auto", "morph-v3-fast", "morph-v3-large", "relace/relace-apply-3"] as const
+			type FastApplyModel = (typeof allowedFastApplyModels)[number]
+			const nextModel: FastApplyModel = allowedFastApplyModels.includes(message.text as FastApplyModel)
+				? (message.text as FastApplyModel)
+				: "auto"
+			await updateGlobalState("fastApplyModel", nextModel)
+			await provider.postStateToWebview()
+			break
+		}
 		// kilocode_change end
 		case "updateVSCodeSetting": {
 			const { setting, value } = message

@@ -140,6 +140,7 @@ export const globalSettingsSchema = z.object({
 	experiments: experimentsSchema.optional(),
 
 	morphApiKey: z.string().optional(), // kilocode_change: Morph fast apply
+	fastApplyModel: z.enum(["auto", "morph-v3-fast", "morph-v3-large", "relace/relace-apply-3"]).optional(), // kilocode_change: Fast Apply model selection
 
 	codebaseIndexModels: codebaseIndexModelsSchema.optional(),
 	codebaseIndexConfig: codebaseIndexConfigSchema.optional(),
