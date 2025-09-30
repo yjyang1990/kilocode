@@ -1043,28 +1043,24 @@ export const ChatRowContent = ({
 								<div style={{ display: "flex", alignItems: "center", gap: "10px", flexGrow: 1 }}>
 									{icon}
 									{title}
-									{
-										// kilocode_change start
-										!cost && usageMissing && (
-											<StandardTooltip content={t("kilocode:pricing.costUnknownDescription")}>
-												<VSCodeBadge className="whitespace-nowrap">
-													<span className="codicon codicon-warning pr-1"></span>
-													{t("kilocode:pricing.costUnknown")}
-												</VSCodeBadge>
-											</StandardTooltip>
-										)
-										// kilocode_change end
-									}
-									<VSCodeBadge
-										style={{ opacity: cost !== null && cost !== undefined && cost > 0 ? 1 : 0 }}>
-										${Number(cost || 0)?.toFixed(4)}
-									</VSCodeBadge>
 								</div>
 								<div
 									className="text-xs text-vscode-dropdown-foreground border-vscode-dropdown-border/50 border px-1.5 py-0.5 rounded-lg"
 									style={{ opacity: cost !== null && cost !== undefined && cost > 0 ? 1 : 0 }}>
 									${Number(cost || 0)?.toFixed(4)}
 								</div>
+								{
+									// kilocode_change start
+									!cost && usageMissing && (
+										<StandardTooltip content={t("kilocode:pricing.costUnknownDescription")}>
+											<div className="flex items-center text-xs text-vscode-dropdown-foreground border-vscode-dropdown-border/50 border px-1.5 py-0.5 rounded-lg whitespace-nowrap">
+												<span className="codicon codicon-warning pr-1"></span>
+												{t("kilocode:pricing.costUnknown")}
+											</div>
+										</StandardTooltip>
+									)
+									// kilocode_change end
+								}
 							</div>
 							{(((cost === null || cost === undefined) && apiRequestFailedMessage) ||
 								apiReqStreamingFailedMessage) && (
