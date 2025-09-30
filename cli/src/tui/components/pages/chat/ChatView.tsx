@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { Box, Text } from "ink"
 import TextInput from "ink-text-input"
-import { ScrollBox } from "@sasaplus1/ink-scroll-box"
+import { ScrollArea, useScrollArea } from "../../common/ScrollArea.js"
 import { logService } from "../../../../services/LogService.js"
 import type { ExtensionMessage, ClineMessage } from "../../../../types/messages.js"
 import { PageHeader } from "../../generic/PageHeader.js"
@@ -35,7 +35,9 @@ export const ChatView: React.FC = () => {
 	})
 
 	const [inputMode, setInputMode] = useState<"normal" | "input">("normal")
-	const [scrollOffset, setScrollOffset] = useState(0)
+
+	// Use the scroll area hook for managing scroll state
+	const { scrollTop, isAtBottom, scrollToBottom, scrollToTop, onScrollChange } = useScrollArea()
 
 	// Update messages when extension state changes
 	useEffect(() => {
@@ -216,27 +218,31 @@ export const ChatView: React.FC = () => {
 					handleReject()
 				}
 			},
-			upArrow: () => {
-				if (chatState.messages.length > 0) {
-					setScrollOffset((prev) => Math.max(0, prev - 1))
-				}
+			// Arrow keys are now handled by ScrollArea component
+			// We can add additional shortcuts here if needed
+			"ctrl+e": () => {
+				// Scroll to bottom
+				scrollToBottom()
 			},
-			downArrow: () => {
-				if (chatState.messages.length > 0) {
-					setScrollOffset((prev) => prev + 1)
-				}
+			"ctrl+a": () => {
+				// Scroll to top
+				scrollToTop()
 			},
 		},
 	})
 
-	// Auto-scroll to bottom when new messages arrive - keep user's scroll position unless they're at bottom
+	// Auto-scroll to bottom when new messages arrive
+	// The ScrollArea component handles this automatically with its autoScroll prop
+	// We just need to trigger it when messages change
 	useEffect(() => {
-		if (chatState.messages.length > 0) {
-			// Only auto-scroll if user was already at the bottom (scrollOffset is 0)
-			// This preserves user's scroll position when they're reading older messages
-			setScrollOffset((prev) => (prev === 0 ? 0 : prev))
+		// If user is at bottom or it's a new conversation, auto-scroll
+		if (isAtBottom || chatState.messages.length <= 1) {
+			// Small delay to ensure content is rendered
+			setTimeout(() => {
+				scrollToBottom()
+			}, 50)
 		}
-	}, [chatState.messages.length])
+	}, [chatState.messages, isAtBottom, scrollToBottom])
 
 	// Determine if we have an active ask
 	const lastMessage = chatState.messages[chatState.messages.length - 1]
@@ -285,37 +291,42 @@ export const ChatView: React.FC = () => {
 				/>
 			) : (
 				<Box flexDirection="column" flexGrow={1}>
-					{/* Messages - scrollable area */}
-					<Box flexGrow={1}>
-						<ScrollBox height="100%" offset={scrollOffset}>
-							{groupedMessages.map((group: MessageGroup, index: number) => {
-								if (group.type === "browser_session") {
-									return (
-										<BrowserSessionGroup
-											key={group.id}
-											messages={group.messages}
-											isLast={index === groupedMessages.length - 1}
-											isStreaming={chatState.isStreaming}
-										/>
-									)
-								} else {
-									// Single message
-									const message = group.messages[0]
-									if (!message) return null
+					{/* Messages - scrollable area with smooth scrolling */}
+					<ScrollArea
+						height={"100%"}
+						autoScroll={true}
+						scrollSpeed={3}
+						onScrollChange={onScrollChange}
+						showBorder={false}
+						isActive={inputMode !== "input"}
+						isFocused={inputMode !== "input"}>
+						{groupedMessages.map((group: MessageGroup, index: number) => {
+							if (group.type === "browser_session") {
+								return (
+									<BrowserSessionGroup
+										key={group.id}
+										messages={group.messages}
+										isLast={index === groupedMessages.length - 1}
+										isStreaming={chatState.isStreaming}
+									/>
+								)
+							} else {
+								// Single message
+								const message = group.messages[0]
+								if (!message) return null
 
-									return (
-										<ChatMessageRow
-											key={`${message.ts}-${index}`}
-											message={message}
-											isLast={index === groupedMessages.length - 1}
-											isStreaming={chatState.isStreaming}
-											lastModifiedMessage={chatState.messages[chatState.messages.length - 1]}
-										/>
-									)
-								}
-							})}
-						</ScrollBox>
-					</Box>
+								return (
+									<ChatMessageRow
+										key={`${message.ts}-${index}`}
+										message={message}
+										isLast={index === groupedMessages.length - 1}
+										isStreaming={chatState.isStreaming}
+										lastModifiedMessage={chatState.messages[chatState.messages.length - 1]}
+									/>
+								)
+							}
+						})}
+					</ScrollArea>
 				</Box>
 			)}
 		</Box>
