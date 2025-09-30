@@ -163,11 +163,11 @@ export const ChatMessageRow: React.FC<ChatMessageRowProps> = ({
 							<Box marginTop={1}>
 								<Text color="white">{message.text || "AI response"}</Text>
 							</Box>
-							{message.images && message.images.length > 0 && (
+							{message.images && message.images.length > 0 ? (
 								<Box marginTop={1} paddingLeft={2}>
 									<Text color="gray">🖼️ {message.images.length} image(s) attached</Text>
 								</Box>
-							)}
+							) : null}
 						</Box>
 					)
 
@@ -193,7 +193,7 @@ export const ChatMessageRow: React.FC<ChatMessageRowProps> = ({
 									</Text>
 								</Box>
 
-								{apiInfo?.cost && <Text color="gray">{formatCost(apiInfo.cost)}</Text>}
+								{apiInfo?.cost ? <Text color="gray">{formatCost(apiInfo.cost)}</Text> : null}
 							</Box>
 
 							{apiInfo?.usageMissing && (

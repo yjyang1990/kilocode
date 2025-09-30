@@ -113,7 +113,7 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
 										)}
 									</Box>
 
-									{totalCost > 0 && <Text color="green">{formatCost(totalCost)}</Text>}
+									{totalCost > 0 ? <Text color="green">{formatCost(totalCost)}</Text> : null}
 								</Box>
 							)}
 

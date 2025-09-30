@@ -149,8 +149,8 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
 			<Box justifyContent="center" marginTop={1}>
 				<Text color="gray" dimColor>
 					{`${selectedIndex + 1} of ${filteredModelIds.length}`}
-					{visibleModels.startIndex > 0 && " ↑"}
-					{visibleModels.endIndex < filteredModelIds.length && " ↓"}
+					{visibleModels.startIndex > 0 ? " ↑" : ""}
+					{visibleModels.endIndex < filteredModelIds.length ? " ↓" : ""}
 				</Text>
 			</Box>
 

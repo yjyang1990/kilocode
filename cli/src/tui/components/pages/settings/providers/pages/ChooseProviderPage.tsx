@@ -121,8 +121,8 @@ export const ChooseProviderPage: React.FC = () => {
 						<Box justifyContent="center" marginTop={1}>
 							<Text color="gray" dimColor>
 								{selectedIndex + 1} of {PROVIDER_OPTIONS.length}
-								{visibleProviders.startIndex > 0 && " ↑"}
-								{visibleProviders.endIndex < PROVIDER_OPTIONS.length && " ↓"}
+								{visibleProviders.startIndex > 0 ? " ↑" : ""}
+								{visibleProviders.endIndex < PROVIDER_OPTIONS.length ? " ↓" : ""}
 							</Text>
 						</Box>
 
