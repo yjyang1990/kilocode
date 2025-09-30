@@ -81,6 +81,7 @@ export const LogsView: React.FC = () => {
 			}, 50)
 			return () => clearTimeout(timer)
 		}
+		return undefined
 	}, [logsState.logs.length > 0, logsState.autoScroll, scrollToBottom])
 
 	// Toggle log level filter
