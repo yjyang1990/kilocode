@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.98.2
-
-### Patch Changes
+## [v4.98.2]
 
 - [#2704](https://github.com/Kilo-Org/kilocode/pull/2704) [`6b6af0a`](https://github.com/Kilo-Org/kilocode/commit/6b6af0a2113cd106f08b1538172d5ba5d19a80ff) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Fixed duplicated cost display
 
