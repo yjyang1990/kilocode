@@ -237,10 +237,12 @@ export const ChatView: React.FC = () => {
 	useEffect(() => {
 		// If user is at bottom or it's a new conversation, auto-scroll
 		if (isAtBottom || chatState.messages.length <= 1) {
-			// Small delay to ensure content is rendered
+			// Longer delay when loading many messages (e.g., from history) to ensure content is fully measured
+			// The delay accounts for: content rendering + measurement debounce + scroll processing
+			const delay = chatState.messages.length > 5 ? 200 : 100
 			setTimeout(() => {
 				scrollToBottom()
-			}, 50)
+			}, delay)
 		}
 	}, [chatState.messages, isAtBottom, scrollToBottom])
 

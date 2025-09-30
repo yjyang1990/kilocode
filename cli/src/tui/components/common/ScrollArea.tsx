@@ -78,11 +78,18 @@ const reducer = (state: ScrollAreaState, action: ScrollAreaAction): ScrollAreaSt
 				...state,
 				prevChildrenCount: action.count,
 			}
-		case "SET_SCROLL_TOP":
+		case "SET_SCROLL_TOP": {
+			// Clamp scroll position to valid range
+			const maxScroll = Math.max(0, state.innerHeight - state.height)
+			const clampedScrollTop = Math.min(maxScroll, Math.max(0, action.scrollTop))
+			// If scrolling to bottom (large number), enable auto-scroll
+			const isScrollingToBottom = action.scrollTop >= maxScroll || action.scrollTop > state.innerHeight
 			return {
 				...state,
-				scrollTop: action.scrollTop,
+				scrollTop: clampedScrollTop,
+				autoScroll: isScrollingToBottom,
 			}
+		}
 		default:
 			return state
 	}
@@ -237,13 +244,6 @@ export function ScrollArea({
 		dispatch({ type: "SET_HEIGHT", height: actualHeight })
 	}, [actualHeight])
 
-	// Handle external scroll position control
-	useEffect(() => {
-		if (externalScrollTop !== undefined) {
-			dispatch({ type: "SET_SCROLL_TOP", scrollTop: externalScrollTop })
-		}
-	}, [externalScrollTop])
-
 	// Measure inner content height
 	const measureContent = useCallback(() => {
 		if (!innerRef.current) return
@@ -264,23 +264,49 @@ export function ScrollArea({
 				// Update inner height
 				dispatch({ type: "SET_INNER_HEIGHT", innerHeight: newHeight })
 
-				// Auto-scroll to bottom if enabled and content has grown
-				if (state.autoScroll && newHeight > state.innerHeight) {
-					dispatch({ type: "SCROLL_TO_BOTTOM" })
+				// Auto-scroll to bottom if enabled
+				if (state.autoScroll) {
+					// Use a small additional delay to ensure the height update is processed
+					setTimeout(() => {
+						dispatch({ type: "SCROLL_TO_BOTTOM" })
+					}, 10)
 				}
 			} catch (error) {
 				// Fallback: count children lines
 				const childCount = React.Children.count(children)
 				const estimatedHeight = childCount // Each line is roughly 1 unit high
 				dispatch({ type: "SET_INNER_HEIGHT", innerHeight: estimatedHeight })
+
+				if (state.autoScroll) {
+					setTimeout(() => {
+						dispatch({ type: "SCROLL_TO_BOTTOM" })
+					}, 10)
+				}
 			}
 		}, 10)
-	}, [state.autoScroll, state.innerHeight, children])
+	}, [state.autoScroll, children])
 
 	// Measure content on mount and when children change
 	useEffect(() => {
 		measureContent()
 	}, [children, measureContent])
+
+	// Handle external scroll position control
+	useEffect(() => {
+		if (externalScrollTop !== undefined) {
+			// Trigger a measurement before applying external scroll
+			// This ensures we have accurate dimensions when scrolling
+			measureContent()
+
+			// Apply the scroll position after measurement completes
+			// Account for: measureContent debounce (10ms) + scroll dispatch (10ms) + buffer (30ms)
+			const timeoutId = setTimeout(() => {
+				dispatch({ type: "SET_SCROLL_TOP", scrollTop: externalScrollTop })
+			}, 100)
+
+			return () => clearTimeout(timeoutId)
+		}
+	}, [externalScrollTop, measureContent])
 
 	// Count children for change detection
 	const childrenCount = React.Children.count(children)
