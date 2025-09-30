@@ -17,6 +17,11 @@ program
 	.name("kilocode")
 	.description("Kilo Code Terminal User Interface - AI-powered coding assistant")
 	.version(Package.version)
+	.action(async () => {
+		cli = new KiloCodeCLI({})
+		await cli.startChatSession()
+		await cli.dispose()
+	})
 
 program
 	.command("chat")

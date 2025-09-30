@@ -3,7 +3,7 @@ import { Box } from "ink"
 import { Text } from "./Text.js"
 import BigText from "ink-big-text"
 import Gradient from "ink-gradient"
-import { FullScreenLayout } from "../layout/FullScreenLayout"
+import { FullScreenLayout } from "../layout/FullScreenLayout.js"
 
 const ASCII_LOGO = `⣿⡿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⢿⣿
 ⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿

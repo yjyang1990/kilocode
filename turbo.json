@@ -38,9 +38,6 @@
 		"jetbrains:run": {
 			"dependsOn": ["@kilo-code/jetbrains-plugin#run"]
 		},
-		"cli:run": {
-			"dependsOn": ["@kilo-code/cli#start"]
-		},
 		"cli:bundle": {
 			"dependsOn": ["@kilo-code/cli#bundle"]
 		},
