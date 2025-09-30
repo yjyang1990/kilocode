@@ -311,6 +311,7 @@ export function ScrollArea({
 
 			return () => clearTimeout(timeoutId)
 		}
+		return undefined
 	}, [externalScrollTop, measureContent])
 
 	// Count children for change detection
