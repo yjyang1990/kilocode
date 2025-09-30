@@ -1070,8 +1070,8 @@ export const env = {
 }
 
 // Main VSCode API mock
-export function createVSCodeAPIMock(extensionPath: string, workspacePath: string) {
-	const context = new ExtensionContext(extensionPath, workspacePath)
+export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: string) {
+	const context = new ExtensionContext(extensionRootPath, workspacePath)
 	const workspace = new WorkspaceAPI(workspacePath, context)
 	const window = new WindowAPI()
 	const commands = new CommandsAPI()

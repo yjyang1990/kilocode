@@ -6,8 +6,8 @@ import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/
 
 export interface ExtensionHostOptions {
 	workspacePath: string
-	extensionPath: string
-	binUnpackedPath: string
+	extensionBundlePath: string // Direct path to extension.js
+	extensionRootPath: string // Root path for extension assets
 }
 
 export interface ExtensionAPI {
@@ -156,8 +156,8 @@ export class ExtensionHost extends EventEmitter {
 	}
 
 	private async setupVSCodeAPIMock(): Promise<void> {
-		// Create VSCode API mock
-		this.vscodeAPI = createVSCodeAPIMock(this.options.extensionPath, this.options.workspacePath)
+		// Create VSCode API mock with extension root path for assets
+		this.vscodeAPI = createVSCodeAPIMock(this.options.extensionRootPath, this.options.workspacePath)
 
 		// Set global vscode object for the extension
 		;(global as any).vscode = this.vscodeAPI
@@ -316,7 +316,8 @@ export class ExtensionHost extends EventEmitter {
 	}
 
 	private async loadExtension(): Promise<void> {
-		const extensionPath = path.join(this.options.binUnpackedPath, "dist", "extension.js")
+		// Use the direct path to extension.js
+		const extensionPath = this.options.extensionBundlePath
 
 		try {
 			logService.info(`Loading extension from: ${extensionPath}`, "ExtensionHost")

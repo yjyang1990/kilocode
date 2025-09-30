@@ -1,5 +1,4 @@
 import { EventEmitter } from "events"
-import * as path from "path"
 import { render } from "ink"
 import React from "react"
 import { createExtensionHost, ExtensionHost } from "../host/ExtensionHost.js"
@@ -7,6 +6,7 @@ import { createMessageBridge, MessageBridge } from "../communication/ipc.js"
 import { TUIApplication } from "../tui/App.js"
 import { SplashScreen } from "../tui/components/common/SplashScreen.js"
 import { logService } from "../services/LogService.js"
+import { resolveExtensionPaths } from "../utils/extension-paths.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
 
 export interface CLIOptions {
@@ -28,15 +28,13 @@ export class KiloCodeCLI extends EventEmitter {
 		super()
 		this.options = options
 
-		// Initialize extension host
-		const cwd = process.cwd()
-		const isInCliDir = cwd.endsWith("/cli")
-		const rootDir = isInCliDir ? path.join(cwd, "..") : cwd
+		// Resolve extension paths for production CLI
+		const extensionPaths = resolveExtensionPaths()
 
 		this.extensionHost = createExtensionHost({
 			workspacePath: options.workspace || process.cwd(),
-			extensionPath: path.join(rootDir, "src"),
-			binUnpackedPath: path.join(rootDir, "bin-unpacked", "extension"),
+			extensionBundlePath: extensionPaths.extensionBundlePath,
+			extensionRootPath: extensionPaths.extensionRootPath,
 		})
 
 		// Initialize message bridge
