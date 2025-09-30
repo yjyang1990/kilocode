@@ -1,8 +1,8 @@
-import React from "react"
 import { describe, it, expect } from "vitest"
 import { render } from "ink-testing-library"
-import { Box, Text } from "ink"
+import { Box } from "ink"
 import { ScrollArea, useScrollArea } from "../ScrollArea.js"
+import { Text } from "../Text.js"
 
 describe("ScrollArea", () => {
 	it("should render children content", () => {

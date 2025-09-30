@@ -1,5 +1,6 @@
 import React from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../common/Text.js"
 import { useExtensionState, useCliState } from "../../context/index.js"
 import { getSelectedModelId } from "../../../utils/providers.js"
 

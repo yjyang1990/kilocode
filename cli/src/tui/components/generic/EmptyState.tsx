@@ -1,5 +1,6 @@
 import React from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../common/Text.js"
 import Spinner from "ink-spinner"
 import type { EmptyStateProps } from "../../types/components.js"
 

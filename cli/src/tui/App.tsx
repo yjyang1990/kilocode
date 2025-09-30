@@ -1,5 +1,6 @@
 import React from "react"
-import { render, Box, Text, useInput } from "ink"
+import { render, Box, useInput } from "ink"
+import { Text } from "./components/common/Text.js"
 import { Provider as JotaiProvider } from "jotai"
 import { EventEmitter } from "events"
 import type { ExtensionMessage } from "../types/messages.js"

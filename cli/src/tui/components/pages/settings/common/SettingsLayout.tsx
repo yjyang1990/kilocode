@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../../common/Text.js"
 import SelectInput from "ink-select-input"
 import { useNavigate, useCurrentPath } from "../../../../router/index.js"
 import { useKeyboardNavigation } from "../../../../hooks/useKeyboardNavigation.js"

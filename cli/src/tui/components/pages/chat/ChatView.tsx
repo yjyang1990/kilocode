@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../common/Text.js"
 import TextInput from "ink-text-input"
 import { ScrollArea, useScrollArea } from "../../common/ScrollArea.js"
 import { logService } from "../../../../services/LogService.js"

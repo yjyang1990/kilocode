@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "./Text.js"
 import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation.js"
 import { useSidebar } from "../../context/index.js"
 import { UI_CONSTANTS } from "../../../constants/index.js"

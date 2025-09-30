@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../common/Text.js"
 import SelectInput from "ink-select-input"
 import { logService } from "../../../services/LogService.js"
 import type { HistoryItem } from "../../../types/messages.js"

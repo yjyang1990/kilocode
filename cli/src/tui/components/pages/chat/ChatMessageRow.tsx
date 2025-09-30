@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../common/Text.js"
 import Spinner from "ink-spinner"
 import { logService } from "../../../../services/LogService.js"
 import type { ClineMessage } from "../../../../types/messages.js"

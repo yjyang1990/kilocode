@@ -1,5 +1,6 @@
 import React from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../../common/Text.js"
 import type { ClineMessage } from "../../../../../types/messages.js"
 import { parseFollowUpData, truncateText } from "../utils/messageFormatters.js"
 import { BoxChars } from "../utils/messageIcons.js"

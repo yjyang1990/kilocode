@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Box, Text, useInput } from "ink"
+import { Box, useInput } from "ink"
+import { Text } from "../../../../common/Text.js"
 import { PageHeader } from "../../../../generic/PageHeader.js"
 import { PageLayout } from "../../../../layout/PageLayout.js"
 import { SettingsLayout } from "../../common/SettingsLayout.js"

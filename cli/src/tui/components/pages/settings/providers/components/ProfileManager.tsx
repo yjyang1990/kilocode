@@ -1,5 +1,6 @@
 import React from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../../../common/Text.js"
 import type { ProviderSettingsEntry } from "../../../../../../types/messages.js"
 
 interface ProfileManagerProps {

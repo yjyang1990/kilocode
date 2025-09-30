@@ -1,5 +1,6 @@
 import React from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "./Text.js"
 import BigText from "ink-big-text"
 import Gradient from "ink-gradient"
 import { FullScreenLayout } from "../layout/FullScreenLayout"

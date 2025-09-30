@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../../../common/Text.js"
 import { PageHeader } from "../../../../generic/PageHeader.js"
 import { PageLayout } from "../../../../layout/PageLayout.js"
 import { SettingsLayout } from "../../common/SettingsLayout.js"

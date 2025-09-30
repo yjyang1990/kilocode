@@ -1,5 +1,6 @@
 import React from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../../../common/Text.js"
 import { getProviderLabel } from "../../../../../../constants/providers/index.js"
 import type { ProviderName } from "../../../../../../types/messages.js"
 

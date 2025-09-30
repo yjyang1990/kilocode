@@ -1,5 +1,6 @@
 import React from "react"
-import { Box, Text } from "ink"
+import { Box } from "ink"
+import { Text } from "../../../common/Text.js"
 import TextInput from "ink-text-input"
 import { SectionHeader } from "../common/SectionHeader.js"
 import { Section } from "../common/Section.js"

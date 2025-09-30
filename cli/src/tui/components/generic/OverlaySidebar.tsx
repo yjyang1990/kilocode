@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Box, Text, useInput } from "ink"
+import { Box, useInput } from "ink"
+import { Text } from "../common/Text.js"
 import { useNavigate, useCurrentPath } from "../../router/index.js"
 
 interface MenuItem {
