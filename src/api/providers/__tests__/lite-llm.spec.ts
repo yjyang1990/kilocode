@@ -255,7 +255,8 @@ describe("LiteLLMHandler", () => {
 			}
 		})
 
-		it("should still use max_tokens for non-GPT-5 models", async () => {
+		// kilocode_change: we always use the non-deprecated one
+		it.skip("should still use max_tokens for non-GPT-5 models", async () => {
 			const nonGPT5Models = ["gpt-4", "claude-3-opus", "llama-3", "gpt-4-turbo"]
 
 			for (const modelId of nonGPT5Models) {
