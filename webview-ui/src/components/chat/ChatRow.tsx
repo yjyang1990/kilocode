@@ -1048,7 +1048,7 @@ export const ChatRowContent = ({
 									// kilocode_change start
 									!cost && usageMissing && (
 										<StandardTooltip content={t("kilocode:pricing.costUnknownDescription")}>
-											<div className="text-xs text-vscode-dropdown-foreground border-vscode-dropdown-border/50 border px-1.5 py-0.5 rounded-lg whitespace-nowrap">
+											<div className="flex items-center text-xs text-vscode-dropdown-foreground border-vscode-dropdown-border/50 border px-1.5 py-0.5 rounded-lg whitespace-nowrap">
 												<span className="codicon codicon-warning pr-1"></span>
 												{t("kilocode:pricing.costUnknown")}
 											</div>
