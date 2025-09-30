@@ -555,6 +555,19 @@
 					"maximum": 600,
 					"description": "%commands.commandExecutionTimeout.description%"
 				},
+				"kilo-code.commandTimeoutAllowlist": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [],
+					"description": "%commands.commandTimeoutAllowlist.description%"
+				},
+				"kilo-code.preventCompletionWithOpenTodos": {
+					"type": "boolean",
+					"default": false,
+					"description": "%commands.preventCompletionWithOpenTodos.description%"
+				},
 				"kilo-code.vsCodeLmModelSelector": {
 					"type": "object",
 					"properties": {
