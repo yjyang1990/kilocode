@@ -1,8 +1,11 @@
 import { EventEmitter } from "events"
 import * as path from "path"
+import { render } from "ink"
+import React from "react"
 import { createExtensionHost, ExtensionHost } from "../host/ExtensionHost.js"
 import { createMessageBridge, MessageBridge } from "../communication/ipc.js"
 import { TUIApplication } from "../tui/App.js"
+import { SplashScreen } from "../tui/components/common/SplashScreen.js"
 import { logService } from "../services/LogService.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
 
@@ -19,6 +22,7 @@ export class KiloCodeCLI extends EventEmitter {
 	private tuiApp: TUIApplication | null = null
 	private options: CLIOptions
 	private isInitialized = false
+	private splashInstance: any = null
 
 	constructor(options: CLIOptions = {}) {
 		super()
@@ -89,12 +93,28 @@ export class KiloCodeCLI extends EventEmitter {
 		})
 	}
 
+	private showSplashScreen(): void {
+		// Render splash screen immediately
+		this.splashInstance = render(React.createElement(SplashScreen))
+	}
+
+	private hideSplashScreen(): void {
+		// Unmount splash screen
+		if (this.splashInstance) {
+			this.splashInstance.unmount()
+			this.splashInstance = null
+		}
+	}
+
 	async initialize(): Promise<void> {
 		if (this.isInitialized) {
 			return
 		}
 
 		try {
+			// Show splash screen first
+			this.showSplashScreen()
+
 			logService.info("Initializing Kilo Code CLI...", "KiloCodeCLI")
 
 			// Activate extension host
@@ -110,8 +130,12 @@ export class KiloCodeCLI extends EventEmitter {
 
 			this.isInitialized = true
 			logService.info("Kilo Code CLI initialized successfully", "KiloCodeCLI")
+
+			// Hide splash screen after initialization
+			this.hideSplashScreen()
 		} catch (error) {
 			logService.error("Failed to initialize CLI", "KiloCodeCLI", { error })
+			this.hideSplashScreen()
 			throw error
 		}
 	}
