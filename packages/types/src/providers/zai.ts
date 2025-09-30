@@ -2,12 +2,13 @@ import type { ModelInfo } from "../model.js"
 import { ZaiApiLine } from "../provider-settings.js"
 
 // Z AI
-// https://docs.z.ai/guides/llm/glm-4.6
+// https://docs.z.ai/guides/llm/glm-4.6 // kilocode_change: overwrite the entire file on merge conflicts
 // https://docs.z.ai/guides/overview/pricing
 
 export type InternationalZAiModelId = keyof typeof internationalZAiModels
-export const internationalZAiDefaultModelId: InternationalZAiModelId = "glm-4.6"
+export const internationalZAiDefaultModelId: InternationalZAiModelId = "glm-4.6" // kilocode_change: overwrite the entire file on merge conflicts
 export const internationalZAiModels = {
+	// kilocode_change start: overwrite the entire file on merge conflicts
 	"glm-4.6": {
 		maxTokens: 131_072,
 		contextWindow: 204_800,
@@ -20,6 +21,7 @@ export const internationalZAiModels = {
 		description:
 			"GLM-4.6 is Zhipu's latest SOTA models for reasoning, code, and agentsUpgraded across 8 authoritative benchmarks. With a 355B-parameter MoE architecture and 200K context, it surpasses GLM-4.5 in coding, reasoning, search, writing, and agent applications.",
 	},
+	// kilocode_change end
 	"glm-4.5": {
 		maxTokens: 98_304,
 		contextWindow: 131_072,
@@ -29,7 +31,7 @@ export const internationalZAiModels = {
 		outputPrice: 2.2,
 		cacheWritesPrice: 0,
 		cacheReadsPrice: 0.11,
-		description: "Zhipu's previous flagship model.",
+		description: "Zhipu's previous flagship model.", // kilocode_change: overwrite the entire file on merge conflicts
 	},
 	"glm-4.5-air": {
 		maxTokens: 98_304,
@@ -57,8 +59,9 @@ export const internationalZAiModels = {
 } as const satisfies Record<string, ModelInfo>
 
 export type MainlandZAiModelId = keyof typeof mainlandZAiModels
-export const mainlandZAiDefaultModelId: MainlandZAiModelId = "glm-4.6"
+export const mainlandZAiDefaultModelId: MainlandZAiModelId = "glm-4.6" // kilocode_change: overwrite the entire file on merge conflicts
 export const mainlandZAiModels = {
+	// kilocode_change start: overwrite the entire file on merge conflicts
 	"glm-4.6": {
 		maxTokens: 131_072,
 		contextWindow: 204_800,
@@ -91,6 +94,7 @@ export const mainlandZAiModels = {
 			},
 		],
 	},
+	// kilocode_change end
 	"glm-4.5": {
 		maxTokens: 98_304,
 		contextWindow: 131_072,
@@ -100,7 +104,7 @@ export const mainlandZAiModels = {
 		outputPrice: 1.14,
 		cacheWritesPrice: 0,
 		cacheReadsPrice: 0.057,
-		description: "Zhipu's previous flagship model.",
+		description: "Zhipu's previous flagship model.", // kilocode_change: overwrite the entire file on merge conflicts
 		tiers: [
 			{
 				contextWindow: 32_000,
