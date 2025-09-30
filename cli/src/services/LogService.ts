@@ -1,6 +1,7 @@
 import { appendFileSync } from "fs"
 import * as fs from "fs-extra"
 import * as path from "path"
+import { KiloCodePaths } from "../utils/paths.js"
 
 export type LogLevel = "info" | "debug" | "error" | "warn"
 
@@ -48,8 +49,8 @@ export class LogService {
 			info: console.info,
 		}
 
-		// Initialize file logging
-		this.logFilePath = path.join(process.cwd(), ".kilocode-cli", "logs", "cli.txt")
+		// Initialize file logging - use centralized logs directory
+		this.logFilePath = path.join(KiloCodePaths.getLogsDir(), "cli.txt")
 		// Initialize file logging asynchronously (don't await to avoid blocking constructor)
 		this.initializeFileLogging().catch(() => {
 			// Error handling is done within initializeFileLogging

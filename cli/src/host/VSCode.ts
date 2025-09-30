@@ -1,6 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
 import { logService } from "../services/LogService.js"
+import { KiloCodePaths } from "../utils/paths.js"
 
 // Basic VSCode API types and enums
 export interface Thenable<T> extends Promise<T> {}
@@ -235,11 +236,13 @@ export class ExtensionContext {
 		this.extensionPath = extensionPath
 		this.extensionUri = Uri.file(extensionPath)
 
-		// Setup storage paths - use HOME for global storage to ensure it's shared across workspaces
-		const homeDir = process.env.HOME || process.env.USERPROFILE || "/tmp"
-		const globalStoragePath = path.join(homeDir, ".kilocode-cli", "global-storage")
-		const workspaceStoragePath = path.join(workspacePath, ".kilocode-cli", "workspace-storage")
-		const logPath = path.join(workspacePath, ".kilocode-cli", "logs")
+		// Setup storage paths using centralized path utility
+		// Initialize workspace to ensure all directories exist
+		KiloCodePaths.initializeWorkspace(workspacePath)
+
+		const globalStoragePath = KiloCodePaths.getGlobalStorageDir()
+		const workspaceStoragePath = KiloCodePaths.getWorkspaceStorageDir(workspacePath)
+		const logPath = KiloCodePaths.getLogsDir()
 
 		this.globalStoragePath = globalStoragePath
 		this.globalStorageUri = Uri.file(globalStoragePath)
@@ -635,12 +638,8 @@ export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 			this.workspaceMemento = context.workspaceState as unknown as MemoryMemento
 		} else {
 			// Fallback: create our own mementos (shouldn't happen in normal usage)
-			const globalStoragePath = path.join(
-				process.env.HOME || process.env.USERPROFILE || "/tmp",
-				".kilocode-cli",
-				"global-storage",
-			)
-			const workspaceStoragePath = path.join(process.cwd(), ".kilocode-cli", "workspace-storage")
+			const globalStoragePath = KiloCodePaths.getGlobalStorageDir()
+			const workspaceStoragePath = KiloCodePaths.getWorkspaceStorageDir(process.cwd())
 
 			this.ensureDirectoryExists(globalStoragePath)
 			this.ensureDirectoryExists(workspaceStoragePath)

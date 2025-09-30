@@ -3,6 +3,7 @@ import * as fs from "fs"
 import * as path from "path"
 import * as os from "os"
 import { createVSCodeAPIMock, ConfigurationTarget } from "../host/VSCode.js"
+import { KiloCodePaths } from "../utils/paths.js"
 
 describe("MemoryMemento Configuration", () => {
 	let tempDir: string
@@ -97,12 +98,10 @@ describe("MemoryMemento Configuration", () => {
 		// Set some configuration
 		await config.update("testSetting", "file-structure-test")
 
-		// Verify the files are created in the expected locations
-		const globalStatePath = path.join(tempDir, ".kilocode-cli", "global-storage", "global-state.json")
+		// Verify the files are created in the expected locations (now using new structure)
+		const globalStatePath = path.join(KiloCodePaths.getGlobalStorageDir(), "global-state.json")
 		const workspaceStatePath = path.join(
-			workspacePath,
-			".kilocode-cli",
-			"workspace-storage",
+			KiloCodePaths.getWorkspaceStorageDir(workspacePath),
 			"workspace-state.json",
 		)
 
