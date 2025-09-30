@@ -236,5 +236,43 @@ describe("ZAiHandler", () => {
 				undefined,
 			)
 		})
+
+		it("createMessage should pass correct parameters to Z AI client", async () => {
+			const modelId: InternationalZAiModelId = "glm-4.6"
+			const modelInfo = internationalZAiModels[modelId]
+			const handlerWithModel = new ZAiHandler({
+				apiModelId: modelId,
+				zaiApiKey: "test-zai-api-key",
+				zaiApiLine: "international",
+			})
+
+			mockCreate.mockImplementationOnce(() => {
+				return {
+					[Symbol.asyncIterator]: () => ({
+						async next() {
+							return { done: true }
+						},
+					}),
+				}
+			})
+
+			const systemPrompt = "Test system prompt for Z AI"
+			const messages: Anthropic.Messages.MessageParam[] = [{ role: "user", content: "Test message for Z AI" }]
+
+			const messageGenerator = handlerWithModel.createMessage(systemPrompt, messages)
+			await messageGenerator.next()
+
+			expect(mockCreate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					model: modelId,
+					max_tokens: modelInfo.maxTokens,
+					temperature: ZAI_DEFAULT_TEMPERATURE,
+					messages: expect.arrayContaining([{ role: "system", content: systemPrompt }]),
+					stream: true,
+					stream_options: { include_usage: true },
+				}),
+				undefined,
+			)
+		})
 	})
 })
