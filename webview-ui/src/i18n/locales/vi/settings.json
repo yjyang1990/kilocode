@@ -759,6 +759,18 @@
 			"name": "Bật chỉnh sửa tệp đồng thời",
 			"description": "Khi được bật, Kilo Code có thể chỉnh sửa nhiều tệp trong một yêu cầu duy nhất. Khi bị tắt, Kilo Code phải chỉnh sửa từng tệp một. Tắt tính năng này có thể hữu ích khi làm việc với các mô hình kém khả năng hơn hoặc khi bạn muốn kiểm soát nhiều hơn đối với các thay đổi tệp."
 		},
+		"FAST_APPLY": {
+			"apiKey": "Khóa API (tùy chọn)",
+			"placeholder": "Nhập khóa API của bạn (tùy chọn)",
+			"modelLabel": "Lựa chọn mô hình",
+			"modelDescription": "Chọn mô hình Fast Apply để sử dụng cho việc chỉnh sửa tệp",
+			"models": {
+				"auto": "Tự động (Mặc định - chọn mô hình tốt nhất hiện có)",
+				"morphFast": "Morph v3 Fast (Nhanh hơn, chi phí thấp hơn)",
+				"morphLarge": "Morph v3 Large (Mạnh mẽ hơn)",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"MORPH_FAST_APPLY": {
 			"name": "Bật Morph Fast Apply",
 			"description": "Khi được bật, Kilo Code có thể chỉnh sửa tệp bằng Morph Fast Apply. Yêu cầu Nhà cung cấp API Kilo Code, OpenRouter hoặc khóa API Morph.",

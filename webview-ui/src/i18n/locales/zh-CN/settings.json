@@ -764,6 +764,18 @@
 			"name": "启用并发文件编辑",
 			"description": "启用后 Kilo Code 可在单个请求中编辑多个文件。禁用后 Kilo Code 必须逐个编辑文件。禁用此功能有助于使用能力较弱的模型或需要更精确控制文件修改时。"
 		},
+		"FAST_APPLY": {
+			"apiKey": "API 密钥（可选）",
+			"placeholder": "输入您的 API 密钥（可选）",
+			"modelLabel": "模型选择",
+			"modelDescription": "选择用于文件编辑的快速应用模型",
+			"models": {
+				"auto": "自动（默认 - 选择最佳可用）",
+				"morphFast": "Morph v3 Fast (更快，成本更低)",
+				"morphLarge": "Morph v3 Large (功能更强大)",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"MORPH_FAST_APPLY": {
 			"name": "启用 Morph Fast Apply",
 			"description": "启用后 Kilo Code 可使用 Morph Fast Apply 编辑文件。需要 Kilo Code API 提供商、OpenRouter 或 Morph API 密钥。",

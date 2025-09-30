@@ -63,7 +63,7 @@
 		"vercelAiGatewayApiKeyPlaceholder": "Entrez votre clé API Vercel AI Gateway",
 		"mistralProvider": "Mistral",
 		"mistralApiKeyLabel": "Clé d'API:",
-		"mistralApiKeyPlaceholder": "Entrez votre clé d'API Mistral",
+		"mistralApiKeyPlaceholder": "Entrez votre clé API Mistral",
 		"openaiCompatibleProvider": "Compatible OpenAI",
 		"openAiKeyLabel": "Clé API OpenAI",
 		"openAiKeyPlaceholder": "Entrez votre clé API OpenAI",
@@ -717,7 +717,7 @@
 			},
 			"matchPrecision": {
 				"label": "Précision de correspondance",
-				"description": "Ce curseur contrôle la précision avec laquelle les sections de code doivent correspondre lors de l'application des diffs. Des valeurs plus basses permettent des correspondances plus flexibles mais augmentent le risque de remplacements incorrects. Utilisez des valeurs inférieures à 100 % avec une extrême prudence."
+				"description": "Ce curseur contrôle la précision avec laquelle les sections de code doivent correspondre lors de l'application des diffs. Des valeurs plus basses permettent des correspondances plus flexibles mais augmentent le risque de remplacement incorrects. Utilisez des valeurs inférieures à 100 % avec une extrême prudence."
 			}
 		},
 		"todoList": {
@@ -756,13 +756,35 @@
 		},
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Activer les éditions de fichiers concurrentes",
-			"description": "Lorsque cette option est activée, Kilo Code peut éditer plusieurs fichiers en une seule requête. Lorsqu'elle est désactivée, Kilo Code doit éditer les fichiers un par un. Désactiver cette option peut aider lorsque tu travailles avec des modèles moins capables ou lorsque tu veux plus de contrôle sur les modifications de fichiers."
+			"description": "Lorsque cette option est activée, Kilo Code peut éditer plusieurs fichiers en une seule requête. Lorsqu'elle est désactivée, Kilo Code doit éditer les fichiers un par un. Désactiver cette option peut aider lorsque tu travailles avec des modèles moins capables ou lorsque tu veux plus de contrôle sur les modifications de fichiers.",
+			"FAST_APPLY": {
+				"apiKey": "Clé API (optionnel)",
+				"placeholder": "Entrez votre clé API (optionnel)",
+				"modelLabel": "Sélection du modèle",
+				"modelDescription": "Choisissez le modèle Fast Apply à utiliser pour les modifications de fichiers",
+				"models": {
+					"auto": "Auto (par défaut - choisit le meilleur disponible)",
+					"morphFast": "Morph v3 Fast (plus rapide, coût inférieur)",
+					"morphLarge": "Morph v3 Large (plus performant)",
+					"relace": "Relace Apply v3"
+				}
+			}
 		},
 		"MORPH_FAST_APPLY": {
-			"name": "Activer Morph Fast Apply",
-			"description": "Lorsque cette option est activée, Kilo Code peut éditer des fichiers en utilisant Morph Fast Apply. Nécessite le fournisseur d'API Kilo Code, OpenRouter ou une clé API Morph.",
-			"apiKey": "Clé API Morph (optionnel)",
-			"placeholder": "Entrez votre clé API Morph (optionnel)"
+			"name": "Activer Fast Apply",
+			"description": "Lorsque activé, Kilo Code peut modifier des fichiers en utilisant Fast Apply avec des modèles spécialisés optimisés pour les modifications de code. Nécessite le fournisseur d'API Kilo Code, OpenRouter ou une clé API directe."
+		},
+		"FAST_APPLY": {
+			"apiKey": "Clé API (optionnel)",
+			"placeholder": "Entrez votre clé API (optionnel)",
+			"modelLabel": "Sélection du modèle",
+			"modelDescription": "Choisissez le modèle Fast Apply à utiliser pour les modifications de fichiers",
+			"models": {
+				"auto": "Auto (par défaut - choisit le meilleur disponible)",
+				"morphFast": "Morph v3 Fast (plus rapide, coût inférieur)",
+				"morphLarge": "Morph v3 Large (plus performant)",
+				"relace": "Relace Apply v3"
+			}
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Édition en arrière-plan",

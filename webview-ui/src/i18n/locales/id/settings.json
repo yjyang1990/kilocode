@@ -778,13 +778,35 @@
 		},
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Aktifkan edit file bersamaan",
-			"description": "Ketika diaktifkan, Kilo Code dapat mengedit beberapa file dalam satu permintaan. Ketika dinonaktifkan, Kilo Code harus mengedit file satu per satu. Menonaktifkan ini dapat membantu saat bekerja dengan model yang kurang mampu atau ketika kamu ingin kontrol lebih terhadap modifikasi file."
+			"description": "Ketika diaktifkan, Kilo Code dapat mengedit beberapa file dalam satu permintaan. Ketika dinonaktifkan, Kilo Code harus mengedit file satu per satu. Menonaktifkan ini dapat membantu saat bekerja dengan model yang kurang mampu atau ketika kamu ingin kontrol lebih terhadap modifikasi file.",
+			"FAST_APPLY": {
+				"apiKey": "Kunci API (opsional)",
+				"placeholder": "Masukkan kunci API Anda (opsional)",
+				"modelLabel": "Pemilihan Model",
+				"modelDescription": "Pilih model Fast Apply yang akan digunakan untuk pengeditan file",
+				"models": {
+					"auto": "Otomatis (Default - memilih yang terbaik yang tersedia)",
+					"morphFast": "Morph v3 Fast (Lebih cepat, biaya lebih rendah)",
+					"morphLarge": "Morph v3 Large (Lebih mampu)",
+					"relace": "Relace Apply v3"
+				}
+			}
 		},
 		"MORPH_FAST_APPLY": {
-			"name": "Aktifkan Morph Fast Apply",
-			"description": "Ketika diaktifkan, Kilo Code dapat mengedit file menggunakan Morph Fast Apply. Memerlukan Kilo Code API Provider, OpenRouter atau kunci API Morph.",
-			"apiKey": "Kunci API Morph (opsional)",
-			"placeholder": "Masukkan kunci API Morph Anda (opsional)"
+			"name": "Aktifkan Fast Apply",
+			"description": "Ketika diaktifkan, Kilo Code dapat mengedit file menggunakan Fast Apply dengan model khusus yang dioptimalkan untuk modifikasi kode. Memerlukan Kilo Code API Provider, OpenRouter, atau kunci API langsung."
+		},
+		"FAST_APPLY": {
+			"apiKey": "Kunci API (opsional)",
+			"placeholder": "Masukkan kunci API Anda (opsional)",
+			"modelLabel": "Pemilihan Model",
+			"modelDescription": "Pilih model Fast Apply yang akan digunakan untuk pengeditan file",
+			"models": {
+				"auto": "Otomatis (Default - memilih yang terbaik yang tersedia)",
+				"morphFast": "Morph v3 Fast (Lebih cepat, biaya lebih rendah)",
+				"morphLarge": "Morph v3 Large (Lebih mampu)",
+				"relace": "Relace Apply v3"
+			}
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Pengeditan Latar Belakang",
