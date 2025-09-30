@@ -35,7 +35,7 @@ export type ChutesModelId =
 	| "tngtech/DeepSeek-R1T-Chimera"
 	| "zai-org/GLM-4.5-Air"
 	| "zai-org/GLM-4.5-FP8"
-	| "zai-org/GLM-4.6-FP8"
+	| "zai-org/GLM-4.6-FP8" // kilocode_change
 	// kilocode_change start
 	| "zai-org/GLM-4.5V"
 	// kilocode_change end
@@ -329,6 +329,7 @@ export const chutesModels = {
 		description:
 			"GLM-4.5-FP8 model with 128k token context window, optimized for agent-based applications with MoE architecture.",
 	},
+	// kilocode_change start
 	"zai-org/GLM-4.6-FP8": {
 		maxTokens: 32768,
 		contextWindow: 202752,
@@ -339,6 +340,7 @@ export const chutesModels = {
 		description:
 			"GLM-4.6 introduces major upgrades over GLM-4.5, including a longer 200K-token context window for complex tasks, stronger coding performance in benchmarks and real-world tools (such as Claude Code, Cline, Roo Code, and Kilo Code), improved reasoning with tool use during inference, more capable and efficient agent integration, and refined writing that better matches human style, readability, and natural role-play scenarios.",
 	},
+	// kilocode_change end
 	"zai-org/GLM-4.5-turbo": {
 		maxTokens: 32768,
 		contextWindow: 131072,
