@@ -1,5 +1,5 @@
 {
-	"name": "@kilocode/cli",
+	"name": "@kilo-code/cli",
 	"version": "1.0.0",
 	"description": "Terminal User Interface for Kilo Code - Command-line equivalent to the VSCode extension",
 	"type": "module",
@@ -9,7 +9,6 @@
 		"kilo": "dist/index.js"
 	},
 	"scripts": {
-		"dev": "tsx src/index.ts",
 		"build": "tsc && chmod +x dist/index.js",
 		"start": "node dist/index.js",
 		"clean": "rimraf dist",
@@ -18,7 +17,9 @@
 		"check-types": "tsc --noEmit",
 		"format": "prettier --write src",
 		"logs": "clear && tail -f ~/.kilocode/cli/logs/cli.txt",
-		"logs:clear": "rimraf ~/.kilocode/cli/logs/*"
+		"logs:clear": "rimraf ~/.kilocode/cli/logs/*",
+		"clean:kilocode": "npx del-cli ./dist/kilocode --force && npx mkdirp ./dist/kilocode",
+		"copy:kilocode": "npx cpy '../bin-unpacked/extension/**' './dist/kilocode' --parents"
 	},
 	"dependencies": {
 		"@anthropic-ai/bedrock-sdk": "^0.22.0",
@@ -127,8 +128,11 @@
 		"@types/fs-extra": "^11.0.4",
 		"@types/node": "20.x",
 		"@types/react": "^18.3.23",
+		"cpy-cli": "^5.0.0",
+		"del-cli": "^5.1.0",
 		"eslint": "^9.27.0",
 		"ink-testing-library": "^4.0.0",
+		"mkdirp": "^3.0.1",
 		"prettier": "^3.4.2",
 		"rimraf": "^6.0.1",
 		"tsx": "^4.19.3",

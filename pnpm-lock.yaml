@@ -603,9 +603,6 @@ importers:
       '@roo-code/types':
         specifier: workspace:^
         version: link:../packages/types
-      '@sasaplus1/ink-scroll-box':
-        specifier: ^0.2.0
-        version: 0.2.0(ink@4.4.1(@types/react@18.3.23)(react@18.3.1))(react@18.3.1)
       '@vscode/codicons':
         specifier: ^0.0.36
         version: 0.0.36
@@ -877,12 +874,21 @@ importers:
       '@types/react':
         specifier: ^18.3.23
         version: 18.3.23
+      cpy-cli:
+        specifier: ^5.0.0
+        version: 5.0.0
+      del-cli:
+        specifier: ^5.1.0
+        version: 5.1.0
       eslint:
         specifier: ^9.27.0
         version: 9.28.0(jiti@2.4.2)
       ink-testing-library:
         specifier: ^4.0.0
         version: 4.0.0(@types/react@18.3.23)
+      mkdirp:
+        specifier: ^3.0.1
+        version: 3.0.1
       prettier:
         specifier: ^3.4.2
         version: 3.5.3
@@ -5969,13 +5975,6 @@ packages:
     resolution: {integrity: sha512-bwspbWB04XJpeElvsp+DCylKfF4trJDa2Y9Go8O6A7YLX2LIKGcNK/CYImJN6ZP4DcuOHB4Utl3iCbnR62DudA==}
     cpu: [x64]
     os: [win32]
-
-  '@sasaplus1/ink-scroll-box@0.2.0':
-    resolution: {integrity: sha512-/SDG3HAS2fmWlyH+VWnkifdJjLV82pfJWJWH5t5BdFoGzccvJRXtQWISwSn/Pw2m3BziqlsBiPpF+LlCk0X6Gg==}
-    engines: {node: '18'}
-    peerDependencies:
-      ink: '4'
-      react: '18'
 
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
@@ -24028,11 +24027,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.40.2':
     optional: true
-
-  '@sasaplus1/ink-scroll-box@0.2.0(ink@4.4.1(@types/react@18.3.23)(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      ink: 4.4.1(@types/react@18.3.23)(react@18.3.1)
-      react: 18.3.1
 
   '@sec-ant/readable-stream@0.4.1': {}
 
