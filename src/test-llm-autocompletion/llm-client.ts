@@ -35,7 +35,7 @@ export class LLMClient {
 
 	constructor() {
 		this.provider = process.env.LLM_PROVIDER || "kilocode"
-		this.model = process.env.LLM_MODEL || "mistralai/codestral-latest"
+		this.model = process.env.LLM_MODEL || "mistralai/codestral-2508"
 
 		if (this.provider !== "kilocode") {
 			throw new Error(`Only kilocode provider is supported. Got: ${this.provider}`)
