@@ -21,7 +21,10 @@ import {
 	type ClineMessage,
 	type TelemetrySetting,
 	TelemetryEventName,
-	ghostServiceSettingsSchema, // kilocode_change
+	// kilocode_change start
+	ghostServiceSettingsSchema,
+	fastApplyModelSchema,
+	// kilocode_change end
 	UserSettingsConfig,
 } from "@roo-code/types"
 import { CloudService } from "@roo-code/cloud"
@@ -1430,11 +1433,7 @@ export const webviewMessageHandler = async (
 			await provider.postStateToWebview()
 			break
 		case "fastApplyModel": {
-			const allowedFastApplyModels = ["auto", "morph-v3-fast", "morph-v3-large", "relace/relace-apply-3"] as const
-			type FastApplyModel = (typeof allowedFastApplyModels)[number]
-			const nextModel: FastApplyModel = allowedFastApplyModels.includes(message.text as FastApplyModel)
-				? (message.text as FastApplyModel)
-				: "auto"
+			const nextModel = fastApplyModelSchema.safeParse(message.text).data ?? "auto"
 			await updateGlobalState("fastApplyModel", nextModel)
 			await provider.postStateToWebview()
 			break

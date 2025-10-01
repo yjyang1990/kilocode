@@ -14,7 +14,7 @@ import { telemetrySettingsSchema } from "./telemetry.js"
 import { modeConfigSchema } from "./mode.js"
 import { customModePromptsSchema, customSupportPromptsSchema } from "./mode.js"
 import { languagesSchema } from "./vscode.js"
-import { ghostServiceSettingsSchema } from "./kilocode.js" // kilocode_change
+import { fastApplyModelSchema, ghostServiceSettingsSchema } from "./kilocode.js" // kilocode_change
 
 /**
  * Default delay in milliseconds after writes to allow diagnostics to detect potential problems.
@@ -141,7 +141,7 @@ export const globalSettingsSchema = z.object({
 
 	// kilocode_change start: Morph fast apply
 	morphApiKey: z.string().optional(),
-	fastApplyModel: z.enum(["auto", "morph/morph-v3-fast", "morph/morph-v3-large", "relace/relace-apply-3"]).optional(),
+	fastApplyModel: fastApplyModelSchema.optional(),
 	// kilocode_change end
 
 	codebaseIndexModels: codebaseIndexModelsSchema.optional(),
