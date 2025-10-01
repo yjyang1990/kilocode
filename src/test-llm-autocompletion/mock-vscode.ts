@@ -1,8 +1,32 @@
 // Mock vscode types for testing outside of VSCode environment
 
+export type Thenable<T> = Promise<T>
+
 export enum EndOfLine {
 	LF = 1,
 	CRLF = 2,
+}
+
+export enum DiagnosticSeverity {
+	Error = 0,
+	Warning = 1,
+	Information = 2,
+	Hint = 3,
+}
+
+export interface Diagnostic {
+	range: Range
+	message: string
+	severity: DiagnosticSeverity
+	source?: string
+	code?: string | number
+}
+
+export const workspace = {
+	asRelativePath(pathOrUri: string | Uri, includeWorkspaceFolder?: boolean): string {
+		const path = typeof pathOrUri === "string" ? pathOrUri : pathOrUri.path
+		return path.split("/").pop() || path
+	},
 }
 
 export class Position {
@@ -203,6 +227,7 @@ export interface TextDocument {
 	readonly eol: EndOfLine
 	readonly lineCount: number
 	readonly encoding?: string
+	readonly notebook?: any
 	save(): Thenable<boolean>
 	lineAt(line: number): TextLine
 	lineAt(position: Position): TextLine
@@ -212,6 +237,16 @@ export interface TextDocument {
 	getWordRangeAtPosition(position: Position, regex?: RegExp): Range | undefined
 	validateRange(range: Range): Range
 	validatePosition(position: Position): Position
+}
+
+export interface TextEditor {
+	readonly document: TextDocument
+	readonly selection: Selection
+	readonly selections: readonly Selection[]
+	readonly visibleRanges: readonly Range[]
+	readonly options: any
+	readonly viewColumn?: any
+	edit(callback: (editBuilder: any) => void): Thenable<boolean>
 }
 
 export class Selection extends Range {

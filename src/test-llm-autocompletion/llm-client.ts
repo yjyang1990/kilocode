@@ -1,10 +1,8 @@
 import OpenAI from "openai"
 import { config } from "dotenv"
+import { DEFAULT_HEADERS } from "../api/providers/constants.js"
 
 config()
-
-// Import the version from package.json
-const packageVersion = "4.97.1" // From src/package.json
 
 export interface LLMResponse {
 	content: string
@@ -45,18 +43,13 @@ export class LLMClient {
 			throw new Error("KILOCODE_API_KEY is required for Kilocode provider")
 		}
 
-		// Extract base URL from token (same logic as kilocode-openrouter.ts)
 		const baseUrl = getKiloBaseUriFromToken(process.env.KILOCODE_API_KEY)
 
-		// Use the same headers as the main Kilocode extension
 		this.openai = new OpenAI({
 			baseURL: `${baseUrl}/api/openrouter/`,
 			apiKey: process.env.KILOCODE_API_KEY,
 			defaultHeaders: {
-				"HTTP-Referer": "https://kilocode.ai",
-				"X-Title": "Kilo Code",
-				"X-KILOCODE-VERSION": packageVersion,
-				"User-Agent": `Kilo-Code/${packageVersion}`,
+				...DEFAULT_HEADERS,
 				"X-KILOCODE-TESTER": "SUPPRESS",
 			},
 		})

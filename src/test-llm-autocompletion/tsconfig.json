@@ -11,7 +11,11 @@
 		"resolveJsonModule": true,
 		"allowImportingTsExtensions": true,
 		"noEmit": true,
-		"types": ["node"]
+		"types": ["node"],
+		"baseUrl": ".",
+		"paths": {
+			"vscode": ["./mock-vscode.ts"]
+		}
 	},
 	"include": ["**/*.ts"],
 	"exclude": ["node_modules"]
