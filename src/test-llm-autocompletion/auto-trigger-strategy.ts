@@ -32,7 +32,7 @@ export class AutoTriggerStrategyTester {
 
 		return {
 			document: document as any,
-			range,
+			range: range as any,
 			recentOperations: [],
 			diagnostics: [],
 			openFiles: [],
@@ -64,7 +64,7 @@ export class AutoTriggerStrategyTester {
 
 		const dummyContext: GhostSuggestionContext = {
 			document: new MockTextDocument(vscode.Uri.parse("file:///test.js"), "") as any,
-			range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
+			range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)) as any,
 		}
 
 		parser.initialize(dummyContext)
