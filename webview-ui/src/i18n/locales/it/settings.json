@@ -758,35 +758,7 @@
 		},
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Abilita modifiche di file concorrenti",
-			"description": "Quando abilitato, Kilo Code può modificare più file in una singola richiesta. Quando disabilitato, Kilo Code deve modificare i file uno alla volta. Disabilitare questa opzione può aiutare quando lavori con modelli meno capaci o quando vuoi più controllo sulle modifiche dei file.",
-			"FAST_APPLY": {
-				"apiKey": "Chiave API (opzionale)",
-				"placeholder": "Inserisci la tua chiave API (opzionale)",
-				"modelLabel": "Selezione modello",
-				"modelDescription": "Scegli quale modello Fast Apply utilizzare per le modifiche ai file",
-				"models": {
-					"auto": "Auto (Predefinito - sceglie il migliore disponibile)",
-					"morphFast": "Morph v3 Fast (Più veloce, costo inferiore)",
-					"morphLarge": "Morph v3 Large (Più capace)",
-					"relace": "Relace Apply v3"
-				}
-			}
-		},
-		"MORPH_FAST_APPLY": {
-			"name": "Abilita Fast Apply",
-			"description": "Quando abilitato, Kilo Code può modificare i file utilizzando Fast Apply con modelli specializzati ottimizzati per le modifiche al codice. Richiede il Kilo Code API Provider, OpenRouter o una chiave API diretta."
-		},
-		"FAST_APPLY": {
-			"apiKey": "Chiave API (opzionale)",
-			"placeholder": "Inserisci la tua chiave API (opzionale)",
-			"modelLabel": "Selezione modello",
-			"modelDescription": "Scegli quale modello Fast Apply utilizzare per le modifiche ai file",
-			"models": {
-				"auto": "Auto (Predefinito - sceglie il migliore disponibile)",
-				"morphFast": "Morph v3 Fast (Più veloce, costo inferiore)",
-				"morphLarge": "Morph v3 Large (Più capace)",
-				"relace": "Relace Apply v3"
-			}
+			"description": "Quando abilitato, Kilo Code può modificare più file in una singola richiesta. Quando disabilitato, Kilo Code deve modificare i file uno alla volta. Disabilitare questa opzione può aiutare quando lavori con modelli meno capaci o quando vuoi più controllo sulle modifiche dei file."
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Modifica in background",

@@ -817,22 +817,6 @@
 			"name": "تعديلات ملفات متزامنة",
 			"description": "يحرر عدة ملفات في طلب واحد."
 		},
-		"MORPH_FAST_APPLY": {
-			"name": "تفعيل Morph Fast Apply",
-			"description": "عند التفعيل، يمكن لـ Kilo Code تحرير الملفات باستخدام Morph Fast Apply. يتطلب مزوّد Kilo Code API أو OpenRouter أو مفتاح Morph API."
-		},
-		"FAST_APPLY": {
-			"apiKey": "مفتاح Morph API (اختياري)",
-			"placeholder": "أدخل مفتاح Morph API (اختياري)",
-			"modelLabel": "تحديد النموذج",
-			"modelDescription": "اختر النموذج الذي تريد استخدامه لتعديل الملفات",
-			"models": {
-				"auto": "تلقائي (الافتراضي - يختار الأفضل المتاح)",
-				"morphFast": "Morph v3 Fast (أسرع، أقل تكلفة)",
-				"morphLarge": "Morph v3 Large (יותר قدرة)",
-				"relace": "Relace Apply v3"
-			}
-		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "التحرير في الخلفية",
 			"description": "منع تعطيل تركيز المحرر عند التفعيل. تحدث تعديلات الملفات في الخلفية دون فتح عروض diff أو سرقة التركيز. يمكنك الاستمرار في العمل دون انقطاع بينما يقوم Kilo Code بإجراء التغييرات. يمكن فتح الملفات دون تركيز لالتقاط التشخيصات أو إبقاؤها مغلقة تماماً."

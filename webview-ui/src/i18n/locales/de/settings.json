@@ -758,38 +758,6 @@
 			"name": "Gleichzeitige Dateibearbeitungen aktivieren",
 			"description": "Wenn aktiviert, kann Kilo Code mehrere Dateien in einer einzigen Anfrage bearbeiten. Wenn deaktiviert, muss Kilo Code Dateien einzeln bearbeiten. Das Deaktivieren kann hilfreich sein, wenn mit weniger fähigen Modellen gearbeitet wird oder wenn du mehr Kontrolle über Dateiänderungen haben möchtest."
 		},
-		"MORPH_FAST_APPLY": {
-			"name": "Morph Fast Apply aktivieren",
-			"description": "Wenn aktiviert, kann Kilo Code Dateien mit Morph Fast Apply bearbeiten. Erfordert den Kilo Code API-Anbieter, OpenRouter oder einen Morph API-Schlüssel."
-		},
-		"FAST_APPLY": {
-			"apiKey": "API-Schlüssel (optional)",
-			"placeholder": "Gib deinen API-Schlüssel ein (optional)",
-			"modelLabel": "Modellauswahl",
-			"modelDescription": "Wähle das Fast Apply-Modell, das für Dateibearbeitungen verwendet werden soll",
-			"models": {
-				"auto": "Auto (Standard - wählt das beste verfügbare)",
-				"morphFast": "Morph v3 Fast (schneller, geringere Kosten)",
-				"morphLarge": "Morph v3 Large (leistungsfähiger)",
-				"relace": "Relace Apply v3"
-			}
-		},
-		"MORPH_FAST_APPLY": {
-			"name": "Fast Apply aktivieren",
-			"description": "Wenn aktiviert, kann Kilo Code Dateien mit Fast Apply bearbeiten, wobei spezialisierte Modelle für Code-Modifikationen optimiert werden. Erfordert den Kilo Code API Provider, OpenRouter oder einen direkten API-Schlüssel."
-		},
-		"FAST_APPLY": {
-			"apiKey": "API-Schlüssel (optional)",
-			"placeholder": "Geben Sie Ihren API-Schlüssel ein (optional)",
-			"modelLabel": "Modellauswahl",
-			"modelDescription": "Wählen Sie das Fast Apply-Modell, das für Dateibearbeitungen verwendet werden soll",
-			"models": {
-				"auto": "Auto (Standard - wählt das beste verfügbare)",
-				"morphFast": "Morph v3 Fast (Schneller, geringere Kosten)",
-				"morphLarge": "Morph v3 Large (Leistungsfähiger)",
-				"relace": "Relace Apply v3"
-			}
-		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Hintergrundbearbeitung",
 			"description": "Verhindert Editor-Fokus-Störungen wenn aktiviert. Dateibearbeitungen erfolgen im Hintergrund ohne Öffnung von Diff-Ansichten oder Fokus-Diebstahl. Du kannst ungestört weiterarbeiten, während Kilo Code Änderungen vornimmt. Dateien können ohne Fokus geöffnet werden, um Diagnosen zu erfassen oder vollständig geschlossen bleiben."

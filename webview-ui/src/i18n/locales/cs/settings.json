@@ -828,24 +828,6 @@
 			"name": "Povolit souběžné úpravy souborů",
 			"description": "Pokud je povoleno, Kilo Code může upravovat více souborů v jednom požadavku. Pokud je zakázáno, Kilo Code musí upravovat soubory jeden po druhém. Zakázání může pomoci při práci s méně schopnými modely nebo když chcete mít větší kontrolu nad úpravami souborů."
 		},
-		"MORPH_FAST_APPLY": {
-			"name": "Povolit Morph Fast Apply",
-			"description": "Pokud je povoleno, Kilo Code může upravovat soubory pomocí Morph Fast Apply. Vyžaduje poskytovatele Kilo Code API, OpenRouter nebo klíč API Morph.",
-			"apiKey": "Klíč API Morph (volitelné)",
-			"placeholder": "Zadejte svůj klíč API Morph (volitelné)"
-		},
-		"FAST_APPLY": {
-			"apiKey": "Klíč API (volitelné)",
-			"placeholder": "Zadejte svůj klíč API (volitelné)",
-			"modelLabel": "Výběr modelu",
-			"modelDescription": "Vyberte model Fast Apply, který chcete použít pro úpravy souborů",
-			"models": {
-				"auto": "Auto (výchozí - vybere nejlepší dostupný)",
-				"morphFast": "Morph v3 Fast (rychlejší, nižší náklady)",
-				"morphLarge": "Morph v3 Large (schopnější)",
-				"relace": "Relace Apply v3"
-			}
-		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Úpravy na pozadí",
 			"description": "Zabránit narušení zaměření editoru, když je povoleno. Úpravy souborů probíhají na pozadí bez otevírání diff zobrazení nebo krádeže zaměření. Můžete pokračovat v práci bez přerušení, zatímco Kilo Code provádí změny. Soubory mohou být otevřeny bez zaměření pro zachycení diagnostiky nebo zůstat zcela zavřené."

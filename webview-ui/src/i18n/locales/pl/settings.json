@@ -757,35 +757,7 @@
 		},
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Włącz równoczesne edycje plików",
-			"description": "Gdy włączone, Kilo Code może edytować wiele plików w jednym żądaniu. Gdy wyłączone, Kilo Code musi edytować pliki jeden po drugim. Wyłączenie tego może pomóc podczas pracy z mniej zdolnymi modelami lub gdy chcesz mieć większą kontrolę nad modyfikacjami plików。",
-			"FAST_APPLY": {
-				"apiKey": "Klucz API (opcjonalny)",
-				"placeholder": "Wprowadź swój klucz API (opcjonalny)",
-				"modelLabel": "Wybór modelu",
-				"modelDescription": "Wybierz model Fast Apply do edycji plików",
-				"models": {
-					"auto": "Auto (Domyślnie - wybiera najlepszy dostępny)",
-					"morphFast": "Morph v3 Fast (Szybszy, niższy koszt)",
-					"morphLarge": "Morph v3 Large (Bardziej wydajny)",
-					"relace": "Relace Apply v3"
-				}
-			}
-		},
-		"MORPH_FAST_APPLY": {
-			"name": "Włącz Fast Apply",
-			"description": "Po włączeniu Kilo Code może edytować pliki za pomocą Fast Apply, wykorzystując wyspecjalizowane modele zoptymalizowane pod kątem modyfikacji kodu. Wymaga dostawcy API Kilo Code, OpenRouter lub bezpośredniego klucza API."
-		},
-		"FAST_APPLY": {
-			"apiKey": "Klucz API (opcjonalny)",
-			"placeholder": "Wprowadź swój klucz API (opcjonalny)",
-			"modelLabel": "Wybór modelu",
-			"modelDescription": "Wybierz model Fast Apply do edycji plików",
-			"models": {
-				"auto": "Auto (Domyślnie - wybiera najlepszy dostępny)",
-				"morphFast": "Morph v3 Fast (Szybszy, niższy koszt)",
-				"morphLarge": "Morph v3 Large (Bardziej wydajny)",
-				"relace": "Relace Apply v3"
-			}
+			"description": "Gdy włączone, Kilo Code może edytować wiele plików w jednym żądaniu. Gdy wyłączone, Kilo Code musi edytować pliki jeden po drugim. Wyłączenie tego może pomóc podczas pracy z mniej zdolnymi modelami lub gdy chcesz mieć większą kontrolę nad modyfikacjami plików。"
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Edycja w tle",

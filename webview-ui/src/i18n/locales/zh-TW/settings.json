@@ -758,35 +758,7 @@
 		},
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "啟用並行檔案編輯",
-			"description": "啟用後 Kilo Code 可在單個請求中編輯多個檔案。停用後 Kilo Code 必須逐個編輯檔案。停用此功能有助於使用能力較弱的模型或需要更精確控制檔案修改時。",
-			"FAST_APPLY": {
-				"apiKey": "API 金鑰（選用）",
-				"placeholder": "輸入您的 API 金鑰（選用）",
-				"modelLabel": "模型選擇",
-				"modelDescription": "選擇用於檔案編輯的快速應用模型",
-				"models": {
-					"auto": "自動（預設 - 選擇最佳可用）",
-					"morphFast": "Morph v3 Fast (更快，成本更低)",
-					"morphLarge": "Morph v3 Large (功能更強大)",
-					"relace": "Relace Apply v3"
-				}
-			}
-		},
-		"MORPH_FAST_APPLY": {
-			"name": "啟用 Fast Apply",
-			"description": "啟用後，Kilo Code 可使用 Fast Apply 編輯檔案，並使用針對程式碼修改最佳化的專用模型。需要 Kilo Code API 供應商、OpenRouter 或直接 API 金鑰。"
-		},
-		"FAST_APPLY": {
-			"apiKey": "API 金鑰（選用）",
-			"placeholder": "輸入您的 API 金鑰（選用）",
-			"modelLabel": "模型選擇",
-			"modelDescription": "選擇用於檔案編輯的快速應用模型",
-			"models": {
-				"auto": "自動（預設 - 選擇最佳可用）",
-				"morphFast": "Morph v3 Fast (更快，成本更低)",
-				"morphLarge": "Morph v3 Large (功能更強大)",
-				"relace": "Relace Apply v3"
-			}
+			"description": "啟用後 Kilo Code 可在單個請求中編輯多個檔案。停用後 Kilo Code 必須逐個編輯檔案。停用此功能有助於使用能力較弱的模型或需要更精確控制檔案修改時。"
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "背景編輯",

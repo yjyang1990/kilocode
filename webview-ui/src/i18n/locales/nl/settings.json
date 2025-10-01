@@ -757,35 +757,7 @@
 		},
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Gelijktijdige bestandsbewerkingen inschakelen",
-			"description": "Wanneer ingeschakeld, kan Kilo Code meerdere bestanden in één verzoek bewerken. Wanneer uitgeschakeld, moet Kilo Code bestanden één voor één bewerken. Het uitschakelen hiervan kan helpen wanneer je werkt met minder capabele modellen of wanneer je meer controle wilt over bestandswijzigingen。",
-			"FAST_APPLY": {
-				"apiKey": "API-sleutel (optioneel)",
-				"placeholder": "Voer uw API-sleutel in (optioneel)",
-				"modelLabel": "Modelselectie",
-				"modelDescription": "Kies welk Fast Apply-model u wilt gebruiken voor bestandsbewerkingen",
-				"models": {
-					"auto": "Auto (Standaard - kiest de best beschikbare)",
-					"morphFast": "Morph v3 Fast (Sneller, lagere kosten)",
-					"morphLarge": "Morph v3 Large (Capabeler)",
-					"relace": "Relace Apply v3"
-				}
-			}
-		},
-		"MORPH_FAST_APPLY": {
-			"name": "Fast Apply inschakelen",
-			"description": "Wanneer ingeschakeld, kan Kilo Code bestanden bewerken met Fast Apply met gespecialiseerde modellen die zijn geoptimaliseerd voor codewijzigingen. Vereist de Kilo Code API Provider, OpenRouter of een directe API-sleutel."
-		},
-		"FAST_APPLY": {
-			"apiKey": "API-sleutel (optioneel)",
-			"placeholder": "Voer uw API-sleutel in (optioneel)",
-			"modelLabel": "Modelselectie",
-			"modelDescription": "Kies welk Fast Apply-model u wilt gebruiken voor bestandsbewerkingen",
-			"models": {
-				"auto": "Auto (Standaard - kiest de best beschikbare)",
-				"morphFast": "Morph v3 Fast (Sneller, lagere kosten)",
-				"morphLarge": "Morph v3 Large (Capabeler)",
-				"relace": "Relace Apply v3"
-			}
+			"description": "Wanneer ingeschakeld, kan Kilo Code meerdere bestanden in één verzoek bewerken. Wanneer uitgeschakeld, moet Kilo Code bestanden één voor één bewerken. Het uitschakelen hiervan kan helpen wanneer je werkt met minder capabele modellen of wanneer je meer controle wilt over bestandswijzigingen。"
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Achtergrondbewerking",
