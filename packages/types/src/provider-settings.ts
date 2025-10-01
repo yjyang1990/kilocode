@@ -50,7 +50,7 @@ export const dynamicProviders = [
 	"requesty",
 	"unbound",
 	"glama",
-	"ovhcloud"
+	"ovhcloud",
 ] as const
 
 export type DynamicProvider = (typeof dynamicProviders)[number]
@@ -745,11 +745,6 @@ export const MODELS_BY_PROVIDER: Record<
 		label: "OpenAI",
 		models: Object.keys(openAiNativeModels),
 	},
-	ovhcloud: {
-		id: "ovhcloud",
-		label: "OVHcloud AI Endpoints",
-		models: [],
-	},
 	"qwen-code": { id: "qwen-code", label: "Qwen Code", models: Object.keys(qwenCodeModels) },
 	roo: { id: "roo", label: "Roo", models: Object.keys(rooModels) },
 	sambanova: {
@@ -777,6 +772,7 @@ export const MODELS_BY_PROVIDER: Record<
 	openrouter: { id: "openrouter", label: "OpenRouter", models: [] },
 	requesty: { id: "requesty", label: "Requesty", models: [] },
 	unbound: { id: "unbound", label: "Unbound", models: [] },
+	ovhcloud: { id: "ovhcloud", label: "OVHcloud AI Endpoints", models: [] },
 
 	// kilocode_change start
 	kilocode: { id: "kilocode", label: "Kilocode", models: [] },

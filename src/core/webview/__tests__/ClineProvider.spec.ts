@@ -2733,7 +2733,7 @@ describe("ClineProvider - Router Models", () => {
 		expect(getModels).toHaveBeenCalledWith({ provider: "glama" })
 		expect(getModels).toHaveBeenCalledWith({ provider: "unbound", apiKey: "unbound-key" })
 		expect(getModels).toHaveBeenCalledWith({ provider: "vercel-ai-gateway" })
-		expect(getModels).toHaveBeenCalledWith({ provider: "ovhcloud" })
+		expect(getModels).toHaveBeenCalledWith({ provider: "ovhcloud", apiKey: "ovhcloud-key" })
 		expect(getModels).toHaveBeenCalledWith({
 			provider: "litellm",
 			apiKey: "litellm-key",
@@ -2754,9 +2754,9 @@ describe("ClineProvider - Router Models", () => {
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
+				ovhcloud: mockModels,
 				huggingface: {},
 				"io-intelligence": {},
-				ovhcloud: mockModels,
 			},
 		})
 	})
@@ -2791,9 +2791,9 @@ describe("ClineProvider - Router Models", () => {
 			.mockRejectedValueOnce(new Error("Kilocode-OpenRouter API error")) // kilocode-openrouter fail
 			.mockRejectedValueOnce(new Error("Ollama API error")) // kilocode_change
 			.mockResolvedValueOnce(mockModels) // vercel-ai-gateway success
+			.mockResolvedValueOnce(mockModels) // ovhcloud
 			.mockResolvedValueOnce(mockModels) // deepinfra success
 			.mockRejectedValueOnce(new Error("LiteLLM connection failed")) // litellm fail
-			.mockResolvedValueOnce(mockModels) // ovhcloud
 
 		await messageHandler({ type: "requestRouterModels" })
 
@@ -2811,9 +2811,9 @@ describe("ClineProvider - Router Models", () => {
 				litellm: {},
 				"kilocode-openrouter": {},
 				"vercel-ai-gateway": mockModels,
+				ovhcloud: mockModels,
 				huggingface: {},
 				"io-intelligence": {},
-				ovhcloud: mockModels,
 			},
 		})
 
@@ -2936,9 +2936,9 @@ describe("ClineProvider - Router Models", () => {
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
+				ovhcloud: mockModels,
 				huggingface: {},
 				"io-intelligence": {},
-				ovhcloud: mockModels,
 			},
 		})
 	})
