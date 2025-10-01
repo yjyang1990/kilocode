@@ -24,10 +24,10 @@ export const FastApplySettings = ({
 					onChange={(e) => setCachedStateField("fastApplyModel", (e.target as any)?.value || "auto")}
 					className="w-full">
 					<VSCodeOption value="auto">{t("settings:experimental.MORPH_FAST_APPLY.models.auto")}</VSCodeOption>
-					<VSCodeOption value="morph-v3-fast">
+					<VSCodeOption value="morph/morph-v3-fast">
 						{t("settings:experimental.MORPH_FAST_APPLY.models.morphFast")}
 					</VSCodeOption>
-					<VSCodeOption value="morph-v3-large">
+					<VSCodeOption value="morph/morph-v3-large">
 						{t("settings:experimental.MORPH_FAST_APPLY.models.morphLarge")}
 					</VSCodeOption>
 					<VSCodeOption value="relace/relace-apply-3">
