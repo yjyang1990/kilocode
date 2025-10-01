@@ -9,37 +9,42 @@ export interface ApprovalResult {
 	newOutput: boolean
 }
 
-function getApprovalPath(category: string, testName: string, type: "approved" | "rejected"): string {
-	const categoryDir = path.join(APPROVALS_DIR, category)
-	const testDir = path.join(categoryDir, testName)
-	return path.join(testDir, type)
+function getCategoryPath(category: string): string {
+	return path.join(APPROVALS_DIR, category)
 }
 
-function getNextFileNumber(dirPath: string, prefix: string): number {
-	if (!fs.existsSync(dirPath)) {
+function getNextFileNumber(categoryDir: string, testName: string, type: "approved" | "rejected"): number {
+	if (!fs.existsSync(categoryDir)) {
 		return 1
 	}
 
-	const files = fs.readdirSync(dirPath)
+	const files = fs.readdirSync(categoryDir)
+	const pattern = new RegExp(`^${testName}\\.${type}\\.(\\d+)\\.txt$`)
 	const numbers = files
-		.filter((f) => f.startsWith(`${prefix}.`) && f.endsWith(".txt"))
+		.filter((f) => pattern.test(f))
 		.map((f) => {
-			const match = f.match(new RegExp(`^${prefix}\\.(\\d+)\\.txt$`))
+			const match = f.match(pattern)
 			return match ? parseInt(match[1], 10) : 0
 		})
 
 	return numbers.length > 0 ? Math.max(...numbers) + 1 : 1
 }
 
-function findMatchingFile(dirPath: string, content: string): string | null {
-	if (!fs.existsSync(dirPath)) {
+function findMatchingFile(
+	categoryDir: string,
+	testName: string,
+	type: "approved" | "rejected",
+	content: string,
+): string | null {
+	if (!fs.existsSync(categoryDir)) {
 		return null
 	}
 
-	const files = fs.readdirSync(dirPath).filter((f) => f.endsWith(".txt"))
+	const pattern = new RegExp(`^${testName}\\.${type}\\.\\d+\\.txt$`)
+	const files = fs.readdirSync(categoryDir).filter((f) => pattern.test(f))
 
 	for (const file of files) {
-		const filePath = path.join(dirPath, file)
+		const filePath = path.join(categoryDir, file)
 		const fileContent = fs.readFileSync(filePath, "utf-8")
 		if (fileContent.trim() === content.trim()) {
 			return file
@@ -77,29 +82,27 @@ export async function checkApproval(
 	input: string,
 	output: string,
 ): Promise<ApprovalResult> {
-	const approvedDir = getApprovalPath(category, testName, "approved")
-	const rejectedDir = getApprovalPath(category, testName, "rejected")
+	const categoryDir = getCategoryPath(category)
 
-	const approvedMatch = findMatchingFile(approvedDir, output)
+	const approvedMatch = findMatchingFile(categoryDir, testName, "approved", output)
 	if (approvedMatch) {
 		return { approved: true, newOutput: false }
 	}
 
-	const rejectedMatch = findMatchingFile(rejectedDir, output)
+	const rejectedMatch = findMatchingFile(categoryDir, testName, "rejected", output)
 	if (rejectedMatch) {
 		return { approved: false, newOutput: false }
 	}
 
 	const isApproved = await askUserApproval(category, testName, input, output)
 
-	const targetDir = isApproved ? approvedDir : rejectedDir
-	const prefix = isApproved ? "approved" : "rejected"
+	const type: "approved" | "rejected" = isApproved ? "approved" : "rejected"
 
-	fs.mkdirSync(targetDir, { recursive: true })
+	fs.mkdirSync(categoryDir, { recursive: true })
 
-	const nextNumber = getNextFileNumber(targetDir, prefix)
-	const filename = `${prefix}.${nextNumber}.txt`
-	const filePath = path.join(targetDir, filename)
+	const nextNumber = getNextFileNumber(categoryDir, testName, type)
+	const filename = `${testName}.${type}.${nextNumber}.txt`
+	const filePath = path.join(categoryDir, filename)
 
 	fs.writeFileSync(filePath, output, "utf-8")
 
