@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Box } from "ink"
 import { Text } from "../../common/Text.js"
 import Spinner from "ink-spinner"
-import { logService } from "../../../../services/LogService.js"
+import { logs } from "../../../../services/logs.js"
 import type { ClineMessage } from "../../../../types/messages.js"
 import { MessageHeader } from "./components/MessageHeader.js"
 import { ToolDisplay } from "./components/ToolDisplay.js"
@@ -35,7 +35,7 @@ export const ChatMessageRow: React.FC<ChatMessageRowProps> = ({
 }) => {
 	const [isExpanded, setIsExpanded] = useState(false)
 
-	logService.debug("Rendering enhanced message", "MessageRow", {
+	logs.debug("Rendering enhanced message", "MessageRow", {
 		type: message.type,
 		ask: message.ask,
 		say: message.say,

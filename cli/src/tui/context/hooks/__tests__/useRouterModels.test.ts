@@ -2,14 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import type { RouterModels, ModelRecord } from "../../../../types/messages.js"
 
 // Mock the dependencies
-const mockLogService = {
+const mockLogs = {
 	debug: vi.fn(),
 	error: vi.fn(),
 	warn: vi.fn(),
 }
 
-vi.mock("../../../../services/LogService.js", () => ({
-	logService: mockLogService,
+vi.mock("../../../../services/logs.js", () => ({
+	logs: mockLogs,
 }))
 
 describe("useRouterModels race condition fix", () => {

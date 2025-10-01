@@ -23,8 +23,8 @@ export interface LogFilter {
 /**
  * Singleton service for managing application logs with enhanced metadata
  */
-export class LogService {
-	private static instance: LogService | null = null
+export class LogsService {
+	private static instance: LogsService | null = null
 	private logs: LogEntry[] = []
 	private maxEntries: number = 1000
 	private listeners: Array<(entry: LogEntry) => void> = []
@@ -58,13 +58,13 @@ export class LogService {
 	}
 
 	/**
-	 * Get the singleton instance of LogService
+	 * Get the singleton instance of LogsService
 	 */
-	public static getInstance(): LogService {
-		if (!LogService.instance) {
-			LogService.instance = new LogService()
+	public static getInstance(): LogsService {
+		if (!LogsService.instance) {
+			LogsService.instance = new LogsService()
 		}
-		return LogService.instance
+		return LogsService.instance
 	}
 
 	/**
@@ -341,4 +341,4 @@ export class LogService {
 }
 
 // Export singleton instance for easy access
-export const logService = LogService.getInstance()
+export const logs = LogsService.getInstance()

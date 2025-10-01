@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import { Box } from "ink"
 import { Text } from "../common/Text.js"
 import { ScrollArea, useScrollArea } from "../common/ScrollArea.js"
-import { logService, type LogEntry, type LogLevel, type LogFilter } from "../../../services/LogService.js"
+import { logs, type LogEntry, type LogLevel, type LogFilter } from "../../../services/logs.js"
 import { PageHeader } from "../generic/PageHeader.js"
 import { EmptyState } from "../generic/EmptyState.js"
 import { PageLayout } from "../layout/PageLayout.js"
@@ -48,15 +48,15 @@ export const LogsView: React.FC = () => {
 				levels: Array.from(logsState.selectedLevels),
 			}
 			// Get logs and reverse them so oldest are first (will display at top)
-			const logs = logService.getLogs(filter).slice(0, logsState.showingCount).reverse()
-			setLogsState((prev) => ({ ...prev, logs }))
+			const logsItems = logs.getLogs(filter).slice(0, logsState.showingCount).reverse()
+			setLogsState((prev) => ({ ...prev, logs: logsItems }))
 		}
 
 		// Initial load
 		loadLogs()
 
 		// Subscribe to new logs
-		const unsubscribe = logService.subscribe((newEntry) => {
+		const unsubscribe = logs.subscribe((newEntry) => {
 			if (logsState.selectedLevels.has(newEntry.level)) {
 				setLogsState((prev) => ({
 					...prev,
@@ -100,19 +100,19 @@ export const LogsView: React.FC = () => {
 				levels: Array.from(newSelectedLevels),
 			}
 			// Get logs and reverse them so oldest are first
-			const logs = logService.getLogs(filter).slice(0, prev.showingCount).reverse()
+			const logsItems = logs.getLogs(filter).slice(0, prev.showingCount).reverse()
 
 			return {
 				...prev,
 				selectedLevels: newSelectedLevels,
-				logs,
+				logs: logsItems,
 			}
 		})
 	}, [])
 
 	// Clear all logs
 	const clearLogs = useCallback(() => {
-		logService.clear()
+		logs.clear()
 		setLogsState((prev) => ({ ...prev, logs: [] }))
 	}, [])
 
@@ -127,12 +127,12 @@ export const LogsView: React.FC = () => {
 				levels: Array.from(prev.selectedLevels),
 			}
 			// Get logs and reverse them so oldest are first
-			const logs = logService.getLogs(filter).slice(0, newCount).reverse()
+			const logsItems = logs.getLogs(filter).slice(0, newCount).reverse()
 
 			return {
 				...prev,
 				showingCount: newCount,
-				logs,
+				logs: logsItems,
 			}
 		})
 	}, [])
@@ -167,8 +167,8 @@ export const LogsView: React.FC = () => {
 	}
 
 	// Get log counts for display
-	const logCounts = logService.getLogCounts()
-	const totalLogs = logService.getLogs().length
+	const logCounts = logs.getLogCounts()
+	const totalLogs = logs.getLogs().length
 
 	// Create header
 	const header = <PageHeader title="Logs" />

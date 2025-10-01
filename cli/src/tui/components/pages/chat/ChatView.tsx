@@ -3,7 +3,7 @@ import { Box } from "ink"
 import { Text } from "../../common/Text.js"
 import TextInput from "ink-text-input"
 import { ScrollArea, useScrollArea } from "../../common/ScrollArea.js"
-import { logService } from "../../../../services/LogService.js"
+import { logs } from "../../../../services/logs.js"
 import type { ExtensionMessage, ClineMessage } from "../../../../types/messages.js"
 import { PageHeader } from "../../generic/PageHeader.js"
 import { EmptyState } from "../../generic/EmptyState.js"
@@ -43,7 +43,7 @@ export const ChatView: React.FC = () => {
 	// Update messages when extension state changes
 	useEffect(() => {
 		if (extensionState?.clineMessages) {
-			logService.debug(`Updating chat messages: ${extensionState.clineMessages.length} messages`, "ChatView")
+			logs.debug(`Updating chat messages: ${extensionState.clineMessages.length} messages`, "ChatView")
 			setChatState((prev) => ({
 				...prev,
 				messages: extensionState.clineMessages,
@@ -61,13 +61,13 @@ export const ChatView: React.FC = () => {
 	// Handle extension messages - improved message handling
 	useEffect(() => {
 		const handleMessage = (message: ExtensionMessage) => {
-			logService.debug(`ChatView received extension message: ${message.type}`, "ChatView")
+			logs.debug(`ChatView received extension message: ${message.type}`, "ChatView")
 
 			switch (message.type) {
 				case "state":
 					// Update entire state when received
 					if (message.state?.clineMessages) {
-						logService.debug(`State update: ${message.state.clineMessages.length} messages`, "ChatView")
+						logs.debug(`State update: ${message.state.clineMessages.length} messages`, "ChatView")
 						setChatState((prev) => ({
 							...prev,
 							messages: message.state!.clineMessages,
@@ -92,16 +92,16 @@ export const ChatView: React.FC = () => {
 				case "action":
 					switch (message.action) {
 						case "didBecomeVisible":
-							logService.debug("ChatView became visible", "ChatView")
+							logs.debug("ChatView became visible", "ChatView")
 							break
 						case "focusInput":
-							logService.debug("Focus input requested", "ChatView")
+							logs.debug("Focus input requested", "ChatView")
 							break
 					}
 					break
 				case "selectedImages":
 					if (message.images && message.context !== "edit") {
-						logService.debug("Selected images received", "ChatView", { count: message.images.length })
+						logs.debug("Selected images received", "ChatView", { count: message.images.length })
 					}
 					break
 				case "invoke":
@@ -138,7 +138,7 @@ export const ChatView: React.FC = () => {
 		// Connect to extension message handling through props
 		// Note: This sets up the message handler but doesn't call it directly
 		// The actual messages will be received through the onExtensionMessage prop
-		logService.debug("ChatView message handler setup complete", "ChatView")
+		logs.debug("ChatView message handler setup complete", "ChatView")
 
 		// Register the message handler with the parent component
 		// This is a workaround since onExtensionMessage expects a single message, not a handler
@@ -169,7 +169,7 @@ export const ChatView: React.FC = () => {
 				})
 			}
 		} catch (error) {
-			logService.error("Failed to send message", "ChatView", { error })
+			logs.error("Failed to send message", "ChatView", { error })
 			setChatState((prev) => ({ ...prev, isWaitingForResponse: false }))
 		}
 
@@ -184,7 +184,7 @@ export const ChatView: React.FC = () => {
 			})
 			setChatState((prev) => ({ ...prev, currentAsk: null }))
 		} catch (error) {
-			logService.error("Failed to approve", "ChatView", { error })
+			logs.error("Failed to approve", "ChatView", { error })
 		}
 	}, [sendMessage])
 
@@ -196,7 +196,7 @@ export const ChatView: React.FC = () => {
 			})
 			setChatState((prev) => ({ ...prev, currentAsk: null }))
 		} catch (error) {
-			logService.error("Failed to reject", "ChatView", { error })
+			logs.error("Failed to reject", "ChatView", { error })
 		}
 	}, [sendMessage])
 

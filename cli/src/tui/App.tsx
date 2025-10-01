@@ -24,7 +24,7 @@ import { LogsView } from "./components/pages/LogsView.js"
 import { StatusBar } from "./components/layout/StatusBar.js"
 import { OverlaySidebar } from "./components/generic/OverlaySidebar.js"
 import { FullScreenLayout } from "./components/layout/FullScreenLayout.js"
-import { logService } from "../services/LogService.js"
+import { logs } from "../services/logs.js"
 import {
 	CliContextProvider,
 	useCliState,
@@ -51,10 +51,10 @@ const AppContent: React.FC = () => {
 				const hasParent = pathSegments.length > 1
 
 				if (hasParent && router.canGoBack) {
-					logService.debug("ESC key pressed on nested route, going back", "CLI App")
+					logs.debug("ESC key pressed on nested route, going back", "CLI App")
 					router.goBack()
 				} else {
-					logService.debug("ESC key pressed on root route, toggling sidebar", "CLI App")
+					logs.debug("ESC key pressed on root route, toggling sidebar", "CLI App")
 					sidebar.toggle()
 				}
 				return
@@ -62,7 +62,7 @@ const AppContent: React.FC = () => {
 
 			// Process Ctrl key combinations regardless of sidebar visibility for exit commands
 			if (key.ctrl) {
-				logService.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
+				logs.debug(`Ctrl key detected with input: "${input}"`, "CLI App")
 				switch (input) {
 					case "c":
 						actions.exit()
@@ -73,7 +73,7 @@ const AppContent: React.FC = () => {
 					default:
 						// Only consume other Ctrl combinations when sidebar is not visible
 						if (!sidebar.visible) {
-							logService.debug(`Unhandled Ctrl+${input}`, "CLI App")
+							logs.debug(`Unhandled Ctrl+${input}`, "CLI App")
 							return
 						}
 				}
@@ -237,7 +237,7 @@ export class TUIApplication extends EventEmitter {
 	forwardMessageToActiveView(message: ExtensionMessage): void {
 		// This could be enhanced to forward messages to the appropriate view
 		// For now, we'll let the App component handle it through the callback
-		logService.debug("Forwarding message to active view", "TUIApplication", { type: message.type })
+		logs.debug("Forwarding message to active view", "TUIApplication", { type: message.type })
 	}
 
 	async dispose(): Promise<void> {
@@ -260,7 +260,7 @@ export class TUIApplication extends EventEmitter {
 
 	async executeTask(message: string): Promise<void> {
 		// For single task execution, we'll create a non-interactive mode
-		logService.info(`Executing task: ${message}`, "TUIApplication")
+		logs.info(`Executing task: ${message}`, "TUIApplication")
 
 		try {
 			await this.options.messageBridge.sendWebviewMessage({
@@ -271,9 +271,9 @@ export class TUIApplication extends EventEmitter {
 			// Wait for task completion or user interruption
 			// This is a simplified implementation - in practice we'd need to handle
 			// the full task lifecycle with proper state management
-			logService.info("Task execution started. Press Ctrl+C to cancel.", "TUIApplication")
+			logs.info("Task execution started. Press Ctrl+C to cancel.", "TUIApplication")
 		} catch (error) {
-			logService.error("Failed to execute task", "TUIApplication", { error })
+			logs.error("Failed to execute task", "TUIApplication", { error })
 			throw error
 		}
 	}

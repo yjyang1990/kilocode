@@ -2,7 +2,7 @@ import React from "react"
 import { render } from "ink-testing-library"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { LogsView } from "../LogsView.js"
-import { logService } from "../../../../services/LogService.js"
+import { logs } from "../../../../services/logs.js"
 
 // Mock the context hooks
 vi.mock("../../../context/index.js", () => ({
@@ -35,7 +35,7 @@ vi.mock("../../../hooks/useKeyboardNavigation.js", () => ({
 describe("LogsView", () => {
 	beforeEach(() => {
 		// Clear logs before each test
-		logService.clear()
+		logs.clear()
 	})
 
 	it("should render with dynamic height ScrollArea", () => {
@@ -54,8 +54,8 @@ describe("LogsView", () => {
 
 	it("should display logs when they exist", () => {
 		// Add some test logs
-		logService.info("Test info message", "TestSource")
-		logService.error("Test error message", "TestSource")
+		logs.info("Test info message", "TestSource")
+		logs.error("Test error message", "TestSource")
 
 		const { lastFrame } = render(<LogsView />)
 		const output = lastFrame()

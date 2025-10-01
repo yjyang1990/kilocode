@@ -1,11 +1,11 @@
 import { EventEmitter } from "events"
-import { render } from "ink"
+import { Instance, render } from "ink"
 import React from "react"
 import { createExtensionHost, ExtensionHost } from "../host/ExtensionHost.js"
 import { createMessageBridge, MessageBridge } from "../communication/ipc.js"
-import { TUIApplication } from "../tui/App.js"
-import { SplashScreen } from "../tui/components/common/SplashScreen.js"
-import { logService } from "../services/LogService.js"
+import { UI } from "../ui/UI.js"
+import { Logo } from "../ui/components/Logo.js"
+import { logs } from "../services/logs.js"
 import { resolveExtensionPaths } from "../utils/extension-paths.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
 
@@ -19,7 +19,7 @@ export interface CLIOptions {
 export class KiloCodeCLI extends EventEmitter {
 	private extensionHost: ExtensionHost
 	private messageBridge: MessageBridge
-	private tuiApp: TUIApplication | null = null
+	private ui: Instance | null = null
 	private options: CLIOptions
 	private isInitialized = false
 	private splashInstance: any = null
@@ -49,19 +49,19 @@ export class KiloCodeCLI extends EventEmitter {
 	private setupEventHandlers(): void {
 		// Extension host events
 		this.extensionHost.on("activated", (api) => {
-			logService.info("Extension host activated", "KiloCodeCLI")
-			logService.debug("Extension API keys", "KiloCodeCLI", { apiKeys: Object.keys(api) })
+			logs.info("Extension host activated", "KiloCodeCLI")
+			logs.debug("Extension API keys", "KiloCodeCLI", { apiKeys: Object.keys(api) })
 			this.emit("extensionReady", api)
 		})
 
 		this.extensionHost.on("error", (error) => {
-			logService.error("Extension host error", "KiloCodeCLI", { error })
+			logs.error("Extension host error", "KiloCodeCLI", { error })
 			this.emit("error", error)
 		})
 
 		// Forward extension messages to TUI through message bridge
 		this.extensionHost.on("message", (message: ExtensionMessage) => {
-			logService.debug(`Extension message: ${message.type}`, "KiloCodeCLI")
+			logs.debug(`Extension message: ${message.type}`, "KiloCodeCLI")
 			// Send extension message to TUI
 			this.messageBridge.sendExtensionMessage(message)
 		})
@@ -93,7 +93,7 @@ export class KiloCodeCLI extends EventEmitter {
 
 	private showSplashScreen(): void {
 		// Render splash screen immediately
-		this.splashInstance = render(React.createElement(SplashScreen))
+		this.splashInstance = render(React.createElement(Logo))
 	}
 
 	private hideSplashScreen(): void {
@@ -113,95 +113,39 @@ export class KiloCodeCLI extends EventEmitter {
 			// Show splash screen first
 			this.showSplashScreen()
 
-			logService.info("Initializing Kilo Code CLI...", "KiloCodeCLI")
+			logs.info("Initializing Kilo Code CLI...", "KiloCodeCLI")
 
 			// Activate extension host
 			await this.extensionHost.activate()
 
-			// Initialize TUI application
-			this.tuiApp = new TUIApplication({
-				messageBridge: this.messageBridge,
-				initialMode: this.options.mode || "code",
-				workspace: this.options.workspace || process.cwd(),
-				autoApprove: this.options.autoApprove || false,
-			})
-
 			this.isInitialized = true
-			logService.info("Kilo Code CLI initialized successfully", "KiloCodeCLI")
+			logs.info("Kilo Code CLI initialized successfully", "KiloCodeCLI")
 
 			// Hide splash screen after initialization
 			this.hideSplashScreen()
 		} catch (error) {
-			logService.error("Failed to initialize CLI", "KiloCodeCLI", { error })
+			logs.error("Failed to initialize CLI", "KiloCodeCLI", { error })
 			this.hideSplashScreen()
 			throw error
 		}
 	}
 
-	async startChatSession(): Promise<void> {
+	async start(): Promise<void> {
 		await this.initialize()
 
-		if (!this.tuiApp) {
-			throw new Error("TUI application not initialized")
-		}
+		this.ui = render(
+			React.createElement(UI, {
+				options: {
+					messageBridge: this.messageBridge,
+					initialMode: this.options.mode || "code",
+					workspace: this.options.workspace || process.cwd(),
+					autoApprove: this.options.autoApprove || false,
+				},
+				onExit: () => this.dispose(),
+			}),
+		)
 
-		logService.info("Starting interactive chat session...", "KiloCodeCLI")
-		await this.tuiApp.startChatMode()
-	}
-
-	async executeTask(message: string): Promise<void> {
-		await this.initialize()
-
-		if (!this.tuiApp) {
-			throw new Error("TUI application not initialized")
-		}
-
-		logService.info(`Executing task: ${message}`, "KiloCodeCLI")
-		await this.tuiApp.executeTask(message)
-	}
-
-	async showHistory(): Promise<void> {
-		await this.initialize()
-
-		if (!this.tuiApp) {
-			throw new Error("TUI application not initialized")
-		}
-
-		logService.info("Showing task history...", "KiloCodeCLI")
-		await this.tuiApp.showHistory()
-	}
-
-	async showSettings(): Promise<void> {
-		await this.initialize()
-
-		if (!this.tuiApp) {
-			throw new Error("TUI application not initialized")
-		}
-
-		logService.info("Opening settings...", "KiloCodeCLI")
-		await this.tuiApp.showSettings()
-	}
-
-	async showModes(): Promise<void> {
-		await this.initialize()
-
-		if (!this.tuiApp) {
-			throw new Error("TUI application not initialized")
-		}
-
-		logService.info("Managing modes...", "KiloCodeCLI")
-		await this.tuiApp.showModes()
-	}
-
-	async showMcp(): Promise<void> {
-		await this.initialize()
-
-		if (!this.tuiApp) {
-			throw new Error("TUI application not initialized")
-		}
-
-		logService.info("Managing MCP servers...", "KiloCodeCLI")
-		await this.tuiApp.showMcp()
+		await this.ui.waitUntilExit()
 	}
 
 	private async handleTUIRequest(message: any): Promise<void> {
@@ -211,7 +155,7 @@ export class KiloCodeCLI extends EventEmitter {
 				await this.extensionHost.sendWebviewMessage(message.data.payload)
 			}
 		} catch (error) {
-			logService.error("Error handling TUI request", "KiloCodeCLI", { error })
+			logs.error("Error handling TUI request", "KiloCodeCLI", { error })
 		}
 	}
 
@@ -219,7 +163,7 @@ export class KiloCodeCLI extends EventEmitter {
 		try {
 			if (data.type === "webviewMessage") {
 				const message = data.payload
-				logService.debug(`Forwarding webview message to extension host: ${message.type}`, "KiloCodeCLI")
+				logs.debug(`Forwarding webview message to extension host: ${message.type}`, "KiloCodeCLI")
 
 				// Forward the message to the extension host
 				await this.extensionHost.sendWebviewMessage(message)
@@ -230,28 +174,29 @@ export class KiloCodeCLI extends EventEmitter {
 
 			return { success: true }
 		} catch (error) {
-			logService.error("Error handling TUI message", "KiloCodeCLI", { error })
+			logs.error("Error handling TUI message", "KiloCodeCLI", { error })
 			return { error: error instanceof Error ? error.message : "Unknown error" }
 		}
 	}
 
 	private handleExtensionEvent(message: any): void {
-		try {
-			if (message.data.type === "extensionMessage") {
-				// Forward extension message to TUI
-				if (this.tuiApp) {
-					this.tuiApp.handleExtensionMessage(message.data.payload)
-				}
-			}
-		} catch (error) {
-			logService.error("Error handling extension event", "KiloCodeCLI", { error })
-		}
+		return
+		// try {
+		// 	if (message.data.type === "extensionMessage") {
+		// 		// Forward extension message to TUI
+		// 		if (this.tuiApp) {
+		// 			this.tuiApp.handleExtensionMessage(message.data.payload)
+		// 		}
+		// 	}
+		// } catch (error) {
+		// 	logs.error("Error handling extension event", "KiloCodeCLI", { error })
+		// }
 	}
 
 	async dispose(): Promise<void> {
-		if (this.tuiApp) {
-			await this.tuiApp.dispose()
-			this.tuiApp = null
+		if (this.ui) {
+			await this.ui.unmount()
+			this.ui = null
 		}
 
 		this.messageBridge.dispose()

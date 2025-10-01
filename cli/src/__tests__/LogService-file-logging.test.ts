@@ -2,12 +2,12 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import * as fs from "fs-extra"
 import * as path from "path"
 import * as os from "os"
-import { LogService } from "../services/LogService.js"
+import { LogsService } from "../services/logs.js"
 import { KiloCodePaths } from "../utils/paths.js"
 
-describe("LogService File Logging", () => {
+describe("LogsService File Logging", () => {
 	let tempDir: string
-	let logService: LogService
+	let logs: LogsService
 	let originalHome: string | undefined
 
 	beforeEach(async () => {
@@ -19,10 +19,10 @@ describe("LogService File Logging", () => {
 		process.env.HOME = tempDir
 
 		// Reset singleton instance
-		;(LogService as any).instance = null
+		;(LogsService as any).instance = null
 
 		// Get fresh instance
-		logService = LogService.getInstance()
+		logs = LogsService.getInstance()
 
 		// Wait a bit for async initialization
 		await new Promise((resolve) => setTimeout(resolve, 100))
@@ -40,12 +40,12 @@ describe("LogService File Logging", () => {
 		await fs.remove(tempDir)
 
 		// Reset singleton
-		;(LogService as any).instance = null
+		;(LogsService as any).instance = null
 	})
 
 	it("should create log directory and file", async () => {
 		// Log something
-		logService.info("Test message", "TestSource")
+		logs.info("Test message", "TestSource")
 
 		// Wait for async file operations
 		await new Promise((resolve) => setTimeout(resolve, 200))
@@ -61,10 +61,10 @@ describe("LogService File Logging", () => {
 
 	it("should write log entries to file with correct format", async () => {
 		// Log different types of messages
-		logService.info("Info message", "TestSource")
-		logService.error("Error message", "TestSource", { error: "details" })
-		logService.warn("Warning message")
-		logService.debug("Debug message", "TestSource")
+		logs.info("Info message", "TestSource")
+		logs.error("Error message", "TestSource", { error: "details" })
+		logs.warn("Warning message")
+		logs.debug("Debug message", "TestSource")
 
 		// Wait for async file operations
 		await new Promise((resolve) => setTimeout(resolve, 200))
@@ -92,11 +92,11 @@ describe("LogService File Logging", () => {
 
 	it("should append to existing log file", async () => {
 		// Write first log
-		logService.info("First message")
+		logs.info("First message")
 		await new Promise((resolve) => setTimeout(resolve, 100))
 
 		// Write second log
-		logService.info("Second message")
+		logs.info("Second message")
 		await new Promise((resolve) => setTimeout(resolve, 100))
 
 		// Read log file
@@ -113,23 +113,23 @@ describe("LogService File Logging", () => {
 	it("should handle file logging gracefully", async () => {
 		// This should not throw even if there are file system issues
 		expect(() => {
-			logService.error("Test error message")
+			logs.error("Test error message")
 		}).not.toThrow()
 
 		// Wait for async operations
 		await new Promise((resolve) => setTimeout(resolve, 200))
 
 		// File logging should be enabled in normal conditions
-		expect(logService.isFileLoggingEnabled()).toBe(true)
+		expect(logs.isFileLoggingEnabled()).toBe(true)
 	})
 
 	it("should provide correct log file path", () => {
 		const expectedPath = path.join(KiloCodePaths.getLogsDir(), "cli.txt")
-		expect(logService.getLogFilePath()).toBe(expectedPath)
+		expect(logs.getLogFilePath()).toBe(expectedPath)
 	})
 
 	it("should include file logging status in config", () => {
-		const config = logService.getConfig()
+		const config = logs.getConfig()
 		expect(config).toHaveProperty("fileLoggingEnabled")
 		expect(config).toHaveProperty("logFilePath")
 		expect(typeof config.fileLoggingEnabled).toBe("boolean")
@@ -138,21 +138,21 @@ describe("LogService File Logging", () => {
 
 	it("should initialize file logging properly", async () => {
 		// Reset singleton to test initialization
-		;(LogService as any).instance = null
+		;(LogsService as any).instance = null
 
 		// Create new instance
-		const newLogService = LogService.getInstance()
+		const newLogsService = LogsService.getInstance()
 
 		// Wait for async initialization
 		await new Promise((resolve) => setTimeout(resolve, 200))
 
 		// File logging should be enabled in normal conditions
-		expect(newLogService.isFileLoggingEnabled()).toBe(true)
-		expect(newLogService.getLogFilePath()).toContain("cli.txt")
+		expect(newLogsService.isFileLoggingEnabled()).toBe(true)
+		expect(newLogsService.getLogFilePath()).toContain("cli.txt")
 	})
 
 	it("should format log entries without source correctly", async () => {
-		logService.info("Message without source")
+		logs.info("Message without source")
 
 		// Wait for async file operations
 		await new Promise((resolve) => setTimeout(resolve, 100))
@@ -167,7 +167,7 @@ describe("LogService File Logging", () => {
 
 	it("should format log entries with context correctly", async () => {
 		const context = { userId: 123, action: "test", nested: { key: "value" } }
-		logService.info("Message with context", "TestSource", context)
+		logs.info("Message with context", "TestSource", context)
 
 		// Wait for async file operations
 		await new Promise((resolve) => setTimeout(resolve, 100))

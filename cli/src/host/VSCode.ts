@@ -1,6 +1,6 @@
 import * as fs from "fs"
 import * as path from "path"
-import { logService } from "../services/LogService.js"
+import { logs } from "../services/logs.js"
 import { KiloCodePaths } from "../utils/paths.js"
 
 // Basic VSCode API types and enums
@@ -191,11 +191,11 @@ export class OutputChannel implements Disposable {
 	}
 
 	append(value: string): void {
-		logService.info(`[${this._name}] ${value}`, "VSCode.OutputChannel")
+		logs.info(`[${this._name}] ${value}`, "VSCode.OutputChannel")
 	}
 
 	appendLine(value: string): void {
-		logService.info(`[${this._name}] ${value}`, "VSCode.OutputChannel")
+		logs.info(`[${this._name}] ${value}`, "VSCode.OutputChannel")
 	}
 
 	clear(): void {
@@ -270,7 +270,7 @@ export class ExtensionContext {
 				fs.mkdirSync(dirPath, { recursive: true })
 			}
 		} catch (error) {
-			logService.warn(`Failed to create directory ${dirPath}`, "VSCode.ExtensionContext", { error })
+			logs.warn(`Failed to create directory ${dirPath}`, "VSCode.ExtensionContext", { error })
 		}
 	}
 }
@@ -299,7 +299,7 @@ class MemoryMemento implements Memento {
 				this.data = JSON.parse(content)
 			}
 		} catch (error) {
-			logService.warn(`Failed to load state from ${this.filePath}`, "VSCode.Memento", { error })
+			logs.warn(`Failed to load state from ${this.filePath}`, "VSCode.Memento", { error })
 			this.data = {}
 		}
 	}
@@ -313,7 +313,7 @@ class MemoryMemento implements Memento {
 			}
 			fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2))
 		} catch (error) {
-			logService.warn(`Failed to save state to ${this.filePath}`, "VSCode.Memento", { error })
+			logs.warn(`Failed to save state to ${this.filePath}`, "VSCode.Memento", { error })
 		}
 	}
 
@@ -359,7 +359,7 @@ class MockSecretStorage implements SecretStorage {
 				this.secrets = JSON.parse(content)
 			}
 		} catch (error) {
-			logService.warn(`Failed to load secrets from ${this.filePath}`, "VSCode.MockSecretStorage", { error })
+			logs.warn(`Failed to load secrets from ${this.filePath}`, "VSCode.MockSecretStorage", { error })
 			this.secrets = {}
 		}
 	}
@@ -373,7 +373,7 @@ class MockSecretStorage implements SecretStorage {
 			}
 			fs.writeFileSync(this.filePath, JSON.stringify(this.secrets, null, 2))
 		} catch (error) {
-			logService.warn(`Failed to save secrets to ${this.filePath}`, "VSCode.MockSecretStorage", { error })
+			logs.warn(`Failed to save secrets to ${this.filePath}`, "VSCode.MockSecretStorage", { error })
 		}
 	}
 
@@ -655,7 +655,7 @@ export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 				fs.mkdirSync(dirPath, { recursive: true })
 			}
 		} catch (error) {
-			logService.warn(`Failed to create directory ${dirPath}`, "VSCode.MockWorkspaceConfiguration", { error })
+			logs.warn(`Failed to create directory ${dirPath}`, "VSCode.MockWorkspaceConfiguration", { error })
 		}
 	}
 
@@ -714,12 +714,12 @@ export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 			// Update the memento (this automatically persists to disk)
 			await memento.update(fullSection, value)
 
-			logService.debug(
+			logs.debug(
 				`Configuration updated: ${fullSection} = ${JSON.stringify(value)} (${scope})`,
 				"VSCode.MockWorkspaceConfiguration",
 			)
 		} catch (error) {
-			logService.error(`Failed to update configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
+			logs.error(`Failed to update configuration: ${fullSection}`, "VSCode.MockWorkspaceConfiguration", {
 				error,
 			})
 			throw error
@@ -729,7 +729,7 @@ export class MockWorkspaceConfiguration implements WorkspaceConfiguration {
 	// Additional method to reload configuration from disk
 	public reload(): void {
 		// MemoryMemento automatically loads from disk, so we don't need to do anything special
-		logService.debug("Configuration reload requested", "VSCode.MockWorkspaceConfiguration")
+		logs.debug("Configuration reload requested", "VSCode.MockWorkspaceConfiguration")
 	}
 
 	// Method to get all configuration data (useful for debugging and generic config loading)
@@ -841,17 +841,17 @@ export class WindowAPI {
 	}
 
 	showInformationMessage(message: string, ...items: string[]): Thenable<string | undefined> {
-		logService.info(message, "VSCode.Window")
+		logs.info(message, "VSCode.Window")
 		return Promise.resolve(undefined)
 	}
 
 	showWarningMessage(message: string, ...items: string[]): Thenable<string | undefined> {
-		logService.warn(message, "VSCode.Window")
+		logs.warn(message, "VSCode.Window")
 		return Promise.resolve(undefined)
 	}
 
 	showErrorMessage(message: string, ...items: string[]): Thenable<string | undefined> {
-		logService.error(message, "VSCode.Window")
+		logs.error(message, "VSCode.Window")
 		return Promise.resolve(undefined)
 	}
 
@@ -878,7 +878,7 @@ export class WindowAPI {
 			// Set up webview mock that captures messages from the extension
 			const mockWebview = {
 				postMessage: (message: any) => {
-					logService.debug(`Extension sending webview message: ${message.type}`, "VSCode.Webview")
+					logs.debug(`Extension sending webview message: ${message.type}`, "VSCode.Webview")
 					// Forward extension messages to ExtensionHost for CLI consumption
 					if ((global as any).__extensionHost) {
 						;(global as any).__extensionHost.emit("extensionWebviewMessage", message)
@@ -921,7 +921,7 @@ export class WindowAPI {
 					try {
 						provider.resolveWebviewView(mockWebviewView, { preserveFocus: false }, {})
 					} catch (error) {
-						logService.error("Error resolving webview view", "VSCode.Window", { error })
+						logs.error("Error resolving webview view", "VSCode.Window", { error })
 					}
 				}, 100)
 			}
@@ -1034,7 +1034,7 @@ export class CommandsAPI {
 			case "workbench.action.reloadWindow":
 				return Promise.resolve(undefined as T)
 			default:
-				logService.warn(`Unknown command: ${command}`, "VSCode.Commands")
+				logs.warn(`Unknown command: ${command}`, "VSCode.Commands")
 				return Promise.resolve(undefined as T)
 		}
 	}
@@ -1052,16 +1052,16 @@ export const env = {
 	uriScheme: "vscode",
 	uiKind: 1, // Desktop
 	openExternal: async (uri: Uri): Promise<boolean> => {
-		logService.info(`Would open external URL: ${uri.toString()}`, "VSCode.Env")
+		logs.info(`Would open external URL: ${uri.toString()}`, "VSCode.Env")
 		return true
 	},
 	clipboard: {
 		readText: async (): Promise<string> => {
-			logService.debug("Clipboard read requested", "VSCode.Clipboard")
+			logs.debug("Clipboard read requested", "VSCode.Clipboard")
 			return ""
 		},
 		writeText: async (text: string): Promise<void> => {
-			logService.debug(
+			logs.debug(
 				`Clipboard write: ${text.substring(0, 100)}${text.length > 100 ? "..." : ""}`,
 				"VSCode.Clipboard",
 			)

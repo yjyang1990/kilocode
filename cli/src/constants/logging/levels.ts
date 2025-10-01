@@ -1,4 +1,4 @@
-import type { LogLevel } from "../../services/LogService.js"
+import type { LogLevel } from "../../services/logs.js"
 
 /**
  * Log level color mappings for display

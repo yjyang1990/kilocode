@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useApp } from "ink"
 import type { ExtensionMessage, WebviewMessage, RouterModels } from "../../types/messages.js"
 import type { CliContextValue, CliState, CliActions, TUIApplicationOptions } from "./types.js"
-import { logService } from "../../services/LogService.js"
+import { logs } from "../../services/logs.js"
 
 // Create the context
 const CliContext = createContext<CliContextValue | null>(null)
@@ -32,15 +32,15 @@ export const CliContextProvider: React.FC<{
 	// Handle extension messages
 	const handleExtensionMessage = useCallback(
 		(message: ExtensionMessage) => {
-			logService.info(`Received extension message: ${message.type}`, "CLI Context")
-			logService.debug(`Current isLoading state: ${state.isLoading}`, "CLI Context")
-			logService.debug(`Message state: ${message.state ? "present" : "null"}`, "CLI Context")
+			logs.info(`Received extension message: ${message.type}`, "CLI Context")
+			logs.debug(`Current isLoading state: ${state.isLoading}`, "CLI Context")
+			logs.debug(`Message state: ${message.state ? "present" : "null"}`, "CLI Context")
 
 			switch (message.type) {
 				case "state":
-					logService.debug("Processing state message, setting isLoading to false", "CLI Context")
+					logs.debug("Processing state message, setting isLoading to false", "CLI Context")
 					setState((prev) => {
-						logService.debug(
+						logs.debug(
 							`Previous state - isLoading: ${prev.isLoading}, extensionState: ${prev.extensionState ? "present" : "null"}`,
 							"CLI Context",
 						)
@@ -51,7 +51,7 @@ export const CliContextProvider: React.FC<{
 							// Update routerModels if present in the state
 							routerModels: message.state?.routerModels || prev.routerModels,
 						}
-						logService.debug(
+						logs.debug(
 							`New state - isLoading: ${newState.isLoading}, extensionState: ${newState.extensionState ? "present" : "null"}`,
 							"CLI Context",
 						)
@@ -59,7 +59,7 @@ export const CliContextProvider: React.FC<{
 					})
 					break
 				case "routerModels":
-					logService.debug("Processing routerModels message", "CLI Context")
+					logs.debug("Processing routerModels message", "CLI Context")
 					setState((prev) => ({
 						...prev,
 						routerModels: message.routerModels || null,
@@ -70,12 +70,12 @@ export const CliContextProvider: React.FC<{
 				case "action":
 					// Action handling will be managed by router navigation
 					// These actions can trigger navigation through the router
-					logService.debug(`Received action: ${message.action}`, "CLI Context")
+					logs.debug(`Received action: ${message.action}`, "CLI Context")
 					break
 				case "messageUpdated":
 					// Handle message updates like the webview does
 					if (message.clineMessage && state.extensionState) {
-						logService.debug(`Updating message with ts: ${message.clineMessage.ts}`, "CLI Context")
+						logs.debug(`Updating message with ts: ${message.clineMessage.ts}`, "CLI Context")
 						setState((prev) => {
 							if (!prev.extensionState) return prev
 
@@ -86,7 +86,7 @@ export const CliContextProvider: React.FC<{
 							if (lastIndex !== -1) {
 								const newClineMessages = [...prev.extensionState.clineMessages]
 								newClineMessages[lastIndex] = message.clineMessage!
-								logService.debug(`Updated existing message at index ${lastIndex}`, "CLI Context")
+								logs.debug(`Updated existing message at index ${lastIndex}`, "CLI Context")
 								return {
 									...prev,
 									extensionState: {
@@ -96,10 +96,7 @@ export const CliContextProvider: React.FC<{
 								}
 							} else {
 								// Add new message
-								logService.debug(
-									`Adding new message with ts: ${message.clineMessage!.ts}`,
-									"CLI Context",
-								)
+								logs.debug(`Adding new message with ts: ${message.clineMessage!.ts}`, "CLI Context")
 								return {
 									...prev,
 									extensionState: {
@@ -113,12 +110,12 @@ export const CliContextProvider: React.FC<{
 					break
 				case "selectedImages":
 					// Handle image selection messages
-					logService.debug("Received selectedImages message", "CLI Context", { images: message.images })
+					logs.debug("Received selectedImages message", "CLI Context", { images: message.images })
 					// For CLI, we might want to handle this differently or pass it to the active view
 					break
 				case "invoke":
 					// Handle invoke messages that trigger specific actions
-					logService.debug(`Received invoke message: ${message.invoke}`, "CLI Context")
+					logs.debug(`Received invoke message: ${message.invoke}`, "CLI Context")
 					switch (message.invoke) {
 						case "newChat":
 							// Reset chat state
@@ -137,16 +134,16 @@ export const CliContextProvider: React.FC<{
 						case "primaryButtonClick":
 						case "secondaryButtonClick":
 							// These are handled by individual components
-							logService.debug(`Invoke ${message.invoke} received`, "CLI Context")
+							logs.debug(`Invoke ${message.invoke} received`, "CLI Context")
 							break
 						default:
-							logService.debug(`Unhandled invoke: ${message.invoke}`, "CLI Context")
+							logs.debug(`Unhandled invoke: ${message.invoke}`, "CLI Context")
 							break
 					}
 					break
 				case "condenseTaskContextResponse":
 					// Handle context condensing response
-					logService.debug("Received condenseTaskContextResponse", "CLI Context")
+					logs.debug("Received condenseTaskContextResponse", "CLI Context")
 					if (message.text && state.extensionState?.currentTaskItem?.id === message.text) {
 						// Update state to reflect condensing completion
 						setState((prev) => ({
@@ -157,7 +154,7 @@ export const CliContextProvider: React.FC<{
 					break
 				case "taskHistoryResponse":
 					// Handle task history response
-					logService.debug("Received taskHistoryResponse", "CLI Context")
+					logs.debug("Received taskHistoryResponse", "CLI Context")
 					// Store the message so it can be passed to the HistoryView
 					setState((prev) => ({
 						...prev,
@@ -165,7 +162,7 @@ export const CliContextProvider: React.FC<{
 					}))
 					break
 				default:
-					logService.info(`Unhandled extension message: ${message.type}`, "CLI Context")
+					logs.info(`Unhandled extension message: ${message.type}`, "CLI Context")
 					break
 			}
 
@@ -184,7 +181,7 @@ export const CliContextProvider: React.FC<{
 			try {
 				await options.messageBridge.sendWebviewMessage(message)
 			} catch (error) {
-				logService.error("Failed to send message", "CLI Context", { error })
+				logs.error("Failed to send message", "CLI Context", { error })
 			}
 		},
 		[options.messageBridge],
@@ -208,7 +205,7 @@ export const CliContextProvider: React.FC<{
 		try {
 			await sendMessage({ type: "requestRouterModels" })
 		} catch (error) {
-			logService.error("Failed to request router models", "CLI Context", { error })
+			logs.error("Failed to request router models", "CLI Context", { error })
 			setState((prev) => ({
 				...prev,
 				isLoadingModels: false,
@@ -233,7 +230,7 @@ export const CliContextProvider: React.FC<{
 		options.messageBridge.removeAllListeners()
 		exit()
 		// setTimeout(() => {
-		// 		logService.info("Forcing process exit", "CliContext")
+		// 		logs.info("Forcing process exit", "CliContext")
 		// 		process.exit(0)
 		// 	}, 100)
 	}
@@ -269,7 +266,7 @@ export const CliContextProvider: React.FC<{
 					type: "webviewDidLaunch",
 				})
 			} catch (error) {
-				logService.error("Failed to request initial state", "CLI Context", { error })
+				logs.error("Failed to request initial state", "CLI Context", { error })
 				setState((prev) => ({
 					...prev,
 					error: "Failed to connect to extension",

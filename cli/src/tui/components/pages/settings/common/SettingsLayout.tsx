@@ -6,7 +6,6 @@ import { useNavigate, useCurrentPath } from "../../../../router/index.js"
 import { useKeyboardNavigation } from "../../../../hooks/useKeyboardNavigation.js"
 import { useSidebar } from "../../../../context/index.js"
 import { useLastPath } from "../../../../router/RouterContext.js"
-import { logService } from "../../../../../services/LogService.js"
 import { DEFAULT_SECTION } from "../../../../../constants/index.js"
 
 interface SettingsLayoutProps {

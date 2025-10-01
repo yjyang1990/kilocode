@@ -11,34 +11,34 @@ import { useExtensionState, useExtensionMessage, useSidebar, useRouterModels } f
 import { useRouter, useQuery } from "../../../../../router/index.js"
 import { getModelFieldForProvider } from "../../../../../../constants/index.js"
 import { getProviderDefaultModel } from "../../../../../../constants/providers/settings.js"
-import { logService } from "../../../../../../services/LogService.js"
+import { logs } from "../../../../../../services/logs.js"
 import type { ProviderName } from "../../../../../../types/messages.js"
 
 export const ChooseModelPage: React.FC = () => {
-	logService.debug("Component starting to render", "ChooseModelPage")
+	logs.debug("Component starting to render", "ChooseModelPage")
 
 	try {
 		const extensionState = useExtensionState()
-		logService.debug("Extension state loaded", "ChooseModelPage", { hasState: !!extensionState })
+		logs.debug("Extension state loaded", "ChooseModelPage", { hasState: !!extensionState })
 
 		const { sendMessage, requestRouterModels } = useExtensionMessage()
-		logService.debug("Extension message hooks loaded", "ChooseModelPage", {
+		logs.debug("Extension message hooks loaded", "ChooseModelPage", {
 			hasSendMessage: !!sendMessage,
 			hasRequestRouterModels: !!requestRouterModels,
 		})
 
 		const { visible: sidebarVisible } = useSidebar()
-		logService.debug("Sidebar hook loaded", "ChooseModelPage", { sidebarVisible })
+		logs.debug("Sidebar hook loaded", "ChooseModelPage", { sidebarVisible })
 
 		const router = useRouter()
 		const query = useQuery()
-		logService.debug("Router loaded", "ChooseModelPage", {
+		logs.debug("Router loaded", "ChooseModelPage", {
 			hasRouter: !!router,
 			currentPath: router?.currentPath,
 			query,
 		})
 
-		logService.debug("All hooks initialized successfully", "ChooseModelPage")
+		logs.debug("All hooks initialized successfully", "ChooseModelPage")
 
 		const apiConfig = extensionState?.apiConfiguration || {}
 		const currentApiConfigName = extensionState?.currentApiConfigName || "default"
@@ -72,7 +72,7 @@ export const ChooseModelPage: React.FC = () => {
 		const error = localError || routerModelsError || modelLoadingError
 
 		// DEBUG LOGGING - Enhanced with new hook debug info
-		logService.debug("Model selector debug info", "ChooseModelPage", {
+		logs.debug("Model selector debug info", "ChooseModelPage", {
 			currentPath: router.currentPath,
 			query,
 			providerFromQuery: query.provider,
@@ -108,7 +108,7 @@ export const ChooseModelPage: React.FC = () => {
 
 				router.goBack()
 			} catch (error) {
-				logService.error("Failed to update model", "ChooseModelPage", { error })
+				logs.error("Failed to update model", "ChooseModelPage", { error })
 				setLocalError("Failed to update model")
 			}
 		}
@@ -122,7 +122,7 @@ export const ChooseModelPage: React.FC = () => {
 			// Only handle input when not loading and when we have no models
 			if (!isLoading && Object.keys(availableModels).length === 0) {
 				if (input.toLowerCase() === "r") {
-					logService.debug("Retrying model fetch", "ChooseModelPage", { provider })
+					logs.debug("Retrying model fetch", "ChooseModelPage", { provider })
 					requestModels()
 				} else if (key.escape) {
 					router.goBack()
@@ -249,10 +249,10 @@ export const ChooseModelPage: React.FC = () => {
 			</SettingsLayout>
 		)
 
-		logService.debug("About to return component", "ChooseModelPage")
+		logs.debug("About to return component", "ChooseModelPage")
 		return <PageLayout header={header}>{content}</PageLayout>
 	} catch (error) {
-		logService.error("Component error", "ChooseModelPage", { error })
+		logs.error("Component error", "ChooseModelPage", { error })
 		const errorMessage = error instanceof Error ? error.message : String(error)
 		const errorHeader = <PageHeader title="Model Selector Error" />
 		const errorContent = (

@@ -1,7 +1,7 @@
 import { EventEmitter } from "events"
 import * as path from "path"
 import { createVSCodeAPIMock } from "./VSCode.js"
-import { logService } from "../services/LogService.js"
+import { logs } from "../services/logs.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
 
 export interface ExtensionHostOptions {
@@ -51,7 +51,7 @@ export class ExtensionHost extends EventEmitter {
 		}
 
 		try {
-			logService.info("Activating extension...", "ExtensionHost")
+			logs.info("Activating extension...", "ExtensionHost")
 
 			// Setup VSCode API mock
 			await this.setupVSCodeAPIMock()
@@ -66,14 +66,14 @@ export class ExtensionHost extends EventEmitter {
 			await this.activateExtension()
 
 			this.isActivated = true
-			logService.info("Extension activated successfully", "ExtensionHost")
+			logs.info("Extension activated successfully", "ExtensionHost")
 
 			// Emit activation event
 			this.emit("activated", this.getAPI())
 
 			return this.getAPI()
 		} catch (error) {
-			logService.error("Failed to activate extension", "ExtensionHost", { error })
+			logs.error("Failed to activate extension", "ExtensionHost", { error })
 			this.emit("error", error)
 			throw error
 		}
@@ -85,7 +85,7 @@ export class ExtensionHost extends EventEmitter {
 		}
 
 		try {
-			logService.info("Deactivating extension...", "ExtensionHost")
+			logs.info("Deactivating extension...", "ExtensionHost")
 
 			// Call extension's deactivate function if it exists
 			if (this.extensionModule && typeof this.extensionModule.deactivate === "function") {
@@ -115,19 +115,19 @@ export class ExtensionHost extends EventEmitter {
 			this.lastWebviewLaunchTime = 0
 			this.removeAllListeners()
 
-			logService.info("Extension deactivated", "ExtensionHost")
+			logs.info("Extension deactivated", "ExtensionHost")
 		} catch (error) {
-			logService.error("Error during deactivation", "ExtensionHost", { error })
+			logs.error("Error during deactivation", "ExtensionHost", { error })
 			throw error
 		}
 	}
 
 	async sendWebviewMessage(message: WebviewMessage): Promise<void> {
 		try {
-			logService.debug(`Processing webview message: ${message.type}`, "ExtensionHost")
+			logs.debug(`Processing webview message: ${message.type}`, "ExtensionHost")
 
 			if (!this.isActivated) {
-				logService.warn("Extension not activated, ignoring message", "ExtensionHost")
+				logs.warn("Extension not activated, ignoring message", "ExtensionHost")
 				return
 			}
 
@@ -136,7 +136,7 @@ export class ExtensionHost extends EventEmitter {
 				// Prevent rapid-fire webviewDidLaunch messages
 				const now = Date.now()
 				if (now - this.lastWebviewLaunchTime < 1000) {
-					logService.debug("Ignoring webviewDidLaunch - too soon after last one", "ExtensionHost")
+					logs.debug("Ignoring webviewDidLaunch - too soon after last one", "ExtensionHost")
 					return
 				}
 				this.lastWebviewLaunchTime = now
@@ -144,13 +144,13 @@ export class ExtensionHost extends EventEmitter {
 			}
 
 			// Forward ALL messages to the extension's webview handler
-			logService.debug(`Forwarding message to extension: ${message.type}`, "ExtensionHost")
+			logs.debug(`Forwarding message to extension: ${message.type}`, "ExtensionHost")
 			this.emit("webviewMessage", message)
 
 			// Handle local state updates for CLI display after forwarding
 			await this.handleLocalStateUpdates(message)
 		} catch (error) {
-			logService.error("Error handling webview message", "ExtensionHost", { error })
+			logs.error("Error handling webview message", "ExtensionHost", { error })
 			this.emit("error", error)
 		}
 	}
@@ -169,7 +169,7 @@ export class ExtensionHost extends EventEmitter {
 		process.env.KILO_CLI_MODE = "true"
 		process.env.NODE_ENV = process.env.NODE_ENV || "production"
 
-		logService.debug("VSCode API mock setup complete", "ExtensionHost")
+		logs.debug("VSCode API mock setup complete", "ExtensionHost")
 	}
 
 	private setupConsoleInterception(): void {
@@ -190,41 +190,41 @@ export class ExtensionHost extends EventEmitter {
 			write: process.stderr.write.bind(process.stderr),
 		}
 
-		// Override console methods to forward to LogService ONLY (no console output)
+		// Override console methods to forward to LogsService ONLY (no console output)
 		// IMPORTANT: Use original console methods to avoid circular dependency
 		console.log = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
 			// Filter out extension logs that should be hidden
 			if (!this.shouldHideExtensionLog(message)) {
-				logService.info(message, "Extension")
+				logs.info(message, "Extension")
 			}
 		}
 
 		console.error = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
 			if (!this.shouldHideExtensionLog(message)) {
-				logService.error(message, "Extension")
+				logs.error(message, "Extension")
 			}
 		}
 
 		console.warn = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
 			if (!this.shouldHideExtensionLog(message)) {
-				logService.warn(message, "Extension")
+				logs.warn(message, "Extension")
 			}
 		}
 
 		console.debug = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
 			if (!this.shouldHideExtensionLog(message)) {
-				logService.debug(message, "Extension")
+				logs.debug(message, "Extension")
 			}
 		}
 
 		console.info = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
 			if (!this.shouldHideExtensionLog(message)) {
-				logService.info(message, "Extension")
+				logs.info(message, "Extension")
 			}
 		}
 
@@ -312,7 +312,7 @@ export class ExtensionHost extends EventEmitter {
 			this.originalStderr = null
 		}
 
-		logService.debug("Console methods and streams restored", "ExtensionHost")
+		logs.debug("Console methods and streams restored", "ExtensionHost")
 	}
 
 	private async loadExtension(): Promise<void> {
@@ -320,7 +320,7 @@ export class ExtensionHost extends EventEmitter {
 		const extensionPath = this.options.extensionBundlePath
 
 		try {
-			logService.info(`Loading extension from: ${extensionPath}`, "ExtensionHost")
+			logs.info(`Loading extension from: ${extensionPath}`, "ExtensionHost")
 
 			// Use createRequire to load CommonJS module from ES module context
 			const { createRequire } = await import("module")
@@ -369,23 +369,23 @@ export class ExtensionHost extends EventEmitter {
 				throw new Error("Extension module does not export an activate function")
 			}
 
-			logService.info("Extension module loaded successfully", "ExtensionHost")
+			logs.info("Extension module loaded successfully", "ExtensionHost")
 		} catch (error) {
-			logService.error("Failed to load extension module", "ExtensionHost", { error })
+			logs.error("Failed to load extension module", "ExtensionHost", { error })
 			throw new Error(`Failed to load extension: ${error instanceof Error ? error.message : String(error)}`)
 		}
 	}
 
 	private async activateExtension(): Promise<void> {
 		try {
-			logService.info("Calling extension activate function...", "ExtensionHost")
+			logs.info("Calling extension activate function...", "ExtensionHost")
 
 			// Call the extension's activate function with our mocked context
 			this.extensionAPI = await this.extensionModule.activate(this.vscodeAPI.context)
 
 			// Log available API methods for debugging
 			if (this.extensionAPI) {
-				logService.info("Extension API methods available:", "ExtensionHost", {
+				logs.info("Extension API methods available:", "ExtensionHost", {
 					hasStartNewTask: typeof this.extensionAPI.startNewTask === "function",
 					hasSendMessage: typeof this.extensionAPI.sendMessage === "function",
 					hasCancelTask: typeof this.extensionAPI.cancelTask === "function",
@@ -394,10 +394,10 @@ export class ExtensionHost extends EventEmitter {
 					hasHandleTerminalOperation: typeof this.extensionAPI.handleTerminalOperation === "function",
 				})
 			} else {
-				logService.warn("Extension API is null or undefined", "ExtensionHost")
+				logs.warn("Extension API is null or undefined", "ExtensionHost")
 			}
 
-			logService.info("Extension activate function completed", "ExtensionHost")
+			logs.info("Extension activate function completed", "ExtensionHost")
 
 			// Initialize state from extension
 			this.initializeState()
@@ -405,7 +405,7 @@ export class ExtensionHost extends EventEmitter {
 			// Set up message listener to receive updates from the extension
 			this.setupExtensionMessageListener()
 		} catch (error) {
-			logService.error("Extension activation failed", "ExtensionHost", { error })
+			logs.error("Extension activation failed", "ExtensionHost", { error })
 			throw error
 		}
 	}
@@ -415,7 +415,7 @@ export class ExtensionHost extends EventEmitter {
 		if (this.vscodeAPI && this.vscodeAPI.context) {
 			// The extension will update state through the webview provider
 			// We need to listen for those updates and forward them to the CLI
-			logService.debug("Setting up extension message listener", "ExtensionHost")
+			logs.debug("Setting up extension message listener", "ExtensionHost")
 
 			// Track message IDs to prevent infinite loops
 			const processedMessageIds = new Set<string>()
@@ -426,7 +426,7 @@ export class ExtensionHost extends EventEmitter {
 				const messageId = `${message.type}_${Date.now()}_${JSON.stringify(message).slice(0, 50)}`
 
 				if (processedMessageIds.has(messageId)) {
-					logService.debug(`Skipping duplicate message: ${message.type}`, "ExtensionHost")
+					logs.debug(`Skipping duplicate message: ${message.type}`, "ExtensionHost")
 					return
 				}
 
@@ -438,7 +438,7 @@ export class ExtensionHost extends EventEmitter {
 					oldestIds.forEach((id) => processedMessageIds.delete(id))
 				}
 
-				logService.debug(`Received extension webview message: ${message.type}`, "ExtensionHost")
+				logs.debug(`Received extension webview message: ${message.type}`, "ExtensionHost")
 
 				// Only forward specific message types that are important for CLI
 				switch (message.type) {
@@ -492,7 +492,7 @@ export class ExtensionHost extends EventEmitter {
 						// Extension is sending updated API configuration list
 						if (message.listApiConfigMeta && this.currentState) {
 							this.currentState.listApiConfigMeta = message.listApiConfigMeta
-							logService.debug("Updated listApiConfigMeta from extension", "ExtensionHost")
+							logs.debug("Updated listApiConfigMeta from extension", "ExtensionHost")
 						}
 						break
 
@@ -500,16 +500,13 @@ export class ExtensionHost extends EventEmitter {
 					case "mcpServers":
 					case "theme":
 					case "rulesData":
-						logService.debug(
-							`Ignoring extension message type to prevent loops: ${message.type}`,
-							"ExtensionHost",
-						)
+						logs.debug(`Ignoring extension message type to prevent loops: ${message.type}`, "ExtensionHost")
 						break
 
 					default:
 						// Only forward other important messages
 						if (message.type && !message.type.startsWith("_")) {
-							logService.debug(`Forwarding extension message: ${message.type}`, "ExtensionHost")
+							logs.debug(`Forwarding extension message: ${message.type}`, "ExtensionHost")
 							this.emit("message", message)
 						}
 						break
@@ -518,7 +515,7 @@ export class ExtensionHost extends EventEmitter {
 
 			// Set up webview message handler for messages TO the extension
 			this.on("webviewMessage", async (message: any) => {
-				logService.debug(`Forwarding webview message to extension: ${message.type}`, "ExtensionHost")
+				logs.debug(`Forwarding webview message to extension: ${message.type}`, "ExtensionHost")
 
 				// Find the registered webview provider (ClineProvider)
 				const webviewProvider = this.webviewProviders.get("kilo-code.SidebarProvider")
@@ -527,19 +524,17 @@ export class ExtensionHost extends EventEmitter {
 					try {
 						// Call the webview provider's message handler (which should call webviewMessageHandler)
 						await webviewProvider.handleMessage(message)
-						logService.debug(
+						logs.debug(
 							`Successfully forwarded message to webview provider: ${message.type}`,
 							"ExtensionHost",
 						)
 					} catch (error) {
-						logService.error(
-							`Error forwarding message to webview provider: ${message.type}`,
-							"ExtensionHost",
-							{ error },
-						)
+						logs.error(`Error forwarding message to webview provider: ${message.type}`, "ExtensionHost", {
+							error,
+						})
 					}
 				} else {
-					logService.warn(
+					logs.warn(
 						`No webview provider found or handleMessage not available for: ${message.type}`,
 						"ExtensionHost",
 					)
@@ -579,7 +574,7 @@ export class ExtensionHost extends EventEmitter {
 					try {
 						const extensionState = this.extensionAPI.getState()
 						if (extensionState) {
-							logService.debug("Syncing with extension state during initialization", "ExtensionHost")
+							logs.debug("Syncing with extension state during initialization", "ExtensionHost")
 							// Merge extension state but preserve CLI-set values
 							this.currentState = {
 								...this.currentState,
@@ -590,7 +585,7 @@ export class ExtensionHost extends EventEmitter {
 							}
 						}
 					} catch (error) {
-						logService.warn("Failed to sync with extension state during initialization", "ExtensionHost", {
+						logs.warn("Failed to sync with extension state during initialization", "ExtensionHost", {
 							error,
 						})
 					}
@@ -599,7 +594,7 @@ export class ExtensionHost extends EventEmitter {
 				this.broadcastStateUpdate()
 			})
 			.catch((error) => {
-				logService.error("Failed to load persisted configuration during initialization", "ExtensionHost", {
+				logs.error("Failed to load persisted configuration during initialization", "ExtensionHost", {
 					error,
 				})
 				this.broadcastStateUpdate()
@@ -622,10 +617,10 @@ export class ExtensionHost extends EventEmitter {
 						mode: extensionState.mode || this.currentState.mode,
 						clineMessages: extensionState.clineMessages || this.currentState.clineMessages,
 					}
-					logService.debug("Synced state with extension on webview launch", "ExtensionHost")
+					logs.debug("Synced state with extension on webview launch", "ExtensionHost")
 				}
 			} catch (error) {
-				logService.warn("Failed to sync with extension state on webview launch", "ExtensionHost", { error })
+				logs.warn("Failed to sync with extension state on webview launch", "ExtensionHost", { error })
 			}
 		}
 
@@ -659,7 +654,7 @@ export class ExtensionHost extends EventEmitter {
 						try {
 							await this.handleLoadApiConfiguration(message.text)
 						} catch (error) {
-							logService.error("Error loading API configuration", "ExtensionHost", { error })
+							logs.error("Error loading API configuration", "ExtensionHost", { error })
 						}
 					}
 					break
@@ -693,7 +688,7 @@ export class ExtensionHost extends EventEmitter {
 					break
 			}
 		} catch (error) {
-			logService.error("Error handling local state updates", "ExtensionHost", { error })
+			logs.error("Error handling local state updates", "ExtensionHost", { error })
 		}
 	}
 
@@ -704,7 +699,7 @@ export class ExtensionHost extends EventEmitter {
 			// Load profiles from secrets storage
 			const content = await this.vscodeAPI.context.secrets.get(secretsKey)
 			if (!content) {
-				logService.warn(`No profiles found when trying to load profile: ${profileName}`, "ExtensionHost")
+				logs.warn(`No profiles found when trying to load profile: ${profileName}`, "ExtensionHost")
 				return
 			}
 
@@ -712,7 +707,7 @@ export class ExtensionHost extends EventEmitter {
 
 			// Check if the requested profile exists
 			if (!providerProfiles.apiConfigs[profileName]) {
-				logService.warn(`Profile '${profileName}' not found`, "ExtensionHost")
+				logs.warn(`Profile '${profileName}' not found`, "ExtensionHost")
 				return
 			}
 
@@ -751,9 +746,9 @@ export class ExtensionHost extends EventEmitter {
 				this.broadcastStateUpdate()
 			}
 
-			logService.debug(`Successfully loaded API configuration profile: ${profileName}`, "ExtensionHost")
+			logs.debug(`Successfully loaded API configuration profile: ${profileName}`, "ExtensionHost")
 		} catch (error) {
-			logService.error("Failed to load API configuration profile", "ExtensionHost", { error })
+			logs.error("Failed to load API configuration profile", "ExtensionHost", { error })
 		}
 	}
 
@@ -763,7 +758,7 @@ export class ExtensionHost extends EventEmitter {
 				type: "state",
 				state: this.currentState,
 			}
-			logService.debug("Broadcasting state update", "ExtensionHost", {
+			logs.debug("Broadcasting state update", "ExtensionHost", {
 				messageCount: this.currentState.clineMessages.length,
 				mode: this.currentState.mode,
 			})
@@ -781,7 +776,7 @@ export class ExtensionHost extends EventEmitter {
 				const existingContent = await this.vscodeAPI.context.secrets.get(secretsKey)
 				providerProfiles = existingContent ? JSON.parse(existingContent) : null
 			} catch (error) {
-				logService.warn("Failed to load existing profiles", "ExtensionHost", { error })
+				logs.warn("Failed to load existing profiles", "ExtensionHost", { error })
 				providerProfiles = null
 			}
 
@@ -846,12 +841,12 @@ export class ExtensionHost extends EventEmitter {
 				this.currentState.listApiConfigMeta = listApiConfigMeta
 			}
 
-			logService.debug(`Persisted API configuration profile: ${configName}`, "ExtensionHost", {
+			logs.debug(`Persisted API configuration profile: ${configName}`, "ExtensionHost", {
 				profileId,
 				fields: Object.keys(apiConfiguration),
 			})
 		} catch (error) {
-			logService.error("Failed to persist API configuration", "ExtensionHost", { error })
+			logs.error("Failed to persist API configuration", "ExtensionHost", { error })
 			throw error
 		}
 	}
@@ -868,7 +863,7 @@ export class ExtensionHost extends EventEmitter {
 					providerProfiles = JSON.parse(content)
 				}
 			} catch (error) {
-				logService.warn("Failed to load profiles from secrets", "ExtensionHost", { error })
+				logs.warn("Failed to load profiles from secrets", "ExtensionHost", { error })
 			}
 
 			// Initialize default profile if no profiles exist
@@ -934,13 +929,13 @@ export class ExtensionHost extends EventEmitter {
 				this.currentState.listApiConfigMeta = listApiConfigMeta
 			}
 
-			logService.debug("Loaded persisted configuration from secrets storage", "ExtensionHost", {
+			logs.debug("Loaded persisted configuration from secrets storage", "ExtensionHost", {
 				currentApiConfigName,
 				profileCount: Object.keys(providerProfiles.apiConfigs).length,
 				loadedFields: Object.keys(currentProfile || {}),
 			})
 		} catch (error) {
-			logService.warn("Failed to load persisted configuration", "ExtensionHost", { error })
+			logs.warn("Failed to load persisted configuration", "ExtensionHost", { error })
 		}
 	}
 
@@ -962,7 +957,7 @@ export class ExtensionHost extends EventEmitter {
 		return {
 			getState: () => this.currentState,
 			sendMessage: (message: ExtensionMessage) => {
-				logService.debug(`Sending message: ${message.type}`, "ExtensionHost")
+				logs.debug(`Sending message: ${message.type}`, "ExtensionHost")
 				this.emit("message", message)
 			},
 			updateState: (updates: Partial<ExtensionState>) => {
@@ -977,12 +972,12 @@ export class ExtensionHost extends EventEmitter {
 	// Methods for webview provider registration (called from VSCode API mock)
 	registerWebviewProvider(viewId: string, provider: any): void {
 		this.webviewProviders.set(viewId, provider)
-		logService.debug(`Registered webview provider: ${viewId}`, "ExtensionHost")
+		logs.debug(`Registered webview provider: ${viewId}`, "ExtensionHost")
 	}
 
 	unregisterWebviewProvider(viewId: string): void {
 		this.webviewProviders.delete(viewId)
-		logService.debug(`Unregistered webview provider: ${viewId}`, "ExtensionHost")
+		logs.debug(`Unregistered webview provider: ${viewId}`, "ExtensionHost")
 	}
 }
 

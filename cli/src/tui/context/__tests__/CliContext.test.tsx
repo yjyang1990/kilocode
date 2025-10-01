@@ -5,8 +5,8 @@ import { useCliState, useCliActions } from "../index.js"
 import type { TUIApplicationOptions } from "../types.js"
 
 // Mock dependencies
-vi.mock("../../../services/LogService.js", () => ({
-	logService: {
+vi.mock("../../../services/logs.js", () => ({
+	logs: {
 		info: vi.fn(),
 		debug: vi.fn(),
 		error: vi.fn(),

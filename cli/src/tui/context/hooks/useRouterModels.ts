@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { useCliContext } from "../CliContext.js"
 import { useExtensionState } from "./useExtensionState.js"
 import { useExtensionMessage } from "./useExtensionMessage.js"
-import { logService } from "../../../services/LogService.js"
+import { logs } from "../../../services/logs.js"
 import type { RouterModels, ModelRecord, ProviderName } from "../../../types/messages.js"
 import type { RouterName } from "../../../constants/providers/models.js"
 import { getRouterNameForProvider } from "../../../constants/index.js"
@@ -72,7 +72,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 	const routerModels = useMemo((): RouterModels | null => {
 		// Priority 1: CLI context router models (most up-to-date)
 		if (state.routerModels && Object.keys(state.routerModels).length > 0) {
-			logService.debug("Using router models from CLI context", "useRouterModels", {
+			logs.debug("Using router models from CLI context", "useRouterModels", {
 				keys: Object.keys(state.routerModels),
 				provider,
 				routerName,
@@ -82,7 +82,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 
 		// Priority 2: Extension state router models (fallback)
 		if (extensionState?.routerModels && Object.keys(extensionState.routerModels).length > 0) {
-			logService.debug("Using router models from extension state", "useRouterModels", {
+			logs.debug("Using router models from extension state", "useRouterModels", {
 				keys: Object.keys(extensionState.routerModels),
 				provider,
 				routerName,
@@ -90,7 +90,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 			return extensionState.routerModels
 		}
 
-		logService.debug("No router models available from any source", "useRouterModels", {
+		logs.debug("No router models available from any source", "useRouterModels", {
 			hasCliContextModels: !!state.routerModels,
 			hasExtensionStateModels: !!extensionState?.routerModels,
 			provider,
@@ -106,7 +106,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 		}
 
 		const models = routerModels[routerName] || {}
-		logService.debug("Extracted available models", "useRouterModels", {
+		logs.debug("Extracted available models", "useRouterModels", {
 			routerName,
 			modelCount: Object.keys(models).length,
 			modelKeys: Object.keys(models).slice(0, 5), // Log first 5 model keys
@@ -133,7 +133,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 	const requestModels = useCallback(async () => {
 		if (!routerName) {
 			const errorMsg = `Cannot request models: no router name available for provider ${provider}`
-			logService.warn(errorMsg, "useRouterModels")
+			logs.warn(errorMsg, "useRouterModels")
 			setLocalError(errorMsg)
 			return
 		}
@@ -141,7 +141,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 		setLocalError(null)
 
 		try {
-			logService.debug("Requesting router models", "useRouterModels", {
+			logs.debug("Requesting router models", "useRouterModels", {
 				provider,
 				routerName,
 				hasExtensionState: !!extensionState,
@@ -150,13 +150,13 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 			await requestRouterModels()
 			setHasInitialLoad(true)
 
-			logService.debug("Router models request completed", "useRouterModels", {
+			logs.debug("Router models request completed", "useRouterModels", {
 				provider,
 				routerName,
 			})
 		} catch (err) {
 			const errorMsg = `Failed to request router models: ${err instanceof Error ? err.message : String(err)}`
-			logService.error(errorMsg, "useRouterModels", { error: err, provider, routerName })
+			logs.error(errorMsg, "useRouterModels", { error: err, provider, routerName })
 			setLocalError(errorMsg)
 		}
 	}, [routerName, provider, extensionState, requestRouterModels])
@@ -175,7 +175,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 
 		// Only auto-load if we don't have models yet
 		if (!routerModels || Object.keys(availableModels).length === 0) {
-			logService.debug("Auto-loading router models", "useRouterModels", {
+			logs.debug("Auto-loading router models", "useRouterModels", {
 				provider,
 				routerName,
 				hasRouterModels: !!routerModels,
@@ -189,7 +189,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 			// We already have models, mark as initially loaded
 			setHasInitialLoad(true)
 			setIsInitializing(false)
-			logService.debug("Router models already available, skipping auto-load", "useRouterModels", {
+			logs.debug("Router models already available, skipping auto-load", "useRouterModels", {
 				provider,
 				routerName,
 				availableModelsCount: Object.keys(availableModels).length,
@@ -225,7 +225,7 @@ export const useRouterModels = (options: UseRouterModelsOptions = {}): UseRouter
 
 	// Log debug info when it changes
 	useEffect(() => {
-		logService.debug("useRouterModels debug info updated", "useRouterModels", debugInfo)
+		logs.debug("useRouterModels debug info updated", "useRouterModels", debugInfo)
 	}, [debugInfo])
 
 	return {

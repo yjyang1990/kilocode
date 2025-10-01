@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Box } from "ink"
 import { Text } from "../common/Text.js"
 import SelectInput from "ink-select-input"
-import { logService } from "../../../services/LogService.js"
+import { logs } from "../../../services/logs.js"
 import type { HistoryItem } from "../../../types/messages.js"
 import { PageHeader } from "../generic/PageHeader.js"
 import { PageFooter } from "../generic/PageFooter.js"
@@ -47,7 +47,7 @@ export const HistoryView: React.FC = () => {
 					},
 				})
 			} catch (error) {
-				logService.error("Failed to load history", "HistoryView", { error })
+				logs.error("Failed to load history", "HistoryView", { error })
 				stopLoading()
 			}
 		}
@@ -62,7 +62,7 @@ export const HistoryView: React.FC = () => {
 			lastExtensionMessage.type === "taskHistoryResponse" &&
 			lastExtensionMessage.payload
 		) {
-			logService.debug("Received taskHistoryResponse in HistoryView", "HistoryView", {
+			logs.debug("Received taskHistoryResponse in HistoryView", "HistoryView", {
 				payload: lastExtensionMessage.payload,
 			})
 
@@ -83,7 +83,7 @@ export const HistoryView: React.FC = () => {
 			})
 			goBack() // Return to chat view
 		} catch (error) {
-			logService.error("Failed to open task", "HistoryView", { error })
+			logs.error("Failed to open task", "HistoryView", { error })
 		}
 	}
 
@@ -99,7 +99,7 @@ export const HistoryView: React.FC = () => {
 				tasks: prev.tasks.filter((task) => task.id !== taskId),
 			}))
 		} catch (error) {
-			logService.error("Failed to delete task", "HistoryView", { error })
+			logs.error("Failed to delete task", "HistoryView", { error })
 		}
 	}
 
