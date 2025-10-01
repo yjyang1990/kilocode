@@ -758,6 +758,20 @@
 			"name": "Habilitar ediciones de archivos concurrentes",
 			"description": "Cuando está habilitado, Kilo Code puede editar múltiples archivos en una sola solicitud. Cuando está deshabilitado, Kilo Code debe editar archivos de uno en uno. Deshabilitar esto puede ayudar cuando trabajas con modelos menos capaces o cuando quieres más control sobre las modificaciones de archivos."
 		},
+		"MORPH_FAST_APPLY": {
+			"name": "Habilitar Fast Apply",
+			"description": "Cuando está habilitado, Kilo Code puede editar archivos usando Fast Apply con modelos especializados optimizados para modificaciones de código. Requiere el proveedor de API de Kilo Code, OpenRouter o una clave API de Morph.",
+			"apiKey": "Clave API de Morph (opcional)",
+			"placeholder": "Introduce tu clave API de Morph (opcional)",
+			"modelLabel": "Selección de modelo",
+			"modelDescription": "Elige qué modelo de Fast Apply usar para ediciones de archivos",
+			"models": {
+				"auto": "Automático (Predeterminado - elige el mejor disponible)",
+				"morphFast": "Morph v3 Fast (Más rápido, menor costo)",
+				"morphLarge": "Morph v3 Large (Más capaz)",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Edición en segundo plano",
 			"description": "Previene la interrupción del foco del editor cuando está habilitado. Las ediciones de archivos ocurren en segundo plano sin abrir vistas de diferencias o robar el foco. Puedes continuar trabajando sin interrupciones mientras Kilo Code realiza cambios. Los archivos pueden abrirse sin foco para capturar diagnósticos o mantenerse completamente cerrados."

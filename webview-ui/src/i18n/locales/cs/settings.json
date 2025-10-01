@@ -800,6 +800,20 @@
 			"name": "Použít experimentální sjednocenou strategii diff",
 			"description": "Povolit experimentální sjednocenou strategii diff. Tato strategie může snížit počet opakování způsobených chybami modelu, ale může způsobit neočekávané chování nebo nesprávné úpravy. Povolte pouze pokud rozumíte rizikům a jste ochotni pečlivě zkontrolovat všechny změny."
 		},
+		"MORPH_FAST_APPLY": {
+			"name": "Povolit rychlé aplikování",
+			"description": "Pokud je povoleno, Kilo Code může upravovat soubory pomocí rychlého aplikování se specializovanými modely optimalizovanými pro úpravy kódu. Vyžaduje poskytovatele Kilo Code API, OpenRouter nebo klíč API Morph.",
+			"apiKey": "Klíč API Morph (volitelné)",
+			"placeholder": "Zadejte svůj klíč API Morph (volitelné)",
+			"modelLabel": "Výběr modelu",
+			"modelDescription": "Vyberte, který model rychlého aplikování použít pro úpravy souborů",
+			"models": {
+				"auto": "Automaticky (výchozí - vybere nejlepší dostupný)",
+				"morphFast": "Morph v3 Fast (rychlejší, nižší náklady)",
+				"morphLarge": "Morph v3 Large (schopnější)",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"SEARCH_AND_REPLACE": {
 			"name": "Použít experimentální nástroj hledání a nahrazování",
 			"description": "Povolit experimentální nástroj hledání a nahrazování, který umožňuje Kilo Code nahradit více výskytů hledaného výrazu v jednom požadavku."

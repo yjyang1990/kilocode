@@ -838,6 +838,20 @@
 			"name": "เปิดใช้งานคำสั่ง slash ที่เริ่มต้นโดยโมเดล",
 			"description": "เมื่อเปิดใช้งาน Kilo Code สามารถรันคำสั่ง slash ของคุณเพื่อดำเนินการตามเวิร์กโฟลว์"
 		},
+		"MORPH_FAST_APPLY": {
+			"name": "เปิดใช้งาน Fast Apply",
+			"description": "เมื่อเปิดใช้งาน Kilo Code สามารถแก้ไขไฟล์โดยใช้ Fast Apply กับโมเดลเฉพาะทางที่ปรับแต่งสำหรับการแก้ไขโค้ด ต้องใช้ Kilo Code API Provider, OpenRouter หรือ Morph API key",
+			"apiKey": "Morph API key (ไม่บังคับ)",
+			"placeholder": "ป้อน Morph API key ของคุณ (ไม่บังคับ)",
+			"modelLabel": "การเลือกโมเดล",
+			"modelDescription": "เลือกโมเดล Fast Apply ที่จะใช้สำหรับการแก้ไขไฟล์",
+			"models": {
+				"auto": "อัตโนมัติ (ค่าเริ่มต้น - เลือกที่ดีที่สุดที่มี)",
+				"morphFast": "Morph v3 Fast (เร็วกว่า ค่าใช้จ่ายต่ำกว่า)",
+				"morphLarge": "Morph v3 Large (มีความสามารถมากกว่า)",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"INLINE_ASSIST": {
 			"name": "Autocomplete",
 			"description": "เปิดใช้งานฟีเจอร์ Autocomplete สำหรับคำแนะนำโค้ดที่รวดเร็วและการปรับปรุงโดยตรงในเอดิเตอร์ของคุณ รวมถึงงานด่วน (Cmd+I) สำหรับการเปลี่ยนแปลงที่เป็นเป้าหมายและ Autocomplete สำหรับการปรับปรุงตามบริบท"

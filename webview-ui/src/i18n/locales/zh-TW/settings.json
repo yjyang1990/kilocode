@@ -760,6 +760,20 @@
 			"name": "啟用並行檔案編輯",
 			"description": "啟用後 Kilo Code 可在單個請求中編輯多個檔案。停用後 Kilo Code 必須逐個編輯檔案。停用此功能有助於使用能力較弱的模型或需要更精確控制檔案修改時。"
 		},
+		"MORPH_FAST_APPLY": {
+			"name": "啟用快速套用",
+			"description": "啟用後，Kilo Code 可使用專為程式碼修改最佳化的特殊模型進行快速套用編輯檔案。需要 Kilo Code API 供應商、OpenRouter 或 Morph API 金鑰。",
+			"apiKey": "Morph API 金鑰（選用）",
+			"placeholder": "輸入您的 Morph API 金鑰（選用）",
+			"modelLabel": "模型選擇",
+			"modelDescription": "選擇用於檔案編輯的快速套用模型",
+			"models": {
+				"auto": "自動（預設 - 選擇最佳可用）",
+				"morphFast": "Morph v3 Fast（更快、成本更低）",
+				"morphLarge": "Morph v3 Large（功能更強）",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "背景編輯",
 			"description": "啟用後可防止編輯器焦點中斷。檔案編輯會在背景進行，不會開啟 diff 檢視或搶奪焦點。您可以在 Roo 進行變更時繼續不受干擾地工作。檔案可能會在不獲得焦點的情況下開啟以捕獲診斷，或保持完全關閉。"

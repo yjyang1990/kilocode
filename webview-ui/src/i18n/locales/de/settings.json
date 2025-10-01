@@ -758,6 +758,20 @@
 			"name": "Gleichzeitige Dateibearbeitungen aktivieren",
 			"description": "Wenn aktiviert, kann Kilo Code mehrere Dateien in einer einzigen Anfrage bearbeiten. Wenn deaktiviert, muss Kilo Code Dateien einzeln bearbeiten. Das Deaktivieren kann hilfreich sein, wenn mit weniger fähigen Modellen gearbeitet wird oder wenn du mehr Kontrolle über Dateiänderungen haben möchtest."
 		},
+		"MORPH_FAST_APPLY": {
+			"name": "Fast Apply aktivieren",
+			"description": "Wenn aktiviert, kann Kilo Code Dateien mit Fast Apply unter Verwendung spezialisierter Modelle bearbeiten, die für Code-Änderungen optimiert sind. Erfordert den Kilo Code API-Anbieter, OpenRouter oder einen Morph API-Schlüssel.",
+			"apiKey": "Morph API-Schlüssel (optional)",
+			"placeholder": "Gib deinen Morph API-Schlüssel ein (optional)",
+			"modelLabel": "Modellauswahl",
+			"modelDescription": "Wähle, welches Fast Apply-Modell für Dateibearbeitungen verwendet werden soll",
+			"models": {
+				"auto": "Automatisch (Standard - wählt das beste verfügbare)",
+				"morphFast": "Morph v3 Fast (Schneller, niedrigere Kosten)",
+				"morphLarge": "Morph v3 Large (Leistungsfähiger)",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Hintergrundbearbeitung",
 			"description": "Verhindert Editor-Fokus-Störungen wenn aktiviert. Dateibearbeitungen erfolgen im Hintergrund ohne Öffnung von Diff-Ansichten oder Fokus-Diebstahl. Du kannst ungestört weiterarbeiten, während Kilo Code Änderungen vornimmt. Dateien können ohne Fokus geöffnet werden, um Diagnosen zu erfassen oder vollständig geschlossen bleiben."

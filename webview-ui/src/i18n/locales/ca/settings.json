@@ -789,6 +789,20 @@
 			"name": "Autocomplete",
 			"description": "Habilita les funcionalitats d'Autocomplete per a suggeriments de codi ràpids i millores directament al teu editor. Inclou Tasca Ràpida (Cmd+I) per a canvis específics i Autocomplete per a millores contextuals."
 		},
+		"MORPH_FAST_APPLY": {
+			"name": "Habilitar Fast Apply",
+			"description": "Quan està habilitat, Kilo Code pot editar fitxers utilitzant Fast Apply amb models especialitzats optimitzats per a modificacions de codi. Requereix el proveïdor d'API de Kilo Code, OpenRouter o una clau d'API de Morph.",
+			"apiKey": "Clau d'API de Morph (opcional)",
+			"placeholder": "Introduïu la vostra clau d'API de Morph (opcional)",
+			"modelLabel": "Selecció de model",
+			"modelDescription": "Trieu quin model de Fast Apply utilitzar per a edicions de fitxers",
+			"models": {
+				"auto": "Automàtic (Per defecte - tria el millor disponible)",
+				"morphFast": "Morph v3 Fast (Més ràpid, cost més baix)",
+				"morphLarge": "Morph v3 Large (Més capaç)",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"RUN_SLASH_COMMAND": {
 			"name": "Habilitar comandes de barra diagonal iniciades pel model",
 			"description": "Quan està habilitat, Kilo Code pot executar les vostres comandes de barra diagonal per executar fluxos de treball."

@@ -791,6 +791,20 @@
 			"name": "Autocomplete",
 			"description": "エディター内で直接コードの迅速な提案と改善を行うAutocomplete機能を有効にします。ターゲット変更用のクイックタスク（Cmd+I）とコンテキスト改善用のAutocompleteが含まれます。"
 		},
+		"MORPH_FAST_APPLY": {
+			"name": "Fast Applyを有効化",
+			"description": "有効にすると、Kilo Codeはコード変更に最適化された専用モデルを使用してFast Applyでファイルを編集できます。Kilo Code APIプロバイダー、OpenRouter、またはMorph APIキーが必要です。",
+			"apiKey": "Morph APIキー（オプション）",
+			"placeholder": "Morph APIキーを入力してください（オプション）",
+			"modelLabel": "モデル選択",
+			"modelDescription": "ファイル編集に使用するFast Applyモデルを選択",
+			"models": {
+				"auto": "自動（デフォルト - 最適なものを選択）",
+				"morphFast": "Morph v3 Fast（高速、低コスト）",
+				"morphLarge": "Morph v3 Large（より高性能）",
+				"relace": "Relace Apply v3"
+			}
+		},
 		"RUN_SLASH_COMMAND": {
 			"name": "モデル開始スラッシュコマンドを有効にする",
 			"description": "有効にすると、Kilo Codeがワークフローを実行するためにあなたのスラッシュコマンドを実行できます。"
