@@ -183,6 +183,17 @@ if (x > 5) ${CURSOR_MARKER}`,
 		const response = await ${CURSOR_MARKER}`,
 				description: "Should suggest async operations",
 			},
+			{
+				name: "object-with-inline-comments",
+				input: `const creditConfig = {
+	credit_category: 'credits',
+	description: 'Free credits as a reward',
+	amount_usd: 5, // inlined from FREE CREDITS${CURSOR_MARKER}
+	is_idempotent: true,
+	expiry: "2 months",
+	`,
+				description: "Should handle object properties with inline comments and suggest next property",
+			},
 		],
 	},
 ]
