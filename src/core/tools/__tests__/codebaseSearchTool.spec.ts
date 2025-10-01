@@ -1,3 +1,4 @@
+// kilocode_change: file added
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { codebaseSearchTool } from "../codebaseSearchTool"

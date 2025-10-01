@@ -82,6 +82,7 @@ export async function codebaseSearchTool(
 			throw new Error("Code Indexing is not configured (Missing OpenAI Key or Qdrant URL).")
 		}
 
+		// kilocode_change start
 		const status = manager.getCurrentStatus()
 		if (status.systemStatus !== "Indexed") {
 			const defaultStatusMessage = (() => {
@@ -132,6 +133,7 @@ export async function codebaseSearchTool(
 			)
 			return
 		}
+		// kilocode_change end
 
 		const searchResults: VectorStoreSearchResult[] = await manager.searchIndex(query, directoryPrefix)
 
