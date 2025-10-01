@@ -28,9 +28,9 @@ import { getUpdateTodoListDescription } from "./update-todo-list"
 import { getRunSlashCommandDescription } from "./run-slash-command"
 import { getGenerateImageDescription } from "./generate-image"
 import { CodeIndexManager } from "../../../services/code-index/manager"
-import { isFastApplyAvailable } from "../../tools/editFileTool"
 
 // kilocode_change start: Morph fast apply
+import { isFastApplyAvailable } from "../../tools/editFileTool"
 import { getEditFileDescription } from "./edit-file"
 import { type ClineProviderState } from "../../webview/ClineProvider"
 // kilocode_change end

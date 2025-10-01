@@ -23,7 +23,7 @@ type ExperimentalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	setExperimentEnabled: SetExperimentEnabled
 	// kilocode_change start
 	morphApiKey?: string
-	fastApplyModel?: string // kilocode_change: Fast Apply model selection
+	fastApplyModel?: string
 	setCachedStateField: SetCachedStateField<"morphApiKey" | "fastApplyModel">
 	kiloCodeImageApiKey?: string
 	setKiloCodeImageApiKey?: (apiKey: string) => void

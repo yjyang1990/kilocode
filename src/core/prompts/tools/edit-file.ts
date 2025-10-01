@@ -1,23 +1,14 @@
 // kilocode_change: Morph fast apply - file added
 
-// kilocode_change: Fast Apply model selection - new function
-export function getFastApplyEditingInstructions(): string {
-	return `- **Relace FastApply is enabled.** You have access to the \`edit_file\` tool which uses a specialized model optimized for intelligent code understanding and modification.
-- **ONLY use the edit_file tool for file modifications.** Traditional editing tools (apply_diff, write_to_file, insert_content, search_and_replace) are disabled in Relace mode.
+export function getFastApplyEditingInstructions(modelType: "Morph" | "Relace"): string {
+	return `- **${modelType} FastApply is enabled.** You have access to the \`edit_file\` tool which uses a specialized model optimized for intelligent code understanding and modification.
+- **ONLY use the edit_file tool for file modifications.** Traditional editing tools (apply_diff, write_to_file, insert_content, search_and_replace) are disabled in ${modelType} mode.
 - **Focus on clear instructions and precise code edits** using the edit_file format with \`// ... existing code ...\` placeholders to represent unchanged sections.
 - **The edit_file tool requires three parameters:**
   - \`target_file\`: Full path to the file to modify
   - \`instructions\`: Single sentence describing what you're doing (use first person)
   - \`code_edit\`: Only the lines you want to change, using \`// ... existing code ...\` for unchanged sections
 - **Always make all edits to a file in a single edit_file call** rather than multiple calls to the same file.`
-}
-
-// kilocode_change: Fast Apply model selection - new function
-export function getModelType(model: string): "morph" | "relace" {
-	if (model.includes("relace")) {
-		return "relace"
-	}
-	return "morph"
 }
 
 export function getEditFileDescription(): string {

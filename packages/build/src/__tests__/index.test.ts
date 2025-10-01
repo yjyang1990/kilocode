@@ -2,7 +2,7 @@
 
 import { generatePackageJson } from "../index.js"
 
-describe.skip("generatePackageJson", () => { //kilocode_change
+describe("generatePackageJson", () => {
 	it("should be a test", () => {
 		const generatedPackageJson = generatePackageJson({
 			packageJson: {

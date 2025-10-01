@@ -348,7 +348,7 @@ function getFastApplyConfiguration(state: ClineProviderState): FastApplyConfigur
 			available: true,
 			apiKey: state.morphApiKey,
 			baseUrl: "https://api.morphllm.com/v1",
-			model: selectedModel, // Use selected model instead of hardcoded "auto"
+			model: selectedModel.startsWith("morph/") ? selectedModel : "auto", // Use selected model instead of hardcoded "auto"
 		}
 	}
 
@@ -389,4 +389,8 @@ function getFastApplyConfiguration(state: ClineProviderState): FastApplyConfigur
 
 export function isFastApplyAvailable(state?: ClineProviderState): boolean {
 	return (state && getFastApplyConfiguration(state).available) || false
+}
+
+export function getFastApplyModelType(state?: ClineProviderState): "Morph" | "Relace" {
+	return state && getFastApplyConfiguration(state).model?.startsWith("relace/") ? "Relace" : "Morph"
 }
