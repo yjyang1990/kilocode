@@ -139,8 +139,10 @@ export const globalSettingsSchema = z.object({
 	fuzzyMatchThreshold: z.number().optional(),
 	experiments: experimentsSchema.optional(),
 
-	morphApiKey: z.string().optional(), // kilocode_change: Morph fast apply
-	fastApplyModel: z.enum(["auto", "morph-v3-fast", "morph-v3-large", "relace/relace-apply-3"]).optional(), // kilocode_change: Fast Apply model selection
+	// kilocode_change start: Morph fast apply
+	morphApiKey: z.string().optional(),
+	fastApplyModel: z.enum(["auto", "morph/morph-v3-fast", "morph/morph-v3-large", "relace/relace-apply-3"]).optional(),
+	// kilocode_change end
 
 	codebaseIndexModels: codebaseIndexModelsSchema.optional(),
 	codebaseIndexConfig: codebaseIndexConfigSchema.optional(),

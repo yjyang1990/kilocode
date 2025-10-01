@@ -16,7 +16,6 @@ import { type ClineProviderState } from "../webview/ClineProvider"
 import { ClineSayTool } from "../../shared/ExtensionMessage"
 import { X_KILOCODE_ORGANIZATIONID, X_KILOCODE_TASKID, X_KILOCODE_TESTER } from "../../shared/kilocode/headers"
 
-// kilocode_change: Fast Apply - pricing for all supported models
 const FAST_APPLY_MODEL_PRICING = {
 	"morph-v3-fast": {
 		inputPrice: 0.8, // $0.8 per 1M tokens
@@ -26,7 +25,7 @@ const FAST_APPLY_MODEL_PRICING = {
 		inputPrice: 0.9, // $0.9 per 1M tokens
 		outputPrice: 1.9, // $1.9 per 1M tokens
 	},
-	"relace/relace-apply-3": {
+	"relace-apply-3": {
 		inputPrice: 0.85, // $0.85 per 1M tokens
 		outputPrice: 1.25, // $1.25 per 1M tokens
 	},
@@ -344,11 +343,12 @@ function getFastApplyConfiguration(state: ClineProviderState): FastApplyConfigur
 	// Priority 1: Use direct Morph API key if available
 	// Allow human-relay for debugging
 	if (state.morphApiKey || state.apiConfiguration?.apiProvider === "human-relay") {
+		const [org, model] = selectedModel.split("/")
 		return {
 			available: true,
 			apiKey: state.morphApiKey,
 			baseUrl: "https://api.morphllm.com/v1",
-			model: selectedModel.startsWith("morph/") ? selectedModel : "auto", // Use selected model instead of hardcoded "auto"
+			model: org === "morph" ? model : "auto", // Use selected model instead of hardcoded "auto"
 		}
 	}
 
