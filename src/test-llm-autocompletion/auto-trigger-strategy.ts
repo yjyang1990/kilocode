@@ -1,5 +1,5 @@
 import { LLMClient } from "./llm-client.js"
-import { AutoTriggerStrategy } from "./auto-trigger-strategy-standalone.js"
+import { AutoTriggerStrategy } from "../services/ghost/strategies/AutoTriggerStrategy.js"
 import { GhostSuggestionContext } from "./types.js"
 import * as vscode from "./mock-vscode.js"
 
