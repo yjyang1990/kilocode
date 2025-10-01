@@ -17,17 +17,26 @@ export class AutoTriggerStrategyTester {
 
 	/**
 	 * Converts test input to GhostSuggestionContext
+	 * Extracts cursor position from CURSOR_MARKER in the code
 	 */
-	private createContext(code: string, cursorPosition: { line: number; character: number }): GhostSuggestionContext {
+	private createContext(code: string): GhostSuggestionContext {
 		const lines = code.split("\n")
-		const line = lines[cursorPosition.line]
-		lines[cursorPosition.line] =
-			line.slice(0, cursorPosition.character) + CURSOR_MARKER + line.slice(cursorPosition.character)
-		const codeWithMarker = lines.join("\n")
+		let cursorLine = 0
+		let cursorCharacter = 0
+
+		// Find the cursor marker
+		for (let i = 0; i < lines.length; i++) {
+			const markerIndex = lines[i].indexOf(CURSOR_MARKER)
+			if (markerIndex !== -1) {
+				cursorLine = i
+				cursorCharacter = markerIndex
+				break
+			}
+		}
 
 		const uri = vscode.Uri.parse("file:///test.js")
-		const document = new MockTextDocument(uri, codeWithMarker)
-		const position = new vscode.Position(cursorPosition.line, cursorPosition.character)
+		const document = new MockTextDocument(uri, code)
+		const position = new vscode.Position(cursorLine, cursorCharacter)
 		const range = new vscode.Range(position, position)
 
 		return {
@@ -42,18 +51,17 @@ export class AutoTriggerStrategyTester {
 	}
 
 	getSystemInstructions(): string {
-		// Use the actual strategy's system instructions
 		return this.strategy.getSystemInstructions()
 	}
 
-	buildUserPrompt(code: string, cursorPosition: { line: number; character: number }): string {
-		const context = this.createContext(code, cursorPosition)
+	buildUserPrompt(code: string): string {
+		const context = this.createContext(code)
 		return this.strategy.getUserPrompt(context)
 	}
 
-	async getCompletion(code: string, cursorPosition: { line: number; character: number }): Promise<string> {
+	async getCompletion(code: string): Promise<string> {
 		const systemPrompt = this.getSystemInstructions()
-		const userPrompt = this.buildUserPrompt(code, cursorPosition)
+		const userPrompt = this.buildUserPrompt(code)
 
 		const response = await this.llmClient.sendPrompt(systemPrompt, userPrompt)
 		return response.content

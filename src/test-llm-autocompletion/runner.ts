@@ -27,7 +27,7 @@ class TestRunner {
 
 	async runTest(testCase: TestCase): Promise<TestResult> {
 		try {
-			const completion = await this.strategyTester.getCompletion(testCase.input, testCase.cursorPosition)
+			const completion = await this.strategyTester.getCompletion(testCase.input)
 
 			const changes = this.strategyTester.parseCompletion(completion)
 
