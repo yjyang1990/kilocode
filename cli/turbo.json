@@ -2,6 +2,10 @@
 	"$schema": "https://turbo.build/schema.json",
 	"extends": ["//"],
 	"tasks": {
+		"clean": {
+			"cache": false,
+			"outputs": []
+		},
 		"clean:kilocode": {
 			"outputs": ["dist/kilocode/**"],
 			"inputs": ["../../bin-unpacked/extension/**"]
@@ -15,17 +19,17 @@
 			"cache": false,
 			"outputs": ["dist/**"],
 			"inputs": ["src/**"],
-			"dependsOn": []
+			"dependsOn": ["copy:kilocode"]
 		},
-		"bundle": {
+		"build:bundle": {
 			"cache": false,
 			"outputs": ["dist/**"],
 			"inputs": ["src/**"],
-			"dependsOn": ["build", "copy:kilocode"]
+			"dependsOn": ["clean", "copy:kilocode"]
 		},
 		"start": {
 			"cache": false,
-			"dependsOn": ["build", "copy:kilocode"]
+			"dependsOn": ["build"]
 		}
 	}
 }

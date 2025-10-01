@@ -38,8 +38,11 @@
 		"jetbrains:run": {
 			"dependsOn": ["@kilo-code/jetbrains-plugin#run"]
 		},
+		"cli:build": {
+			"dependsOn": ["@kilo-code/cli#build"]
+		},
 		"cli:bundle": {
-			"dependsOn": ["@kilo-code/cli#bundle"]
+			"dependsOn": ["@kilo-code/cli#build:bundle"]
 		},
 		"chromatic": {
 			"dependsOn": ["storybook:build"],
@@ -47,14 +50,6 @@
 		},
 		"playwright": {
 			"cache": false
-		},
-		"cli:build": {
-			"outputs": ["cli/dist/**"],
-			"inputs": ["cli/src/**", "cli/package.json", "cli/tsconfig.json"]
-		},
-		"cli:dev": {
-			"cache": false,
-			"persistent": true
 		}
 	}
 }

@@ -1798,7 +1798,7 @@ export class McpHub {
 			console.log("McpHub: Already disposed.")
 			return
 		}
-		console.log("McpHub: Disposing...")
+		// console.log("McpHub: Disposing...") kilocode_change
 		this.isDisposed = true
 
 		// Clear all debounce timers

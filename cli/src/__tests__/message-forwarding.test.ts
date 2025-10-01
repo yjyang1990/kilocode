@@ -74,8 +74,8 @@ describe("ExtensionHost Message Forwarding", () => {
 		// Create ExtensionHost
 		extensionHost = new ExtensionHost({
 			workspacePath: tempDir,
-			extensionPath: tempDir,
-			binUnpackedPath,
+			extensionBundlePath: path.join(binUnpackedPath, "dist", "extension.js"),
+			extensionRootPath: binUnpackedPath,
 		})
 	})
 

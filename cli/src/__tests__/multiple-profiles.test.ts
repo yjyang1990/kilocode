@@ -45,8 +45,8 @@ describe("Multiple Profiles Support", () => {
 		// Create ExtensionHost instance
 		extensionHost = new ExtensionHost({
 			workspacePath: tempDir,
-			extensionPath,
-			binUnpackedPath,
+			extensionBundlePath: path.join(binUnpackedPath, "dist", "extension.js"),
+			extensionRootPath: binUnpackedPath,
 		})
 
 		// Activate the extension
@@ -165,8 +165,8 @@ describe("Multiple Profiles Support", () => {
 
 		const newExtensionHost = new ExtensionHost({
 			workspacePath: tempDir,
-			extensionPath,
-			binUnpackedPath,
+			extensionBundlePath: path.join(binUnpackedPath, "dist", "extension.js"),
+			extensionRootPath: binUnpackedPath,
 		})
 
 		await newExtensionHost.activate()

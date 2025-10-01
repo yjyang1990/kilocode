@@ -26,8 +26,13 @@ export function resolveExtensionPaths(): ExtensionPaths {
 	const currentFile = fileURLToPath(import.meta.url)
 	const currentDir = path.dirname(currentFile)
 
-	// Navigate to dist directory (parent of utils/)
-	const distDir = path.resolve(currentDir, "..")
+	// When bundled with esbuild, all code is in dist/index.js
+	// When compiled with tsc, this file is in dist/utils/extension-paths.js
+	// Check if we're in a utils subdirectory or directly in dist
+	const isInUtilsSubdir = currentDir.endsWith("utils")
+
+	// Navigate to dist directory
+	const distDir = isInUtilsSubdir ? path.resolve(currentDir, "..") : currentDir
 
 	// Extension is in dist/kilocode/
 	const extensionRootPath = path.join(distDir, "kilocode")

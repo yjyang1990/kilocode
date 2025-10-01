@@ -3,24 +3,10 @@
 	"version": "1.0.0",
 	"description": "Terminal User Interface for Kilo Code",
 	"type": "module",
-	"main": "dist/index.js",
+	"main": "index.js",
 	"bin": {
-		"kilocode": "dist/index.js",
-		"kilo": "dist/index.js"
-	},
-	"scripts": {
-		"build": "tsc && chmod +x dist/index.js",
-		"build:bundle": "node esbuild.config.mjs && chmod +x dist/index.js && cp package.dist.json dist/package.json && cp README.md dist/README.md",
-		"start": "node dist/index.js",
-		"clean": "rimraf dist",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"check-types": "tsc --noEmit",
-		"format": "prettier --write src",
-		"logs": "clear && tail -f ~/.kilocode/cli/logs/cli.txt",
-		"logs:clear": "rimraf ~/.kilocode/cli/logs/*",
-		"clean:kilocode": "npx del-cli ./dist/kilocode --force && npx mkdirp ./dist/kilocode",
-		"copy:kilocode": "npx cpy '../bin-unpacked/extension/**' './dist/kilocode' --parents"
+		"kilocode": "index.js",
+		"kilo": "index.js"
 	},
 	"dependencies": {
 		"@anthropic-ai/bedrock-sdk": "^0.22.0",
@@ -34,9 +20,6 @@
 		"@mistralai/mistralai": "^1.9.18",
 		"@modelcontextprotocol/sdk": "1.12.0",
 		"@qdrant/js-client-rest": "^1.14.0",
-		"@roo-code/cloud": "workspace:^",
-		"@roo-code/telemetry": "workspace:^",
-		"@roo-code/types": "workspace:^",
 		"@vscode/codicons": "^0.0.36",
 		"@vscode/ripgrep": "^1.15.11",
 		"async-mutex": "^0.5.0",
@@ -123,34 +106,22 @@
 		"yaml": "^2.6.1",
 		"zod": "^3.25.61"
 	},
-	"devDependencies": {
-		"@roo-code/config-eslint": "workspace:^",
-		"@roo-code/config-typescript": "workspace:^",
-		"@types/fs-extra": "^11.0.4",
-		"@types/node": "20.x",
-		"@types/react": "^18.3.23",
-		"cpy-cli": "^5.0.0",
-		"del-cli": "^5.1.0",
-		"eslint": "^9.27.0",
-		"ink-testing-library": "^4.0.0",
-		"mkdirp": "^3.0.1",
-		"prettier": "^3.4.2",
-		"rimraf": "^6.0.1",
-		"tsx": "^4.19.3",
-		"typescript": "^5.4.5",
-		"vitest": "^3.2.3"
-	},
 	"engines": {
 		"node": ">=20.19.2"
 	},
-	"keywords": [
-		"cli",
-		"tui",
-		"terminal",
-		"ai",
-		"assistant",
-		"kilo-code",
-		"ink",
-		"react"
-	]
+	"keywords": ["cli", "tui", "terminal", "ai", "assistant", "kilo-code", "ink"],
+	"author": "Kilo Code",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kilo-org/kilocode.git",
+		"directory": "cli"
+	},
+	"bugs": {
+		"url": "https://github.com/kilo-org/kilocode/issues"
+	},
+	"homepage": "https://github.com/kilo-org/kilocode#readme",
+	"publishConfig": {
+		"access": "restricted"
+	}
 }
