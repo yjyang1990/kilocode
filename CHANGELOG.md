@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.99.0
-
-### Minor Changes
+## [v4.99.0]
 
 - [#2719](https://github.com/Kilo-Org/kilocode/pull/2719) [`345947f`](https://github.com/Kilo-Org/kilocode/commit/345947f29978045209a82687843c28059b339dc0) Thanks [@mcowger](https://github.com/mcowger)! - Prevent race conditions from stopping agent progress during indexing.
 
