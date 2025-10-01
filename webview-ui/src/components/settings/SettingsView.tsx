@@ -27,7 +27,7 @@ import {
 	Monitor,
 	LucideIcon,
 	// SquareSlash, // kilocode_change
-	Glasses,
+	// Glasses, // kilocode_change
 } from "lucide-react"
 
 // kilocode_change
@@ -570,7 +570,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			{ id: "contextManagement", icon: Database },
 			{ id: "terminal", icon: SquareTerminal },
 			{ id: "prompts", icon: MessageSquare },
-			{ id: "ui", icon: Glasses },
+			// { id: "ui", icon: Glasses }, // kilocode_change: we have our own display section
 			{ id: "experimental", icon: FlaskConical },
 			{ id: "language", icon: Globe },
 			{ id: "mcp", icon: Server },
@@ -825,6 +825,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 					{/* kilocode_change start display section */}
 					{activeTab === "display" && (
 						<DisplaySettings
+							reasoningBlockCollapsed={reasoningBlockCollapsed ?? true}
 							showTaskTimeline={showTaskTimeline}
 							ghostServiceSettings={ghostServiceSettings}
 							setCachedStateField={setCachedStateField}

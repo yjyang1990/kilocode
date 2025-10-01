@@ -2865,10 +2865,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 					? this.ask(
 							"payment_required_prompt",
 							JSON.stringify({
-								title: t("kilocode:lowCreditWarning.title"),
-								message: t("kilocode:lowCreditWarning.message"),
-								balance: (error as any).balance ?? "0.00",
-								buyCreditsUrl: (error as any).buyCreditsUrl ?? "https://kilocode.ai/profile",
+								title: error.error?.title ?? t("kilocode:lowCreditWarning.title"),
+								message: error.error?.message ?? t("kilocode:lowCreditWarning.message"),
+								balance: error.error?.balance ?? "0.00",
+								buyCreditsUrl: error.error?.buyCreditsUrl ?? "https://kilocode.ai/profile",
 							}),
 						)
 					: this.ask(
