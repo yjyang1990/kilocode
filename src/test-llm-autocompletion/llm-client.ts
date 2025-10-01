@@ -1,5 +1,7 @@
 import OpenAI from "openai"
-import "dotenv/config"
+import { config } from "dotenv"
+
+config()
 
 // Import the version from package.json
 const packageVersion = "4.97.1" // From src/package.json
