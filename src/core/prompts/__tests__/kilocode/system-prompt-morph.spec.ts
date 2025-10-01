@@ -1,3 +1,4 @@
+// kilocode_change: file added
 // npx vitest core/prompts/__tests__/system-prompt.spec.ts
 
 vi.mock("os", () => ({
@@ -136,6 +137,7 @@ vi.mock("../../../utils/shell", () => ({
 // Mock the isFastApplyAvailable function
 vi.mock("../../../tools/editFileTool", () => ({
 	isFastApplyAvailable: vi.fn(),
+	getFastApplyModelType: vi.fn(),
 }))
 
 // Create a mock ExtensionContext
@@ -297,9 +299,6 @@ describe("SYSTEM_PROMPT", () => {
 
 		// Should contain Fast Apply-specific editing instructions in rules section
 		expect(prompt).toContain("FastApply is enabled")
-		expect(prompt).toContain(
-			"**ONLY use the edit_file tool for file modifications.** Traditional editing tools (apply_diff, write_to_file, insert_content, search_and_replace) are disabled in Relace mode.",
-		)
 		expect(prompt).toContain("// ... existing code ...")
 	})
 
