@@ -1,4 +1,10 @@
+import fs from "fs"
+import path from "path"
+import { fileURLToPath } from "url"
 import { CURSOR_MARKER } from "../services/ghost/ghostConstants.js"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 interface CategoryTestCase {
 	name: string
@@ -15,188 +21,69 @@ export interface Category {
 	testCases: CategoryTestCase[]
 }
 
-export const categories: Category[] = [
-	{
-		name: "basic-syntax",
-		testCases: [
-			{
-				name: "closing-brace",
-				input: `function test() {
-		console.log('hello')${CURSOR_MARKER}`,
+const TEST_CASES_DIR = path.join(__dirname, "test-cases")
 
-				description: "Should complete closing brace for function",
-			},
-			{
-				name: "semicolon",
-				input: `const x = 42${CURSOR_MARKER}`,
+function parseTestCaseFile(filePath: string): { description: string; input: string } {
+	const content = fs.readFileSync(filePath, "utf-8")
+	const lines = content.split("\n")
 
-				description: "Should add semicolon after variable declaration",
-			},
-			{
-				name: "closing-bracket",
-				input: `const arr = [1, 2, 3${CURSOR_MARKER}`,
+	const descriptionLine = lines[0]
+	if (!descriptionLine.startsWith("# Description: ")) {
+		throw new Error(
+			`Invalid test case file format: ${filePath}. Expected first line to start with "# Description: "`,
+		)
+	}
 
-				description: "Should complete closing bracket for array",
-			},
-			{
-				name: "closing-parenthesis",
-				input: `console.log('test'${CURSOR_MARKER}`,
+	const description = descriptionLine.replace("# Description: ", "").trim()
+	const input = lines
+		.slice(1)
+		.join("\n")
+		.replace(/<<<CURSOR>>>/g, CURSOR_MARKER)
 
-				description: "Should complete closing parenthesis for function call",
-			},
-		],
-	},
-	{
-		name: "property-access",
-		testCases: [
-			{
-				name: "property-access",
-				input: `const obj = { name: 'test', value: 42 };
-obj.${CURSOR_MARKER}`,
+	return { description, input }
+}
 
-				description: "Should suggest object properties",
-			},
-		],
-	},
-	{
-		name: "method-access",
-		testCases: [
-			{
-				name: "array-method",
-				input: `const arr = [1, 2, 3];
-arr.${CURSOR_MARKER}`,
+function loadTestCases(): Category[] {
+	if (!fs.existsSync(TEST_CASES_DIR)) {
+		return []
+	}
 
-				description: "Should suggest array methods",
-			},
-			{
-				name: "string-method",
-				input: `const str = 'hello world';
-str.${CURSOR_MARKER}`,
-				description: "Should suggest string methods",
-			},
-		],
-	},
-	{
-		name: "function-declaration",
-		testCases: [
-			{
-				name: "function-body",
-				input: `function calculateSum(a, b) ${CURSOR_MARKER}`,
-				description: "Should complete function body opening",
-			},
-			{
-				name: "arrow-function",
-				input: `const add = (a, b) ${CURSOR_MARKER}`,
-				description: "Should complete arrow function syntax",
-			},
-		],
-	},
-	{
-		name: "function-call",
-		testCases: [
-			{
-				name: "function-call-args",
-				input: `function greet(name) { return 'Hello ' + name; }
-greet(${CURSOR_MARKER}`,
-				description: "Should suggest function call argument completion",
-			},
-		],
-	},
-	{
-		name: "variable-assignment",
-		testCases: [
-			{
-				name: "variable-assignment",
-				input: `const userName = ${CURSOR_MARKER}`,
-				description: "Should suggest common variable assignments",
-			},
-			{
-				name: "array-declaration",
-				input: `const numbers = ${CURSOR_MARKER}`,
-				description: "Should suggest array initialization",
-			},
-			{
-				name: "object-declaration",
-				input: `const config = ${CURSOR_MARKER}`,
-				description: "Should suggest object initialization",
-			},
-		],
-	},
-	{
-		name: "import-statement",
-		testCases: [
-			{
-				name: "import-from",
-				input: `import { useState } from ${CURSOR_MARKER}`,
-				description: "Should complete import module name",
-			},
-			{
-				name: "import-curly-brace",
-				input: `import ${CURSOR_MARKER} from 'react'`,
-				description: "Should suggest import syntax options",
-			},
-		],
-	},
-	{
-		name: "control-flow",
-		testCases: [
-			{
-				name: "if-statement",
-				input: `const x = 10;
-if (x > 5) ${CURSOR_MARKER}`,
-				description: "Should complete if statement body",
-			},
-			{
-				name: "for-loop",
-				input: `for (let i = 0; i < 10; i++) ${CURSOR_MARKER}`,
-				description: "Should complete for loop body",
-			},
-			{
-				name: "return-statement",
-				input: `function getValue() {
-		return ${CURSOR_MARKER}`,
-				description: "Should suggest return value completions",
-			},
-		],
-	},
-	{
-		name: "complex",
-		testCases: [
-			{
-				name: "chained-methods",
-				input: `const result = [1, 2, 3]
-		.map(x => x * 2)
-		.${CURSOR_MARKER}`,
-				description: "Should suggest chained array methods",
-			},
-			{
-				name: "nested-object",
-				input: `const config = {
-		server: {
-		  port: 3000,
-		  ${CURSOR_MARKER}`,
-				description: "Should suggest nested object properties",
-			},
-			{
-				name: "async-await",
-				input: `async function fetchData() {
-		const response = await ${CURSOR_MARKER}`,
-				description: "Should suggest async operations",
-			},
-			{
-				name: "object-with-inline-comments",
-				input: `const creditConfig = {
-	credit_category: 'credits',
-	description: 'Free credits as a reward',
-	amount_usd: 5, // inlined from FREE CREDITS${CURSOR_MARKER}
-	is_idempotent: true,
-	expiry: "2 months",
-	`,
-				description: "Should handle object properties with inline comments and suggest next property",
-			},
-		],
-	},
-]
+	const categories: Category[] = []
+	const categoryDirs = fs.readdirSync(TEST_CASES_DIR, { withFileTypes: true })
+
+	for (const categoryDir of categoryDirs) {
+		if (!categoryDir.isDirectory()) continue
+
+		const categoryName = categoryDir.name
+		const categoryPath = path.join(TEST_CASES_DIR, categoryName)
+		const testCaseFiles = fs.readdirSync(categoryPath).filter((f) => f.endsWith(".txt"))
+
+		const testCases: CategoryTestCase[] = []
+
+		for (const testCaseFile of testCaseFiles) {
+			const testCaseName = testCaseFile.replace(".txt", "")
+			const testCasePath = path.join(categoryPath, testCaseFile)
+			const { description, input } = parseTestCaseFile(testCasePath)
+
+			testCases.push({
+				name: testCaseName,
+				input,
+				description,
+			})
+		}
+
+		if (testCases.length > 0) {
+			categories.push({
+				name: categoryName,
+				testCases,
+			})
+		}
+	}
+
+	return categories
+}
+
+export const categories: Category[] = loadTestCases()
 
 export const testCases: TestCase[] = categories.flatMap((category) =>
 	category.testCases.map((tc) => ({
