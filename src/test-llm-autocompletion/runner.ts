@@ -3,14 +3,15 @@
 import { LLMClient } from "./llm-client.js"
 import { AutoTriggerStrategyTester } from "./auto-trigger-strategy.js"
 import { testCases, getCategories, TestCase } from "./test-cases.js"
+import { checkApproval } from "./approvals.js"
 
 interface TestResult {
 	testCase: TestCase
 	passed: boolean
 	completion: string
 	error?: string
-	matchedPattern?: string
 	actualValue?: string
+	newOutput?: boolean
 }
 
 class TestRunner {
@@ -31,39 +32,29 @@ class TestRunner {
 
 			const changes = this.strategyTester.parseCompletion(completion)
 
-			// Check if any change matches our expected patterns
+			let actualValue: string
 			let passed = false
-			let matchedPattern: string | undefined
-			let actualValue: string | undefined
+			let newOutput = false
 
 			if (changes.length > 0) {
-				// Extract what was actually added/changed (the value we're testing)
-				const replacementText = changes[0].replace.replace(testCase.input, "").trim()
-				actualValue = replacementText
-
-				// If no addition was made, show the full replacement
-				if (!actualValue) {
-					actualValue = changes[0].replace
-				}
-
-				for (const pattern of testCase.expectedPatterns) {
-					const regex = new RegExp(pattern)
-					if (regex.test(replacementText) || regex.test(changes[0].replace)) {
-						passed = true
-						matchedPattern = pattern
-						break
-					}
-				}
+				// Apply the change: replace search with replace in the input
+				const change = changes[0]
+				actualValue = testCase.input.replace(change.search, change.replace)
 			} else {
 				actualValue = "(no changes parsed)"
 			}
+
+			const approvalResult = await checkApproval(testCase.category, testCase.name, testCase.input, actualValue)
+
+			passed = approvalResult.approved
+			newOutput = approvalResult.newOutput
 
 			return {
 				testCase,
 				passed,
 				completion,
-				matchedPattern,
 				actualValue,
+				newOutput,
 			}
 		} catch (error) {
 			return {
@@ -97,17 +88,15 @@ class TestRunner {
 
 				if (result.passed) {
 					console.log("✓ PASSED")
-					if (this.verbose && result.matchedPattern) {
-						console.log(`    Matched pattern: ${result.matchedPattern}`)
+					if (result.newOutput) {
+						console.log(`    (New output approved)`)
 					}
 				} else {
 					console.log("✗ FAILED")
 					if (result.error) {
 						console.log(`    Error: ${result.error}`)
 					} else {
-						// Show what we expected and what we got
 						console.log(`    Input: "${testCase.input.replace(/\n/g, "\\n")}"`)
-						console.log(`    Expected: ${testCase.expectedPatterns.join(" or ")}`)
 						console.log(`    Got: "${result.actualValue?.replace(/\n/g, "\\n")}"`)
 
 						if (this.verbose && result.completion) {
@@ -188,7 +177,6 @@ class TestRunner {
 		console.log("Description:", testCase.description)
 		console.log("\nInput Code:")
 		console.log(testCase.input)
-		console.log("\nExpected Patterns:", testCase.expectedPatterns.join(" or "))
 
 		const result = await this.runTest(testCase)
 
@@ -196,8 +184,8 @@ class TestRunner {
 
 		if (result.passed) {
 			console.log("\n✓ TEST PASSED")
-			if (result.matchedPattern) {
-				console.log(`Matched pattern: ${result.matchedPattern}`)
+			if (result.newOutput) {
+				console.log("(New output approved)")
 			}
 		} else {
 			console.log("\n✗ TEST FAILED")
