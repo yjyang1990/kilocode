@@ -34,8 +34,12 @@ export class AutoTriggerStrategyTester {
 			}
 		}
 
+		// Remove the cursor marker from the code before creating the document
+		// formatDocumentWithCursor will add it back at the correct position
+		const codeWithoutMarker = code.replace(CURSOR_MARKER, "")
+
 		const uri = vscode.Uri.parse("file:///test.js")
-		const document = new MockTextDocument(uri, code)
+		const document = new MockTextDocument(uri, codeWithoutMarker)
 		const position = new vscode.Position(cursorLine, cursorCharacter)
 		const range = new vscode.Range(position, position)
 
