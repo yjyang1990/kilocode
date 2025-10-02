@@ -1,26 +1,19 @@
 /**
  * CommandUI - Main application component for command-based UI
- * Updated to use new hooks-based architecture with ExtensionService
+ * Refactored to use specialized hooks for better maintainability
  */
 
-import React, { useEffect, useCallback } from "react"
+import React, { useCallback } from "react"
 import { Box, Text } from "ink"
-import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import {
-	messagesAtom,
-	addMessageAtom,
-	clearMessagesAtom,
-	currentModeAtom,
-	isProcessingAtom,
-	errorAtom,
-} from "../state/atoms/ui.js"
+import { useAtomValue } from "jotai"
+import { isProcessingAtom, errorAtom } from "../state/atoms/ui.js"
 import { MessageDisplay } from "./messages/MessageDisplay.js"
 import { CommandInput } from "./components/CommandInput.js"
-import { initializeCommands, commandRegistry, parseCommand } from "../commands/index.js"
+import { initializeCommands } from "../commands/index.js"
 import { isCommandInput } from "../services/autocomplete.js"
-import { useWebviewMessage } from "../state/hooks/useWebviewMessage.js"
-import type { CliMessage } from "../types/cli.js"
-import type { CommandContext } from "../commands/core/types.js"
+import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
+import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
+import { useWelcomeMessage } from "../state/hooks/useWelcomeMessage.js"
 
 // Initialize commands on module load
 initializeCommands()
@@ -37,124 +30,36 @@ interface UIAppProps {
 }
 
 export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
-	const messages = useAtomValue(messagesAtom)
-	const addMessage = useSetAtom(addMessageAtom)
-	const clearMessages = useSetAtom(clearMessagesAtom)
-	const [currentMode, setCurrentMode] = useAtom(currentModeAtom)
-	const [isProcessing, setIsProcessing] = useAtom(isProcessingAtom)
+	const isProcessing = useAtomValue(isProcessingAtom)
 	const error = useAtomValue(errorAtom)
 
-	// Use the new webview message hook
-	const { sendMessage } = useWebviewMessage()
+	// Use specialized hooks for command and message handling
+	const { executeCommand, isExecuting: isExecutingCommand } = useCommandHandler()
+	const { sendUserMessage, isSending: isSendingMessage } = useMessageHandler()
 
-	// Initialize with welcome message
-	useEffect(() => {
-		addMessage({
-			id: "welcome",
-			type: "system",
-			content: [
-				"Welcome to Kilo Code CLI!",
-				"",
-				"Type a message to start chatting, or use /help to see available commands.",
-				"Commands start with / (e.g., /help, /mode, /clear)",
-			].join("\n"),
-			ts: Date.now(),
-		})
-	}, [addMessage])
+	// Display welcome message on mount
+	useWelcomeMessage()
 
+	// Simplified submit handler that delegates to appropriate hook
 	const handleSubmit = useCallback(
 		async (input: string) => {
 			const trimmedInput = input.trim()
 			if (!trimmedInput) return
 
-			// Check if it's a command
+			// Determine if it's a command or regular message
 			if (isCommandInput(trimmedInput)) {
-				const parsed = parseCommand(trimmedInput)
-				if (!parsed) {
-					addMessage({
-						id: Date.now().toString(),
-						type: "error",
-						content: "Invalid command format. Type /help for available commands.",
-						ts: Date.now(),
-					})
-					return
-				}
-
-				const command = commandRegistry.get(parsed.command)
-				if (!command) {
-					addMessage({
-						id: Date.now().toString(),
-						type: "error",
-						content: `Unknown command: /${parsed.command}. Type /help for available commands.`,
-						ts: Date.now(),
-					})
-					return
-				}
-
-				// Execute command
-				setIsProcessing(true)
-				try {
-					const context: CommandContext = {
-						input: trimmedInput,
-						args: parsed.args,
-						options: parsed.options,
-						sendMessage: async (message: any) => {
-							await sendMessage(message)
-						},
-						addMessage: (message: CliMessage) => {
-							addMessage(message)
-						},
-						clearMessages: () => {
-							clearMessages()
-						},
-						setMode: (mode: string) => {
-							setCurrentMode(mode)
-						},
-						exit: () => {
-							onExit()
-						},
-					}
-
-					await command.handler(context)
-				} catch (err) {
-					addMessage({
-						id: Date.now().toString(),
-						type: "error",
-						content: `Error executing command: ${err instanceof Error ? err.message : String(err)}`,
-						ts: Date.now(),
-					})
-				} finally {
-					setIsProcessing(false)
-				}
+				// Handle as command
+				await executeCommand(trimmedInput, onExit)
 			} else {
-				// Regular message - send to extension
-				addMessage({
-					id: Date.now().toString(),
-					type: "user",
-					content: trimmedInput,
-					ts: Date.now(),
-				})
-
-				setIsProcessing(true)
-				try {
-					await sendMessage({
-						type: "newTask",
-						text: trimmedInput,
-					})
-				} catch (err) {
-					addMessage({
-						id: Date.now().toString(),
-						type: "error",
-						content: `Error sending message: ${err instanceof Error ? err.message : String(err)}`,
-						ts: Date.now(),
-					})
-				} finally {
-					setIsProcessing(false)
-				}
+				// Handle as regular message
+				await sendUserMessage(trimmedInput)
 			}
 		},
-		[addMessage, clearMessages, setCurrentMode, setIsProcessing, sendMessage, onExit],
+		[executeCommand, sendUserMessage, onExit],
 	)
+
+	// Determine if any operation is in progress
+	const isAnyOperationInProgress = isProcessing || isExecutingCommand || isSendingMessage
 
 	return (
 		<Box flexDirection="column" height="100%">
@@ -171,7 +76,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			)}
 
 			{/* Input */}
-			<CommandInput onSubmit={handleSubmit} disabled={isProcessing} />
+			<CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />
 		</Box>
 	)
 }

@@ -32,3 +32,17 @@ export type { UseModelSelectionReturn } from "./useModelSelection.js"
 // Command input hooks
 export { useCommandInput } from "./useCommandInput.js"
 export type { UseCommandInputReturn } from "./useCommandInput.js"
+
+// Command execution hooks
+export { useCommandContext } from "./useCommandContext.js"
+export type { UseCommandContextReturn, CommandContextFactory } from "./useCommandContext.js"
+
+export { useCommandHandler } from "./useCommandHandler.js"
+export type { UseCommandHandlerReturn } from "./useCommandHandler.js"
+
+export { useMessageHandler } from "./useMessageHandler.js"
+export type { UseMessageHandlerReturn } from "./useMessageHandler.js"
+
+// UI hooks
+export { useWelcomeMessage, getDefaultWelcomeContent } from "./useWelcomeMessage.js"
+export type { WelcomeMessageConfig } from "./useWelcomeMessage.js"
