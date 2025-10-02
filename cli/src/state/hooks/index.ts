@@ -9,8 +9,6 @@
 export { useExtensionService } from "./useExtensionService.js"
 export type { UseExtensionServiceReturn } from "./useExtensionService.js"
 
-export { useExtensionStateSync } from "./useExtensionStateSync.js"
-
 // Message hooks
 export { useWebviewMessage } from "./useWebviewMessage.js"
 export type {
