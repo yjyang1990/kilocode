@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.99.1
-
-### Patch Changes
+## [v4.99.1]
 
 - [#2731](https://github.com/Kilo-Org/kilocode/pull/2731) [`36cf88f`](https://github.com/Kilo-Org/kilocode/commit/36cf88f868eee2a322b35b37032f98d199e0f91a) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - A recommendation to disable Editing Through Diffs or Fast Apply is now included in the error message when a model fails to use them properly
 
