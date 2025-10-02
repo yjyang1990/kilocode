@@ -24,7 +24,7 @@ const isProcessingBufferAtom = atom<boolean>(false)
  * Effect atom to initialize the ExtensionService
  * This sets up event listeners and activates the service
  */
-export const initializeServiceEffectAtom = atom(null, async (get, set) => {
+export const initializeServiceEffectAtom = atom(null, async (get, set, store?: any) => {
 	const service = get(extensionServiceAtom)
 
 	if (!service) {
@@ -33,43 +33,60 @@ export const initializeServiceEffectAtom = atom(null, async (get, set) => {
 		throw error
 	}
 
+	// Get the store reference - if not passed, we can't update atoms from event listeners
+	const atomStore = store || (get as any).store
+	if (!atomStore) {
+		logs.error("No store available for event listeners", "effects")
+	}
+
 	try {
 		set(setIsInitializingAtom, true)
 		logs.info("Initializing ExtensionService...", "effects")
 
 		// Set up event listeners before initialization
+		// IMPORTANT: Use atomStore.set() instead of set() for async event handlers
 		service.on("ready", (api) => {
 			logs.info("Extension ready", "effects")
-			set(setServiceReadyAtom, true)
+			if (atomStore) {
+				atomStore.set(setServiceReadyAtom, true)
 
-			// Get initial state
-			const state = api.getState()
-			if (state) {
-				set(updateExtensionStateAtom, state)
+				// Get initial state
+				const state = api.getState()
+				if (state) {
+					atomStore.set(updateExtensionStateAtom, state)
+				}
+
+				// Process any buffered messages
+				atomStore.set(processMessageBufferAtom)
 			}
-
-			// Process any buffered messages
-			set(processMessageBufferAtom)
 		})
 
 		service.on("stateChange", (state) => {
 			logs.debug("State change received", "effects")
-			set(updateExtensionStateAtom, state)
+			if (atomStore) {
+				atomStore.set(updateExtensionStateAtom, state)
+			}
 		})
 
 		service.on("message", (message) => {
 			logs.debug(`Extension message received: ${message.type}`, "effects")
-			set(messageHandlerEffectAtom, message)
+			if (atomStore) {
+				atomStore.set(messageHandlerEffectAtom, message)
+			}
 		})
 
 		service.on("error", (error) => {
 			logs.error("Extension service error", "effects", { error })
-			set(setServiceErrorAtom, error)
+			if (atomStore) {
+				atomStore.set(setServiceErrorAtom, error)
+			}
 		})
 
 		service.on("disposed", () => {
 			logs.info("Extension service disposed", "effects")
-			set(setServiceReadyAtom, false)
+			if (atomStore) {
+				atomStore.set(setServiceReadyAtom, false)
+			}
 		})
 
 		// Initialize the service
@@ -105,6 +122,8 @@ export const messageHandlerEffectAtom = atom(null, (get, set, message: Extension
 			case "state":
 				if (message.state) {
 					logs.debug("Processing state message", "effects")
+					logs.debug(`State has ${message.state.chatMessages?.length || 0} chatMessages`, "effects")
+					logs.debug(`State has ${message.state.clineMessages?.length || 0} clineMessages`, "effects")
 					set(updateExtensionStateAtom, message.state)
 				}
 				break

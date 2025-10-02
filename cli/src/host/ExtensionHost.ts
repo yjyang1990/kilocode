@@ -445,11 +445,13 @@ export class ExtensionHost extends EventEmitter {
 					case "state":
 						// Extension is sending a full state update
 						if (message.state && this.currentState) {
-							// Update our state with the extension's state, particularly chatMessages and apiConfiguration
 							this.currentState = {
 								...this.currentState,
 								...message.state,
-								chatMessages: message.state.chatMessages || this.currentState.chatMessages,
+								chatMessages:
+									message.state.clineMessages ||
+									message.state.chatMessages ||
+									this.currentState.chatMessages,
 								apiConfiguration: message.state.apiConfiguration || this.currentState.apiConfiguration,
 								currentApiConfigName:
 									message.state.currentApiConfigName || this.currentState.currentApiConfigName,

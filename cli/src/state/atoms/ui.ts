@@ -8,6 +8,7 @@ import type { CliMessage } from "../../types/cli.js"
 import type { ExtensionChatMessage } from "../../types/messages.js"
 import type { CommandSuggestion, ArgumentSuggestion } from "../../services/autocomplete.js"
 import { chatMessagesAtom } from "./extension.js"
+import { logs } from "../../services/logs.js"
 
 /**
  * Unified message type that can represent both CLI and extension messages
@@ -312,7 +313,9 @@ export const mergedMessagesAtom = atom<UnifiedMessage[]>((get) => {
 	]
 
 	// Sort chronologically by timestamp
-	return unified.sort((a, b) => {
+	const sorted = unified.sort((a, b) => {
 		return a.message.ts - b.message.ts
 	})
+
+	return sorted
 })

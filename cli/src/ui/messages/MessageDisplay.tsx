@@ -1,12 +1,12 @@
 /**
  * MessageDisplay component - displays chat messages from both CLI and extension state
- * Updated to use mergedMessagesAtom for unified message display
+ * Updated to merge messages directly in component to avoid stale derived atom issues
  */
 
-import React, { useMemo } from "react"
+import React from "react"
 import { Box, Text } from "ink"
 import { useAtomValue } from "jotai"
-import { mergedMessagesAtom, type UnifiedMessage } from "../../state/atoms/ui.js"
+import { type UnifiedMessage, mergedMessagesAtom } from "../../state/atoms/ui.js"
 import { MessageRow } from "./MessageRow.js"
 
 interface MessageDisplayProps {
@@ -29,22 +29,6 @@ function getMessageKey(msg: UnifiedMessage, index: number): string {
 export const MessageDisplay: React.FC<MessageDisplayProps> = ({ filterType, maxMessages }) => {
 	const allMessages = useAtomValue(mergedMessagesAtom)
 
-	// Filter and limit messages
-	const displayMessages = useMemo(() => {
-		let filtered = allMessages
-
-		// Apply filter only to extension messages if filterType is specified
-		if (filterType) {
-			filtered = allMessages.filter((msg) => msg.source === "extension" && msg.message.type === filterType)
-		}
-
-		if (maxMessages && maxMessages > 0) {
-			filtered = filtered.slice(-maxMessages)
-		}
-
-		return filtered
-	}, [allMessages, filterType, maxMessages])
-
 	if (allMessages.length === 0) {
 		return (
 			<Box flexDirection="column" paddingX={1} paddingY={1}>
@@ -53,17 +37,9 @@ export const MessageDisplay: React.FC<MessageDisplayProps> = ({ filterType, maxM
 		)
 	}
 
-	if (displayMessages.length === 0) {
-		return (
-			<Box flexDirection="column" paddingX={1} paddingY={1}>
-				<Text color="gray">No {filterType} messages.</Text>
-			</Box>
-		)
-	}
-
 	return (
 		<Box flexDirection="column" paddingX={1}>
-			{displayMessages.map((unifiedMsg, index) => (
+			{allMessages.map((unifiedMsg, index) => (
 				<MessageRow key={getMessageKey(unifiedMsg, index)} unifiedMessage={unifiedMsg} />
 			))}
 		</Box>

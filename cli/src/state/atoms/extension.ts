@@ -162,7 +162,8 @@ export const updateExtensionStateAtom = atom(null, (get, set, state: ExtensionSt
 
 	if (state) {
 		// Sync all derived atoms
-		set(chatMessagesAtom, state.chatMessages || [])
+		const messages = state.clineMessages || state.chatMessages || []
+		set(chatMessagesAtom, [...messages])
 		set(currentTaskAtom, state.currentTaskItem || null)
 		set(taskTodosAtom, state.currentTaskTodos || [])
 		set(routerModelsAtom, state.routerModels || null)

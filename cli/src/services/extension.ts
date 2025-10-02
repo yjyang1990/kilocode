@@ -96,7 +96,7 @@ export class ExtensionService extends EventEmitter {
 
 		// Create message bridge
 		this.messageBridge = createMessageBridge({
-			enableLogging: true,
+			enableLogging: false,
 		})
 
 		// Setup event handlers

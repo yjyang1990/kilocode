@@ -2,11 +2,15 @@ import React, { useState } from "react"
 import { Box, Text } from "ink"
 import { UI } from "./UI.js"
 import { useExtensionService } from "../state/hooks/useExtensionService.js"
+import { useExtensionStateSync } from "../state/hooks/useExtensionStateSync.js"
 import { AppOptions } from "./App.js"
 
 export const Loader: React.FC<{ options: AppOptions; onExit: () => void }> = ({ options, onExit }) => {
 	const { isReady, isInitializing, error } = useExtensionService()
 	const [initError, setInitError] = useState<Error | null>(null)
+
+	// Set up state synchronization with extension
+	useExtensionStateSync()
 
 	// Show loading state while initializing
 	if (isInitializing) {

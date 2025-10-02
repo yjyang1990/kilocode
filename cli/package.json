@@ -18,7 +18,7 @@
 		"check-types": "tsc --noEmit",
 		"format": "prettier --write src",
 		"logs": "clear && tail -f ~/.kilocode/cli/logs/cli.txt",
-		"logs:clear": "rimraf ~/.kilocode/cli/logs/*",
+		"logs:clear": "rimraf ~/.kilocode/cli/logs/* && touch ~/.kilocode/cli/logs/cli.txt",
 		"clean:kilocode": "npx del-cli ./dist/kilocode --force && npx mkdirp ./dist/kilocode",
 		"copy:kilocode": "npx cpy '../bin-unpacked/extension/**' './dist/kilocode' --parents"
 	},

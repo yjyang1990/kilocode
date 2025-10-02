@@ -83,7 +83,7 @@ export class CLI {
 
 			// Initialize service through effect atom
 			// This sets up all event listeners and activates the extension
-			await this.store.set(initializeServiceEffectAtom)
+			await this.store.set(initializeServiceEffectAtom, this.store)
 			logs.info("ExtensionService initialized through effects", "CLI")
 
 			this.isInitialized = true

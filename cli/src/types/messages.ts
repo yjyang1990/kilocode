@@ -374,6 +374,7 @@ export interface ExtensionState {
 	currentApiConfigName?: string
 	listApiConfigMeta?: ProviderSettingsEntry[]
 	chatMessages: ExtensionChatMessage[]
+	clineMessages?: ExtensionChatMessage[] // Cline Legacy
 	currentTaskItem?: HistoryItem
 	currentTaskTodos?: TodoItem[]
 	mode: string

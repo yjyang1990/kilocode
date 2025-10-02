@@ -31,13 +31,18 @@ export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ messag
 
 	// Get the display text based on message type
 	const getDisplayText = () => {
-		if (message.type === "ask") {
-			return message.ask || message.text || ""
+		// Always prefer message.text as it contains the actual content
+		// message.ask and message.say often contain just the subtype (e.g., "text", "completion_result")
+		if (message.text) {
+			return message.text
 		}
-		if (message.type === "say") {
-			return message.say || message.text || ""
+		if (message.type === "ask" && message.ask && message.ask !== "text") {
+			return message.ask
 		}
-		return message.text || ""
+		if (message.type === "say" && message.say && message.say !== "text") {
+			return message.say
+		}
+		return ""
 	}
 
 	const displayText = getDisplayText()
