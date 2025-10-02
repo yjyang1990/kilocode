@@ -470,10 +470,10 @@ function getProvider(
 	if (definition.values) {
 		return async () =>
 			definition.values!.map((v) => ({
-				value: v,
-				description: "",
+				value: v.value,
+				description: v.description || "",
 				matchScore: 1,
-				highlightedValue: v,
+				highlightedValue: v.value,
 			}))
 	}
 

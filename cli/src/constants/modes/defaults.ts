@@ -6,21 +6,15 @@ import type { ModeConfig } from "../../types/messages.js"
  */
 export const DEFAULT_MODES: ModeConfig[] = [
 	{
-		slug: "code",
-		name: "Code",
-		description: "Write, modify, and refactor code",
-		source: "global",
-	},
-	{
 		slug: "architect",
 		name: "Architect",
 		description: "Plan and design system architecture",
 		source: "global",
 	},
 	{
-		slug: "debug",
-		name: "Debug",
-		description: "Troubleshoot and fix issues",
+		slug: "code",
+		name: "Code",
+		description: "Write, modify, and refactor code",
 		source: "global",
 	},
 	{
@@ -30,9 +24,15 @@ export const DEFAULT_MODES: ModeConfig[] = [
 		source: "global",
 	},
 	{
-		slug: "test",
-		name: "Test",
-		description: "Write and maintain tests",
+		slug: "debug",
+		name: "Debug",
+		description: "Troubleshoot and fix issues",
+		source: "global",
+	},
+	{
+		slug: "orchestrator",
+		name: "Orchestrator",
+		description: "Coordinate complex multi-step projects",
 		source: "global",
 	},
 ]

@@ -2,9 +2,17 @@
  * /mode command - Switch between different modes
  */
 
-import type { Command } from "./core/types.js"
+import type { Command, ArgumentValue } from "./core/types.js"
+import { DEFAULT_MODES } from "../constants/modes/defaults.js"
 
-const AVAILABLE_MODES = ["code", "architect", "ask", "debug", "orchestrator", "translate", "test"]
+// Convert modes to ArgumentValue format
+const MODE_VALUES: ArgumentValue[] = DEFAULT_MODES.map((mode) => ({
+	value: mode.slug,
+	...(mode.description && { description: mode.description }),
+}))
+
+// Extract mode slugs for validation
+const AVAILABLE_MODE_SLUGS = DEFAULT_MODES.map((mode) => mode.slug)
 
 export const modeCommand: Command = {
 	name: "mode",
@@ -19,13 +27,13 @@ export const modeCommand: Command = {
 			name: "mode-name",
 			description: "The mode to switch to",
 			required: true,
-			values: AVAILABLE_MODES,
+			values: MODE_VALUES,
 			placeholder: "Select a mode",
 			validate: (value) => {
-				const isValid = AVAILABLE_MODES.includes(value.toLowerCase())
+				const isValid = AVAILABLE_MODE_SLUGS.includes(value.toLowerCase())
 				return {
 					valid: isValid,
-					...(isValid ? {} : { error: `Invalid mode. Available: ${AVAILABLE_MODES.join(", ")}` }),
+					...(isValid ? {} : { error: `Invalid mode. Available: ${AVAILABLE_MODE_SLUGS.join(", ")}` }),
 				}
 			},
 		},
@@ -41,7 +49,7 @@ export const modeCommand: Command = {
 				content: [
 					"**Available Modes:**",
 					"",
-					...AVAILABLE_MODES.map((mode) => `  - ${mode}`),
+					...DEFAULT_MODES.map((mode) => `  - **${mode.name}** (${mode.slug}): ${mode.description}`),
 					"",
 					"Usage: /mode <mode-name>",
 				].join("\n"),
@@ -52,22 +60,26 @@ export const modeCommand: Command = {
 
 		const requestedMode = args[0].toLowerCase()
 
-		if (!AVAILABLE_MODES.includes(requestedMode)) {
+		if (!AVAILABLE_MODE_SLUGS.includes(requestedMode)) {
 			addMessage({
 				id: Date.now().toString(),
 				type: "error",
-				content: `Invalid mode "${requestedMode}". Available modes: ${AVAILABLE_MODES.join(", ")}`,
+				content: `Invalid mode "${requestedMode}". Available modes: ${AVAILABLE_MODE_SLUGS.join(", ")}`,
 				ts: Date.now(),
 			})
 			return
 		}
+
+		// Find the mode to get its display name
+		const mode = DEFAULT_MODES.find((m) => m.slug === requestedMode)
+		const modeName = mode?.name || requestedMode
 
 		setMode(requestedMode)
 
 		addMessage({
 			id: Date.now().toString(),
 			type: "system",
-			content: `Switched to **${requestedMode}** mode.`,
+			content: `Switched to **${modeName}** mode.`,
 			ts: Date.now(),
 		})
 	},

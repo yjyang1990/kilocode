@@ -50,6 +50,7 @@ export interface ParsedCommand {
  */
 export interface ArgumentSuggestion {
 	value: string
+	title?: string
 	description?: string
 	matchScore: number
 	highlightedValue: string
@@ -127,6 +128,14 @@ export interface ProviderCacheConfig {
 }
 
 /**
+ * Argument value with metadata
+ */
+export interface ArgumentValue {
+	value: string
+	description?: string
+}
+
+/**
  * Argument definition with provider support
  */
 export interface ArgumentDefinition {
@@ -136,7 +145,7 @@ export interface ArgumentDefinition {
 
 	// Provider options
 	provider?: ArgumentProvider
-	values?: string[]
+	values?: ArgumentValue[]
 	conditionalProviders?: ConditionalProvider[]
 	defaultProvider?: ArgumentProvider
 
