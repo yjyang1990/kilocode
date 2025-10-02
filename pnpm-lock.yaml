@@ -686,25 +686,25 @@ importers:
         version: 7.0.5
       ink:
         specifier: ^6.3.1
-        version: 6.3.1(@types/react@18.3.23)(react@19.2.0)
+        version: 6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)
       ink-big-text:
         specifier: ^2.0.0
-        version: 2.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0)
+        version: 2.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0)
       ink-gradient:
         specifier: ^3.0.0
-        version: 3.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))
+        version: 3.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))
       ink-select-input:
         specifier: ^6.2.0
-        version: 6.2.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0)
+        version: 6.2.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0)
       ink-spinner:
         specifier: ^5.0.0
-        version: 5.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0)
+        version: 5.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0)
       ink-table:
         specifier: ^3.1.0
-        version: 3.1.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0)
+        version: 3.1.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0)
       ink-text-input:
         specifier: ^6.0.0
-        version: 6.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0)
+        version: 6.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0)
       is-wsl:
         specifier: ^3.1.0
         version: 3.1.0
@@ -780,6 +780,9 @@ importers:
       react:
         specifier: ^19.2.0
         version: 19.2.0
+      react-devtools-core:
+        specifier: ^6.1.5
+        version: 6.1.5
       reconnecting-eventsource:
         specifier: ^1.6.4
         version: 1.6.4
@@ -15774,6 +15777,9 @@ packages:
     resolution: {integrity: sha512-udnqVQitxC7QWADSPDOxVWULkLvKUWrDapn5i53HE4DPRVgs+Y5rr4bo25qEl8jSh+0l2cToJgGMx+clxPM3+w==}
     peerDependencies:
       react: '>= 16.3.0'
+
+  react-devtools-core@6.1.5:
+    resolution: {integrity: sha512-ePrwPfxAnB+7hgnEr8vpKxL9cmnp7F322t8oqcPshbIQQhDKgFDW4tjhF2wjVbdXF9O/nyuy3sQWd9JGpiLPvA==}
 
   react-docgen-typescript@2.4.0:
     resolution: {integrity: sha512-ZtAp5XTO5HRzQctjPU0ybY0RRCQO19X/8fxn3w7y2VVTUbGHDKULPTL4ky3vB05euSgG5NpALhEhDPvQ56wvXg==}
@@ -31427,37 +31433,37 @@ snapshots:
 
   ini@2.0.0: {}
 
-  ink-big-text@2.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0):
+  ink-big-text@2.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0):
     dependencies:
       cfonts: 3.3.1
-      ink: 6.3.1(@types/react@18.3.23)(react@19.2.0)
+      ink: 6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)
       prop-types: 15.8.1
       react: 19.2.0
 
-  ink-gradient@3.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0)):
+  ink-gradient@3.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)):
     dependencies:
       '@types/gradient-string': 1.1.6
       gradient-string: 2.0.2
-      ink: 6.3.1(@types/react@18.3.23)(react@19.2.0)
+      ink: 6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)
       prop-types: 15.8.1
       strip-ansi: 7.1.0
 
-  ink-select-input@6.2.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0):
+  ink-select-input@6.2.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0):
     dependencies:
       figures: 6.1.0
-      ink: 6.3.1(@types/react@18.3.23)(react@19.2.0)
+      ink: 6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)
       react: 19.2.0
       to-rotated: 1.0.0
 
-  ink-spinner@5.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0):
+  ink-spinner@5.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0):
     dependencies:
       cli-spinners: 2.9.2
-      ink: 6.3.1(@types/react@18.3.23)(react@19.2.0)
+      ink: 6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)
       react: 19.2.0
 
-  ink-table@3.1.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0):
+  ink-table@3.1.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0):
     dependencies:
-      ink: 6.3.1(@types/react@18.3.23)(react@19.2.0)
+      ink: 6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)
       object-hash: 2.2.0
       react: 19.2.0
 
@@ -31465,14 +31471,14 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.23
 
-  ink-text-input@6.0.0(ink@6.3.1(@types/react@18.3.23)(react@19.2.0))(react@19.2.0):
+  ink-text-input@6.0.0(ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0))(react@19.2.0):
     dependencies:
       chalk: 5.6.2
-      ink: 6.3.1(@types/react@18.3.23)(react@19.2.0)
+      ink: 6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0)
       react: 19.2.0
       type-fest: 2.19.0
 
-  ink@6.3.1(@types/react@18.3.23)(react@19.2.0):
+  ink@6.3.1(@types/react@18.3.23)(react-devtools-core@6.1.5)(react@19.2.0):
     dependencies:
       '@alcalzone/ansi-tokenize': 0.2.0
       ansi-escapes: 7.0.0
@@ -31500,6 +31506,7 @@ snapshots:
       yoga-layout: 3.2.1
     optionalDependencies:
       '@types/react': 18.3.23
+      react-devtools-core: 6.1.5
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -35985,6 +35992,14 @@ snapshots:
     dependencies:
       countup.js: 2.9.0
       react: 18.3.1
+
+  react-devtools-core@6.1.5:
+    dependencies:
+      shell-quote: 1.8.3
+      ws: 7.5.10
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   react-docgen-typescript@2.4.0(typescript@5.8.3):
     dependencies:

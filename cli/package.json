@@ -96,6 +96,7 @@
 		"puppeteer-chromium-resolver": "^24.0.0",
 		"puppeteer-core": "^23.4.0",
 		"react": "^19.2.0",
+		"react-devtools-core": "^6.1.5",
 		"reconnecting-eventsource": "^1.6.4",
 		"sanitize-filename": "^1.6.3",
 		"say": "^0.16.0",
