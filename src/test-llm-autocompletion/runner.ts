@@ -29,9 +29,9 @@ class TestRunner {
 
 	async runTest(testCase: TestCase): Promise<TestResult> {
 		try {
-			const startTime = Date.now()
+			const startTime = performance.now()
 			const completion = await this.strategyTester.getCompletion(testCase.input)
-			const llmRequestDuration = Date.now() - startTime
+			const llmRequestDuration = performance.now() - startTime
 
 			const changes = this.strategyTester.parseCompletion(completion)
 
