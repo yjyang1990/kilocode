@@ -64,8 +64,32 @@ export {
 	updateTaskTodosAtom,
 	updateRouterModelsAtom,
 	updateExtensionModeAtom,
+	updatePartialExtensionStateAtom,
 	clearExtensionStateAtom,
 } from "./extension.js"
+
+// ============================================================================
+// Config Atoms - CLI configuration management
+// ============================================================================
+export {
+	// Core config atoms
+	configAtom,
+	configLoadingAtom,
+	configErrorAtom,
+
+	// Derived config atoms
+	providerAtom,
+	providersAtom,
+	mappedExtensionStateAtom,
+
+	// Config action atoms
+	loadConfigAtom,
+	saveConfigAtom,
+	selectProviderAtom,
+	addProviderAtom,
+	updateProviderAtom,
+	removeProviderAtom,
+} from "./config.js"
 
 // ============================================================================
 // Action Atoms - High-level service interactions

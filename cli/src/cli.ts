@@ -7,6 +7,7 @@ import { Logo } from "./ui/assets/Logo.js"
 import { logs } from "./services/logs.js"
 import { extensionServiceAtom } from "./state/atoms/service.js"
 import { initializeServiceEffectAtom } from "./state/atoms/effects.js"
+import { loadConfigAtom } from "./state/atoms/config.js"
 
 export interface CLIOptions {
 	mode?: string
@@ -81,10 +82,18 @@ export class CLI {
 			this.store.set(extensionServiceAtom, this.service)
 			logs.debug("ExtensionService set in store", "CLI")
 
+			// Load CLI configuration
+			await this.store.set(loadConfigAtom)
+			logs.debug("CLI configuration loaded", "CLI")
+
 			// Initialize service through effect atom
 			// This sets up all event listeners and activates the extension
 			await this.store.set(initializeServiceEffectAtom, this.store)
 			logs.info("ExtensionService initialized through effects", "CLI")
+
+			// Inject CLI configuration into ExtensionHost
+			await this.injectConfigurationToExtension()
+			logs.debug("CLI configuration injected into extension", "CLI")
 
 			this.isInitialized = true
 			logs.info("Kilo Code CLI initialized successfully", "CLI")
@@ -164,6 +173,32 @@ export class CLI {
 		} catch (error) {
 			logs.error("Error disposing CLI", "CLI", { error })
 			process.exit(1)
+		}
+	}
+
+	/**
+	 * Inject CLI configuration into the extension host
+	 */
+	private async injectConfigurationToExtension(): Promise<void> {
+		if (!this.service || !this.store) {
+			logs.warn("Cannot inject configuration: service or store not available", "CLI")
+			return
+		}
+
+		try {
+			// Get the mapped extension state from config atoms
+			const { mappedExtensionStateAtom } = await import("./state/atoms/config.js")
+			const mappedState = this.store.get(mappedExtensionStateAtom)
+
+			// Get the extension host from the service
+			const extensionHost = this.service.getExtensionHost()
+
+			// Inject the configuration
+			extensionHost.injectConfiguration(mappedState)
+
+			logs.info("Configuration injected into extension host", "CLI")
+		} catch (error) {
+			logs.error("Failed to inject configuration into extension host", "CLI", { error })
 		}
 	}
 

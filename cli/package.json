@@ -9,8 +9,8 @@
 		"kilo": "dist/index.js"
 	},
 	"scripts": {
-		"build": "tsc && chmod +x dist/index.js",
-		"build:bundle": "node esbuild.config.mjs && chmod +x dist/index.js && cp package.dist.json dist/package.json && cp README.md dist/README.md",
+		"build": "tsc && cp src/config/schema.json dist/config/schema.json && chmod +x dist/index.js",
+		"build:bundle": "node esbuild.config.mjs && chmod +x dist/index.js && cp src/config/schema.json dist/config/schema.json && cp package.dist.json dist/package.json && cp README.md dist/README.md",
 		"start": "node dist/index.js",
 		"clean": "rimraf dist",
 		"test": "vitest run",
@@ -39,6 +39,7 @@
 		"@roo-code/types": "workspace:^",
 		"@vscode/codicons": "^0.0.36",
 		"@vscode/ripgrep": "^1.15.11",
+		"ajv": "^8.12.0",
 		"async-mutex": "^0.5.0",
 		"axios": "^1.7.4",
 		"chalk": "^5.3.0",

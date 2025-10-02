@@ -43,6 +43,10 @@ export type { UseCommandHandlerReturn } from "./useCommandHandler.js"
 export { useMessageHandler } from "./useMessageHandler.js"
 export type { UseMessageHandlerReturn } from "./useMessageHandler.js"
 
+// Config hooks
+export { useConfig } from "./useConfig.js"
+export type { UseConfigReturn } from "./useConfig.js"
+
 // UI hooks
 export { useWelcomeMessage, getDefaultWelcomeContent } from "./useWelcomeMessage.js"
 export type { WelcomeMessageConfig } from "./useWelcomeMessage.js"

@@ -1,0 +1,170 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Kilo Code CLI Configuration",
+	"description": "Configuration file for Kilo Code CLI",
+	"type": "object",
+	"required": ["version", "mode", "telemetry", "provider", "providers"],
+	"properties": {
+		"version": {
+			"type": "string",
+			"enum": ["1.0.0"],
+			"description": "Configuration schema version"
+		},
+		"mode": {
+			"type": "string",
+			"default": "code",
+			"description": "Default mode for the CLI"
+		},
+		"telemetry": {
+			"type": "boolean",
+			"default": false,
+			"description": "Enable or disable telemetry"
+		},
+		"provider": {
+			"type": "string",
+			"description": "ID of the currently selected provider"
+		},
+		"providers": {
+			"type": "array",
+			"description": "List of configured providers",
+			"items": {
+				"$ref": "#/definitions/provider"
+			}
+		}
+	},
+	"definitions": {
+		"provider": {
+			"type": "object",
+			"required": ["id", "provider"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Unique identifier for this provider configuration"
+				},
+				"provider": {
+					"type": "string",
+					"enum": [
+						"kilocode",
+						"anthropic",
+						"openai-native",
+						"openrouter",
+						"bedrock",
+						"gemini",
+						"vertex",
+						"claude-code",
+						"mistral",
+						"groq",
+						"deepseek",
+						"xai",
+						"cerebras",
+						"ollama",
+						"lmstudio",
+						"vscode-lm",
+						"openai",
+						"glama",
+						"huggingface",
+						"litellm",
+						"moonshot",
+						"doubao",
+						"chutes",
+						"sambanova",
+						"fireworks",
+						"featherless",
+						"deepinfra",
+						"io-intelligence",
+						"qwen-code",
+						"gemini-cli",
+						"zai",
+						"unbound",
+						"requesty",
+						"roo",
+						"vercel-ai-gateway",
+						"virtual-quota-fallback",
+						"human-relay",
+						"fake-ai"
+					]
+				}
+			},
+			"allOf": [
+				{
+					"if": {
+						"properties": { "provider": { "const": "kilocode" } }
+					},
+					"then": {
+						"properties": {
+							"kilocodeToken": { "type": "string" },
+							"kilocodeModel": { "type": "string" },
+							"kilocodeOrganizationId": { "type": "string" }
+						},
+						"required": ["kilocodeToken", "kilocodeModel"]
+					}
+				},
+				{
+					"if": {
+						"properties": { "provider": { "const": "anthropic" } }
+					},
+					"then": {
+						"properties": {
+							"apiKey": { "type": "string" },
+							"apiModelId": { "type": "string" },
+							"anthropicBaseUrl": { "type": "string" }
+						},
+						"required": ["apiKey", "apiModelId"]
+					}
+				},
+				{
+					"if": {
+						"properties": { "provider": { "const": "openai-native" } }
+					},
+					"then": {
+						"properties": {
+							"openAiNativeApiKey": { "type": "string" },
+							"apiModelId": { "type": "string" },
+							"openAiNativeBaseUrl": { "type": "string" }
+						},
+						"required": ["openAiNativeApiKey", "apiModelId"]
+					}
+				},
+				{
+					"if": {
+						"properties": { "provider": { "const": "openrouter" } }
+					},
+					"then": {
+						"properties": {
+							"openRouterApiKey": { "type": "string" },
+							"openRouterModelId": { "type": "string" },
+							"openRouterBaseUrl": { "type": "string" }
+						},
+						"required": ["openRouterApiKey", "openRouterModelId"]
+					}
+				},
+				{
+					"if": {
+						"properties": { "provider": { "const": "ollama" } }
+					},
+					"then": {
+						"properties": {
+							"ollamaBaseUrl": { "type": "string" },
+							"ollamaModelId": { "type": "string" },
+							"ollamaApiKey": { "type": "string" }
+						},
+						"required": ["ollamaBaseUrl", "ollamaModelId"]
+					}
+				},
+				{
+					"if": {
+						"properties": { "provider": { "const": "openai" } }
+					},
+					"then": {
+						"properties": {
+							"openAiApiKey": { "type": "string" },
+							"openAiBaseUrl": { "type": "string" },
+							"apiModelId": { "type": "string" }
+						},
+						"required": ["openAiApiKey"]
+					}
+				}
+			]
+		}
+	}
+}

@@ -286,6 +286,35 @@ export const updateExtensionModeAtom = atom(null, (get, set, mode: string) => {
 })
 
 /**
+ * Action atom to update extension state with partial updates
+ * Merges the partial state with the current state
+ */
+export const updatePartialExtensionStateAtom = atom(null, (get, set, partialState: Partial<ExtensionState>) => {
+	const currentState = get(extensionStateAtom)
+	if (currentState) {
+		set(updateExtensionStateAtom, {
+			...currentState,
+			...partialState,
+		})
+	} else {
+		// If no current state, we need to create a minimal valid state
+		const minimalState: ExtensionState = {
+			version: "1.0.0",
+			apiConfiguration: {},
+			chatMessages: [],
+			mode: "code",
+			customModes: [],
+			taskHistoryFullLength: 0,
+			taskHistoryVersion: 0,
+			renderContext: "cli",
+			telemetrySetting: "disabled",
+			...partialState,
+		}
+		set(updateExtensionStateAtom, minimalState)
+	}
+})
+
+/**
  * Action atom to clear all extension state
  */
 export const clearExtensionStateAtom = atom(null, (get, set) => {

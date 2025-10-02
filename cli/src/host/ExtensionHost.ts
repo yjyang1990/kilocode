@@ -1,5 +1,4 @@
 import { EventEmitter } from "events"
-import * as path from "path"
 import { createVSCodeAPIMock } from "./VSCode.js"
 import { logs } from "../services/logs.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
@@ -37,7 +36,6 @@ export class ExtensionHost extends EventEmitter {
 	private originalStderr: {
 		write: typeof process.stderr.write
 	} | null = null
-	private processedWebviewMessages = new Set<string>()
 	private lastWebviewLaunchTime = 0
 
 	constructor(options: ExtensionHostOptions) {
@@ -111,7 +109,6 @@ export class ExtensionHost extends EventEmitter {
 			this.extensionAPI = null
 			this.vscodeAPI = null
 			this.webviewProviders.clear()
-			this.processedWebviewMessages.clear()
 			this.lastWebviewLaunchTime = 0
 			this.removeAllListeners()
 
@@ -551,8 +548,8 @@ export class ExtensionHost extends EventEmitter {
 			version: "1.0.0",
 			apiConfiguration: {
 				apiProvider: "kilocode",
-				kilocodeToken: process.env.KILOCODE_TOKEN || "",
-				kilocodeModel: "claude-3-5-sonnet-20241022",
+				kilocodeToken: "",
+				kilocodeModel: "",
 				kilocodeOrganizationId: "",
 			},
 			chatMessages: [],
@@ -561,46 +558,16 @@ export class ExtensionHost extends EventEmitter {
 			taskHistoryFullLength: 0,
 			taskHistoryVersion: 0,
 			renderContext: "cli",
-			telemetrySetting: "disabled",
+			telemetrySetting: "enabled",
 			cwd: this.options.workspacePath,
 			mcpServers: [],
 			listApiConfigMeta: [],
 			currentApiConfigName: "default",
 		}
 
-		// Load persisted configuration immediately and sync with extension
-		this.loadPersistedConfiguration()
-			.then(() => {
-				// Try to sync with extension state if available
-				if (this.extensionAPI && typeof this.extensionAPI.getState === "function") {
-					try {
-						const extensionState = this.extensionAPI.getState()
-						if (extensionState) {
-							logs.debug("Syncing with extension state during initialization", "ExtensionHost")
-							// Merge extension state but preserve CLI-set values
-							this.currentState = {
-								...this.currentState,
-								...extensionState,
-								// Preserve CLI-specific values
-								renderContext: "cli",
-								cwd: this.options.workspacePath,
-							}
-						}
-					} catch (error) {
-						logs.warn("Failed to sync with extension state during initialization", "ExtensionHost", {
-							error,
-						})
-					}
-				}
-
-				this.broadcastStateUpdate()
-			})
-			.catch((error) => {
-				logs.error("Failed to load persisted configuration during initialization", "ExtensionHost", {
-					error,
-				})
-				this.broadcastStateUpdate()
-			})
+		// The CLI will inject the actual configuration through updateState
+		logs.debug("Initial state created, waiting for CLI config injection", "ExtensionHost")
+		this.broadcastStateUpdate()
 	}
 
 	private async handleWebviewLaunch(): Promise<void> {
@@ -644,21 +611,13 @@ export class ExtensionHost extends EventEmitter {
 							...message.apiConfiguration,
 						}
 						this.currentState.currentApiConfigName = message.text
-
-						// Persist locally for CLI state
-						await this.persistApiConfiguration(message.text, message.apiConfiguration)
 						this.broadcastStateUpdate()
 					}
 					break
 
 				case "loadApiConfiguration":
-					if (message.text) {
-						try {
-							await this.handleLoadApiConfiguration(message.text)
-						} catch (error) {
-							logs.error("Error loading API configuration", "ExtensionHost", { error })
-						}
-					}
+					// Configuration loading is handled by CLI config system
+					logs.debug(`Profile loading requested but managed by CLI config: ${message.text}`, "ExtensionHost")
 					break
 
 				case "mode":
@@ -694,66 +653,6 @@ export class ExtensionHost extends EventEmitter {
 		}
 	}
 
-	private async handleLoadApiConfiguration(profileName: string): Promise<void> {
-		try {
-			const secretsKey = "roo_cline_config_api_config"
-
-			// Load profiles from secrets storage
-			const content = await this.vscodeAPI.context.secrets.get(secretsKey)
-			if (!content) {
-				logs.warn(`No profiles found when trying to load profile: ${profileName}`, "ExtensionHost")
-				return
-			}
-
-			const providerProfiles = JSON.parse(content)
-
-			// Check if the requested profile exists
-			if (!providerProfiles.apiConfigs[profileName]) {
-				logs.warn(`Profile '${profileName}' not found`, "ExtensionHost")
-				return
-			}
-
-			// Update current profile name
-			providerProfiles.currentApiConfigName = profileName
-
-			// Save the updated profiles back to secrets
-			await this.vscodeAPI.context.secrets.store(secretsKey, JSON.stringify(providerProfiles, null, 2))
-
-			// Update current state
-			if (this.currentState) {
-				const selectedProfile = providerProfiles.apiConfigs[profileName]
-				this.currentState.apiConfiguration = {
-					...this.currentState.apiConfiguration,
-					...selectedProfile,
-				}
-				this.currentState.currentApiConfigName = profileName
-
-				// Update the profile list metadata
-				const listApiConfigMeta = Object.entries(providerProfiles.apiConfigs).map(
-					([name, profile]: [string, any]) => ({
-						id: profile.id || "",
-						name,
-						apiProvider: profile.apiProvider,
-						modelId:
-							this.cleanModelId(
-								profile.apiModelId ||
-									profile.kilocodeModel ||
-									profile.openAiModelId ||
-									profile.anthropicModel,
-							) || "",
-					}),
-				)
-				this.currentState.listApiConfigMeta = listApiConfigMeta
-
-				this.broadcastStateUpdate()
-			}
-
-			logs.debug(`Successfully loaded API configuration profile: ${profileName}`, "ExtensionHost")
-		} catch (error) {
-			logs.error("Failed to load API configuration profile", "ExtensionHost", { error })
-		}
-	}
-
 	private broadcastStateUpdate(): void {
 		if (this.currentState) {
 			const stateMessage: ExtensionMessage = {
@@ -766,193 +665,6 @@ export class ExtensionHost extends EventEmitter {
 			})
 			this.emit("message", stateMessage)
 		}
-	}
-
-	private async persistApiConfiguration(configName: string, apiConfiguration: any): Promise<void> {
-		try {
-			const secretsKey = "roo_cline_config_api_config"
-
-			// Load existing profiles
-			let providerProfiles: any
-			try {
-				const existingContent = await this.vscodeAPI.context.secrets.get(secretsKey)
-				providerProfiles = existingContent ? JSON.parse(existingContent) : null
-			} catch (error) {
-				logs.warn("Failed to load existing profiles", "ExtensionHost", { error })
-				providerProfiles = null
-			}
-
-			// Initialize default structure if no profiles exist
-			if (!providerProfiles) {
-				providerProfiles = {
-					currentApiConfigName: configName,
-					apiConfigs: {},
-					modeApiConfigs: {},
-					migrations: {
-						rateLimitSecondsMigrated: true,
-						diffSettingsMigrated: true,
-						openAiHeadersMigrated: true,
-						consecutiveMistakeLimitMigrated: true,
-						todoListEnabledMigrated: true,
-						morphApiKeyMigrated: true,
-					},
-				}
-			}
-
-			// Generate ID for new profiles or preserve existing ID
-			let profileId = providerProfiles.apiConfigs[configName]?.id
-			if (!profileId) {
-				profileId = Math.random().toString(36).substring(2, 15)
-			}
-
-			// Update the specific profile
-			providerProfiles.apiConfigs[configName] = {
-				...apiConfiguration,
-				id: profileId,
-			}
-
-			// Update current profile name
-			providerProfiles.currentApiConfigName = configName
-
-			// Save back to secrets
-			await this.vscodeAPI.context.secrets.store(secretsKey, JSON.stringify(providerProfiles, null, 2))
-
-			// Update current state immediately
-			if (this.currentState) {
-				this.currentState.apiConfiguration = {
-					...this.currentState.apiConfiguration,
-					...apiConfiguration,
-				}
-				this.currentState.currentApiConfigName = configName
-
-				// Update the profile list metadata
-				const listApiConfigMeta = Object.entries(providerProfiles.apiConfigs).map(
-					([name, profile]: [string, any]) => ({
-						id: profile.id || "",
-						name,
-						apiProvider: profile.apiProvider,
-						modelId:
-							this.cleanModelId(
-								profile.apiModelId ||
-									profile.kilocodeModel ||
-									profile.openAiModelId ||
-									profile.anthropicModel,
-							) || "",
-					}),
-				)
-				this.currentState.listApiConfigMeta = listApiConfigMeta
-			}
-
-			logs.debug(`Persisted API configuration profile: ${configName}`, "ExtensionHost", {
-				profileId,
-				fields: Object.keys(apiConfiguration),
-			})
-		} catch (error) {
-			logs.error("Failed to persist API configuration", "ExtensionHost", { error })
-			throw error
-		}
-	}
-
-	private async loadPersistedConfiguration(): Promise<void> {
-		try {
-			const secretsKey = "roo_cline_config_api_config"
-
-			// Load profiles from secrets storage
-			let providerProfiles: any = null
-			try {
-				const content = await this.vscodeAPI.context.secrets.get(secretsKey)
-				if (content) {
-					providerProfiles = JSON.parse(content)
-				}
-			} catch (error) {
-				logs.warn("Failed to load profiles from secrets", "ExtensionHost", { error })
-			}
-
-			// Initialize default profile if no profiles exist
-			if (
-				!providerProfiles ||
-				!providerProfiles.apiConfigs ||
-				Object.keys(providerProfiles.apiConfigs).length === 0
-			) {
-				const defaultId = Math.random().toString(36).substring(2, 15)
-				providerProfiles = {
-					currentApiConfigName: "default",
-					apiConfigs: {
-						default: {
-							id: defaultId,
-							apiProvider: "kilocode",
-							kilocodeToken: process.env.KILOCODE_TOKEN || "",
-							kilocodeModel: "anthropic/claude-sonnet-4",
-							kilocodeOrganizationId: "",
-						},
-					},
-					modeApiConfigs: {},
-					migrations: {
-						rateLimitSecondsMigrated: true,
-						diffSettingsMigrated: true,
-						openAiHeadersMigrated: true,
-						consecutiveMistakeLimitMigrated: true,
-						todoListEnabledMigrated: true,
-						morphApiKeyMigrated: true,
-					},
-				}
-
-				// Save the default profile
-				await this.vscodeAPI.context.secrets.store(secretsKey, JSON.stringify(providerProfiles, null, 2))
-			}
-
-			const currentApiConfigName = providerProfiles.currentApiConfigName || "default"
-			const currentProfile =
-				providerProfiles.apiConfigs[currentApiConfigName] || Object.values(providerProfiles.apiConfigs)[0]
-
-			// Build list of profile metadata
-			const listApiConfigMeta = Object.entries(providerProfiles.apiConfigs).map(
-				([name, profile]: [string, any]) => ({
-					id: profile.id || "",
-					name,
-					apiProvider: profile.apiProvider,
-					modelId:
-						this.cleanModelId(
-							profile.apiModelId ||
-								profile.kilocodeModel ||
-								profile.openAiModelId ||
-								profile.anthropicModel,
-						) || "",
-				}),
-			)
-
-			// Update current state with loaded configuration
-			if (this.currentState) {
-				this.currentState.apiConfiguration = {
-					...this.currentState.apiConfiguration,
-					...currentProfile,
-				}
-				this.currentState.currentApiConfigName = currentApiConfigName
-				this.currentState.listApiConfigMeta = listApiConfigMeta
-			}
-
-			logs.debug("Loaded persisted configuration from secrets storage", "ExtensionHost", {
-				currentApiConfigName,
-				profileCount: Object.keys(providerProfiles.apiConfigs).length,
-				loadedFields: Object.keys(currentProfile || {}),
-			})
-		} catch (error) {
-			logs.warn("Failed to load persisted configuration", "ExtensionHost", { error })
-		}
-	}
-
-	/**
-	 * Clean model ID by removing prefix before "/"
-	 */
-	private cleanModelId(modelId: string | undefined): string | undefined {
-		if (!modelId) return undefined
-
-		// Check for "/" and take the part after it
-		if (modelId.includes("/")) {
-			return modelId.split("/").pop()
-		}
-
-		return modelId
 	}
 
 	public getAPI(): ExtensionAPI {
@@ -969,6 +681,36 @@ export class ExtensionHost extends EventEmitter {
 				}
 			},
 		}
+	}
+
+	/**
+	 * Inject CLI configuration into the extension state
+	 * This should be called after the CLI config is loaded
+	 */
+	public async injectConfiguration(configState: Partial<ExtensionState>): Promise<void> {
+		if (!this.currentState) {
+			logs.warn("Cannot inject configuration: no current state", "ExtensionHost")
+			return
+		}
+
+		// Merge the configuration into current state
+		this.currentState = {
+			...this.currentState,
+			...configState,
+		}
+
+		// Send configuration to the extension through webview message
+		// This ensures the extension's internal state is updated
+		if (configState.apiConfiguration) {
+			await this.sendWebviewMessage({
+				type: "upsertApiConfiguration",
+				text: configState.currentApiConfigName || "default",
+				apiConfiguration: configState.apiConfiguration,
+			})
+		}
+
+		// Broadcast the updated state
+		this.broadcastStateUpdate()
 	}
 
 	// Methods for webview provider registration (called from VSCode API mock)
