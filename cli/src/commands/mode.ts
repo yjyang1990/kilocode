@@ -45,7 +45,7 @@ export const modeCommand: Command = {
 					"",
 					"Usage: /mode <mode-name>",
 				].join("\n"),
-				timestamp: Date.now(),
+				ts: Date.now(),
 			})
 			return
 		}
@@ -57,7 +57,7 @@ export const modeCommand: Command = {
 				id: Date.now().toString(),
 				type: "error",
 				content: `Invalid mode "${requestedMode}". Available modes: ${AVAILABLE_MODES.join(", ")}`,
-				timestamp: Date.now(),
+				ts: Date.now(),
 			})
 			return
 		}
@@ -68,7 +68,7 @@ export const modeCommand: Command = {
 			id: Date.now().toString(),
 			type: "system",
 			content: `Switched to **${requestedMode}** mode.`,
-			timestamp: Date.now(),
+			ts: Date.now(),
 		})
 	},
 }

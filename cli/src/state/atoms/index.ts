@@ -1,0 +1,180 @@
+/**
+ * Central export file for all Jotai atoms
+ *
+ * This file provides a single entry point for importing atoms throughout the application.
+ * Atoms are organized by category for better maintainability.
+ */
+
+// ============================================================================
+// Service Atoms - ExtensionService instance and status management
+// ============================================================================
+export {
+	// Core service atoms
+	extensionServiceAtom,
+	isServiceReadyAtom,
+	serviceErrorAtom,
+	isInitializingAtom,
+
+	// Derived service atoms
+	extensionAPIAtom,
+	messageBridgeAtom,
+	isServiceDisposedAtom,
+
+	// Service action atoms
+	setExtensionServiceAtom,
+	setServiceReadyAtom,
+	setServiceErrorAtom,
+	setIsInitializingAtom,
+} from "./service.js"
+
+// ============================================================================
+// Extension State Atoms - ExtensionState and related data
+// ============================================================================
+export {
+	// Core extension state atoms
+	extensionStateAtom,
+	chatMessagesAtom,
+	currentTaskAtom,
+	taskTodosAtom,
+	routerModelsAtom,
+	apiConfigurationAtom,
+	extensionModeAtom,
+	customModesAtom,
+	mcpServersAtom,
+	cwdAtom,
+
+	// Derived extension state atoms
+	extensionVersionAtom,
+	currentApiConfigNameAtom,
+	listApiConfigMetaAtom,
+	taskHistoryLengthAtom,
+	renderContextAtom,
+	hasChatMessagesAtom as hasExtensionMessagesAtom,
+	lastChatMessageAtom as lastExtensionMessageAtom,
+	hasActiveTaskAtom,
+	pendingTodosCountAtom,
+	completedTodosCountAtom,
+	inProgressTodosCountAtom,
+
+	// Extension state action atoms
+	updateExtensionStateAtom,
+	updateChatMessagesAtom,
+	addChatMessageAtom,
+	updateCurrentTaskAtom,
+	updateTaskTodosAtom,
+	updateRouterModelsAtom,
+	updateExtensionModeAtom,
+	clearExtensionStateAtom,
+} from "./extension.js"
+
+// ============================================================================
+// Action Atoms - High-level service interactions
+// ============================================================================
+export {
+	// Message sending actions
+	sendWebviewMessageAtom,
+	sendTaskAtom,
+	sendAskResponseAtom,
+	requestRouterModelsAtom,
+
+	// Task management actions
+	clearTaskAtom,
+	cancelTaskAtom,
+
+	// Mode and configuration actions
+	switchModeAtom,
+	sendApiConfigurationAtom,
+	sendCustomInstructionsAtom,
+	sendAlwaysAllowAtom,
+
+	// Tool response actions
+	respondToToolAtom,
+
+	// UI interaction actions
+	openFileAtom,
+	openSettingsAtom,
+	refreshStateAtom,
+	sendPrimaryButtonClickAtom,
+	sendSecondaryButtonClickAtom,
+} from "./actions.js"
+
+// ============================================================================
+// Effect Atoms - Side effects and message handling
+// ============================================================================
+export {
+	// Service lifecycle effects
+	initializeServiceEffectAtom,
+	disposeServiceEffectAtom,
+
+	// Message handling effects
+	messageHandlerEffectAtom,
+	processMessageBufferAtom,
+
+	// Message buffer management
+	messageBufferSizeAtom,
+	hasBufferedMessagesAtom,
+	clearMessageBufferAtom,
+} from "./effects.js"
+
+// ============================================================================
+// UI Atoms - Command-based UI state
+// ============================================================================
+export {
+	// Core UI state atoms
+	messagesAtom,
+	inputValueAtom,
+	isProcessingAtom,
+	currentModeAtom,
+	errorAtom,
+
+	// Autocomplete state atoms
+	showAutocompleteAtom,
+	suggestionsAtom,
+	argumentSuggestionsAtom,
+	selectedSuggestionIndexAtom,
+
+	// Derived UI atoms
+	suggestionCountAtom,
+	isCommandInputAtom,
+	commandQueryAtom,
+	hasMessagesAtom,
+	lastMessageAtom,
+	hasErrorAtom,
+	getSelectedSuggestionAtom,
+
+	// UI action atoms
+	addMessageAtom,
+	clearMessagesAtom,
+	updateLastMessageAtom,
+	setInputValueAtom,
+	clearInputAtom,
+	setSuggestionsAtom,
+	setArgumentSuggestionsAtom,
+	selectNextSuggestionAtom,
+	selectPreviousSuggestionAtom,
+	setErrorAtom,
+	setIsProcessingAtom,
+	setCurrentModeAtom,
+	hideAutocompleteAtom,
+	showAutocompleteMenuAtom,
+} from "./ui.js"
+
+// ============================================================================
+// Type Re-exports
+// ============================================================================
+export type { ExtensionService } from "../../services/extension.js"
+export type { ExtensionAPI } from "../../host/ExtensionHost.js"
+export type { MessageBridge } from "../../communication/ipc.js"
+export type {
+	ExtensionMessage,
+	WebviewMessage,
+	ExtensionState,
+	ExtensionChatMessage,
+	HistoryItem,
+	TodoItem,
+	RouterModels,
+	ProviderSettings,
+	McpServer,
+} from "../../types/messages.js"
+export type { CliMessage } from "../../types/cli.js"
+export type { CommandSuggestion, ArgumentSuggestion } from "../../services/autocomplete.js"

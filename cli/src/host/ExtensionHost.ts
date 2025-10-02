@@ -445,11 +445,11 @@ export class ExtensionHost extends EventEmitter {
 					case "state":
 						// Extension is sending a full state update
 						if (message.state && this.currentState) {
-							// Update our state with the extension's state, particularly clineMessages and apiConfiguration
+							// Update our state with the extension's state, particularly chatMessages and apiConfiguration
 							this.currentState = {
 								...this.currentState,
 								...message.state,
-								clineMessages: message.state.clineMessages || this.currentState.clineMessages,
+								chatMessages: message.state.chatMessages || this.currentState.chatMessages,
 								apiConfiguration: message.state.apiConfiguration || this.currentState.apiConfiguration,
 								currentApiConfigName:
 									message.state.currentApiConfigName || this.currentState.currentApiConfigName,
@@ -467,11 +467,11 @@ export class ExtensionHost extends EventEmitter {
 
 					case "messageUpdated":
 						// Extension is sending an individual message update
-						if (message.clineMessage) {
+						if (message.chatMessage) {
 							// Forward the message update to the CLI
 							this.emit("message", {
 								type: "messageUpdated",
-								clineMessage: message.clineMessage,
+								chatMessage: message.chatMessage,
 							})
 						}
 						break
@@ -517,7 +517,7 @@ export class ExtensionHost extends EventEmitter {
 			this.on("webviewMessage", async (message: any) => {
 				logs.debug(`Forwarding webview message to extension: ${message.type}`, "ExtensionHost")
 
-				// Find the registered webview provider (ClineProvider)
+				// Find the registered webview provider
 				const webviewProvider = this.webviewProviders.get("kilo-code.SidebarProvider")
 
 				if (webviewProvider && typeof webviewProvider.handleMessage === "function") {
@@ -553,7 +553,7 @@ export class ExtensionHost extends EventEmitter {
 				kilocodeModel: "claude-3-5-sonnet-20241022",
 				kilocodeOrganizationId: "",
 			},
-			clineMessages: [],
+			chatMessages: [],
 			mode: "code",
 			customModes: [],
 			taskHistoryFullLength: 0,
@@ -615,7 +615,7 @@ export class ExtensionHost extends EventEmitter {
 							extensionState.currentApiConfigName || this.currentState.currentApiConfigName,
 						listApiConfigMeta: extensionState.listApiConfigMeta || this.currentState.listApiConfigMeta,
 						mode: extensionState.mode || this.currentState.mode,
-						clineMessages: extensionState.clineMessages || this.currentState.clineMessages,
+						chatMessages: extensionState.chatMessages || this.currentState.chatMessages,
 					}
 					logs.debug("Synced state with extension on webview launch", "ExtensionHost")
 				}
@@ -668,7 +668,7 @@ export class ExtensionHost extends EventEmitter {
 
 				case "clearTask":
 					if (this.currentState) {
-						this.currentState.clineMessages = []
+						this.currentState.chatMessages = []
 						this.broadcastStateUpdate()
 					}
 					break
@@ -759,7 +759,7 @@ export class ExtensionHost extends EventEmitter {
 				state: this.currentState,
 			}
 			logs.debug("Broadcasting state update", "ExtensionHost", {
-				messageCount: this.currentState.clineMessages.length,
+				messageCount: this.currentState.chatMessages.length,
 				mode: this.currentState.mode,
 			})
 			this.emit("message", stateMessage)

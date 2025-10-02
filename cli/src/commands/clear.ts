@@ -21,7 +21,7 @@ export const clearCommand: Command = {
 			id: Date.now().toString(),
 			type: "system",
 			content: "Message history cleared.",
-			timestamp: Date.now(),
+			ts: Date.now(),
 		})
 	},
 }

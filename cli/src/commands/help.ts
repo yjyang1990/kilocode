@@ -26,7 +26,7 @@ export const helpCommand: Command = {
 					id: Date.now().toString(),
 					type: "error",
 					content: `Command "${commandName}" not found. Use /help to see all available commands.`,
-					timestamp: Date.now(),
+					ts: Date.now(),
 				})
 				return
 			}
@@ -60,7 +60,7 @@ export const helpCommand: Command = {
 				id: Date.now().toString(),
 				type: "system",
 				content: helpText.join("\n"),
-				timestamp: Date.now(),
+				ts: Date.now(),
 			})
 			return
 		}
@@ -124,7 +124,7 @@ export const helpCommand: Command = {
 			id: Date.now().toString(),
 			type: "system",
 			content: helpText.join("\n"),
-			timestamp: Date.now(),
+			ts: Date.now(),
 		})
 	},
 }

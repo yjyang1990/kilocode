@@ -13,7 +13,7 @@ export interface ExtensionMessage {
 	text?: string
 	state?: any
 	images?: string[]
-	clineMessage?: any
+	chatMessages?: any
 	values?: Record<string, any>
 	[key: string]: any
 }
@@ -36,7 +36,7 @@ export interface WebviewMessage {
 	[key: string]: any
 }
 
-export interface ClineMessage {
+export interface ExtensionChatMessage {
 	ts: number
 	type: "ask" | "say"
 	ask?: string
@@ -373,7 +373,7 @@ export interface ExtensionState {
 	apiConfiguration: ProviderSettings
 	currentApiConfigName?: string
 	listApiConfigMeta?: ProviderSettingsEntry[]
-	clineMessages: ClineMessage[]
+	chatMessages: ExtensionChatMessage[]
 	currentTaskItem?: HistoryItem
 	currentTaskTodos?: TodoItem[]
 	mode: string

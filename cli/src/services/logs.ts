@@ -7,7 +7,7 @@ export type LogLevel = "info" | "debug" | "error" | "warn"
 
 export interface LogEntry {
 	id: string
-	timestamp: number
+	ts: number
 	level: LogLevel
 	message: string
 	source?: string
@@ -73,7 +73,7 @@ export class LogsService {
 	private addLog(level: LogLevel, message: string, source?: string, context?: Record<string, any>): void {
 		const entry: LogEntry = {
 			id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-			timestamp: Date.now(),
+			ts: Date.now(),
 			level,
 			message,
 			...(source && { source }),
@@ -120,9 +120,9 @@ export class LogsService {
 		;(this as any)._isLogging = true
 
 		try {
-			const timestamp = new Date(entry.timestamp).toISOString()
+			const ts = new Date(entry.ts).toISOString()
 			const source = entry.source ? `[${entry.source}]` : ""
-			const prefix = `${timestamp} ${source}`
+			const prefix = `${ts} ${source}`
 
 			// DIAGNOSTIC: Check if our "original" console methods are actually original
 			const isOriginalConsole = this.originalConsole.error.toString().includes("[native code]")
@@ -173,9 +173,9 @@ export class LogsService {
 	 * Format log entry for file output (same format as outputToConsole)
 	 */
 	private formatLogEntryForFile(entry: LogEntry): string {
-		const timestamp = new Date(entry.timestamp).toISOString()
+		const ts = new Date(entry.ts).toISOString()
 		const source = entry.source ? `[${entry.source}]` : ""
-		const prefix = `${timestamp} ${source}`
+		const prefix = `${ts} ${source}`
 		const contextStr = entry.context ? ` ${JSON.stringify(entry.context)}` : ""
 
 		switch (entry.level) {
@@ -256,7 +256,7 @@ export class LogsService {
 			}
 
 			if (filter.since) {
-				filteredLogs = filteredLogs.filter((log) => log.timestamp >= filter.since!)
+				filteredLogs = filteredLogs.filter((log) => log.ts >= filter.since!)
 			}
 		}
 

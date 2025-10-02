@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander"
-import { KiloCodeCLI } from "./cli/KiloCodeCLI.js"
+import { CLI } from "./cli.js"
 
 // Mock package info for CLI
 const Package = {
@@ -10,14 +10,14 @@ const Package = {
 }
 
 const program = new Command()
-let cli: KiloCodeCLI | null = null
+let cli: CLI | null = null
 
 program
 	.name("kilocode")
 	.description("Kilo Code Terminal User Interface - AI-powered coding assistant")
 	.version(Package.version)
 	.action(async (options) => {
-		cli = new KiloCodeCLI({})
+		cli = new CLI({})
 		await cli.start()
 		await cli.dispose()
 	})

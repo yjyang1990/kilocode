@@ -6,7 +6,7 @@ export interface IPCMessage {
 	id: string
 	type: "request" | "response" | "event"
 	data: any
-	timestamp: number
+	ts: number
 }
 
 export interface IPCOptions {
@@ -40,7 +40,7 @@ export class IPCChannel extends EventEmitter {
 			id,
 			type: "request",
 			data,
-			timestamp: Date.now(),
+			ts: Date.now(),
 		}
 
 		return new Promise<T>((resolve, reject) => {
@@ -67,7 +67,7 @@ export class IPCChannel extends EventEmitter {
 			id: requestId,
 			type: "response",
 			data,
-			timestamp: Date.now(),
+			ts: Date.now(),
 		}
 
 		if (this.options.enableLogging) {
@@ -85,7 +85,7 @@ export class IPCChannel extends EventEmitter {
 			id: this.generateMessageId(),
 			type: "event",
 			data,
-			timestamp: Date.now(),
+			ts: Date.now(),
 		}
 
 		if (this.options.enableLogging) {

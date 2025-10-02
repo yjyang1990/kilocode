@@ -1,25 +1,12 @@
 /**
  * CommandInput component - input field with autocomplete support
+ * Updated to use useCommandInput and useWebviewMessage hooks
  */
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import { Box, Text, useInput } from "ink"
 import TextInput from "ink-text-input"
-import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import {
-	inputValueAtom,
-	setInputValueAtom,
-	clearInputAtom,
-	showAutocompleteAtom,
-	suggestionsAtom,
-	argumentSuggestionsAtom,
-	selectedSuggestionIndexAtom,
-	selectNextSuggestionAtom,
-	selectPreviousSuggestionAtom,
-	setSuggestionsAtom,
-	setArgumentSuggestionsAtom,
-} from "../../state/index.js"
-import { getAllSuggestions, type CommandSuggestion, type ArgumentSuggestion } from "../../services/autocomplete.js"
+import { useCommandInput } from "../../state/hooks/useCommandInput.js"
 import { AutocompleteMenu } from "./AutocompleteMenu.js"
 
 interface CommandInputProps {
@@ -33,53 +20,24 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 	placeholder = "Type a message or /command...",
 	disabled = false,
 }) => {
-	const [inputValue, setInputValue] = useAtom(inputValueAtom)
-	const setInputValueAction = useSetAtom(setInputValueAtom)
-	const clearInput = useSetAtom(clearInputAtom)
-	const showAutocomplete = useAtomValue(showAutocompleteAtom)
-	const suggestions = useAtomValue(suggestionsAtom)
-	const argumentSuggestions = useAtomValue(argumentSuggestionsAtom)
-	const selectedIndex = useAtomValue(selectedSuggestionIndexAtom)
-	const selectNext = useSetAtom(selectNextSuggestionAtom)
-	const selectPrevious = useSetAtom(selectPreviousSuggestionAtom)
-	const setSuggestions = useSetAtom(setSuggestionsAtom)
-	const setArgumentSuggestions = useSetAtom(setArgumentSuggestionsAtom)
+	// Use the command input hook for autocomplete functionality
+	const {
+		inputValue,
+		setInput,
+		clearInput,
+		isAutocompleteVisible,
+		commandSuggestions,
+		argumentSuggestions,
+		selectedIndex,
+		selectNext,
+		selectPrevious,
+		selectedSuggestion,
+	} = useCommandInput()
 
-	// State for suggestion type
-	const [suggestionType, setSuggestionType] = useState<"command" | "argument" | "none">("none")
-	const [commandSuggestions, setCommandSuggestions] = useState<CommandSuggestion[]>([])
 	// Key to force TextInput remount when autocompleting (resets cursor to end)
-	const [inputKey, setInputKey] = useState(0)
+	const [inputKey, setInputKey] = React.useState(0)
 	// Ref to track if we've already handled the Enter key in autocomplete
-	const autocompleteHandledEnter = React.useRef(false)
-
-	// Update suggestions when input changes
-	useEffect(() => {
-		if (inputValue.startsWith("/")) {
-			getAllSuggestions(inputValue).then((result) => {
-				setSuggestionType(result.type)
-
-				if (result.type === "command") {
-					setCommandSuggestions(result.suggestions)
-					setSuggestions(result.suggestions)
-					setArgumentSuggestions([])
-				} else if (result.type === "argument") {
-					setCommandSuggestions([])
-					setSuggestions([])
-					setArgumentSuggestions(result.suggestions)
-				} else {
-					setCommandSuggestions([])
-					setSuggestions([])
-					setArgumentSuggestions([])
-				}
-			})
-		} else {
-			setSuggestionType("none")
-			setCommandSuggestions([])
-			setSuggestions([])
-			setArgumentSuggestions([])
-		}
-	}, [inputValue, setSuggestions, setArgumentSuggestions])
+	const autocompleteHandledEnter = useRef(false)
 
 	// Handle keyboard input for autocomplete navigation
 	useInput(
@@ -89,7 +47,7 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 			}
 
 			// Only handle autocomplete keys when autocomplete is showing
-			if (showAutocomplete) {
+			if (isAutocompleteVisible) {
 				if (key.downArrow) {
 					selectNext()
 					return
@@ -98,17 +56,16 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 					return
 				} else if (key.tab) {
 					// Select current suggestion with Tab (don't submit)
-					if (suggestionType === "command" && commandSuggestions[selectedIndex]) {
-						const selected = commandSuggestions[selectedIndex]
-						setInputValueAction(`/${selected.command.name} `)
-						// Force TextInput remount to reset cursor to end
-						setInputKey((k) => k + 1)
-					} else if (suggestionType === "argument" && argumentSuggestions[selectedIndex]) {
-						const selected = argumentSuggestions[selectedIndex]
-						// Replace the last argument with the selected value
-						const parts = inputValue.split(" ")
-						parts[parts.length - 1] = selected.value
-						setInputValueAction(parts.join(" ") + " ")
+					if (selectedSuggestion) {
+						if ("command" in selectedSuggestion) {
+							// Command suggestion
+							setInput(`/${selectedSuggestion.command.name} `)
+						} else {
+							// Argument suggestion
+							const parts = inputValue.split(" ")
+							parts[parts.length - 1] = selectedSuggestion.value
+							setInput(parts.join(" ") + " ")
+						}
 						// Force TextInput remount to reset cursor to end
 						setInputKey((k) => k + 1)
 					}
@@ -116,15 +73,16 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 				} else if (key.return && (commandSuggestions.length > 0 || argumentSuggestions.length > 0)) {
 					// Select current suggestion and submit with Enter
 					let newValue = ""
-					if (suggestionType === "command" && commandSuggestions[selectedIndex]) {
-						const selected = commandSuggestions[selectedIndex]
-						newValue = `/${selected.command.name} `
-					} else if (suggestionType === "argument" && argumentSuggestions[selectedIndex]) {
-						const selected = argumentSuggestions[selectedIndex]
-						// Replace the last argument with the selected value (no trailing space for immediate submission)
-						const parts = inputValue.split(" ")
-						parts[parts.length - 1] = selected.value
-						newValue = parts.join(" ")
+					if (selectedSuggestion) {
+						if ("command" in selectedSuggestion) {
+							// Command suggestion
+							newValue = `/${selectedSuggestion.command.name} `
+						} else {
+							// Argument suggestion - replace the last argument
+							const parts = inputValue.split(" ")
+							parts[parts.length - 1] = selectedSuggestion.value
+							newValue = parts.join(" ")
+						}
 					}
 
 					// Update input and submit
@@ -151,7 +109,7 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 	)
 
 	const handleChange = (value: string) => {
-		setInputValueAction(value)
+		setInput(value)
 	}
 
 	const handleSubmit = () => {
@@ -168,7 +126,11 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 
 	// Determine if we should let TextInput handle Enter or if autocomplete will handle it
 	const hasSuggestions = commandSuggestions.length > 0 || argumentSuggestions.length > 0
-	const shouldDisableTextInputSubmit = showAutocomplete && hasSuggestions
+	const shouldDisableTextInputSubmit = isAutocompleteVisible && hasSuggestions
+
+	// Determine suggestion type for autocomplete menu
+	const suggestionType =
+		commandSuggestions.length > 0 ? "command" : argumentSuggestions.length > 0 ? "argument" : "none"
 
 	return (
 		<Box flexDirection="column">
@@ -193,7 +155,7 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 				commandSuggestions={commandSuggestions}
 				argumentSuggestions={argumentSuggestions}
 				selectedIndex={selectedIndex}
-				visible={showAutocomplete}
+				visible={isAutocompleteVisible}
 			/>
 		</Box>
 	)

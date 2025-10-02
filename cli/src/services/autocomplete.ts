@@ -34,7 +34,7 @@ export type { ArgumentSuggestion }
 interface CacheEntry {
 	key: string
 	results: ArgumentSuggestion[]
-	timestamp: number
+	ts: number
 	ttl: number
 }
 
@@ -45,7 +45,7 @@ class ArgumentSuggestionCache {
 		const entry = this.cache.get(key)
 		if (!entry) return null
 
-		if (Date.now() - entry.timestamp > entry.ttl) {
+		if (Date.now() - entry.ts > entry.ttl) {
 			this.cache.delete(key)
 			return null
 		}
@@ -57,7 +57,7 @@ class ArgumentSuggestionCache {
 		this.cache.set(key, {
 			key,
 			results,
-			timestamp: Date.now(),
+			ts: Date.now(),
 			ttl,
 		})
 	}
