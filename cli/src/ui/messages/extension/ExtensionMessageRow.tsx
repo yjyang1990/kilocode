@@ -1,12 +1,41 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { ExtensionChatMessage } from "../../../types/messages.js"
+import { logs } from "../../../services/logs.js"
+import { ErrorBoundary } from "react-error-boundary"
 
 interface ExtensionMessageRowProps {
 	message: ExtensionChatMessage
 }
 
-export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ message }) => {
+interface ReadFileToolProps {
+	files: Array<{ path: string }>
+}
+
+const ReadFileToolMessage: React.FC<ReadFileToolProps> = ({ files }) => {
+	if (!files || files.length === 0) {
+		return null
+	}
+
+	return (
+		<Box flexDirection="column" borderStyle="single" borderColor="gray" paddingX={1}>
+			<Box>
+				<Text color="white" bold>
+					ReadFile
+				</Text>
+			</Box>
+			<Box flexDirection="column" marginTop={1}>
+				{files.map((file, index) => (
+					<Text key={index} color="gray">
+						- {file.path}
+					</Text>
+				))}
+			</Box>
+		</Box>
+	)
+}
+
+const DefaultMessage: React.FC<{ message: ExtensionChatMessage }> = ({ message }) => {
 	const getColor = () => {
 		switch (message.type) {
 			case "ask":
@@ -52,11 +81,18 @@ export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ messag
 		return null
 	}
 
+	if (message.type === "say" && message.say === "api_req_started") {
+		return null
+	}
+
+	const color = getColor()
+	const prefix = getPrefix()
+
 	return (
 		<Box flexDirection="column" marginBottom={1}>
 			<Box>
-				<Text color={getColor()} bold>
-					{getPrefix()}{" "}
+				<Text color={color as any} bold>
+					{prefix}{" "}
 				</Text>
 				<Text color="white">{displayText}</Text>
 				{message.partial && (
@@ -74,5 +110,42 @@ export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ messag
 				</Box>
 			)}
 		</Box>
+	)
+}
+
+function renderError({ error }: { error: Error }) {
+	return (
+		<Box borderColor="red" borderStyle="single" padding={1} marginY={1}>
+			<Text color="red">Error rendering message: {error.message}</Text>
+		</Box>
+	)
+}
+
+export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ message }) => {
+	let messageIsJson = false
+	let messageJson = null
+	try {
+		messageJson = JSON.parse(message.text || "")
+		messageIsJson = true
+	} catch {}
+
+	if (messageJson?.batchFiles) {
+		logs.info(
+			"Rendering",
+			"ExtensionMessageRow",
+			messageJson.batchFiles.map((f: { path: string }) => f.path),
+		)
+	}
+
+	return (
+		<ErrorBoundary fallbackRender={renderError}>
+			{(() => {
+				if (messageJson?.tool === "readFile") {
+					return <ReadFileToolMessage files={messageJson.batchFiles} />
+				} else {
+					return <DefaultMessage message={message} />
+				}
+			})()}
+		</ErrorBoundary>
 	)
 }
