@@ -14,3 +14,9 @@ npm install -g @kilo-code/cli
 # Start interactive chat session
 kilocode
 ```
+
+## Local Development
+
+### DevTools
+
+In order to run the CLI with devtools, add `DEV=true` to your `pnpm start` command, and then run `npx react-devtools` to show the devtools inspector.
