@@ -1,0 +1,5 @@
+# Description: Should complete fetch API call with error handling
+async function getUsers() {
+	try {
+		const response = await fetch('/api/users');
+		if (!response.ok) <<<CURSOR>>>
