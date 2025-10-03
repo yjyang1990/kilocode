@@ -38,10 +38,10 @@ export type ChutesModelId =
 	| "zai-org/GLM-4.6-FP8" // kilocode_change
 	// kilocode_change start
 	| "zai-org/GLM-4.5V"
-	| "zai-org/GLM-4.5-turbo"
-	// kilocode_change end
-	| "moonshotai/Kimi-K2-Instruct-75k"
 	| "zai-org/GLM-4.6-turbo"
+	// kilocode_change end
+	| "zai-org/GLM-4.5-turbo"
+	| "moonshotai/Kimi-K2-Instruct-75k"
 	| "moonshotai/Kimi-K2-Instruct-0905"
 	// kilocode_change start
 	| "moonshotai/Kimi-Dev-72B"
