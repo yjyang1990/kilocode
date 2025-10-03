@@ -123,8 +123,8 @@ export const cancelTaskAtom = atom(null, async (get, set) => {
  */
 export const switchModeAtom = atom(null, async (get, set, mode: string) => {
 	const message: WebviewMessage = {
-		type: "switchMode",
-		mode,
+		type: "mode",
+		text: mode,
 	}
 
 	await set(sendWebviewMessageAtom, message)

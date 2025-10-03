@@ -37,12 +37,6 @@ export const inputValueAtom = atom<string>("")
 export const isProcessingAtom = atom<boolean>(false)
 
 /**
- * Atom to hold the current mode (for UI display purposes)
- * Note: This is separate from extensionModeAtom which tracks the extension's mode
- */
-export const currentModeAtom = atom<string>("code")
-
-/**
  * Atom to hold UI error messages
  */
 export const errorAtom = atom<string | null>(null)
@@ -252,13 +246,6 @@ export const setErrorAtom = atom(null, (get, set, error: string | null) => {
  */
 export const setIsProcessingAtom = atom(null, (get, set, processing: boolean) => {
 	set(isProcessingAtom, processing)
-})
-
-/**
- * Action atom to set the current mode
- */
-export const setCurrentModeAtom = atom(null, (get, set, mode: string) => {
-	set(currentModeAtom, mode)
 })
 
 /**

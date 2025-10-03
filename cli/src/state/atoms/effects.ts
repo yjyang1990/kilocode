@@ -7,7 +7,6 @@ import { atom } from "jotai"
 import type { ExtensionMessage } from "../../types/messages.js"
 import { extensionServiceAtom, setServiceReadyAtom, setServiceErrorAtom, setIsInitializingAtom } from "./service.js"
 import { updateExtensionStateAtom } from "./extension.js"
-import { mappedExtensionStateAtom } from "./config.js"
 import { logs } from "../../services/logs.js"
 
 /**
@@ -242,43 +241,5 @@ export const clearMessageBufferAtom = atom(null, (get, set) => {
 	if (bufferSize > 0) {
 		logs.warn(`Clearing ${bufferSize} buffered messages`, "effects")
 		set(messageBufferAtom, [])
-	}
-})
-
-/**
- * Effect atom to sync CLI configuration to the extension
- * This sends configuration updates to the extension when config changes
- */
-export const syncConfigToExtensionEffectAtom = atom(null, async (get, set) => {
-	const service = get(extensionServiceAtom)
-
-	if (!service || !service.isReady()) {
-		logs.debug("Service not ready, skipping config sync", "effects")
-		return
-	}
-
-	try {
-		const mappedState = get(mappedExtensionStateAtom)
-
-		if (!mappedState.apiConfiguration) {
-			logs.debug("No API configuration to sync", "effects")
-			return
-		}
-
-		logs.debug("Syncing config to extension", "effects", {
-			apiProvider: mappedState.apiConfiguration.apiProvider,
-			currentApiConfigName: mappedState.currentApiConfigName,
-		})
-
-		// Send configuration to extension via webview message
-		await service.sendWebviewMessage({
-			type: "upsertApiConfiguration",
-			text: mappedState.currentApiConfigName || "default",
-			apiConfiguration: mappedState.apiConfiguration,
-		})
-
-		logs.info("Config synced to extension successfully", "effects")
-	} catch (error) {
-		logs.error("Failed to sync config to extension", "effects", { error })
 	}
 })

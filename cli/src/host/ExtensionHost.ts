@@ -684,6 +684,37 @@ export class ExtensionHost extends EventEmitter {
 	}
 
 	/**
+	 * Send configuration sync messages to the extension
+	 * This is the shared logic used by both injectConfiguration and external sync calls
+	 */
+	public async syncConfigurationMessages(configState: Partial<ExtensionState>): Promise<void> {
+		// Send API configuration if present
+		if (configState.apiConfiguration) {
+			await this.sendWebviewMessage({
+				type: "upsertApiConfiguration",
+				text: configState.currentApiConfigName || "default",
+				apiConfiguration: configState.apiConfiguration,
+			})
+		}
+
+		// Sync mode if present
+		if (configState.mode) {
+			await this.sendWebviewMessage({
+				type: "mode",
+				text: configState.mode,
+			})
+		}
+
+		// Sync telemetry setting if present
+		if (configState.telemetrySetting) {
+			await this.sendWebviewMessage({
+				type: "telemetrySettings",
+				text: configState.telemetrySetting,
+			})
+		}
+	}
+
+	/**
 	 * Inject CLI configuration into the extension state
 	 * This should be called after the CLI config is loaded
 	 */
@@ -701,13 +732,7 @@ export class ExtensionHost extends EventEmitter {
 
 		// Send configuration to the extension through webview message
 		// This ensures the extension's internal state is updated
-		if (configState.apiConfiguration) {
-			await this.sendWebviewMessage({
-				type: "upsertApiConfiguration",
-				text: configState.currentApiConfigName || "default",
-				apiConfiguration: configState.apiConfiguration,
-			})
-		}
+		await this.syncConfigurationMessages(configState)
 
 		// Broadcast the updated state
 		this.broadcastStateUpdate()

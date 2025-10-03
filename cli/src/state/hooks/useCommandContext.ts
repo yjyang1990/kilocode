@@ -7,7 +7,8 @@ import { useSetAtom, useAtomValue } from "jotai"
 import { useCallback } from "react"
 import type { CommandContext } from "../../commands/core/types.js"
 import type { CliMessage } from "../../types/cli.js"
-import { addMessageAtom, clearMessagesAtom, currentModeAtom } from "../atoms/ui.js"
+import { addMessageAtom, clearMessagesAtom } from "../atoms/ui.js"
+import { setModeAtom } from "../atoms/config.js"
 import { useWebviewMessage } from "./useWebviewMessage.js"
 
 /**
@@ -50,7 +51,7 @@ export function useCommandContext(): UseCommandContextReturn {
 	// Get atoms and hooks
 	const addMessage = useSetAtom(addMessageAtom)
 	const clearMessages = useSetAtom(clearMessagesAtom)
-	const setCurrentMode = useSetAtom(currentModeAtom)
+	const setMode = useSetAtom(setModeAtom)
 	const { sendMessage } = useWebviewMessage()
 
 	// Create the factory function
@@ -69,15 +70,15 @@ export function useCommandContext(): UseCommandContextReturn {
 				clearMessages: () => {
 					clearMessages()
 				},
-				setMode: (mode: string) => {
-					setCurrentMode(mode)
+				setMode: async (mode: string) => {
+					await setMode(mode)
 				},
 				exit: () => {
 					onExit()
 				},
 			}
 		},
-		[addMessage, clearMessages, setCurrentMode, sendMessage],
+		[addMessage, clearMessages, setMode, sendMessage],
 	)
 
 	return { createContext }

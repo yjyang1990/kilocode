@@ -23,6 +23,12 @@ export const providerAtom = atom((get) => {
 // Derived atom for provider list
 export const providersAtom = atom((get) => get(configAtom).providers)
 
+// Derived atom for current mode
+export const modeAtom = atom((get) => {
+	const config = get(configAtom)
+	return config.mode
+})
+
 // Action atom to load config from disk
 export const loadConfigAtom = atom(null, async (get, set) => {
 	try {
@@ -136,6 +142,26 @@ export const removeProviderAtom = atom(null, async (get, set, providerId: string
 
 	set(configAtom, updatedConfig)
 	await set(saveConfigAtom, updatedConfig)
+})
+
+// Action atom to update mode in config and persist
+export const setModeAtom = atom(null, async (get, set, mode: string) => {
+	const config = get(configAtom)
+	const updatedConfig = {
+		...config,
+		mode,
+	}
+
+	set(configAtom, updatedConfig)
+	await set(saveConfigAtom, updatedConfig)
+
+	logs.info(`Mode updated to: ${mode}`, "ConfigAtoms")
+
+	// Import from config-sync to avoid circular dependency
+	const { syncConfigToExtensionEffectAtom } = await import("./config-sync.js")
+
+	// Trigger sync to extension after mode change
+	await set(syncConfigToExtensionEffectAtom)
 })
 
 // Atom to get mapped extension state

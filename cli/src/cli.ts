@@ -190,11 +190,17 @@ export class CLI {
 			const { mappedExtensionStateAtom } = await import("./state/atoms/config.js")
 			const mappedState = this.store.get(mappedExtensionStateAtom)
 
+			logs.debug("Mapped config state for injection", "CLI", {
+				mode: mappedState.mode,
+				telemetry: mappedState.telemetrySetting,
+				provider: mappedState.currentApiConfigName,
+			})
+
 			// Get the extension host from the service
 			const extensionHost = this.service.getExtensionHost()
 
-			// Inject the configuration
-			extensionHost.injectConfiguration(mappedState)
+			// Inject the configuration (await to ensure mode/telemetry messages are sent)
+			await extensionHost.injectConfiguration(mappedState)
 
 			logs.info("Configuration injected into extension host", "CLI")
 		} catch (error) {

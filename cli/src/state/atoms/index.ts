@@ -80,6 +80,7 @@ export {
 	// Derived config atoms
 	providerAtom,
 	providersAtom,
+	modeAtom,
 	mappedExtensionStateAtom,
 
 	// Config action atoms
@@ -89,6 +90,7 @@ export {
 	addProviderAtom,
 	updateProviderAtom,
 	removeProviderAtom,
+	setModeAtom,
 } from "./config.js"
 
 // ============================================================================
@@ -141,6 +143,14 @@ export {
 } from "./effects.js"
 
 // ============================================================================
+// Config Sync Atoms - Configuration synchronization
+// ============================================================================
+export {
+	// Config sync effect
+	syncConfigToExtensionEffectAtom,
+} from "./config-sync.js"
+
+// ============================================================================
 // UI Atoms - Command-based UI state
 // ============================================================================
 export {
@@ -148,7 +158,6 @@ export {
 	messagesAtom,
 	inputValueAtom,
 	isProcessingAtom,
-	currentModeAtom,
 	errorAtom,
 
 	// Autocomplete state atoms
@@ -178,7 +187,6 @@ export {
 	selectPreviousSuggestionAtom,
 	setErrorAtom,
 	setIsProcessingAtom,
-	setCurrentModeAtom,
 	hideAutocompleteAtom,
 	showAutocompleteMenuAtom,
 } from "./ui.js"

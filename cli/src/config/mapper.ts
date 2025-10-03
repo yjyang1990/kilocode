@@ -35,6 +35,7 @@ export function mapConfigToExtensionState(
 			currentApiConfigName: provider.id,
 			listApiConfigMeta,
 			telemetrySetting: config.telemetry ? "enabled" : "disabled",
+			mode: config.mode,
 		}
 	} catch (error) {
 		logs.error("Failed to map config to extension state", "ConfigMapper", { error })

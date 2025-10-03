@@ -15,7 +15,7 @@ import {
 	mappedExtensionStateAtom,
 } from "../atoms/config.js"
 import { updatePartialExtensionStateAtom } from "../atoms/extension.js"
-import { syncConfigToExtensionEffectAtom } from "../atoms/effects.js"
+import { syncConfigToExtensionEffectAtom } from "../atoms/config-sync.js"
 import type { CLIConfig, ProviderConfig } from "../../config/types.js"
 
 export interface UseConfigReturn {
