@@ -155,13 +155,18 @@ export class GeminiCliHandler extends BaseProvider implements SingleCompletionHa
 	 * Discover or retrieve the project ID
 	 */
 	private async discoverProjectId(): Promise<string> {
-		// If we have an explicit project ID from options, use it
+		// If we already have a project ID, use it
 		if (this.options.geminiCliProjectId) {
 			this.projectId = this.options.geminiCliProjectId
 			return this.projectId
 		}
 
-		// Always lookup for the project id from the env variable
+		// If we've already discovered it, return it
+		if (this.projectId) {
+			return this.projectId
+		}
+
+		// Lookup for the project id from the env variable
 		// with a fallback to a default project ID (can be anything for personal OAuth)
 		const envPath = this.options.geminiCliOAuthPath
 			? path.join(path.dirname(this.options.geminiCliOAuthPath), ".env")
@@ -175,7 +180,8 @@ export class GeminiCliHandler extends BaseProvider implements SingleCompletionHa
 
 		// If the project ID was in the .env file, use it and return early.
 		if (parsed?.GOOGLE_CLOUD_PROJECT) {
-			return parsed.GOOGLE_CLOUD_PROJECT
+			this.projectId = parsed.GOOGLE_CLOUD_PROJECT
+			return this.projectId
 		}
 
 		const initialProjectId = process.env.GOOGLE_CLOUD_PROJECT ?? "default"
@@ -199,7 +205,8 @@ export class GeminiCliHandler extends BaseProvider implements SingleCompletionHa
 
 			// Check if we already have a project ID from the response
 			if (loadResponse.cloudaicompanionProject) {
-				return loadResponse.cloudaicompanionProject as string
+				this.projectId = loadResponse.cloudaicompanionProject
+				return this.projectId as string
 			}
 
 			// If no existing project, we need to onboard
@@ -229,7 +236,8 @@ export class GeminiCliHandler extends BaseProvider implements SingleCompletionHa
 			}
 
 			const discoveredProjectId = lroResponse.response?.cloudaicompanionProject?.id || initialProjectId
-			return discoveredProjectId as string
+			this.projectId = discoveredProjectId
+			return this.projectId as string
 		} catch (error: any) {
 			console.error("Failed to discover project ID:", error.response?.data || error.message)
 			throw new Error(t("common:errors.geminiCli.projectDiscoveryFailed"))
