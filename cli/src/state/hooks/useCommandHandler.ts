@@ -6,6 +6,7 @@
 import { useSetAtom } from "jotai"
 import { useCallback, useState } from "react"
 import { addMessageAtom, isProcessingAtom } from "../atoms/ui.js"
+import { ciCommandFinishedAtom } from "../atoms/ci.js"
 import { useCommandContext } from "./useCommandContext.js"
 import { validateCommand, executeCommandWithContext, formatCommandError } from "../../services/commandExecutor.js"
 import type { CliMessage } from "../../types/cli.js"
@@ -48,6 +49,7 @@ export function useCommandHandler(): UseCommandHandlerReturn {
 	const [isExecuting, setIsExecuting] = useState(false)
 	const addMessage = useSetAtom(addMessageAtom)
 	const setIsProcessing = useSetAtom(isProcessingAtom)
+	const setCommandFinished = useSetAtom(ciCommandFinishedAtom)
 	const { createContext } = useCommandContext()
 
 	const executeCommand = useCallback(
@@ -108,9 +110,12 @@ export function useCommandHandler(): UseCommandHandlerReturn {
 				// Reset processing state
 				setIsExecuting(false)
 				setIsProcessing(false)
+				// Mark command as finished for CI mode (only for actual commands like /exit, /help, etc.)
+				// For regular messages, we wait for completion_result from the extension
+				setCommandFinished(true)
 			}
 		},
-		[addMessage, setIsProcessing, createContext],
+		[addMessage, setIsProcessing, setCommandFinished, createContext],
 	)
 
 	return {

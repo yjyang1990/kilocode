@@ -6,12 +6,26 @@ import { DEFAULT_CONFIG } from "./defaults.js"
 import { validateConfig } from "./validation.js"
 import { logs } from "../services/logs.js"
 
-const CONFIG_DIR = path.join(homedir(), ".kilocode", "cli")
-const CONFIG_FILE = path.join(CONFIG_DIR, "config.json")
+export const CONFIG_DIR = path.join(homedir(), ".kilocode", "cli")
+export const CONFIG_FILE = path.join(CONFIG_DIR, "config.json")
+
+// Allow overriding paths for testing
+let configDir = CONFIG_DIR
+let configFile = CONFIG_FILE
+
+export function setConfigPaths(dir: string, file: string): void {
+	configDir = dir
+	configFile = file
+}
+
+export function resetConfigPaths(): void {
+	configDir = CONFIG_DIR
+	configFile = CONFIG_FILE
+}
 
 export async function ensureConfigDir(): Promise<void> {
 	try {
-		await fs.mkdir(CONFIG_DIR, { recursive: true })
+		await fs.mkdir(configDir, { recursive: true })
 	} catch (error) {
 		logs.error("Failed to create config directory", "ConfigPersistence", { error })
 		throw error
@@ -24,7 +38,7 @@ export async function loadConfig(): Promise<CLIConfig> {
 
 		// Check if config file exists
 		try {
-			await fs.access(CONFIG_FILE)
+			await fs.access(configFile)
 		} catch {
 			// File doesn't exist, create default
 			await saveConfig(DEFAULT_CONFIG)
@@ -32,7 +46,7 @@ export async function loadConfig(): Promise<CLIConfig> {
 		}
 
 		// Read and parse config
-		const content = await fs.readFile(CONFIG_FILE, "utf-8")
+		const content = await fs.readFile(configFile, "utf-8")
 		const config = JSON.parse(content)
 
 		// Validate config
@@ -61,7 +75,7 @@ export async function saveConfig(config: CLIConfig): Promise<void> {
 		}
 
 		// Write config with pretty formatting
-		await fs.writeFile(CONFIG_FILE, JSON.stringify(config, null, 2))
+		await fs.writeFile(configFile, JSON.stringify(config, null, 2))
 		logs.debug("Config saved successfully", "ConfigPersistence")
 	} catch (error) {
 		logs.error("Failed to save config", "ConfigPersistence", { error })
@@ -70,12 +84,12 @@ export async function saveConfig(config: CLIConfig): Promise<void> {
 }
 
 export async function getConfigPath(): Promise<string> {
-	return CONFIG_FILE
+	return configFile
 }
 
 export async function configExists(): Promise<boolean> {
 	try {
-		await fs.access(CONFIG_FILE)
+		await fs.access(configFile)
 		return true
 	} catch {
 		return false

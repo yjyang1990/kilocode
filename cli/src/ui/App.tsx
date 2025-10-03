@@ -6,9 +6,11 @@ import { Loader } from "./Loader.js"
 type JotaiStore = any
 
 export interface AppOptions {
-	initialMode?: string
+	mode?: string
 	workspace?: string
-	autoApprove?: boolean
+	ci?: boolean
+	prompt?: string
+	timeout?: number
 }
 
 export interface AppProps {
@@ -19,6 +21,8 @@ export interface AppProps {
 
 export const App: React.FC<AppProps> = ({ store, options, onExit }) => {
 	const [mounted, setMounted] = useState(false)
+
+	logs.debug("App component mounting", "App", { options })
 
 	useEffect(() => {
 		setMounted(true)

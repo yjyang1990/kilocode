@@ -12,8 +12,9 @@ import { loadConfigAtom } from "./state/atoms/config.js"
 export interface CLIOptions {
 	mode?: string
 	workspace?: string
-	config?: string
-	autoApprove?: boolean
+	ci?: boolean
+	prompt?: string
+	timeout?: number
 }
 
 /**
@@ -74,7 +75,6 @@ export class CLI {
 			this.service = createExtensionService({
 				workspace: this.options.workspace || process.cwd(),
 				mode: this.options.mode || "code",
-				autoApprove: this.options.autoApprove || false,
 			})
 			logs.debug("ExtensionService created", "CLI")
 
@@ -82,9 +82,9 @@ export class CLI {
 			this.store.set(extensionServiceAtom, this.service)
 			logs.debug("ExtensionService set in store", "CLI")
 
-			// Load CLI configuration
-			await this.store.set(loadConfigAtom)
-			logs.debug("CLI configuration loaded", "CLI")
+			// Load CLI configuration with mode override if provided
+			await this.store.set(loadConfigAtom, this.options.mode)
+			logs.debug("CLI configuration loaded", "CLI", { mode: this.options.mode })
 
 			// Initialize service through effect atom
 			// This sets up all event listeners and activates the extension
@@ -128,9 +128,11 @@ export class CLI {
 			React.createElement(App, {
 				store: this.store,
 				options: {
-					initialMode: this.options.mode || "code",
+					mode: this.options.mode || "code",
 					workspace: this.options.workspace || process.cwd(),
-					autoApprove: this.options.autoApprove || false,
+					ci: this.options.ci || false,
+					prompt: this.options.prompt || "",
+					...(this.options.timeout !== undefined && { timeout: this.options.timeout }),
 				},
 				onExit: () => this.dispose(),
 			}),
@@ -150,6 +152,28 @@ export class CLI {
 		try {
 			logs.info("Disposing Kilo Code CLI...", "CLI")
 
+			// Determine exit code based on CI mode and exit reason
+			let exitCode = 0
+
+			if (this.options.ci && this.store) {
+				// Import CI atoms to check exit reason
+				const { ciExitReasonAtom } = await import("./state/atoms/ci.js")
+				const exitReason = this.store.get(ciExitReasonAtom)
+
+				// Set exit code based on the actual exit reason
+				if (exitReason === "timeout") {
+					exitCode = 124
+					logs.warn("Exiting with timeout code", "CLI")
+				} else if (exitReason === "completion_result" || exitReason === "command_finished") {
+					exitCode = 0
+					logs.info("Exiting with success code", "CLI", { reason: exitReason })
+				} else {
+					// No exit reason set - this shouldn't happen in normal flow
+					exitCode = 0
+					logs.info("Exiting with default success code", "CLI")
+				}
+			}
+
 			// Unmount UI
 			if (this.ui) {
 				await this.ui.unmount()
@@ -168,8 +192,8 @@ export class CLI {
 			this.isInitialized = false
 			logs.info("Kilo Code CLI disposed", "CLI")
 
-			// Exit process
-			process.exit(0)
+			// Exit process with appropriate code
+			process.exit(exitCode)
 		} catch (error) {
 			logs.error("Error disposing CLI", "CLI", { error })
 			process.exit(1)

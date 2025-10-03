@@ -13,8 +13,6 @@ export interface ExtensionServiceOptions {
 	workspace?: string
 	/** Initial mode to start with */
 	mode?: string
-	/** Enable auto-approve for operations */
-	autoApprove?: boolean
 	/** Custom extension bundle path (for testing) */
 	extensionBundlePath?: string
 	/** Custom extension root path (for testing) */
@@ -82,7 +80,6 @@ export class ExtensionService extends EventEmitter {
 		this.options = {
 			workspace: options.workspace || process.cwd(),
 			mode: options.mode || "code",
-			autoApprove: options.autoApprove || false,
 			extensionBundlePath: options.extensionBundlePath || extensionPaths.extensionBundlePath,
 			extensionRootPath: options.extensionRootPath || extensionPaths.extensionRootPath,
 		}

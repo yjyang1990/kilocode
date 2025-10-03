@@ -2,9 +2,16 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import * as fs from "fs/promises"
 import * as path from "path"
 import { homedir } from "os"
-import { loadConfig, saveConfig, ensureConfigDir, configExists } from "../persistence.js"
-import { DEFAULT_CONFIG } from "../defaults.js"
 import type { CLIConfig } from "../types.js"
+import {
+	loadConfig,
+	saveConfig,
+	ensureConfigDir,
+	configExists,
+	setConfigPaths,
+	resetConfigPaths,
+} from "../persistence.js"
+import { DEFAULT_CONFIG } from "../defaults.js"
 
 // Mock the logs service
 vi.mock("../../services/logs.js", () => ({
@@ -16,21 +23,15 @@ vi.mock("../../services/logs.js", () => ({
 	},
 }))
 
+// Define test paths
 const TEST_CONFIG_DIR = path.join(homedir(), ".kilocode", "cli-test")
 const TEST_CONFIG_FILE = path.join(TEST_CONFIG_DIR, "config.json")
 
-// Mock the config paths for testing
-vi.mock("../persistence.js", async () => {
-	const actual = await vi.importActual("../persistence.js")
-	return {
-		...actual,
-		CONFIG_DIR: TEST_CONFIG_DIR,
-		CONFIG_FILE: TEST_CONFIG_FILE,
-	}
-})
-
 describe("Config Persistence", () => {
 	beforeEach(async () => {
+		// Set test config paths
+		setConfigPaths(TEST_CONFIG_DIR, TEST_CONFIG_FILE)
+
 		// Clean up test directory before each test
 		try {
 			await fs.rm(TEST_CONFIG_DIR, { recursive: true, force: true })
@@ -40,6 +41,9 @@ describe("Config Persistence", () => {
 	})
 
 	afterEach(async () => {
+		// Reset config paths
+		resetConfigPaths()
+
 		// Clean up test directory after each test
 		try {
 			await fs.rm(TEST_CONFIG_DIR, { recursive: true, force: true })

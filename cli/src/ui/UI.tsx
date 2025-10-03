@@ -3,10 +3,11 @@
  * Refactored to use specialized hooks for better maintainability
  */
 
-import React, { useCallback } from "react"
-import { Box, Text } from "ink"
-import { useAtomValue } from "jotai"
+import React, { useCallback, useEffect, useRef } from "react"
+import { Box, Text, useInput } from "ink"
+import { useAtomValue, useSetAtom } from "jotai"
 import { isProcessingAtom, errorAtom } from "../state/atoms/ui.js"
+import { setCIModeAtom } from "../state/atoms/ci.js"
 import { MessageDisplay } from "./messages/MessageDisplay.js"
 import { CommandInput } from "./components/CommandInput.js"
 import { initializeCommands } from "../commands/index.js"
@@ -14,18 +15,15 @@ import { isCommandInput } from "../services/autocomplete.js"
 import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
 import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
 import { useWelcomeMessage } from "../state/hooks/useWelcomeMessage.js"
+import { useCIMode } from "../state/hooks/useCIMode.js"
+import { AppOptions } from "./App.js"
+import { logs } from "../services/logs.js"
 
 // Initialize commands on module load
 initializeCommands()
 
-export interface UIOptions {
-	initialMode?: string
-	workspace?: string
-	autoApprove?: boolean
-}
-
 interface UIAppProps {
-	options: UIOptions
+	options: AppOptions
 	onExit: () => void
 }
 
@@ -33,12 +31,77 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	const isProcessing = useAtomValue(isProcessingAtom)
 	const error = useAtomValue(errorAtom)
 
+	// Initialize CI mode configuration
+	const setCIMode = useSetAtom(setCIModeAtom)
+
 	// Use specialized hooks for command and message handling
 	const { executeCommand, isExecuting: isExecutingCommand } = useCommandHandler()
-	const { sendUserMessage, isSending: isSendingMessage } = useMessageHandler()
+	const { sendUserMessage, isSending: isSendingMessage } = useMessageHandler({
+		...(options.ci !== undefined && { ciMode: options.ci }),
+	})
 
-	// Display welcome message on mount
-	useWelcomeMessage()
+	// CI mode hook for automatic exit
+	const { shouldExit, exitReason } = useCIMode({
+		enabled: options.ci || false,
+		...(options.timeout !== undefined && { timeout: options.timeout }),
+		onExit: onExit,
+	})
+
+	// Track if prompt has been executed
+	const promptExecutedRef = useRef(false)
+
+	// Initialize CI mode atoms
+	useEffect(() => {
+		if (options.ci) {
+			logs.info("Initializing CI mode", "UI", { timeout: options.timeout })
+			setCIMode({
+				enabled: true,
+				...(options.timeout !== undefined && { timeout: options.timeout }),
+			})
+		}
+	}, [options.ci, options.timeout, setCIMode])
+
+	// Handle CI mode exit
+	useEffect(() => {
+		if (shouldExit && options.ci) {
+			logs.info(`CI mode exiting: ${exitReason}`, "UI")
+			// Small delay for cleanup and final message display
+			setTimeout(() => {
+				onExit()
+			}, 100)
+		}
+	}, [shouldExit, exitReason, options.ci, onExit])
+
+	// In CI mode, use useInput to keep the app alive (prevents Ink from exiting)
+	// This is necessary because we don't render CommandInput in CI mode
+	useInput(
+		() => {
+			// No-op: we don't handle input in CI mode, but this keeps the app alive
+		},
+		{ isActive: options.ci || false },
+	)
+
+	// Display welcome message on mount (disabled if prompt is provided)
+	useWelcomeMessage({ enabled: !options.prompt })
+
+	// Execute prompt automatically on mount if provided
+	useEffect(() => {
+		if (options.prompt && !promptExecutedRef.current) {
+			promptExecutedRef.current = true
+			const trimmedPrompt = options.prompt.trim()
+
+			if (trimmedPrompt) {
+				logs.debug("Executing initial prompt", "UI", { prompt: trimmedPrompt })
+
+				// Determine if it's a command or regular message
+				if (isCommandInput(trimmedPrompt)) {
+					executeCommand(trimmedPrompt, onExit)
+				} else {
+					sendUserMessage(trimmedPrompt)
+				}
+			}
+		}
+	}, [options.prompt, executeCommand, sendUserMessage, onExit])
 
 	// Simplified submit handler that delegates to appropriate hook
 	const handleSubmit = useCallback(
@@ -76,7 +139,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			)}
 
 			{/* Input */}
-			<CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />
+			{!options.ci && <CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />}
 		</Box>
 	)
 }

@@ -30,16 +30,20 @@ export const modeAtom = atom((get) => {
 })
 
 // Action atom to load config from disk
-export const loadConfigAtom = atom(null, async (get, set) => {
+// Accepts optional mode parameter to override the loaded config's mode
+export const loadConfigAtom = atom(null, async (get, set, mode?: string) => {
 	try {
 		set(configLoadingAtom, true)
 		set(configErrorAtom, null)
 
 		const config = await loadConfig()
-		set(configAtom, config)
 
-		logs.info("Config loaded successfully", "ConfigAtoms")
-		return config
+		// Override mode if provided (e.g., from CLI options)
+		const finalConfig = mode ? { ...config, mode } : config
+		set(configAtom, finalConfig)
+
+		logs.info("Config loaded successfully", "ConfigAtoms", { mode: finalConfig.mode })
+		return finalConfig
 	} catch (error) {
 		const err = error instanceof Error ? error : new Error(String(error))
 		set(configErrorAtom, err)

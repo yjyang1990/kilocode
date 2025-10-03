@@ -7,6 +7,7 @@ import { atom } from "jotai"
 import type { ExtensionMessage } from "../../types/messages.js"
 import { extensionServiceAtom, setServiceReadyAtom, setServiceErrorAtom, setIsInitializingAtom } from "./service.js"
 import { updateExtensionStateAtom } from "./extension.js"
+import { ciCompletionDetectedAtom } from "./ci.js"
 import { logs } from "../../services/logs.js"
 
 /**
@@ -142,6 +143,15 @@ export const messageHandlerEffectAtom = atom(null, (get, set, message: Extension
 
 			default:
 				logs.debug(`Unhandled message type: ${message.type}`, "effects")
+		}
+
+		// Check for completion_result in chatMessages (for CI mode)
+		if (message.state?.chatMessages) {
+			const lastMessage = message.state.chatMessages[message.state.chatMessages.length - 1]
+			if (lastMessage?.type === "ask" && lastMessage?.ask === "completion_result") {
+				logs.info("Completion result detected in state update", "effects")
+				set(ciCompletionDetectedAtom, true)
+			}
 		}
 	} catch (error) {
 		logs.error("Error handling extension message", "effects", { error, message })

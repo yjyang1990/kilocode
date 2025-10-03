@@ -8,6 +8,15 @@ import { useCallback, useState } from "react"
 import { addMessageAtom, isProcessingAtom } from "../atoms/ui.js"
 import { useWebviewMessage } from "./useWebviewMessage.js"
 import type { CliMessage } from "../../types/cli.js"
+import { logs } from "../../services/logs.js"
+
+/**
+ * Options for useMessageHandler hook
+ */
+export interface UseMessageHandlerOptions {
+	/** Whether CI mode is active */
+	ciMode?: boolean
+}
 
 /**
  * Return type for useMessageHandler hook
@@ -43,7 +52,8 @@ export interface UseMessageHandlerReturn {
  * }
  * ```
  */
-export function useMessageHandler(): UseMessageHandlerReturn {
+export function useMessageHandler(options: UseMessageHandlerOptions = {}): UseMessageHandlerReturn {
+	const { ciMode = false } = options
 	const [isSending, setIsSending] = useState(false)
 	const addMessage = useSetAtom(addMessageAtom)
 	const setIsProcessing = useSetAtom(isProcessingAtom)
@@ -86,12 +96,21 @@ export function useMessageHandler(): UseMessageHandlerReturn {
 				}
 				addMessage(errorMessage)
 			} finally {
-				// Reset processing state
+				// Reset sending state
 				setIsSending(false)
-				setIsProcessing(false)
+
+				// In CI mode, keep isProcessing true until we receive completion_result
+				// In interactive mode, reset immediately
+				if (!ciMode) {
+					setIsProcessing(false)
+					logs.debug("Message sent, processing state reset (interactive mode)", "useMessageHandler")
+				} else {
+					logs.debug("Message sent, keeping processing state active (CI mode)", "useMessageHandler")
+					// isProcessing will be reset when completion_result is received
+				}
 			}
 		},
-		[addMessage, setIsProcessing, sendMessage],
+		[addMessage, setIsProcessing, ciMode, sendMessage],
 	)
 
 	return {

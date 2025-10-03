@@ -9,6 +9,10 @@
 export { useExtensionService } from "./useExtensionService.js"
 export type { UseExtensionServiceReturn } from "./useExtensionService.js"
 
+// CI mode hooks
+export { useCIMode } from "./useCIMode.js"
+export type { UseCIModeOptions, UseCIModeReturn } from "./useCIMode.js"
+
 // Message hooks
 export { useWebviewMessage } from "./useWebviewMessage.js"
 export type {
