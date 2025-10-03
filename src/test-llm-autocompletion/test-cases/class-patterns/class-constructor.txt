@@ -2,4 +2,4 @@
 class User {
 	constructor(username, email, role) {
 		this.username = username;
-		this.email = <<<CURSOR>>>
+		this.email = <<<AUTOCOMPLETE_HERE>>>

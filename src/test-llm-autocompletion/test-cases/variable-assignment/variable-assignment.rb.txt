@@ -1,3 +1,3 @@
 # Description: Should complete Ruby variable assignment
 x = 10
-y = <<<CURSOR>>>
+y = <<<AUTOCOMPLETE_HERE>>>

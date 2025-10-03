@@ -2,4 +2,4 @@
 class User
 	def initialize(username, email, role)
 		@username = username
-		@email = <<<CURSOR>>>
+		@email = <<<AUTOCOMPLETE_HERE>>>

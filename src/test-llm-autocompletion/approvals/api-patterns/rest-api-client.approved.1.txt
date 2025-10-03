@@ -1,6 +1,8 @@
-# Description: Should complete REST API client method
 class ApiClient {
 	async post(endpoint, data) {
 		const response = await fetch(this.baseUrl + endpoint, {
 			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
 			<<<AUTOCOMPLETE_HERE>>>
