@@ -12,4 +12,4 @@ class Rectangle < Shape
 	end
 	
 	def area
-		<<<CURSOR>>>
+		<<<AUTOCOMPLETE_HERE>>>

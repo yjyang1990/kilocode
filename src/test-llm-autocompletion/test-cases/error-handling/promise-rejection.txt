@@ -3,4 +3,4 @@ fetchUser(userId)
 	.then(user => {
 		return processUser(user);
 	})
-	.catch(<<<CURSOR>>>
+	.catch(<<<AUTOCOMPLETE_HERE>>>

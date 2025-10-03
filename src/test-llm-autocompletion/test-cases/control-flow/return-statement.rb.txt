@@ -2,4 +2,4 @@
 def calculate_total(items)
 	sum = 0
 	items.each { |item| sum += item }
-	return <<<CURSOR>>>
+	return <<<AUTOCOMPLETE_HERE>>>

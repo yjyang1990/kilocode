@@ -1,4 +1,3 @@
-# Description: Should complete Ruby class inheritance with super
 class Animal
 	def initialize(name)
 		@name = name

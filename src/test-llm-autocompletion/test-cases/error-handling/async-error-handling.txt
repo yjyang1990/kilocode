@@ -2,4 +2,4 @@
 async function saveUser(userData) {
 	try {
 		const validated = await validateUser(userData);
-		<<<CURSOR>>>
+		<<<AUTOCOMPLETE_HERE>>>

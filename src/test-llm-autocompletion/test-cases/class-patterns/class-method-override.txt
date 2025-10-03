@@ -13,4 +13,4 @@ class Rectangle extends Shape {
 	}
 	
 	area() {
-		return <<<CURSOR>>>
+		return <<<AUTOCOMPLETE_HERE>>>

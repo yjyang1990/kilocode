@@ -2,4 +2,4 @@
 def process_data(data)
 	begin
 		result = JSON.parse(data)
-		<<<CURSOR>>>
+		<<<AUTOCOMPLETE_HERE>>>
