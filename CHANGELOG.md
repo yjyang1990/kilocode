@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.28.15
+
+### Patch Changes
+
+- ![3.28.15 Release - Kangaroo Sliding Down a Chute](/releases/3.28.15-release.png)
+
 ## [3.28.14] - 2025-09-30
 
 ![3.28.14 Release - GLM-4.6 Model Support](/releases/3.28.14-release.png)
