@@ -67,7 +67,7 @@ describe("ExtensionMessageRow", () => {
 				ask: "followup",
 				text: JSON.stringify({
 					question: "What would you like to do?",
-					suggest: [{ text: "Option 1" }, { text: "Option 2" }],
+					suggest: [{ answer: "Option 1" }, { answer: "Option 2" }],
 				}),
 			}
 

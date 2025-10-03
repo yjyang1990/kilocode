@@ -15,6 +15,7 @@ import {
 	AskInvalidModelMessage,
 	AskReportBugMessage,
 	AskAutoApprovalMaxReachedMessage,
+	AskBrowserActionLaunchMessage,
 } from "./ask/index.js"
 
 /**
@@ -46,6 +47,9 @@ export const AskMessageRouter: React.FC<MessageComponentProps> = ({ message }) =
 
 		case "command":
 			return <AskCommandMessage message={message} />
+
+		case "browser_action_launch":
+			return <AskBrowserActionLaunchMessage message={message} />
 
 		case "use_mcp_server":
 			return <AskUseMcpServerMessage message={message} />

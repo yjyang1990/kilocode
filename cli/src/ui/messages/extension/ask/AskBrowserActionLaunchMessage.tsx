@@ -2,16 +2,15 @@ import React, { useEffect } from "react"
 import { Box, Text } from "ink"
 import { useSetAtom } from "jotai"
 import type { MessageComponentProps } from "../types.js"
-import { parseToolData, getToolIcon } from "../utils.js"
+import { getMessageIcon } from "../utils.js"
 import { setPendingApprovalAtom } from "../../../../state/atoms/approval.js"
 
 /**
- * Display tool usage requests requiring approval
- * Parses tool data and shows tool information
+ * Display browser action launch request
  */
-export const AskToolMessage: React.FC<MessageComponentProps> = ({ message }) => {
+export const AskBrowserActionLaunchMessage: React.FC<MessageComponentProps> = ({ message }) => {
 	const setPendingApproval = useSetAtom(setPendingApprovalAtom)
-	const toolData = parseToolData(message)
+	const icon = getMessageIcon("ask", "browser_action_launch")
 
 	// Set this message as pending approval if not already answered
 	useEffect(() => {
@@ -25,46 +24,26 @@ export const AskToolMessage: React.FC<MessageComponentProps> = ({ message }) => 
 		}
 	}, [message, message.isAnswered, message.partial, setPendingApproval])
 
-	if (!toolData) {
-		return (
-			<Box marginY={1}>
-				<Text color="yellow" bold>
-					⚙ Tool Request (invalid data)
-				</Text>
-			</Box>
-		)
+	// Parse browser action data
+	let url = ""
+	try {
+		const data = JSON.parse(message.text || "{}")
+		url = data.url || ""
+	} catch {
+		// Keep empty url
 	}
-
-	const icon = getToolIcon(toolData.tool)
 
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
 				<Text color="yellow" bold>
-					{icon} Tool Request: {toolData.tool}
+					{icon} Browser Action Request
 				</Text>
 			</Box>
 
-			{toolData.path && (
+			{url && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="cyan">Path: {toolData.path}</Text>
-				</Box>
-			)}
-
-			{toolData.reason && (
-				<Box marginLeft={2}>
-					<Text color="gray" dimColor>
-						Reason: {toolData.reason}
-					</Text>
-				</Box>
-			)}
-
-			{toolData.content && (
-				<Box marginLeft={2} marginTop={1} borderStyle="single" borderColor="gray" paddingX={1}>
-					<Text color="white">
-						{toolData.content.substring(0, 200)}
-						{toolData.content.length > 200 ? "..." : ""}
-					</Text>
+					<Text color="cyan">URL: {url}</Text>
 				</Box>
 			)}
 

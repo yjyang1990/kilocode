@@ -1,14 +1,29 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Box, Text } from "ink"
+import { useSetAtom } from "jotai"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon, parseMcpServerData } from "../utils.js"
+import { setPendingApprovalAtom } from "../../../../state/atoms/approval.js"
 
 /**
  * Display MCP server usage request (tool or resource access)
  */
 export const AskUseMcpServerMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const setPendingApproval = useSetAtom(setPendingApprovalAtom)
 	const icon = getMessageIcon("ask", "use_mcp_server")
 	const mcpData = parseMcpServerData(message)
+
+	// Set this message as pending approval if not already answered
+	useEffect(() => {
+		if (!message.isAnswered && !message.partial) {
+			setPendingApproval(message)
+		}
+
+		// Clear pending approval when component unmounts
+		return () => {
+			setPendingApproval(null)
+		}
+	}, [message, message.isAnswered, message.partial, setPendingApproval])
 
 	if (!mcpData) {
 		return (

@@ -68,7 +68,7 @@ export interface McpServerData {
 export interface FollowUpData {
 	question: string
 	suggest?: Array<{
-		text: string
+		answer: string
 		mode?: string
 	}>
 }

@@ -36,7 +36,7 @@ export const AskFollowupMessage: React.FC<MessageComponentProps> = ({ message })
 					{data.suggest.map((suggestion, index) => (
 						<Box key={index} marginLeft={1} marginTop={index > 0 ? 0 : 1}>
 							<Text color="cyan">
-								{index + 1}. {suggestion.text}
+								{index + 1}. {suggestion.answer}
 							</Text>
 							{suggestion.mode && (
 								<Text color="gray" dimColor>

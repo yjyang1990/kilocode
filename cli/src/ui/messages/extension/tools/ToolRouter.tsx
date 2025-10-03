@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Box, Text } from "ink"
+import { useSetAtom } from "jotai"
 import type { ToolMessageProps } from "../types.js"
+import { setPendingApprovalAtom } from "../../../../state/atoms/approval.js"
 import {
 	ToolEditedExistingFileMessage,
 	ToolInsertContentMessage,
@@ -25,6 +27,19 @@ import {
  * Routes tool data to the appropriate component based on tool type
  */
 export const ToolRouter: React.FC<ToolMessageProps> = ({ message, toolData }) => {
+	const setPendingApproval = useSetAtom(setPendingApprovalAtom)
+
+	// Set this message as pending approval if not already answered
+	useEffect(() => {
+		if (!message.isAnswered && !message.partial) {
+			setPendingApproval(message)
+		}
+
+		// Clear pending approval when component unmounts
+		return () => {
+			setPendingApproval(null)
+		}
+	}, [message, message.isAnswered, message.partial, setPendingApproval])
 	switch (toolData.tool) {
 		case "editedExistingFile":
 		case "appliedDiff":
