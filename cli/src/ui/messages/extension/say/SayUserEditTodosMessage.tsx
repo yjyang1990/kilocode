@@ -1,0 +1,45 @@
+import React from "react"
+import { Box, Text } from "ink"
+import type { MessageComponentProps } from "../types.js"
+import { parseToolData } from "../utils.js"
+
+/**
+ * Display user manually edited todos
+ */
+export const SayUserEditTodosMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const toolData = parseToolData(message)
+
+	return (
+		<Box flexDirection="column" borderStyle="single" borderColor="cyan" paddingX={1} marginY={1}>
+			<Box>
+				<Text color="cyan" bold>
+					☐ User Edited Todos
+				</Text>
+			</Box>
+
+			{toolData?.todos && toolData.todos.length > 0 && (
+				<Box flexDirection="column" marginTop={1}>
+					{toolData.todos.map((todo, index) => {
+						const statusIcon = todo.status === "completed" ? "✓" : todo.status === "in_progress" ? "⋯" : "☐"
+						const statusColor =
+							todo.status === "completed" ? "green" : todo.status === "in_progress" ? "yellow" : "gray"
+
+						return (
+							<Box key={index} marginTop={index > 0 ? 0 : 0}>
+								<Text color={statusColor}>
+									{statusIcon} {todo.text}
+								</Text>
+							</Box>
+						)
+					})}
+				</Box>
+			)}
+
+			{(!toolData?.todos || toolData.todos.length === 0) && message.text && (
+				<Box marginTop={1}>
+					<Text color="white">{message.text}</Text>
+				</Box>
+			)}
+		</Box>
+	)
+}

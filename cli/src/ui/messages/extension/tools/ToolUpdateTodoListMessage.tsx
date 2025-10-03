@@ -1,0 +1,68 @@
+import React from "react"
+import { Box, Text } from "ink"
+import type { ToolMessageProps } from "../types.js"
+import { getToolIcon } from "../utils.js"
+
+/**
+ * Display todo list updates with status indicators
+ */
+export const ToolUpdateTodoListMessage: React.FC<ToolMessageProps> = ({ toolData }) => {
+	const icon = getToolIcon("updateTodoList")
+
+	const getStatusIcon = (status: string) => {
+		switch (status) {
+			case "completed":
+				return "✓"
+			case "in_progress":
+				return "⋯"
+			case "pending":
+			default:
+				return "☐"
+		}
+	}
+
+	const getStatusColor = (status: string) => {
+		switch (status) {
+			case "completed":
+				return "green"
+			case "in_progress":
+				return "yellow"
+			case "pending":
+			default:
+				return "gray"
+		}
+	}
+
+	return (
+		<Box flexDirection="column" marginY={1}>
+			<Box>
+				<Text color="blue" bold>
+					{icon} Todo List Updated
+				</Text>
+			</Box>
+
+			{toolData.todos && toolData.todos.length > 0 && (
+				<Box
+					flexDirection="column"
+					borderStyle="single"
+					borderColor="gray"
+					paddingX={1}
+					marginTop={1}
+					marginLeft={2}>
+					{toolData.todos.map((todo, index) => (
+						<Box key={index}>
+							<Text color={getStatusColor(todo.status)}>{getStatusIcon(todo.status)} </Text>
+							<Text color={todo.status === "completed" ? "gray" : "white"}>{todo.text}</Text>
+						</Box>
+					))}
+				</Box>
+			)}
+
+			<Box marginLeft={2} marginTop={1}>
+				<Text color="gray" dimColor>
+					Legend: ✓ Completed ⋯ In Progress ☐ Pending
+				</Text>
+			</Box>
+		</Box>
+	)
+}
