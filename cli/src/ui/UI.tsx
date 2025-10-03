@@ -72,13 +72,13 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 		}
 	}, [shouldExit, exitReason, options.ci, onExit])
 
-	// In CI mode, use useInput to keep the app alive (prevents Ink from exiting)
-	// This is necessary because we don't render CommandInput in CI mode
+	// In CI mode, we don't use useInput because it tries to enable raw mode on stdin
+	// which fails when stdin is piped. The app stays alive through the message loop instead.
 	useInput(
 		() => {
-			// No-op: we don't handle input in CI mode, but this keeps the app alive
+			// No-op: we don't handle input in CI mode
 		},
-		{ isActive: options.ci || false },
+		{ isActive: !options.ci },
 	)
 
 	// Display welcome message on mount (disabled if prompt is provided)

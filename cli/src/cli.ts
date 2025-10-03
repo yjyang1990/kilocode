@@ -124,6 +124,9 @@ export class CLI {
 		}
 
 		// Render UI with store
+		// Disable stdin for Ink when in CI mode or when stdin is piped (not a TTY)
+		// This prevents the "Raw mode is not supported" error
+		const shouldDisableStdin = this.options.ci || !process.stdin.isTTY
 		this.ui = render(
 			React.createElement(App, {
 				store: this.store,
@@ -136,6 +139,12 @@ export class CLI {
 				},
 				onExit: () => this.dispose(),
 			}),
+			shouldDisableStdin
+				? {
+						stdout: process.stdout,
+						stderr: process.stderr,
+					}
+				: undefined,
 		)
 
 		// Wait for UI to exit

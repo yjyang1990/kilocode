@@ -39,6 +39,12 @@ program
 			process.exit(1)
 		}
 
+		// Validate that piped stdin requires CI mode
+		if (!process.stdin.isTTY && !options.auto) {
+			console.error("Error: Piped input requires --ci flag to be enabled")
+			process.exit(1)
+		}
+
 		// Read from stdin if no prompt argument is provided and stdin is piped
 		let finalPrompt = prompt
 		if (!finalPrompt && !process.stdin.isTTY) {
@@ -51,7 +57,7 @@ program
 		}
 
 		// Validate that CI mode requires a prompt
-		if (options.ci && !finalPrompt) {
+		if (options.auto && !finalPrompt) {
 			console.error("Error: CI mode (--ci) requires a prompt argument or piped input")
 			process.exit(1)
 		}
