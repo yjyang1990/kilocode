@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.99.2
-
-### Patch Changes
+## [v4.99.2]
 
 - [#2729](https://github.com/Kilo-Org/kilocode/pull/2729) [`bda1ef4`](https://github.com/Kilo-Org/kilocode/commit/bda1ef4a6ece7532db4e07359cfae640b1080d3c) Thanks [@ivanarifin](https://github.com/ivanarifin)! - Update the environment variables of Gemini CLI when OAuth path changes
 
