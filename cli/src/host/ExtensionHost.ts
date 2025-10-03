@@ -466,12 +466,15 @@ export class ExtensionHost extends EventEmitter {
 
 					case "messageUpdated":
 						// Extension is sending an individual message update
-						if (message.chatMessage) {
+						// The extension uses 'clineMessage' property (legacy name)
+						const chatMessage = message.clineMessage || message.chatMessage
+						if (chatMessage) {
 							// Forward the message update to the CLI
-							this.emit("message", {
+							const emitMessage = {
 								type: "messageUpdated",
-								chatMessage: message.chatMessage,
-							})
+								chatMessage: chatMessage,
+							}
+							this.emit("message", emitMessage)
 						}
 						break
 

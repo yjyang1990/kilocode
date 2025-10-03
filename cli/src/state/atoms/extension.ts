@@ -212,6 +212,24 @@ export const addChatMessageAtom = atom(null, (get, set, message: ExtensionChatMe
 })
 
 /**
+ * Action atom to update a single message by timestamp
+ * Used for incremental message updates during streaming
+ */
+export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: ExtensionChatMessage) => {
+	const messages = get(chatMessagesAtom)
+	const messageIndex = messages.findIndex((msg) => msg.ts === updatedMessage.ts)
+
+	if (messageIndex >= 0) {
+		// Update existing message
+		const newMessages = [...messages]
+		newMessages[messageIndex] = updatedMessage
+		set(updateChatMessagesAtom, newMessages)
+	} else {
+		set(addChatMessageAtom, updatedMessage)
+	}
+})
+
+/**
  * Action atom to update the current task
  */
 export const updateCurrentTaskAtom = atom(null, (get, set, task: HistoryItem | null) => {
