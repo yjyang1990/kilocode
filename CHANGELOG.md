@@ -1,6 +1,6 @@
 # Roo Code Changelog
 
-## 3.28.15
+## [3.28.15] - 2025-10-03
 
 ![3.28.15 Release - Kangaroo Sliding Down a Chute](/releases/3.28.15-release.png)
 
