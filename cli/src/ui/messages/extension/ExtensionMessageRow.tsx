@@ -122,6 +122,8 @@ function renderError({ error }: { error: Error }) {
 }
 
 export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ message }) => {
+	logs.debug("Rendering ExtensionMessageRow", "ExtensionMessageRow", { message })
+
 	let messageIsJson = false
 	let messageJson = null
 	try {
