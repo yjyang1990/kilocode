@@ -33,7 +33,6 @@
 		"Testing"
 	],
 	"keywords": [
-		"cline",
 		"claude",
 		"dev",
 		"mcp",
@@ -46,9 +45,7 @@
 		"ai",
 		"llama",
 		"Kilo Code",
-		"kilocode",
-		"roo code",
-		"roocode"
+		"kilocode"
 	],
 	"activationEvents": [
 		"onLanguage",
