@@ -12,7 +12,7 @@ import {
 	doubaoModels,
 	featherlessModels,
 	fireworksModels,
-	syntheticModels,
+	syntheticModels, // kilocode_change
 	geminiModels,
 	groqModels,
 	ioIntelligenceModels,

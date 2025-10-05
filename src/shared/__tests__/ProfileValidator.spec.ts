@@ -194,7 +194,7 @@ describe("ProfileValidator", () => {
 			"chutes",
 			"sambanova",
 			"fireworks",
-			"synthetic",
+			"synthetic", // kilocode_change
 			"featherless",
 		]
 
