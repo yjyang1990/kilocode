@@ -34,10 +34,10 @@ import { verifyFinishReason } from "./kilocode/verifyFinishReason"
 type OpenRouterProviderParams = {
 	order?: string[]
 	only?: string[]
-	ignore?: string[] // kilocode_change
 	allow_fallbacks?: boolean
 	data_collection?: "allow" | "deny"
 	sort?: "price" | "throughput" | "latency"
+	zdr?: boolean
 }
 // kilocode_change end
 import { handleOpenAIError } from "./utils/openai-error-handler"
@@ -142,14 +142,20 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 					only: [this.options.openRouterSpecificProvider],
 					allow_fallbacks: false,
 					data_collection: this.options.openRouterProviderDataCollection,
+					zdr: this.options.openRouterZdr,
 				},
 			}
 		}
-		if (this.options.openRouterProviderDataCollection || this.options.openRouterProviderSort) {
+		if (
+			this.options.openRouterProviderDataCollection ||
+			this.options.openRouterProviderSort ||
+			this.options.openRouterZdr
+		) {
 			return {
 				provider: {
 					data_collection: this.options.openRouterProviderDataCollection,
 					sort: this.options.openRouterProviderSort,
+					zdr: this.options.openRouterZdr,
 				},
 			}
 		}
