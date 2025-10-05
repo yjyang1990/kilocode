@@ -29,12 +29,12 @@ export { VertexHandler } from "./vertex"
 // kilocode_change start
 export { GeminiCliHandler } from "./gemini-cli"
 export { VirtualQuotaFallbackHandler } from "./virtual-quota-fallback"
+export { SyntheticHandler } from "./synthetic"
 // kilocode_change end
 export { VsCodeLmHandler } from "./vscode-lm"
 export { XAIHandler } from "./xai"
 export { ZAiHandler } from "./zai"
 export { FireworksHandler } from "./fireworks"
-export { SyntheticHandler } from "./synthetic" // kilocode_change
 export { RooHandler } from "./roo"
 export { FeatherlessHandler } from "./featherless"
 export { VercelAiGatewayHandler } from "./vercel-ai-gateway"
