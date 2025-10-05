@@ -1,3 +1,5 @@
+// kilocode_change - provider added
+
 import { type SyntheticModelId, syntheticDefaultModelId, syntheticModels } from "@roo-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"

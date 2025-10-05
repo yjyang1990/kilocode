@@ -70,7 +70,7 @@ export class ProfileValidator {
 			case "sambanova":
 			case "chutes":
 			case "fireworks":
-			case "synthetic":
+			case "synthetic": // kilocode_change
 			case "featherless":
 				return profile.apiModelId
 			case "litellm":

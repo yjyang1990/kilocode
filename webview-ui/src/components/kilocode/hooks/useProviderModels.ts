@@ -37,8 +37,8 @@ import {
 	doubaoDefaultModelId,
 	fireworksModels,
 	fireworksDefaultModelId,
-	syntheticModels,
-	syntheticDefaultModelId,
+	syntheticModels, // kilocode_change
+	syntheticDefaultModelId, // kilocode_change
 	ioIntelligenceDefaultModelId,
 	moonshotModels,
 	moonshotDefaultModelId,
@@ -233,12 +233,14 @@ export const getModelsByProvider = ({
 				defaultModel: fireworksDefaultModelId,
 			}
 		}
+		// kilocode_change start
 		case "synthetic": {
 			return {
 				models: syntheticModels,
 				defaultModel: syntheticDefaultModelId,
 			}
 		}
+		// kilocode_change end
 		case "io-intelligence": {
 			return {
 				models: routerModels["io-intelligence"],
