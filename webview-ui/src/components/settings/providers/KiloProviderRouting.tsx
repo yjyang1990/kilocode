@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 
 const DEFAULT_VALUE_KEY = "default" as const
 const SPECIFIC_PROVIDER_KEY = "specific" as const
-const ZDR_KEY = "zdr" as const
+const ZERO_DATA_RETENTION_KEY = "zdr" as const
 
 type ProviderPreference =
 	| {
@@ -121,7 +121,7 @@ export const KiloProviderRouting = ({ apiConfiguration, setApiConfigurationField
 			<Select
 				value={
 					apiConfiguration.openRouterZdr
-						? ZDR_KEY
+						? ZERO_DATA_RETENTION_KEY
 						: (apiConfiguration.openRouterProviderDataCollection ?? DEFAULT_VALUE_KEY)
 				}
 				onValueChange={(value) => {
@@ -129,7 +129,7 @@ export const KiloProviderRouting = ({ apiConfiguration, setApiConfigurationField
 						"openRouterProviderDataCollection",
 						openRouterProviderDataCollectionSchema.safeParse(value).data,
 					)
-					setApiConfigurationField("openRouterZdr", value === ZDR_KEY || undefined)
+					setApiConfigurationField("openRouterZdr", value === ZERO_DATA_RETENTION_KEY || undefined)
 				}}>
 				<SelectTrigger className="w-full">
 					<SelectValue />
@@ -146,7 +146,7 @@ export const KiloProviderRouting = ({ apiConfiguration, setApiConfigurationField
 					<SelectItem value={openRouterProviderDataCollectionSchema.Values.deny}>
 						{t("kilocode:settings.provider.providerRouting.dataCollection.deny")}
 					</SelectItem>
-					<SelectItem value={ZDR_KEY}>
+					<SelectItem value={ZERO_DATA_RETENTION_KEY}>
 						{t("kilocode:settings.provider.providerRouting.dataCollection.zdr")}
 					</SelectItem>
 				</SelectContent>
