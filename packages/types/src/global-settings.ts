@@ -218,6 +218,7 @@ export const SECRET_STATE_KEYS = [
 	"codeIndexQdrantApiKey",
 	// kilocode_change start
 	"kilocodeToken",
+	"syntheticApiKey",
 	// kilocode_change end
 	"codebaseIndexOpenAiCompatibleApiKey",
 	"codebaseIndexGeminiApiKey",
@@ -227,7 +228,6 @@ export const SECRET_STATE_KEYS = [
 	"sambaNovaApiKey",
 	"zaiApiKey",
 	"fireworksApiKey",
-	"syntheticApiKey", // kilocode_change
 	"featherlessApiKey",
 	"ioIntelligenceApiKey",
 	"vercelAiGatewayApiKey",
