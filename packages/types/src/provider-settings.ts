@@ -12,7 +12,7 @@ import {
 	doubaoModels,
 	featherlessModels,
 	fireworksModels,
-	syntheticModels,
+	syntheticModels, // kilocode_change
 	geminiModels,
 	groqModels,
 	ioIntelligenceModels,
@@ -441,9 +441,11 @@ const fireworksSchema = apiModelIdProviderModelSchema.extend({
 	fireworksApiKey: z.string().optional(),
 })
 
+// kilocode_change start
 const syntheticSchema = apiModelIdProviderModelSchema.extend({
 	syntheticApiKey: z.string().optional(),
 })
+// kilocode_change end
 
 const featherlessSchema = apiModelIdProviderModelSchema.extend({
 	featherlessApiKey: z.string().optional(),
@@ -507,7 +509,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	sambaNovaSchema.merge(z.object({ apiProvider: z.literal("sambanova") })),
 	zaiSchema.merge(z.object({ apiProvider: z.literal("zai") })),
 	fireworksSchema.merge(z.object({ apiProvider: z.literal("fireworks") })),
-	syntheticSchema.merge(z.object({ apiProvider: z.literal("synthetic") })),
+	syntheticSchema.merge(z.object({ apiProvider: z.literal("synthetic") })), // kilocode_change
 	featherlessSchema.merge(z.object({ apiProvider: z.literal("featherless") })),
 	ioIntelligenceSchema.merge(z.object({ apiProvider: z.literal("io-intelligence") })),
 	qwenCodeSchema.merge(z.object({ apiProvider: z.literal("qwen-code") })),
@@ -533,6 +535,7 @@ export const providerSettingsSchema = z.object({
 	...geminiCliSchema.shape,
 	...kilocodeSchema.shape,
 	...virtualQuotaFallbackSchema.shape,
+	...syntheticSchema.shape,
 	// kilocode_change end
 	...openAiNativeSchema.shape,
 	...mistralSchema.shape,
@@ -553,7 +556,6 @@ export const providerSettingsSchema = z.object({
 	...sambaNovaSchema.shape,
 	...zaiSchema.shape,
 	...fireworksSchema.shape,
-	...syntheticSchema.shape,
 	...featherlessSchema.shape,
 	...ioIntelligenceSchema.shape,
 	...qwenCodeSchema.shape,
@@ -642,6 +644,7 @@ export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	sambanova: "apiModelId",
 	zai: "apiModelId",
 	fireworks: "apiModelId",
+	synthetic: "apiModelId", // kilocode_change
 	featherless: "apiModelId",
 	"io-intelligence": "ioIntelligenceModelId",
 	roo: "apiModelId",
@@ -719,11 +722,13 @@ export const MODELS_BY_PROVIDER: Record<
 		label: "Fireworks",
 		models: Object.keys(fireworksModels),
 	},
+	// kilocode_change start
 	synthetic: {
 		id: "synthetic",
 		label: "Synthetic",
 		models: Object.keys(syntheticModels),
 	},
+	// kilocode_change end
 	gemini: {
 		id: "gemini",
 		label: "Google Gemini",

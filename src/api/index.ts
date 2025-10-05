@@ -40,7 +40,7 @@ import {
 	DoubaoHandler,
 	ZAiHandler,
 	FireworksHandler,
-	SyntheticHandler,
+	SyntheticHandler, // kilocode_change
 	RooHandler,
 	FeatherlessHandler,
 	VercelAiGatewayHandler,
@@ -173,8 +173,10 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new ZAiHandler(options)
 		case "fireworks":
 			return new FireworksHandler(options)
+		// kilocode_change start
 		case "synthetic":
 			return new SyntheticHandler(options)
+		// kilocode_change end
 		case "io-intelligence":
 			return new IOIntelligenceHandler(options)
 		case "roo":

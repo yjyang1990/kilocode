@@ -1,3 +1,5 @@
+// kilocode_change: provider added
+
 import type { ModelInfo } from "../model.js"
 
 export type SyntheticModelId =
