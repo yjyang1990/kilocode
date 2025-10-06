@@ -133,7 +133,7 @@ export const StatusBar: React.FC = () => {
 			<Box>
 				{/* Mode */}
 				<Text color="magenta" bold>
-					{mode.charAt(0).toUpperCase() + mode.slice(1)}
+					{mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "N/A"}
 				</Text>
 
 				<Text color="gray" dimColor>
