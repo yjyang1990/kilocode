@@ -29,9 +29,7 @@
 		"costUnknown": "Kosten unbekannt",
 		"costUnknownDescription": "Der API-Anbieter hat keine Kostendaten bereitgestellt oder die Anfrage wurde abgebrochen.",
 		"freeModelsDescription": "Kostenlose Modelle können Ratenbeschränkungen haben. Nutze den Link unten, um deine kostenlose Modellnutzung zu optimieren!",
-		"freeModelsLink": "Kostenlose und Budget-Modelloptionen entdecken",
-		"openRouterMarkup": "Der Kilo Code Anbieter umfasst alle OpenRouter-Modelle, ohne Aufschlag und mit 0% Provision!",
-		"switchToKiloCode": "Zu Kilo Code wechseln"
+		"freeModelsLink": "Kostenlose und Budget-Modelloptionen entdecken"
 	},
 	"notifications": {
 		"toolRequest": "Werkzeuganfrage wartet auf Genehmigung",
