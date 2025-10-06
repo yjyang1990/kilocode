@@ -2,8 +2,8 @@
 	"welcome": {
 		"greeting": "ยินดีต้อนรับสู่ Kilo Code!",
 		"introText1": "Kilo Code เป็นเอเจนต์เขียนโค้ด AI แบบฟรีและโอเพ่นซอร์ส",
-		"introText2": "ทำงานร่วมกับโมเดล AI ล่าสุด เช่น Claude 4 Sonnet, Gemini 2.5 Pro, GPT-4.1 และอีกกว่า 450 โมเดล",
-		"introText3": "สร้างบัญชีฟรีและรับ tokens มูลค่าสูงสุด $25 เพื่อใช้กับโมเดล AI ใดก็ได้",
+		"introText2": "ทำงานร่วมกับโมเดล AI ล่าสุด เช่น Claude Sonnet 4.5, Gemini 2.5 Pro, GPT-5 และอีกกว่า 450 โมเดล",
+		"introText3": "สร้างบัญชีฟรีและรับเครดิตโบนัส $20 เมื่อเติมเงินครั้งแรก",
 		"ctaButton": "เริ่มต้น",
 		"manualModeButton": "ใช้ API key ของคุณเอง",
 		"alreadySignedUp": "สมัครแล้ว?",
@@ -73,8 +73,10 @@
 				},
 				"dataCollection": {
 					"default": "ไม่มีนโยบายข้อมูล",
-					"allow": "อนุญาตให้ผู้ให้บริการเก็บข้อมูล",
-					"deny": "ปฏิเสธการเก็บข้อมูลของผู้ให้บริการ"
+					"allowFree": "อนุญาตการฝึกอบรม prompt (เฉพาะฟรี)",
+					"allow": "อนุญาตการฝึกอบรม prompt",
+					"deny": "ปฏิเสธการฝึกอบรม prompt",
+					"zdr": "ไม่เก็บข้อมูล"
 				}
 			}
 		},
@@ -221,16 +223,6 @@
 			"enableSmartInlineTaskKeybinding": {
 				"label": "การเติมอัตโนมัติด้วยตัวเอง ({{keybinding}})",
 				"description": "ต้องการการแก้ไขด่วน การเติมเต็ม หรือการปรับโครงสร้างใหม่? Kilo จะใช้บริบทโดยรอบเพื่อเสนอการปรับปรุงทันที ทำให้คุณอยู่ในขั้นตอนการทำงาน <DocsLink>ดูทางลัด</DocsLink>"
-			},
-			"enableCustomProvider": {
-				"label": "ใช้ผู้ให้บริการแบบกำหนดเอง",
-				"description": "Autocomplete ใช้ข้อมูลประจำตัว KiloCode / OpenRouter / Mistral ของคุณเพื่อใช้โมเดล Codestral โดยค่าเริ่มต้น"
-			},
-			"provider": "ผู้ให้บริการ",
-			"apiConfigId": {
-				"label": "การกำหนดค่า API",
-				"current": "ใช้การกำหนดค่า API ที่เลือกในปัจจุบัน",
-				"description": "เลือกการกำหนดค่า API เพื่อใช้สำหรับพรอมต์ Autocomplete หรือเพียงแค่ใช้สิ่งที่เลือกในปัจจุบัน"
 			},
 			"keybindingNotFound": "ไม่พบ"
 		}

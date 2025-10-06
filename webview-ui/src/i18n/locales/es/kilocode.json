@@ -2,8 +2,8 @@
 	"welcome": {
 		"greeting": "¡Bienvenido a Kilo Code!",
 		"introText1": "Kilo Code es un agente de codificación de IA gratuito y de código abierto.",
-		"introText2": "Funciona con los modelos de IA más recientes como Claude 4 Sonnet, Gemini 2.5 Pro, GPT-4.1, y más de 450 modelos adicionales.",
-		"introText3": "Crea una cuenta gratuita y obtén hasta $25 en tokens para usar con cualquier modelo de IA.",
+		"introText2": "Funciona con los modelos de IA más recientes como Claude Sonnet 4.5, Gemini 2.5 Pro, GPT-5, y más de 450 modelos adicionales.",
+		"introText3": "Crea una cuenta gratuita y obtén $20 en créditos de bonificación cuando recargues por primera vez.",
 		"ctaButton": "Empezar",
 		"manualModeButton": "Usa tu propia clave API",
 		"alreadySignedUp": "¿Ya te registraste?",
@@ -53,8 +53,10 @@
 				},
 				"dataCollection": {
 					"default": "No se estableció política de datos",
-					"allow": "Permitir recolección de datos del proveedor",
-					"deny": "Denegar recolección de datos del proveedor"
+					"allowFree": "Permitir entrenamiento de prompts (solo gratis)",
+					"allow": "Permitir entrenamiento de prompts",
+					"deny": "Denegar entrenamiento de prompts",
+					"zdr": "Retención cero de datos"
 				}
 			}
 		},
@@ -214,16 +216,6 @@
 			"enableSmartInlineTaskKeybinding": {
 				"label": "Autocompletado Manual ({{keybinding}})",
 				"description": "¿Necesitas una corrección rápida, completado o refactorización? Kilo usará el contexto circundante para ofrecer mejoras inmediatas, manteniéndote en el flujo. <DocsLink>Editar atajo</DocsLink>"
-			},
-			"enableCustomProvider": {
-				"label": "Usar proveedor personalizado",
-				"description": "Autocomplete usa tu credencial de Kilo Code / OpenRouter / Mistral para usar el modelo Codestral por defecto"
-			},
-			"provider": "Proveedor",
-			"apiConfigId": {
-				"label": "Configuración de API",
-				"current": "Usar configuración de API actualmente seleccionada",
-				"description": "Selecciona una configuración de API para usar en los prompts de Autocomplete, o simplemente usa la que esté actualmente seleccionada"
 			},
 			"keybindingNotFound": "no encontrado"
 		}

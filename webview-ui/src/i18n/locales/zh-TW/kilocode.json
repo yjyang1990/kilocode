@@ -2,8 +2,8 @@
 	"welcome": {
 		"greeting": "歡迎使用 Kilo Code！",
 		"introText1": "Kilo Code 是一個免費的開源 AI 程式設計代理。",
-		"introText2": "它適用於最新的 AI 模型，如 Claude 4 Sonnet、Gemini 2.5 Pro、GPT-4.1 以及 450 多個其他模型。",
-		"introText3": "建立免費帳戶，獲得最多價值 25 美元的 token，可用於任何 AI 模型。",
+		"introText2": "它適用於最新的 AI 模型，如 Claude Sonnet 4.5、Gemini 2.5 Pro、GPT-5 以及 450 多個其他模型。",
+		"introText3": "建立免費帳戶，首次儲值即可獲得 20 美元獎勵額度。",
 		"ctaButton": "開始使用",
 		"manualModeButton": "使用你自己的 API 金鑰",
 		"alreadySignedUp": "已經註冊了？",
@@ -67,8 +67,10 @@
 				},
 				"dataCollection": {
 					"default": "未設定資料政策",
-					"allow": "允許供應商資料收集",
-					"deny": "拒絕供應商資料收集"
+					"allowFree": "允許提示詞訓練（僅免費）",
+					"allow": "允許提示詞訓練",
+					"deny": "拒絕提示詞訓練",
+					"zdr": "零資料保留"
 				}
 			},
 			"automaticFetch": "最新模型會自動在 Kilo Code 中提供。如果您不確定要選擇哪個模型，Kilo Code 與列在頂部<strong>粗體</strong>顯示的推薦模型搭配使用效果最佳。"
@@ -216,16 +218,6 @@
 			"enableSmartInlineTaskKeybinding": {
 				"label": "手动自动补全 ({{keybinding}})",
 				"description": "需要快速修正、補全或重構？Kilo 將使用周圍內容提供即時改進，保持你的工作流程。<DocsLink>檢視快速鍵</DocsLink>"
-			},
-			"enableCustomProvider": {
-				"label": "使用自訂提供者",
-				"description": "Autocomplete 預設使用你的 KiloCode / OpenRouter / Mistral 憑證來使用 Codestral 模型"
-			},
-			"provider": "提供者",
-			"apiConfigId": {
-				"label": "API 設定",
-				"current": "使用目前選取的 API 設定",
-				"description": "選取用於 Autocomplete 提示的 API 設定，或直接使用目前選取的設定"
 			},
 			"keybindingNotFound": "未找到"
 		}

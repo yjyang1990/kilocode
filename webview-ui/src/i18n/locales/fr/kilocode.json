@@ -2,8 +2,8 @@
 	"welcome": {
 		"greeting": "Bienvenue dans Kilo Code !",
 		"introText1": "Kilo Code est un agent de codage IA gratuit et open source.",
-		"introText2": "Il fonctionne avec les derniers modèles d'IA comme Claude 4 Sonnet, Gemini 2.5 Pro, GPT-4.1, et plus de 450 autres.",
-		"introText3": "Créez un compte gratuit et obtenez jusqu'à 25 $ en tokens à utiliser avec n'importe quel modèle d'IA.",
+		"introText2": "Il fonctionne avec les derniers modèles d'IA comme Claude Sonnet 4.5, Gemini 2.5 Pro, GPT-5, et plus de 450 autres.",
+		"introText3": "Créez un compte gratuit et obtenez 20 $ de crédits bonus lors de votre première recharge.",
 		"ctaButton": "Commencer",
 		"manualModeButton": "Utilisez votre propre clé API",
 		"alreadySignedUp": "Déjà inscrit ?",
@@ -60,8 +60,10 @@
 				},
 				"dataCollection": {
 					"default": "Aucune politique de données définie",
-					"allow": "Autoriser la collecte de données du fournisseur",
-					"deny": "Refuser la collecte de données du fournisseur"
+					"allowFree": "Autoriser l'entraînement des prompts (gratuit uniquement)",
+					"allow": "Autoriser l'entraînement des prompts",
+					"deny": "Refuser l'entraînement des prompts",
+					"zdr": "Rétention zéro des données"
 				}
 			}
 		},
@@ -221,16 +223,6 @@
 			"enableSmartInlineTaskKeybinding": {
 				"label": "Saisie automatique manuelle ({{keybinding}})",
 				"description": "Besoin d'une correction rapide, d'un complément ou d'une refactorisation ? Kilo utilisera le contexte environnant pour offrir des améliorations immédiates, te gardant dans le flux. <DocsLink>Modifier le raccourci</DocsLink>"
-			},
-			"enableCustomProvider": {
-				"label": "Utiliser un fournisseur personnalisé",
-				"description": "Autocomplete utilise tes identifiants Kilo Code / OpenRouter / Mistral pour utiliser le modèle Codestral par défaut"
-			},
-			"provider": "Fournisseur",
-			"apiConfigId": {
-				"label": "Configuration API",
-				"current": "Utiliser la configuration API actuellement sélectionnée",
-				"description": "Sélectionne une configuration API à utiliser pour les prompts Autocomplete, ou utilise simplement celle qui est actuellement sélectionnée"
 			},
 			"keybindingNotFound": "introuvable"
 		}

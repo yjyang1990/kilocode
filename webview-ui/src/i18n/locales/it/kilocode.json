@@ -2,8 +2,8 @@
 	"welcome": {
 		"greeting": "Benvenuto in Kilo Code!",
 		"introText1": "Kilo Code è un agente di coding AI gratuito e open source.",
-		"introText2": "Funziona con i più recenti modelli AI come Claude 4 Sonnet, Gemini 2.5 Pro, GPT-4.1, e oltre 450 altri.",
-		"introText3": "Crea un account gratuito e ottieni fino a $25 di token da utilizzare con qualsiasi modello AI.",
+		"introText2": "Funziona con i più recenti modelli AI come Claude Sonnet 4.5, Gemini 2.5 Pro, GPT-5, e oltre 450 altri.",
+		"introText3": "Crea un account gratuito e ottieni $20 di crediti bonus quando ricarichi per la prima volta.",
 		"ctaButton": "Inizia",
 		"manualModeButton": "Usa la tua chiave API",
 		"alreadySignedUp": "Già registrato?",
@@ -60,8 +60,10 @@
 				},
 				"dataCollection": {
 					"default": "Nessuna politica dati impostata",
-					"allow": "Consenti raccolta dati del provider",
-					"deny": "Nega raccolta dati del provider"
+					"allowFree": "Consenti addestramento prompt (solo gratuito)",
+					"allow": "Consenti addestramento prompt",
+					"deny": "Nega addestramento prompt",
+					"zdr": "Ritenzione dati zero"
 				}
 			}
 		},
@@ -221,16 +223,6 @@
 			"enableSmartInlineTaskKeybinding": {
 				"label": "Completamento Automatico Manuale ({{keybinding}})",
 				"description": "Hai bisogno di una correzione rapida, completamento o refactoring? Kilo userà il contesto circostante per offrire miglioramenti immediati, mantenendoti nel flusso. <DocsLink>Modifica scorciatoia</DocsLink>"
-			},
-			"enableCustomProvider": {
-				"label": "Usa provider personalizzato",
-				"description": "Autocomplete usa le tue credenziali Kilo Code / OpenRouter / Mistral per utilizzare il modello Codestral di default"
-			},
-			"provider": "Provider",
-			"apiConfigId": {
-				"label": "Configurazione API",
-				"current": "Usa configurazione API attualmente selezionata",
-				"description": "Seleziona una configurazione API da usare per i prompt Autocomplete, o usa semplicemente quella attualmente selezionata"
 			},
 			"keybindingNotFound": "non trovato"
 		}

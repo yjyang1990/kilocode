@@ -2,8 +2,8 @@
 	"welcome": {
 		"greeting": "Bem-vindo ao Kilo Code!",
 		"introText1": "Kilo Code é um agente de codificação AI gratuito e de código aberto.",
-		"introText2": "Funciona com os mais recentes modelos de IA como Claude 4 Sonnet, Gemini 2.5 Pro, GPT-4.1, e mais de 450 outros.",
-		"introText3": "Crie uma conta gratuita e receba até $25 em tokens para usar em qualquer modelo de IA.",
+		"introText2": "Funciona com os mais recentes modelos de IA como Claude Sonnet 4.5, Gemini 2.5 Pro, GPT-5, e mais de 450 outros.",
+		"introText3": "Crie uma conta gratuita e receba $20 em créditos bônus ao recarregar pela primeira vez.",
 		"ctaButton": "Começar",
 		"manualModeButton": "Use sua própria chave de API",
 		"alreadySignedUp": "Já se cadastrou?",
@@ -60,8 +60,10 @@
 				},
 				"dataCollection": {
 					"default": "Nenhuma política de dados definida",
-					"allow": "Permitir coleta de dados do provedor",
-					"deny": "Negar coleta de dados do provedor"
+					"allowFree": "Permitir treinamento de prompts (apenas grátis)",
+					"allow": "Permitir treinamento de prompts",
+					"deny": "Negar treinamento de prompts",
+					"zdr": "Retenção zero de dados"
 				}
 			}
 		},
@@ -221,16 +223,6 @@
 			"enableSmartInlineTaskKeybinding": {
 				"label": "Preenchimento Automático Manual ({{keybinding}})",
 				"description": "Precisa de uma correção rápida, completação ou refatoração? O Kilo usará o contexto ao redor para oferecer melhorias imediatas, mantendo você no fluxo. <DocsLink>Ver atalho</DocsLink>"
-			},
-			"enableCustomProvider": {
-				"label": "Usar provedor personalizado",
-				"description": "O Autocomplete usa suas credenciais KiloCode / OpenRouter / Mistral para usar o modelo Codestral por padrão"
-			},
-			"provider": "Provedor",
-			"apiConfigId": {
-				"label": "Configuração da API",
-				"current": "Usar configuração da API atualmente selecionada",
-				"description": "Selecione uma configuração da API para usar nos prompts do Autocomplete, ou apenas use a que está atualmente selecionada"
 			},
 			"keybindingNotFound": "não encontrado"
 		}
