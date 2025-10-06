@@ -107,7 +107,8 @@
 			"wantsToCondense": "Kilo Code chce zkrátit tvou konverzaci",
 			"condenseConversation": "Zkrátit konverzaci"
 		},
-		"seeNewChanges": "Zobrazit nové změny"
+		"seeNewChanges": "Zobrazit nové změny",
+		"revertNewChanges": "Vrátit nové změny"
 	},
 	"newTaskPreview": {
 		"task": "Úkol"

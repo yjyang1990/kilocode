@@ -107,7 +107,8 @@
 			"wantsToCondense": "Kilo Code quer condensar sua conversa",
 			"condenseConversation": "Condensar Conversa"
 		},
-		"seeNewChanges": "Ver Novas Alterações"
+		"seeNewChanges": "Ver Novas Alterações",
+		"revertNewChanges": "Reverter Novas Alterações"
 	},
 	"newTaskPreview": {
 		"task": "Tarefa"

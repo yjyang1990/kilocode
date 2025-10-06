@@ -99,7 +99,8 @@
 			"wantsToCondense": "Kilo Code يقترح تلخيص المحادثة",
 			"condenseConversation": "تلخيص المحادثة"
 		},
-		"seeNewChanges": "عرض التغييرات الجديدة"
+		"seeNewChanges": "عرض التغييرات الجديدة",
+		"revertNewChanges": "التراجع عن التغييرات الجديدة"
 	},
 	"newTaskPreview": {
 		"task": "مهمة"

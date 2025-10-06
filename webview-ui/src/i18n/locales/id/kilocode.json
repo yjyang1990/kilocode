@@ -100,7 +100,8 @@
 			"wantsToCondense": "Kilo Code ingin mengondensasi percakapan kamu",
 			"condenseConversation": "Kondensasi Percakapan"
 		},
-		"seeNewChanges": "Tampilkan Perubahan Baru"
+		"seeNewChanges": "Tampilkan Perubahan Baru",
+		"revertNewChanges": "Kembalikan Perubahan Baru"
 	},
 	"newTaskPreview": {
 		"task": "Tugas"
