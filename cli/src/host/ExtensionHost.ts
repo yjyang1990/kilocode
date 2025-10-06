@@ -454,6 +454,7 @@ export class ExtensionHost extends EventEmitter {
 									message.state.currentApiConfigName || this.currentState.currentApiConfigName,
 								listApiConfigMeta:
 									message.state.listApiConfigMeta || this.currentState.listApiConfigMeta,
+								routerModels: message.state.routerModels || this.currentState.routerModels,
 							}
 
 							// Forward the updated state to the CLI
@@ -588,6 +589,7 @@ export class ExtensionHost extends EventEmitter {
 						listApiConfigMeta: extensionState.listApiConfigMeta || this.currentState.listApiConfigMeta,
 						mode: extensionState.mode || this.currentState.mode,
 						chatMessages: extensionState.chatMessages || this.currentState.chatMessages,
+						routerModels: extensionState.routerModels || this.currentState.routerModels,
 					}
 					logs.debug("Synced state with extension on webview launch", "ExtensionHost")
 				}

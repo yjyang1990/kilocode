@@ -19,7 +19,7 @@ function renderError({ error }: { error: Error }) {
 }
 
 export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ message }) => {
-	logs.debug("Rendering ExtensionMessageRow", "ExtensionMessageRow", { message })
+	//logs.debug("Rendering ExtensionMessageRow", "ExtensionMessageRow", { message })
 
 	return (
 		<ErrorBoundary fallbackRender={renderError}>

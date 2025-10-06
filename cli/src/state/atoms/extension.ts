@@ -12,6 +12,7 @@ import type {
 	ProviderSettings,
 	McpServer,
 } from "../../types/messages.js"
+import { logs } from "../../services/logs.js"
 
 /**
  * Atom to hold the complete ExtensionState
@@ -158,6 +159,8 @@ export const inProgressTodosCountAtom = atom<number>((get) => {
  * This syncs all derived atoms with the new state
  */
 export const updateExtensionStateAtom = atom(null, (get, set, state: ExtensionState | null) => {
+	const currentRouterModels = get(routerModelsAtom)
+
 	set(extensionStateAtom, state)
 
 	if (state) {
@@ -166,7 +169,8 @@ export const updateExtensionStateAtom = atom(null, (get, set, state: ExtensionSt
 		set(chatMessagesAtom, [...messages])
 		set(currentTaskAtom, state.currentTaskItem || null)
 		set(taskTodosAtom, state.currentTaskTodos || [])
-		set(routerModelsAtom, state.routerModels || null)
+		// Preserve existing routerModels if not provided in new state
+		set(routerModelsAtom, state.routerModels || currentRouterModels)
 		set(apiConfigurationAtom, state.apiConfiguration || null)
 		set(extensionModeAtom, state.mode || "code")
 		set(customModesAtom, state.customModes || [])
