@@ -109,7 +109,8 @@
 			"wantsToCondense": "Kilo Code хочет сократить твой разговор",
 			"condenseConversation": "Сократить разговор"
 		},
-		"seeNewChanges": "Показать новые изменения"
+		"seeNewChanges": "Показать новые изменения",
+		"revertNewChanges": "Отменить новые изменения"
 	},
 	"newTaskPreview": {
 		"task": "Задача"

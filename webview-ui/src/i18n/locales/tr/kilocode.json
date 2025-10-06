@@ -102,7 +102,8 @@
 			"wantsToCondense": "Kilo Code konuşmanı özetlemek istiyor",
 			"condenseConversation": "Konuşmayı Özetle"
 		},
-		"seeNewChanges": "Yeni Değişiklikleri Göster"
+		"seeNewChanges": "Yeni Değişiklikleri Göster",
+		"revertNewChanges": "Yeni Değişiklikleri Geri Al"
 	},
 	"newTaskPreview": {
 		"task": "Görev"

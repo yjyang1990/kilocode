@@ -1185,7 +1185,7 @@ export const ChatRowContent = ({
 													},
 												})
 											}}>
-											Revert All Changes
+											{t("kilocode:chat.revertNewChanges")}
 										</VSCodeButton>
 									</div>
 								) : (
