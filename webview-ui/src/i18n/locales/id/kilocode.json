@@ -103,7 +103,9 @@
 			"condenseConversation": "Kondensasi Percakapan"
 		},
 		"seeNewChanges": "Tampilkan Perubahan Baru",
-		"revertNewChanges": "Kembalikan Perubahan Baru"
+		"revertNewChanges": "Kembalikan Perubahan Baru",
+		"confirmRevertChanges": "Konfirmasi Kembalikan Perubahan",
+		"cancelRevertChanges": "Batalkan Kembalikan Perubahan"
 	},
 	"newTaskPreview": {
 		"task": "Tugas"

@@ -110,7 +110,9 @@
 			"condenseConversation": "Condensa Conversazione"
 		},
 		"seeNewChanges": "Mostra Nuove Modifiche",
-		"revertNewChanges": "Ripristina Nuove Modifiche"
+		"revertNewChanges": "Ripristina Nuove Modifiche",
+		"confirmRevertChanges": "Conferma Ripristino Modifiche",
+		"cancelRevertChanges": "Annulla Ripristino Modifiche"
 	},
 	"newTaskPreview": {
 		"task": "Attività"

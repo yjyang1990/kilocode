@@ -110,7 +110,9 @@
 			"condenseConversation": "Condensar Conversa"
 		},
 		"seeNewChanges": "Ver Novas Alterações",
-		"revertNewChanges": "Reverter Novas Alterações"
+		"revertNewChanges": "Reverter Novas Alterações",
+		"confirmRevertChanges": "Confirmar Reverter Alterações",
+		"cancelRevertChanges": "Cancelar Reverter Alterações"
 	},
 	"newTaskPreview": {
 		"task": "Tarefa"

@@ -114,7 +114,9 @@
 			"condenseConversation": "Condense Conversation"
 		},
 		"seeNewChanges": "See New Changes",
-		"revertNewChanges": "Revert New Changes"
+		"revertNewChanges": "Revert New Changes",
+		"confirmRevertChanges": "Confirm Revert Changes",
+		"cancelRevertChanges": "Cancel Revert Changes"
 	},
 	"newTaskPreview": {
 		"task": "Task"

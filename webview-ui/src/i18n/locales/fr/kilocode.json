@@ -110,7 +110,9 @@
 			"condenseConversation": "Condenser la Conversation"
 		},
 		"seeNewChanges": "Afficher les nouvelles modifications",
-		"revertNewChanges": "Annuler les nouvelles modifications"
+		"revertNewChanges": "Annuler les nouvelles modifications",
+		"confirmRevertChanges": "Confirmer l'annulation des modifications",
+		"cancelRevertChanges": "Annuler l'annulation des modifications"
 	},
 	"newTaskPreview": {
 		"task": "Tâche"

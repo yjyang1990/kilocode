@@ -110,7 +110,9 @@
 			"condenseConversation": "Zkrátit konverzaci"
 		},
 		"seeNewChanges": "Zobrazit nové změny",
-		"revertNewChanges": "Vrátit nové změny"
+		"revertNewChanges": "Vrátit nové změny",
+		"confirmRevertChanges": "Potvrdit vrácení změn",
+		"cancelRevertChanges": "Zrušit vrácení změn"
 	},
 	"newTaskPreview": {
 		"task": "Úkol"
