@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.100.0
-
-### Minor Changes
+## [v4.100.0]
 
 - [#2787](https://github.com/Kilo-Org/kilocode/pull/2787) [`9c16d14`](https://github.com/Kilo-Org/kilocode/commit/9c16d14c4b8455041b16e5ffa0787014d5154d19) Thanks [@b3nw](https://github.com/b3nw)! - Chutes model list is now dynamically loaded
 
