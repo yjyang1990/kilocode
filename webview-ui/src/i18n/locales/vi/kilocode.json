@@ -224,16 +224,6 @@
 				"label": "Tự động hoàn thành thủ công ({{keybinding}})",
 				"description": "Cần sửa chữa nhanh, hoàn thành, hoặc tái cấu trúc? Kilo sẽ sử dụng ngữ cảnh xung quanh để cung cấp cải tiến ngay lập tức, giữ bạn trong luồng làm việc. <DocsLink>Xem phím tắt</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Sử dụng nhà cung cấp tùy chỉnh",
-				"description": "Autocomplete sử dụng thông tin xác thực KiloCode / OpenRouter / Mistral của bạn để sử dụng mô hình Codestral theo mặc định"
-			},
-			"provider": "Nhà Cung Cấp",
-			"apiConfigId": {
-				"label": "Cấu Hình API",
-				"current": "Sử dụng cấu hình API hiện được chọn",
-				"description": "Chọn cấu hình API để sử dụng cho các prompt Autocomplete, hoặc chỉ sử dụng cái hiện được chọn"
-			},
 			"keybindingNotFound": "không tìm thấy"
 		}
 	},

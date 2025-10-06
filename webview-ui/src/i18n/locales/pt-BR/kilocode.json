@@ -224,16 +224,6 @@
 				"label": "Preenchimento Automático Manual ({{keybinding}})",
 				"description": "Precisa de uma correção rápida, completação ou refatoração? O Kilo usará o contexto ao redor para oferecer melhorias imediatas, mantendo você no fluxo. <DocsLink>Ver atalho</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Usar provedor personalizado",
-				"description": "O Autocomplete usa suas credenciais KiloCode / OpenRouter / Mistral para usar o modelo Codestral por padrão"
-			},
-			"provider": "Provedor",
-			"apiConfigId": {
-				"label": "Configuração da API",
-				"current": "Usar configuração da API atualmente selecionada",
-				"description": "Selecione uma configuração da API para usar nos prompts do Autocomplete, ou apenas use a que está atualmente selecionada"
-			},
 			"keybindingNotFound": "não encontrado"
 		}
 	},

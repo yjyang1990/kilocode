@@ -217,16 +217,6 @@
 				"label": "मैनुअल ऑटोकंप्लीट ({{keybinding}})",
 				"description": "त्वरित सुधार, पूर्णता, या रिफैक्टरिंग चाहिए? Kilo आसपास के संदर्भ का उपयोग करके तत्काल सुधार प्रदान करेगा, आपको प्रवाह में रखते हुए। <DocsLink>शॉर्टकट देखें</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "कस्टम प्रदाता का उपयोग करें",
-				"description": "Autocomplete डिफ़ॉल्ट रूप से Codestral मॉडल का उपयोग करने के लिए आपके KiloCode / OpenRouter / Mistral क्रेडेंशियल का उपयोग करता है"
-			},
-			"provider": "प्रदाता",
-			"apiConfigId": {
-				"label": "API कॉन्फ़िगरेशन",
-				"current": "वर्तमान में चयनित API कॉन्फ़िगरेशन का उपयोग करें",
-				"description": "Autocomplete प्रॉम्प्ट के लिए उपयोग करने हेतु API कॉन्फ़िगरेशन चुनें, या बस वर्तमान में चयनित का उपयोग करें"
-			},
 			"keybindingNotFound": "नहीं मिला"
 		}
 	},
