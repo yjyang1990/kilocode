@@ -43,8 +43,20 @@ interface SuggestionsMenuProps {
 }
 
 const SuggestionsMenu: React.FC<SuggestionsMenuProps> = ({ type, suggestions, selectedIndex }) => {
-	// Limit to top 5 suggestions
-	const displaySuggestions = suggestions.slice(0, 5)
+	const VISIBLE_ITEMS = 5
+	const totalItems = suggestions.length
+
+	// Calculate scrolling window to keep selected item centered when possible
+	let windowStart = 0
+	if (totalItems > VISIBLE_ITEMS) {
+		// Try to center the selected item (position 2 in the window)
+		windowStart = Math.max(0, selectedIndex - 2)
+		// Don't scroll past the end
+		windowStart = Math.min(windowStart, totalItems - VISIBLE_ITEMS)
+	}
+
+	const windowEnd = Math.min(windowStart + VISIBLE_ITEMS, totalItems)
+	const displaySuggestions = suggestions.slice(windowStart, windowEnd)
 
 	const title = type === "command" ? "Commands:" : "Arguments:"
 	const borderColor = type === "command" ? "gray" : "cyan"
@@ -60,18 +72,21 @@ const SuggestionsMenu: React.FC<SuggestionsMenuProps> = ({ type, suggestions, se
 			<Text bold color="cyan">
 				{title}
 			</Text>
-			{displaySuggestions.map((suggestion, index) => (
-				<SuggestionRow
-					key={
-						type === "command"
-							? (suggestion as CommandSuggestion).command.name
-							: (suggestion as ArgumentSuggestion).value || index
-					}
-					type={type}
-					suggestion={suggestion}
-					isSelected={index === selectedIndex}
-				/>
-			))}
+			{displaySuggestions.map((suggestion, displayIndex) => {
+				const actualIndex = windowStart + displayIndex
+				return (
+					<SuggestionRow
+						key={
+							type === "command"
+								? (suggestion as CommandSuggestion).command.name
+								: (suggestion as ArgumentSuggestion).value || actualIndex
+						}
+						type={type}
+						suggestion={suggestion}
+						isSelected={actualIndex === selectedIndex}
+					/>
+				)
+			})}
 			<Box marginTop={1}>
 				<Text color="gray" dimColor>
 					↑↓ Navigate • Tab/Enter Select • Esc Cancel
