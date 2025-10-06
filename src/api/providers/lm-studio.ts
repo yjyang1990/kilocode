@@ -15,9 +15,9 @@ import { BaseProvider } from "./base-provider"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
 import { fetchWithTimeout } from "./kilocode/fetchWithTimeout"
 
-const LMSTUDIO_TIMEOUT_MS = 3_600_000 // kilocode_change
 import { getModels, getModelsFromCache } from "./fetchers/modelCache"
 import { handleOpenAIError } from "./utils/openai-error-handler"
+import { getApiRequestTimeout } from "./utils/timeout-config" // kilocode_change
 
 export class LmStudioHandler extends BaseProvider implements SingleCompletionHandler {
 	protected options: ApiHandlerOptions
@@ -30,8 +30,8 @@ export class LmStudioHandler extends BaseProvider implements SingleCompletionHan
 		this.client = new OpenAI({
 			baseURL: (this.options.lmStudioBaseUrl || "http://localhost:1234") + "/v1",
 			apiKey: "noop",
-			timeout: LMSTUDIO_TIMEOUT_MS, // kilocode_change
-			fetch: fetchWithTimeout(LMSTUDIO_TIMEOUT_MS), // kilocode_change
+			timeout: getApiRequestTimeout(), // kilocode_change
+			fetch: fetchWithTimeout(getApiRequestTimeout()), // kilocode_change
 		})
 	}
 
