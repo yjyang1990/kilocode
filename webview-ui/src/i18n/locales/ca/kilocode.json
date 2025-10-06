@@ -217,16 +217,6 @@
 				"label": "Autocompleció Manual ({{keybinding}})",
 				"description": "Necessites una correcció ràpida, completació o refactorització? Kilo utilitzarà el context circumdant per oferir millores immediates, mantenint-te en el flux. <DocsLink>Veure drecera</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Usar proveïdor personalitzat",
-				"description": "Autocomplete utilitza les teves credencials KiloCode / OpenRouter / Mistral per usar el model Codestral per defecte"
-			},
-			"provider": "Proveïdor",
-			"apiConfigId": {
-				"label": "Configuració d'API",
-				"current": "Usar configuració d'API actualment seleccionada",
-				"description": "Selecciona una configuració d'API per usar als prompts d'Autocomplete, o simplement usa la que està actualment seleccionada"
-			},
 			"keybindingNotFound": "no trobat"
 		}
 	},

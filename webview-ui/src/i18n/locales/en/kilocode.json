@@ -227,16 +227,6 @@
 				"label": "Manual Autocomplete ({{keybinding}})",
 				"description": "Need a quick fix, completion, or refactor? Kilo will use the surrounding context to offer immediate improvements, keeping you in the flow. <DocsLink>Edit shortcut</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Use custom provider",
-				"description": "Autocomplete uses your KiloCode / OpenRouter / Mistral credential to use the Codestral model by default"
-			},
-			"provider": "Provider",
-			"apiConfigId": {
-				"label": "API Configuration",
-				"current": "Use currently selected API configuration",
-				"description": "Select an API configuration to use for Autocomplete prompts, or just use whatever is currently selected"
-			},
 			"keybindingNotFound": "not found"
 		}
 	},
