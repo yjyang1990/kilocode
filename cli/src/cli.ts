@@ -7,7 +7,9 @@ import { Logo } from "./ui/assets/Logo.js"
 import { logs } from "./services/logs.js"
 import { extensionServiceAtom } from "./state/atoms/service.js"
 import { initializeServiceEffectAtom } from "./state/atoms/effects.js"
-import { loadConfigAtom } from "./state/atoms/config.js"
+import { loadConfigAtom, mappedExtensionStateAtom } from "./state/atoms/config.js"
+import { ciExitReasonAtom } from "./state/atoms/ci.js"
+import { requestRouterModelsAtom } from "./state/atoms/actions.js"
 
 export interface CLIOptions {
 	mode?: string
@@ -168,8 +170,7 @@ export class CLI {
 			let exitCode = 0
 
 			if (this.options.ci && this.store) {
-				// Import CI atoms to check exit reason
-				const { ciExitReasonAtom } = await import("./state/atoms/ci.js")
+				// Check exit reason from CI atoms
 				const exitReason = this.store.get(ciExitReasonAtom)
 
 				// Set exit code based on the actual exit reason
@@ -223,7 +224,6 @@ export class CLI {
 
 		try {
 			// Get the mapped extension state from config atoms
-			const { mappedExtensionStateAtom } = await import("./state/atoms/config.js")
 			const mappedState = this.store.get(mappedExtensionStateAtom)
 
 			logs.debug("Mapped config state for injection", "CLI", {
@@ -254,7 +254,6 @@ export class CLI {
 		}
 
 		try {
-			const { requestRouterModelsAtom } = await import("./state/atoms/actions.js")
 			await this.store.set(requestRouterModelsAtom)
 			logs.debug("Router models requested", "CLI")
 		} catch (error) {
