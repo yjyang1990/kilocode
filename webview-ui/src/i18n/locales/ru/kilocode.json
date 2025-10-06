@@ -108,7 +108,9 @@
 			"condenseConversation": "Сократить разговор"
 		},
 		"seeNewChanges": "Показать новые изменения",
-		"revertNewChanges": "Отменить новые изменения"
+		"revertNewChanges": "Отменить новые изменения",
+		"confirmRevertChanges": "Подтвердить отмену изменений",
+		"cancelRevertChanges": "Отменить отмену изменений"
 	},
 	"newTaskPreview": {
 		"task": "Задача"

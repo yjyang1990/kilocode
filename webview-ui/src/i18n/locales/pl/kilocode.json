@@ -101,7 +101,9 @@
 			"condenseConversation": "Skondensuj Rozmowę"
 		},
 		"seeNewChanges": "Pokaż nowe zmiany",
-		"revertNewChanges": "Cofnij nowe zmiany"
+		"revertNewChanges": "Cofnij nowe zmiany",
+		"confirmRevertChanges": "Potwierdź cofnięcie zmian",
+		"cancelRevertChanges": "Anuluj cofnięcie zmian"
 	},
 	"newTaskPreview": {
 		"task": "Zadanie"

@@ -108,7 +108,9 @@
 			"condenseConversation": "Gesprek samenvatten"
 		},
 		"seeNewChanges": "Toon Nieuwe Wijzigingen",
-		"revertNewChanges": "Herstel Nieuwe Wijzigingen"
+		"revertNewChanges": "Herstel Nieuwe Wijzigingen",
+		"confirmRevertChanges": "Bevestig Wijzigingen Herstellen",
+		"cancelRevertChanges": "Annuleer Wijzigingen Herstellen"
 	},
 	"newTaskPreview": {
 		"task": "Taak"

@@ -108,7 +108,9 @@
 			"condenseConversation": "ย่อการสนทนา"
 		},
 		"seeNewChanges": "แสดงการเปลี่ยนแปลงใหม่",
-		"revertNewChanges": "ย้อนกลับการเปลี่ยนแปลงใหม่"
+		"revertNewChanges": "ย้อนกลับการเปลี่ยนแปลงใหม่",
+		"confirmRevertChanges": "ยืนยันการย้อนกลับการเปลี่ยนแปลง",
+		"cancelRevertChanges": "ยกเลิกการย้อนกลับการเปลี่ยนแปลง"
 	},
 	"newTaskPreview": {
 		"task": "งาน"
