@@ -217,16 +217,6 @@
 				"label": "Autocompletado Manual ({{keybinding}})",
 				"description": "¿Necesitas una corrección rápida, completado o refactorización? Kilo usará el contexto circundante para ofrecer mejoras inmediatas, manteniéndote en el flujo. <DocsLink>Editar atajo</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Usar proveedor personalizado",
-				"description": "Autocomplete usa tu credencial de Kilo Code / OpenRouter / Mistral para usar el modelo Codestral por defecto"
-			},
-			"provider": "Proveedor",
-			"apiConfigId": {
-				"label": "Configuración de API",
-				"current": "Usar configuración de API actualmente seleccionada",
-				"description": "Selecciona una configuración de API para usar en los prompts de Autocomplete, o simplemente usa la que esté actualmente seleccionada"
-			},
 			"keybindingNotFound": "no encontrado"
 		}
 	},

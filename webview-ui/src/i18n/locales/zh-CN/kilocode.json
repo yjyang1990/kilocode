@@ -224,16 +224,6 @@
 				"label": "手动自动完成（{{keybinding}}）",
 				"description": "需要快速修复、补全或重构？Kilo 将使用周围上下文提供即时改进，保持你的工作流。<DocsLink>查看快捷键</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "使用自定义提供商",
-				"description": "Autocomplete 默认使用你的 KiloCode / OpenRouter / Mistral 凭据来使用 Codestral 模型"
-			},
-			"provider": "提供商",
-			"apiConfigId": {
-				"label": "API 配置",
-				"current": "使用当前选择的 API 配置",
-				"description": "选择用于 Autocomplete 提示的 API 配置，或直接使用当前选择的配置"
-			},
 			"keybindingNotFound": "未找到"
 		}
 	},

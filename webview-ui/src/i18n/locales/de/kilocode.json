@@ -223,16 +223,6 @@
 				"label": "Manuelle Autovervollständigung ({{keybinding}})",
 				"description": "Brauchst du eine schnelle Korrektur, Vervollständigung oder Refaktorierung? Kilo wird den umgebenden Kontext nutzen, um sofortige Verbesserungen anzubieten und dich im Flow zu halten. <DocsLink>Tastenkombination bearbeiten</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Benutzerdefinierten Anbieter verwenden",
-				"description": "Autocomplete verwendet deine KiloCode / OpenRouter / Mistral-Anmeldedaten, um standardmäßig das Codestral-Modell zu verwenden"
-			},
-			"provider": "Anbieter",
-			"apiConfigId": {
-				"label": "API-Konfiguration",
-				"current": "Aktuell ausgewählte API-Konfiguration verwenden",
-				"description": "Wähle eine API-Konfiguration für Autocomplete-Prompts aus oder verwende einfach die aktuell ausgewählte"
-			},
 			"keybindingNotFound": "nicht gefunden"
 		}
 	},

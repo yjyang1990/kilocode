@@ -217,16 +217,6 @@
 				"label": "Manuel Otomatik Tamamlama ({{keybinding}})",
 				"description": "Hızlı bir düzeltme, tamamlama veya yeniden düzenleme mi gerekiyor? Kilo çevredeki bağlamı kullanarak anında iyileştirmeler sunacak, seni akışta tutacak. <DocsLink>Kısayolu gör</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Özel sağlayıcı kullan",
-				"description": "Autocomplete varsayılan olarak Codestral modelini kullanmak için KiloCode / OpenRouter / Mistral kimlik bilgilerini kullanır"
-			},
-			"provider": "Sağlayıcı",
-			"apiConfigId": {
-				"label": "API Yapılandırması",
-				"current": "Şu anda seçili API yapılandırmasını kullan",
-				"description": "Autocomplete istekleri için kullanılacak API yapılandırmasını seç, ya da şu anda seçili olanı kullan"
-			},
 			"keybindingNotFound": "bulunamadı"
 		}
 	},

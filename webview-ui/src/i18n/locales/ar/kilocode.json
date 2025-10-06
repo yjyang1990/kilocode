@@ -216,16 +216,6 @@
 				"label": "الإكمال التلقائي اليدوي ({{keybinding}})",
 				"description": "تحتاج إصلاحاً سريعاً أو إكمالاً أو إعادة هيكلة؟ سيستخدم Kilo السياق المحيط لتقديم تحسينات فورية، مما يبقيك في التدفق. <DocsLink>عرض الاختصار</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "استخدام مزود مخصص",
-				"description": "يستخدم الإكمال التلقائي بيانات اعتماد KiloCode / OpenRouter / Mistral لاستخدام نموذج Codestral افتراضياً"
-			},
-			"provider": "المزود",
-			"apiConfigId": {
-				"label": "تكوين API",
-				"current": "استخدام تكوين API المحدد حالياً",
-				"description": "حدد تكوين API لاستخدامه في مطالبات الإكمال التلقائي، أو استخدم فقط المحدد حالياً"
-			},
 			"keybindingNotFound": "غير موجود"
 		}
 	},

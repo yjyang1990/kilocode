@@ -224,16 +224,6 @@
 				"label": "การเติมอัตโนมัติด้วยตัวเอง ({{keybinding}})",
 				"description": "ต้องการการแก้ไขด่วน การเติมเต็ม หรือการปรับโครงสร้างใหม่? Kilo จะใช้บริบทโดยรอบเพื่อเสนอการปรับปรุงทันที ทำให้คุณอยู่ในขั้นตอนการทำงาน <DocsLink>ดูทางลัด</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "ใช้ผู้ให้บริการแบบกำหนดเอง",
-				"description": "Autocomplete ใช้ข้อมูลประจำตัว KiloCode / OpenRouter / Mistral ของคุณเพื่อใช้โมเดล Codestral โดยค่าเริ่มต้น"
-			},
-			"provider": "ผู้ให้บริการ",
-			"apiConfigId": {
-				"label": "การกำหนดค่า API",
-				"current": "ใช้การกำหนดค่า API ที่เลือกในปัจจุบัน",
-				"description": "เลือกการกำหนดค่า API เพื่อใช้สำหรับพรอมต์ Autocomplete หรือเพียงแค่ใช้สิ่งที่เลือกในปัจจุบัน"
-			},
 			"keybindingNotFound": "ไม่พบ"
 		}
 	},

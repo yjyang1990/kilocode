@@ -217,16 +217,6 @@
 				"label": "Ręczne uzupełnianie ({{keybinding}})",
 				"description": "Potrzebujesz szybkiej poprawki, uzupełnienia lub refaktoryzacji? Kilo użyje otaczającego kontekstu, aby zaoferować natychmiastowe ulepszenia, utrzymując cię w przepływie. <DocsLink>Zobacz skrót</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Użyj niestandardowego dostawcy",
-				"description": "Autocomplete używa domyślnie twoich danych uwierzytelniających KiloCode / OpenRouter / Mistral do korzystania z modelu Codestral"
-			},
-			"provider": "Dostawca",
-			"apiConfigId": {
-				"label": "Konfiguracja API",
-				"current": "Użyj aktualnie wybranej konfiguracji API",
-				"description": "Wybierz konfigurację API do użycia dla promptów Autocomplete, lub po prostu użyj tej, która jest aktualnie wybrana"
-			},
 			"keybindingNotFound": "nie znaleziono"
 		}
 	},

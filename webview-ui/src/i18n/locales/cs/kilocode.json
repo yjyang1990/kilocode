@@ -224,16 +224,6 @@
 				"label": "Ruční dokončování ({{keybinding}})",
 				"description": "Potřebuješ rychlou opravu, dokončení nebo refaktoring? Kilo použije okolní kontext k nabídnutí okamžitých vylepšení, udržujíc tě v toku. <DocsLink>Zobrazit zkratku</DocsLink>"
 			},
-			"enableCustomProvider": {
-				"label": "Použít vlastního poskytovatele",
-				"description": "Autocomplete používá tvé přihlašovací údaje KiloCode / OpenRouter / Mistral k použití modelu Codestral ve výchozím nastavení"
-			},
-			"provider": "Poskytovatel",
-			"apiConfigId": {
-				"label": "Konfigurace API",
-				"current": "Použít aktuálně vybranou konfiguraci API",
-				"description": "Vyber konfiguraci API pro použití v Autocomplete promptech, nebo jen použij tu, která je aktuálně vybraná"
-			},
 			"keybindingNotFound": "nenalezeno"
 		}
 	},
