@@ -59,13 +59,14 @@ export abstract class BaseOpenAiCompatibleProvider<ModelName extends string>
 			throw new Error("API key is required")
 		}
 
+		const timeout = getApiRequestTimeout() // kilocode_change
 		this.client = new OpenAI({
 			baseURL,
 			apiKey: this.options.apiKey,
 			defaultHeaders: DEFAULT_HEADERS,
 			// kilocode_change start
-			timeout: getApiRequestTimeout(),
-			fetch: fetchWithTimeout(getApiRequestTimeout()),
+			timeout: timeout,
+			fetch: fetchWithTimeout(timeout),
 			// kilocode_change end
 		})
 	}

@@ -27,11 +27,12 @@ export class LmStudioHandler extends BaseProvider implements SingleCompletionHan
 	constructor(options: ApiHandlerOptions) {
 		super()
 		this.options = options
+		const timeout = getApiRequestTimeout() // kilocode_change
 		this.client = new OpenAI({
 			baseURL: (this.options.lmStudioBaseUrl || "http://localhost:1234") + "/v1",
 			apiKey: "noop",
-			timeout: getApiRequestTimeout(), // kilocode_change
-			fetch: fetchWithTimeout(getApiRequestTimeout()), // kilocode_change
+			timeout: timeout, // kilocode_change
+			fetch: fetchWithTimeout(timeout), // kilocode_change
 		})
 	}
 
