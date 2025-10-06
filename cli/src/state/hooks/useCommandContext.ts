@@ -8,8 +8,11 @@ import { useCallback } from "react"
 import type { CommandContext } from "../../commands/core/types.js"
 import type { CliMessage } from "../../types/cli.js"
 import { addMessageAtom, clearMessagesAtom } from "../atoms/ui.js"
-import { setModeAtom } from "../atoms/config.js"
+import { setModeAtom, providerAtom, updateProviderAtom } from "../atoms/config.js"
+import { routerModelsAtom, extensionStateAtom } from "../atoms/extension.js"
+import { requestRouterModelsAtom } from "../atoms/actions.js"
 import { useWebviewMessage } from "./useWebviewMessage.js"
+import { getModelIdKey } from "../../constants/providers/models.js"
 
 /**
  * Factory function type for creating CommandContext
@@ -52,7 +55,15 @@ export function useCommandContext(): UseCommandContextReturn {
 	const addMessage = useSetAtom(addMessageAtom)
 	const clearMessages = useSetAtom(clearMessagesAtom)
 	const setMode = useSetAtom(setModeAtom)
+	const updateProvider = useSetAtom(updateProviderAtom)
+	const refreshRouterModels = useSetAtom(requestRouterModelsAtom)
 	const { sendMessage, clearTask } = useWebviewMessage()
+
+	// Get read-only state
+	const routerModels = useAtomValue(routerModelsAtom)
+	const currentProvider = useAtomValue(providerAtom)
+	const extensionState = useAtomValue(extensionStateAtom)
+	const kilocodeDefaultModel = extensionState?.kilocodeDefaultModel || ""
 
 	// Create the factory function
 	const createContext = useCallback<CommandContextFactory>(
@@ -79,9 +90,37 @@ export function useCommandContext(): UseCommandContextReturn {
 				exit: () => {
 					onExit()
 				},
+				// New model-related context
+				routerModels,
+				currentProvider: currentProvider || null,
+				kilocodeDefaultModel,
+				updateProviderModel: async (modelId: string) => {
+					if (!currentProvider) {
+						throw new Error("No provider configured")
+					}
+
+					const modelIdKey = getModelIdKey(currentProvider.provider)
+					await updateProvider(currentProvider.id, {
+						[modelIdKey]: modelId,
+					})
+				},
+				refreshRouterModels: async () => {
+					await refreshRouterModels()
+				},
 			}
 		},
-		[addMessage, clearMessages, setMode, sendMessage, clearTask],
+		[
+			addMessage,
+			clearMessages,
+			setMode,
+			sendMessage,
+			clearTask,
+			routerModels,
+			currentProvider,
+			kilocodeDefaultModel,
+			updateProvider,
+			refreshRouterModels,
+		],
 	)
 
 	return { createContext }

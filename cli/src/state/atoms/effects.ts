@@ -6,7 +6,7 @@
 import { atom } from "jotai"
 import type { ExtensionMessage } from "../../types/messages.js"
 import { extensionServiceAtom, setServiceReadyAtom, setServiceErrorAtom, setIsInitializingAtom } from "./service.js"
-import { updateExtensionStateAtom, updateChatMessageByTsAtom } from "./extension.js"
+import { updateExtensionStateAtom, updateChatMessageByTsAtom, updateRouterModelsAtom } from "./extension.js"
 import { ciCompletionDetectedAtom } from "./ci.js"
 import { logs } from "../../services/logs.js"
 
@@ -129,6 +129,13 @@ export const messageHandlerEffectAtom = atom(null, (get, set, message: Extension
 			case "messageUpdated":
 				if (message.chatMessage) {
 					set(updateChatMessageByTsAtom, message.chatMessage)
+				}
+				break
+
+			case "routerModels":
+				if (message.routerModels) {
+					logs.debug("Received router models from extension", "effects")
+					set(updateRouterModelsAtom, message.routerModels)
 				}
 				break
 

@@ -415,6 +415,7 @@ function createProviderContext(
 	currentArgs: string[],
 	argumentIndex: number,
 	partialInput: string,
+	commandContext?: any,
 ): ArgumentProviderContext {
 	const argumentDef = command.arguments?.[argumentIndex]
 
@@ -426,7 +427,7 @@ function createProviderContext(
 		}
 	})
 
-	return {
+	const baseContext: ArgumentProviderContext = {
 		commandName: command.name,
 		argumentIndex,
 		argumentName: argumentDef?.name || "",
@@ -440,6 +441,18 @@ function createProviderContext(
 		},
 		command,
 	}
+
+	if (commandContext) {
+		baseContext.commandContext = {
+			routerModels: commandContext.routerModels || null,
+			currentProvider: commandContext.currentProvider || null,
+			kilocodeDefaultModel: commandContext.kilocodeDefaultModel || "",
+			updateProviderModel: commandContext.updateProviderModel,
+			refreshRouterModels: commandContext.refreshRouterModels,
+		}
+	}
+
+	return baseContext
 }
 
 /**
@@ -450,10 +463,11 @@ function getProvider(
 	command: Command,
 	currentArgs: string[],
 	argumentIndex: number,
+	commandContext?: any,
 ): ArgumentProvider | null {
 	// Check conditional providers
 	if (definition.conditionalProviders) {
-		const context = createProviderContext(command, currentArgs, argumentIndex, "")
+		const context = createProviderContext(command, currentArgs, argumentIndex, "", commandContext)
 		for (const cp of definition.conditionalProviders) {
 			if (cp.condition(context)) {
 				return cp.provider
@@ -543,7 +557,7 @@ function getCacheKey(definition: ArgumentDefinition, command: Command, index: nu
 /**
  * Get argument suggestions for current input
  */
-export async function getArgumentSuggestions(input: string): Promise<ArgumentSuggestion[]> {
+export async function getArgumentSuggestions(input: string, commandContext?: any): Promise<ArgumentSuggestion[]> {
 	const state = detectInputState(input)
 
 	if (state.type !== "argument" || !state.currentArgument) {
@@ -570,7 +584,7 @@ export async function getArgumentSuggestions(input: string): Promise<ArgumentSug
 	const currentArgs = parsed?.args || []
 
 	// Get provider with current args context
-	const provider = getProvider(definition, state.command!, currentArgs, index)
+	const provider = getProvider(definition, state.command!, currentArgs, index, commandContext)
 
 	if (!provider) {
 		return []
@@ -586,7 +600,7 @@ export async function getArgumentSuggestions(input: string): Promise<ArgumentSug
 	}
 
 	// Create context for provider execution
-	const context = createProviderContext(state.command!, currentArgs, index, partialValue)
+	const context = createProviderContext(state.command!, currentArgs, index, partialValue, commandContext)
 
 	try {
 		const results = await executeProvider(provider, context)
@@ -627,6 +641,7 @@ export function clearArgumentCache(): void {
  */
 export async function getAllSuggestions(
 	input: string,
+	commandContext?: any,
 ): Promise<
 	| { type: "command"; suggestions: CommandSuggestion[] }
 	| { type: "argument"; suggestions: ArgumentSuggestion[] }
@@ -644,7 +659,7 @@ export async function getAllSuggestions(
 	if (state.type === "argument") {
 		return {
 			type: "argument",
-			suggestions: await getArgumentSuggestions(input),
+			suggestions: await getArgumentSuggestions(input, commandContext),
 		}
 	}
 

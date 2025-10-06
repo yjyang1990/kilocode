@@ -2,6 +2,9 @@
  * Command system type definitions
  */
 
+import type { RouterModels } from "../../types/messages.js"
+import type { ProviderConfig } from "../../config/types.js"
+
 export interface Command {
 	name: string
 	aliases: string[]
@@ -34,6 +37,12 @@ export interface CommandContext {
 	clearTask: () => Promise<void>
 	setMode: (mode: string) => void
 	exit: () => void
+	// Model-related context
+	routerModels: RouterModels | null
+	currentProvider: ProviderConfig | null
+	kilocodeDefaultModel: string
+	updateProviderModel: (modelId: string) => Promise<void>
+	refreshRouterModels: () => Promise<void>
 }
 
 export type CommandHandler = (context: CommandContext) => Promise<void> | void
@@ -84,6 +93,15 @@ export interface ArgumentProviderContext {
 
 	// Metadata about the command
 	command: Command
+
+	// CommandContext properties for providers that need them
+	commandContext?: {
+		routerModels: RouterModels | null
+		currentProvider: ProviderConfig | null
+		kilocodeDefaultModel: string
+		updateProviderModel: (modelId: string) => Promise<void>
+		refreshRouterModels: () => Promise<void>
+	}
 }
 
 /**

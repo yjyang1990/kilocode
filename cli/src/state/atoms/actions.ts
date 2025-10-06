@@ -90,7 +90,7 @@ export const sendAskResponseAtom = atom(
  */
 export const requestRouterModelsAtom = atom(null, async (get, set) => {
 	const message: WebviewMessage = {
-		type: "getRouterModels",
+		type: "requestRouterModels",
 	}
 
 	await set(sendWebviewMessageAtom, message)

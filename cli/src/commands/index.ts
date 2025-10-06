@@ -11,6 +11,7 @@ import { helpCommand } from "./help.js"
 import { newCommand } from "./new.js"
 import { exitCommand } from "./exit.js"
 import { modeCommand } from "./mode.js"
+import { modelCommand } from "./model.js"
 
 /**
  * Initialize all commands
@@ -21,4 +22,5 @@ export function initializeCommands(): void {
 	commandRegistry.register(newCommand)
 	commandRegistry.register(exitCommand)
 	commandRegistry.register(modeCommand)
+	commandRegistry.register(modelCommand)
 }

@@ -31,6 +31,10 @@ import {
 	showAutocompleteMenuAtom,
 	getSelectedSuggestionAtom,
 } from "../atoms/ui.js"
+import { routerModelsAtom, extensionStateAtom } from "../atoms/extension.js"
+import { providerAtom, updateProviderAtom } from "../atoms/config.js"
+import { requestRouterModelsAtom } from "../atoms/actions.js"
+import { getModelIdKey } from "../../constants/providers/models.js"
 
 /**
  * Return type for useCommandInput hook
@@ -135,6 +139,12 @@ export function useCommandInput(): UseCommandInputReturn {
 	const commandQuery = useAtomValue(commandQueryAtom)
 	const selectedSuggestion = useAtomValue(getSelectedSuggestionAtom)
 
+	// Get command context for autocomplete
+	const routerModels = useAtomValue(routerModelsAtom)
+	const currentProvider = useAtomValue(providerAtom)
+	const extensionState = useAtomValue(extensionStateAtom)
+	const kilocodeDefaultModel = extensionState?.kilocodeDefaultModel || ""
+
 	// Write atoms
 	const setInputAction = useSetAtom(setInputValueAtom)
 	const clearInputAction = useSetAtom(clearInputAtom)
@@ -144,6 +154,8 @@ export function useCommandInput(): UseCommandInputReturn {
 	const selectPreviousAction = useSetAtom(selectPreviousSuggestionAtom)
 	const hideAutocompleteAction = useSetAtom(hideAutocompleteAtom)
 	const showAutocompleteAction = useSetAtom(showAutocompleteMenuAtom)
+	const updateProvider = useSetAtom(updateProviderAtom)
+	const refreshRouterModels = useSetAtom(requestRouterModelsAtom)
 
 	// Actions
 	const setInput = useCallback(
@@ -188,15 +200,43 @@ export function useCommandInput(): UseCommandInputReturn {
 			setSuggestionsAction(suggestions)
 			setArgumentSuggestionsAction([])
 		} else if (state.type === "argument") {
-			// Get argument suggestions
-			const suggestions = await getArgumentSuggestions(inputValue)
+			// Create command context for argument providers
+			const commandContext = {
+				routerModels,
+				currentProvider: currentProvider || null,
+				kilocodeDefaultModel,
+				updateProviderModel: async (modelId: string) => {
+					if (!currentProvider) {
+						throw new Error("No provider configured")
+					}
+					const modelIdKey = getModelIdKey(currentProvider.provider)
+					await updateProvider(currentProvider.id, {
+						[modelIdKey]: modelId,
+					})
+				},
+				refreshRouterModels: async () => {
+					await refreshRouterModels()
+				},
+			}
+
+			// Get argument suggestions with command context
+			const suggestions = await getArgumentSuggestions(inputValue, commandContext)
 			setArgumentSuggestionsAction(suggestions)
 			setSuggestionsAction([])
 		} else {
 			setSuggestionsAction([])
 			setArgumentSuggestionsAction([])
 		}
-	}, [inputValue, setSuggestionsAction, setArgumentSuggestionsAction])
+	}, [
+		inputValue,
+		setSuggestionsAction,
+		setArgumentSuggestionsAction,
+		routerModels,
+		currentProvider,
+		kilocodeDefaultModel,
+		updateProvider,
+		refreshRouterModels,
+	])
 
 	const getInputState = useCallback(() => {
 		return detectInputState(inputValue)

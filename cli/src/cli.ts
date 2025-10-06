@@ -95,6 +95,9 @@ export class CLI {
 			await this.injectConfigurationToExtension()
 			logs.debug("CLI configuration injected into extension", "CLI")
 
+			// Request router models after configuration is injected
+			await this.requestRouterModels()
+
 			this.isInitialized = true
 			logs.info("Kilo Code CLI initialized successfully", "CLI")
 
@@ -238,6 +241,24 @@ export class CLI {
 			logs.info("Configuration injected into extension host", "CLI")
 		} catch (error) {
 			logs.error("Failed to inject configuration into extension host", "CLI", { error })
+		}
+	}
+
+	/**
+	 * Request router models from the extension
+	 */
+	private async requestRouterModels(): Promise<void> {
+		if (!this.service || !this.store) {
+			logs.warn("Cannot request router models: service or store not available", "CLI")
+			return
+		}
+
+		try {
+			const { requestRouterModelsAtom } = await import("./state/atoms/actions.js")
+			await this.store.set(requestRouterModelsAtom)
+			logs.debug("Router models requested", "CLI")
+		} catch (error) {
+			logs.error("Failed to request router models", "CLI", { error })
 		}
 	}
 
