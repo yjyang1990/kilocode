@@ -37,6 +37,8 @@ import {
 	doubaoDefaultModelId,
 	fireworksModels,
 	fireworksDefaultModelId,
+	syntheticModels, // kilocode_change
+	syntheticDefaultModelId, // kilocode_change
 	ioIntelligenceDefaultModelId,
 	moonshotModels,
 	moonshotDefaultModelId,
@@ -188,6 +190,13 @@ export const getModelsByProvider = ({
 				defaultModel: kilocodeDefaultModel,
 			}
 		}
+		// Temporary weird fix
+		case "kilocode-openrouter": {
+			return {
+				models: routerModels["kilocode-openrouter"],
+				defaultModel: kilocodeDefaultModel,
+			}
+		}
 		case "claude-code": {
 			return {
 				models: claudeCodeModels,
@@ -224,6 +233,14 @@ export const getModelsByProvider = ({
 				defaultModel: fireworksDefaultModelId,
 			}
 		}
+		// kilocode_change start
+		case "synthetic": {
+			return {
+				models: syntheticModels,
+				defaultModel: syntheticDefaultModelId,
+			}
+		}
+		// kilocode_change end
 		case "io-intelligence": {
 			return {
 				models: routerModels["io-intelligence"],

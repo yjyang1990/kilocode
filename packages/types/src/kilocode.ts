@@ -6,8 +6,7 @@ export const ghostServiceSettingsSchema = z
 		autoTriggerDelay: z.number().min(1).max(30).default(3).optional(),
 		enableQuickInlineTaskKeybinding: z.boolean().optional(),
 		enableSmartInlineTaskKeybinding: z.boolean().optional(),
-		enableCustomProvider: z.boolean().optional(),
-		apiConfigId: z.string().optional(),
+		showGutterAnimation: z.boolean().optional(),
 	})
 	.optional()
 
@@ -25,3 +24,12 @@ export const kiloCodeMetaDataSchema = z.object({
 })
 
 export type KiloCodeMetaData = z.infer<typeof kiloCodeMetaDataSchema>
+
+export const fastApplyModelSchema = z.enum([
+	"auto",
+	"morph/morph-v3-fast",
+	"morph/morph-v3-large",
+	"relace/relace-apply-3",
+])
+
+export type FastApplyModel = z.infer<typeof fastApplyModelSchema>

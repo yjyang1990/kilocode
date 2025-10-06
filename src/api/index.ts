@@ -40,6 +40,7 @@ import {
 	DoubaoHandler,
 	ZAiHandler,
 	FireworksHandler,
+	SyntheticHandler, // kilocode_change
 	RooHandler,
 	FeatherlessHandler,
 	VercelAiGatewayHandler,
@@ -100,6 +101,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 	switch (apiProvider) {
 		// kilocode_change start
 		case "kilocode":
+			return new KilocodeOpenrouterHandler(options)
+		case "kilocode-openrouter": // temp typing fix
 			return new KilocodeOpenrouterHandler(options)
 		case "gemini-cli":
 			return new GeminiCliHandler(options)
@@ -170,6 +173,10 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new ZAiHandler(options)
 		case "fireworks":
 			return new FireworksHandler(options)
+		// kilocode_change start
+		case "synthetic":
+			return new SyntheticHandler(options)
+		// kilocode_change end
 		case "io-intelligence":
 			return new IOIntelligenceHandler(options)
 		case "roo":
