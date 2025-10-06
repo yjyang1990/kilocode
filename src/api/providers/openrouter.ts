@@ -195,15 +195,13 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			openAiMessages = convertToR1Format([{ role: "user", content: systemPrompt }, ...messages])
 		}
 
-		// https://openrouter.ai/docs/features/prompt-caching
-		// TODO: Add a `promptCacheStratey` field to `ModelInfo`.
-		if (OPEN_ROUTER_PROMPT_CACHING_MODELS.has(modelId)) {
-			if (modelId.startsWith("google")) {
-				addGeminiCacheBreakpoints(systemPrompt, openAiMessages)
-			} else {
-				addAnthropicCacheBreakpoints(systemPrompt, openAiMessages)
-			}
+		// kilocode_change start
+		if (modelId.startsWith("google/gemini")) {
+			addGeminiCacheBreakpoints(systemPrompt, openAiMessages)
+		} else if (modelId.startsWith("anthropic/claude") || OPEN_ROUTER_PROMPT_CACHING_MODELS.has(modelId)) {
+			addAnthropicCacheBreakpoints(systemPrompt, openAiMessages)
 		}
+		// kilocode_change end
 
 		const transforms = (this.options.openRouterUseMiddleOutTransform ?? true) ? ["middle-out"] : undefined
 
