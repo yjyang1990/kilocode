@@ -67,14 +67,8 @@ export function useMessageHandler(options: UseMessageHandlerOptions = {}): UseMe
 				return
 			}
 
-			// Add user message to the UI
-			const userMessage: CliMessage = {
-				id: Date.now().toString(),
-				type: "user",
-				content: trimmedText,
-				ts: Date.now(),
-			}
-			addMessage(userMessage)
+			// Don't add user message to CLI state - the extension will handle it
+			// This prevents duplicate messages in the UI
 
 			// Set processing state
 			setIsSending(true)
