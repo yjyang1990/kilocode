@@ -10,6 +10,7 @@ import { isProcessingAtom, errorAtom } from "../state/atoms/ui.js"
 import { setCIModeAtom } from "../state/atoms/ci.js"
 import { MessageDisplay } from "./messages/MessageDisplay.js"
 import { CommandInput } from "./components/CommandInput.js"
+import { StatusBar } from "./components/StatusBar.js"
 import { initializeCommands } from "../commands/index.js"
 import { isCommandInput } from "../services/autocomplete.js"
 import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
@@ -140,6 +141,9 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 
 			{/* Input */}
 			{!options.ci && <CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />}
+
+			{/* Status Bar */}
+			<StatusBar />
 		</Box>
 	)
 }

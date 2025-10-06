@@ -62,13 +62,7 @@ const SuggestionsMenu: React.FC<SuggestionsMenuProps> = ({ type, suggestions, se
 	const borderColor = type === "command" ? "gray" : "cyan"
 
 	return (
-		<Box
-			flexDirection="column"
-			borderStyle="single"
-			borderColor={borderColor}
-			paddingX={1}
-			marginTop={1}
-			marginBottom={1}>
+		<Box flexDirection="column" borderStyle="single" borderColor={borderColor} paddingX={1}>
 			<Text bold color="cyan">
 				{title}
 			</Text>
