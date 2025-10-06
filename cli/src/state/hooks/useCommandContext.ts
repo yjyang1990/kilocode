@@ -52,7 +52,7 @@ export function useCommandContext(): UseCommandContextReturn {
 	const addMessage = useSetAtom(addMessageAtom)
 	const clearMessages = useSetAtom(clearMessagesAtom)
 	const setMode = useSetAtom(setModeAtom)
-	const { sendMessage } = useWebviewMessage()
+	const { sendMessage, clearTask } = useWebviewMessage()
 
 	// Create the factory function
 	const createContext = useCallback<CommandContextFactory>(
@@ -70,6 +70,9 @@ export function useCommandContext(): UseCommandContextReturn {
 				clearMessages: () => {
 					clearMessages()
 				},
+				clearTask: async () => {
+					await clearTask()
+				},
 				setMode: async (mode: string) => {
 					await setMode(mode)
 				},
@@ -78,7 +81,7 @@ export function useCommandContext(): UseCommandContextReturn {
 				},
 			}
 		},
-		[addMessage, clearMessages, setMode, sendMessage],
+		[addMessage, clearMessages, setMode, sendMessage, clearTask],
 	)
 
 	return { createContext }

@@ -8,7 +8,7 @@ export * from "./core/registry.js"
 import { commandRegistry } from "./core/registry.js"
 
 import { helpCommand } from "./help.js"
-import { clearCommand } from "./clear.js"
+import { newCommand } from "./new.js"
 import { exitCommand } from "./exit.js"
 import { modeCommand } from "./mode.js"
 
@@ -18,7 +18,7 @@ import { modeCommand } from "./mode.js"
 export function initializeCommands(): void {
 	// Register all commands
 	commandRegistry.register(helpCommand)
-	commandRegistry.register(clearCommand)
+	commandRegistry.register(newCommand)
 	commandRegistry.register(exitCommand)
 	commandRegistry.register(modeCommand)
 }
