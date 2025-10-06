@@ -5,7 +5,7 @@ import readline from "readline"
 const APPROVALS_DIR = "approvals"
 
 export interface ApprovalResult {
-	approved: boolean
+	isApproved: boolean
 	newOutput: boolean
 }
 
@@ -90,12 +90,12 @@ export async function checkApproval(
 
 	const approvedMatch = findMatchingFile(categoryDir, testName, "approved", output)
 	if (approvedMatch) {
-		return { approved: true, newOutput: false }
+		return { isApproved: true, newOutput: false }
 	}
 
 	const rejectedMatch = findMatchingFile(categoryDir, testName, "rejected", output)
 	if (rejectedMatch) {
-		return { approved: false, newOutput: false }
+		return { isApproved: false, newOutput: false }
 	}
 
 	const isApproved = await askUserApproval(category, testName, input, output)
@@ -110,5 +110,5 @@ export async function checkApproval(
 
 	fs.writeFileSync(filePath, output, "utf-8")
 
-	return { approved: isApproved, newOutput: true }
+	return { isApproved, newOutput: true }
 }
