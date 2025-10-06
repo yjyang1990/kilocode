@@ -7,6 +7,7 @@ import { useSetAtom } from "jotai"
 import { useCallback, useState } from "react"
 import { addMessageAtom, isProcessingAtom } from "../atoms/ui.js"
 import { useWebviewMessage } from "./useWebviewMessage.js"
+import { useTaskState } from "./useTaskState.js"
 import type { CliMessage } from "../../types/cli.js"
 import { logs } from "../../services/logs.js"
 
@@ -57,7 +58,8 @@ export function useMessageHandler(options: UseMessageHandlerOptions = {}): UseMe
 	const [isSending, setIsSending] = useState(false)
 	const addMessage = useSetAtom(addMessageAtom)
 	const setIsProcessing = useSetAtom(isProcessingAtom)
-	const { sendMessage } = useWebviewMessage()
+	const { sendMessage, sendAskResponse } = useWebviewMessage()
+	const { hasActiveTask } = useTaskState()
 
 	const sendUserMessage = useCallback(
 		async (text: string): Promise<void> => {
@@ -75,11 +77,23 @@ export function useMessageHandler(options: UseMessageHandlerOptions = {}): UseMe
 			setIsProcessing(true)
 
 			try {
-				// Send message to extension
-				await sendMessage({
-					type: "newTask",
-					text: trimmedText,
-				})
+				// Check if there's an active task to determine message type
+				// This matches the webview behavior in ChatView.tsx (lines 650-683)
+				if (hasActiveTask) {
+					// Send as response to existing task (like webview does)
+					logs.debug("Sending message as response to active task", "useMessageHandler")
+					await sendAskResponse({
+						response: "messageResponse",
+						text: trimmedText,
+					})
+				} else {
+					// Start new task (no active conversation)
+					logs.debug("Starting new task", "useMessageHandler")
+					await sendMessage({
+						type: "newTask",
+						text: trimmedText,
+					})
+				}
 			} catch (error) {
 				// Add error message if sending failed
 				const errorMessage: CliMessage = {
@@ -104,7 +118,7 @@ export function useMessageHandler(options: UseMessageHandlerOptions = {}): UseMe
 				}
 			}
 		},
-		[addMessage, setIsProcessing, ciMode, sendMessage],
+		[addMessage, setIsProcessing, ciMode, sendMessage, sendAskResponse, hasActiveTask],
 	)
 
 	return {

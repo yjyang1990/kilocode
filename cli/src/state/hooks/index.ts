@@ -47,6 +47,9 @@ export type { UseCommandHandlerReturn } from "./useCommandHandler.js"
 export { useMessageHandler } from "./useMessageHandler.js"
 export type { UseMessageHandlerReturn } from "./useMessageHandler.js"
 
+export { useTaskState } from "./useTaskState.js"
+export type { UseTaskStateReturn } from "./useTaskState.js"
+
 // Config hooks
 export { useConfig } from "./useConfig.js"
 export type { UseConfigReturn } from "./useConfig.js"
