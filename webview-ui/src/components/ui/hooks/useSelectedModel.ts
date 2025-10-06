@@ -29,6 +29,7 @@ import {
 	xaiModels,
 	groqModels,
 	groqDefaultModelId,
+	// chutesModels, // kilocode_change
 	chutesDefaultModelId,
 	vscodeLlmModels,
 	vscodeLlmDefaultModelId,
@@ -219,7 +220,7 @@ function getSelectedModel({
 		}
 		case "chutes": {
 			const id = apiConfiguration.apiModelId ?? chutesDefaultModelId
-			const info = routerModels.chutes[id]
+			const info = routerModels.chutes[id] // kilocode_change
 			return { id, info }
 		}
 		case "bedrock": {

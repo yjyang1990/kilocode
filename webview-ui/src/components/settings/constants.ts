@@ -17,7 +17,7 @@ import {
 	vertexModels,
 	xaiModels,
 	groqModels,
-	// chutesModels, // Not needed - Chutes is a dynamic provider
+	// chutesModels, // kilocode_change
 	sambaNovaModels,
 	doubaoModels,
 	internationalZAiModels,
@@ -44,7 +44,7 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	vertex: vertexModels,
 	xai: xaiModels,
 	groq: groqModels,
-	// chutes: chutesModels, // Removed: Chutes is a dynamic provider with its own ModelPicker
+	// chutes: chutesModels, // kilocode_change
 	sambanova: sambaNovaModels,
 	zai: internationalZAiModels,
 	fireworks: fireworksModels,
