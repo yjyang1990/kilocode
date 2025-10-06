@@ -51,13 +51,14 @@ export class ExtensionHost extends EventEmitter {
 		try {
 			logs.info("Activating extension...", "ExtensionHost")
 
+			// Set up console interception FIRST to capture all extension logs
+			// This must happen before loading the extension module
+			this.setupConsoleInterception()
+
 			// Setup VSCode API mock
 			await this.setupVSCodeAPIMock()
 
-			// Set up console interception AFTER VSCode API setup
-			this.setupConsoleInterception()
-
-			// Load the extension
+			// Load the extension (console already intercepted)
 			await this.loadExtension()
 
 			// Activate the extension
@@ -284,6 +285,9 @@ export class ExtensionHost extends EventEmitter {
 			/creating shadow git repo/,
 			/initializing checkpoints service/,
 			/initializing shadow git/,
+			/Failed connecting to Ollama/,
+			/Error fetching Ollama models/,
+			/Error parsing Ollama models response/,
 		]
 
 		return hiddenPatterns.some((pattern) => pattern.test(message.trim()))
