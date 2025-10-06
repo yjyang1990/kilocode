@@ -1,5 +1,17 @@
 # kilo-code
 
+## [v4.99.2]
+
+- [#2729](https://github.com/Kilo-Org/kilocode/pull/2729) [`bda1ef4`](https://github.com/Kilo-Org/kilocode/commit/bda1ef4a6ece7532db4e07359cfae640b1080d3c) Thanks [@ivanarifin](https://github.com/ivanarifin)! - Update the environment variables of Gemini CLI when OAuth path changes
+
+- [#2755](https://github.com/Kilo-Org/kilocode/pull/2755) [`82ffeb4`](https://github.com/Kilo-Org/kilocode/commit/82ffeb4bcfbf1ff6b4cc50413e7dbc57fd82c7cd) Thanks [@b3nw](https://github.com/b3nw)! - Add zai-org/GLM-4.6-turbo model to Chutes provider
+
+## [v4.99.1]
+
+- [#2731](https://github.com/Kilo-Org/kilocode/pull/2731) [`36cf88f`](https://github.com/Kilo-Org/kilocode/commit/36cf88f868eee2a322b35b37032f98d199e0f91a) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - A recommendation to disable Editing Through Diffs or Fast Apply is now included in the error message when a model fails to use them properly
+
+- [#2751](https://github.com/Kilo-Org/kilocode/pull/2751) [`6ebf0bb`](https://github.com/Kilo-Org/kilocode/commit/6ebf0bbe38be7d737546f8975cff927d95e85751) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Fixed some untranslated text being shown in the Ollama settings
+
 ## [v4.99.0]
 
 - [#2719](https://github.com/Kilo-Org/kilocode/pull/2719) [`345947f`](https://github.com/Kilo-Org/kilocode/commit/345947f29978045209a82687843c28059b339dc0) Thanks [@mcowger](https://github.com/mcowger)! - Prevent race conditions from stopping agent progress during indexing.
