@@ -1187,7 +1187,7 @@ export const ChatRowContent = ({
 							{
 								// kilocode_change start
 								!message.partial && enableCheckpoints !== false && commitRange ? (
-									<div>
+									<div className="flex flex-horizontal gap-2 w-full">
 										<VSCodeButton
 											className="w-full mt-2"
 											appearance="secondary"
@@ -1200,6 +1200,22 @@ export const ChatRowContent = ({
 												})
 											}}>
 											{t("kilocode:chat.seeNewChanges")}
+										</VSCodeButton>
+										<VSCodeButton
+											className="w-full mt-2"
+											appearance="secondary"
+											disabled={!commitRange.fromTimeStamp}
+											onClick={() => {
+												vscode.postMessage({
+													type: "checkpointRestore",
+													payload: {
+														mode: "restore",
+														ts: commitRange.fromTimeStamp ?? 0,
+														commitHash: commitRange.from,
+													},
+												})
+											}}>
+											Revert All Changes
 										</VSCodeButton>
 									</div>
 								) : (
