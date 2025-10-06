@@ -3277,8 +3277,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			}
 
 			const baseUrl = getKiloBaseUriFromToken(kilocodeToken)
-			const orgPath = kilocodeOrganizationId ? `/organizations/${kilocodeOrganizationId}` : ""
-			const url = `${baseUrl}/api${orgPath}/profile/balance`
+			const url = `${baseUrl}/api/profile/balance`
 
 			this.log(`[fetchBalanceData] Fetching balance from: ${url}`)
 
@@ -3286,6 +3285,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 				headers: {
 					Authorization: `Bearer ${kilocodeToken}`,
 					"Content-Type": "application/json",
+					"X-KiloCode-OrganizationId": kilocodeOrganizationId,
 				},
 				timeout: 10000,
 			})
