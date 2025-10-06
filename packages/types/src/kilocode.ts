@@ -16,6 +16,7 @@ export type GhostServiceSettings = z.infer<typeof ghostServiceSettingsSchema>
 
 export const commitRangeSchema = z.object({
 	from: z.string(),
+	fromTimeStamp: z.number().optional(),
 	to: z.string(),
 })
 
