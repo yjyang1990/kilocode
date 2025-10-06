@@ -31,7 +31,6 @@ import { KiloModelInfoView } from "../kilocode/settings/KiloModelInfoView"
 
 type ModelIdKey = keyof Pick<
 	ProviderSettings,
-	| "apiModelId"
 	| "glamaModelId"
 	| "openRouterModelId"
 	| "unboundModelId"
@@ -39,6 +38,7 @@ type ModelIdKey = keyof Pick<
 	| "openAiModelId"
 	| "litellmModelId"
 	// kilocode_change start
+	| "apiModelId"
 	| "kilocodeModel"
 	// kilocode_change end
 	| "deepInfraModelId"

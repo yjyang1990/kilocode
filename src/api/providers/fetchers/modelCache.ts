@@ -23,7 +23,7 @@ import { getKiloBaseUriFromToken } from "../../../shared/kilocode/token"
 import { getOllamaModels } from "./ollama"
 import { getLMStudioModels } from "./lmstudio"
 import { getIOIntelligenceModels } from "./io-intelligence"
-import { getChutesModels } from "./chutes"
+import { getChutesModels } from "./chutes" // kilocode_change
 
 import { getDeepInfraModels } from "./deepinfra"
 import { getHuggingFaceModels } from "./huggingface"
@@ -100,6 +100,9 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 					headers: options.kilocodeToken ? { Authorization: `Bearer ${options.kilocodeToken}` } : undefined,
 				})
 				break
+			case "chutes":
+				models = await getChutesModels(options.apiKey)
+				break
 			// kilocode_change end
 			case "ollama":
 				models = await getOllamaModels(options.baseUrl, options.apiKey, options.numCtx /*kilocode_change*/)
@@ -118,9 +121,6 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 				break
 			case "huggingface":
 				models = await getHuggingFaceModels()
-				break
-			case "chutes":
-				models = await getChutesModels(options.apiKey)
 				break
 			default: {
 				// Ensures router is exhaustively checked if RouterName is a strict union.
