@@ -1,5 +1,5 @@
 ---
-"kilo-code": major
+"kilo-code": minor
 ---
 
 Add timestamps to Chat view.
