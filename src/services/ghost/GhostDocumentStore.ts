@@ -49,13 +49,6 @@ export class GhostDocumentStore {
 				item.history.shift() // Remove the oldest snapshot if we exceed the limit
 			}
 
-			// Parse the AST if requested and if the document version has changed.
-			// Corrected conditional logic
-			if (parseAST && (!item.lastParsedVersion || item.lastParsedVersion !== document.version)) {
-				// Assuming parseDocumentAST is an async method in the same class.
-				await this.parseDocumentAST(document)
-			}
-
 			// Once executed, remove the timer from the map.
 			this.debounceTimers.delete(uri)
 		}
@@ -77,14 +70,6 @@ export class GhostDocumentStore {
 
 		// Store the new timer ID, associating it with the document's URI.
 		this.debounceTimers.set(uri, timer)
-	}
-
-	/**
-	 * Parse the AST for a document and store it
-	 * @param document The document to parse
-	 */
-	public async parseDocumentAST(document: vscode.TextDocument): Promise<void> {
-		return
 	}
 
 	/**

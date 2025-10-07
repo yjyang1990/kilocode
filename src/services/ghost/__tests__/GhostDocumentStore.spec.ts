@@ -213,22 +213,6 @@ describe("GhostDocumentStore", () => {
 					},
 				),
 
-			parseDocumentAST: vi.fn().mockImplementation(async (document: vscode.TextDocument) => {
-				const uri = document.uri.toString()
-				const item = mockDocumentMap.get(uri)
-
-				if (item) {
-					// Only parse AST for supported file extensions
-					const fileExtension = document.uri.path.split(".").pop()?.toLowerCase()
-					const supportedExtensions = ["js", "ts", "jsx", "tsx"]
-
-					if (supportedExtensions.includes(fileExtension || "")) {
-						item.ast = mockAst
-						item.lastParsedVersion = document.version
-					}
-				}
-			}),
-
 			getDocument: vi.fn().mockImplementation((documentUri: vscode.Uri) => {
 				const uri = documentUri.toString()
 				return mockDocumentMap.get(uri)
@@ -330,77 +314,6 @@ describe("GhostDocumentStore", () => {
 			const storedItem = documentStore.getDocument(mockDocument.uri)
 			expect(storedItem?.ast).toBeUndefined()
 			expect(storedItem?.lastParsedVersion).toBeUndefined()
-		})
-	})
-
-	describe("parseDocumentAST", () => {
-		it("should parse AST for JavaScript document", async () => {
-			await documentStore.storeDocument({
-				document: mockDocument,
-				bypassDebounce: true,
-				parseAST: false,
-			})
-			await documentStore.parseDocumentAST(mockDocument)
-
-			const storedItem = documentStore.getDocument(mockDocument.uri)
-			expect(storedItem?.ast).toBeDefined()
-			expect(storedItem?.ast?.language).toBe("js")
-			expect(storedItem?.ast?.rootNode).toBeDefined()
-			expect(storedItem?.lastParsedVersion).toBe(mockDocument.version)
-		})
-
-		it("should handle document not in store", async () => {
-			const unknownUri = vscode.Uri.parse("file:///unknown.js")
-			await documentStore.parseDocumentAST(new MockTextDocument(unknownUri, ""))
-
-			// Should not throw and should not add the document
-			expect(documentStore.getDocument(unknownUri)).toBeUndefined()
-		})
-
-		it("should handle parser errors gracefully", async () => {
-			// Store document first
-			await documentStore.storeDocument({
-				document: mockDocument,
-				bypassDebounce: true,
-				parseAST: false,
-			})
-
-			// Override parseDocumentAST to simulate error handling
-			const originalParseDocumentAST = documentStore.parseDocumentAST
-			vi.spyOn(documentStore, "parseDocumentAST").mockImplementationOnce(async (document) => {
-				// Simulate error by not setting the AST
-				const uri = document.uri.toString()
-				const storedItem = documentStore.getDocument(document.uri)
-
-				if (storedItem) {
-					// Ensure AST is undefined to simulate error
-					storedItem.ast = undefined
-					storedItem.lastParsedVersion = undefined
-				}
-			})
-
-			// Call parseDocumentAST which should now handle the error
-			await documentStore.parseDocumentAST(mockDocument)
-
-			// Should not have AST but should still have the document
-			const storedItem = documentStore.getDocument(mockDocument.uri)
-			expect(storedItem).toBeDefined()
-			expect(storedItem?.ast).toBeUndefined()
-		})
-
-		it("should handle unsupported file extensions", async () => {
-			const unknownExtUri = vscode.Uri.parse("file:///test.unknown")
-			const unknownExtDoc = new MockTextDocument(unknownExtUri, "content")
-
-			await documentStore.storeDocument({
-				document: unknownExtDoc,
-				bypassDebounce: true,
-				parseAST: true,
-			})
-
-			const storedItem = documentStore.getDocument(unknownExtUri)
-			expect(storedItem).toBeDefined()
-			expect(storedItem?.ast).toBeUndefined()
 		})
 	})
 
