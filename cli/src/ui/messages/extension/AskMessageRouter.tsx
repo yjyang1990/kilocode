@@ -8,7 +8,6 @@ import {
 	AskMistakeLimitMessage,
 	AskCommandMessage,
 	AskUseMcpServerMessage,
-	AskCompletionResultMessage,
 	AskFollowupMessage,
 	AskCondenseMessage,
 	AskPaymentRequiredMessage,
@@ -58,7 +57,7 @@ export const AskMessageRouter: React.FC<MessageComponentProps> = ({ message }) =
 			return <AskUseMcpServerMessage message={message} />
 
 		case "completion_result":
-			return <AskCompletionResultMessage message={message} />
+			return null
 
 		case "followup":
 			return <AskFollowupMessage message={message} />

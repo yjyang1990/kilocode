@@ -1,10 +1,5 @@
-/**
- * Hook for handling approval/rejection of ask messages
- * Provides methods to approve, reject, and navigate approval options
- */
-
-import { useAtomValue, useSetAtom } from "jotai"
-import { useCallback, useEffect } from "react"
+import { useAtomValue, useSetAtom, useStore } from "jotai"
+import { useCallback } from "react"
 import {
 	pendingApprovalAtom,
 	approvalOptionsAtom,
@@ -12,10 +7,12 @@ import {
 	selectedApprovalOptionAtom,
 	selectNextApprovalAtom,
 	selectPreviousApprovalAtom,
-	clearPendingApprovalAtom,
 	isApprovalPendingAtom,
 	shouldAutoApproveAtom,
 	shouldAutoRejectAtom,
+	startApprovalProcessingAtom,
+	completeApprovalProcessingAtom,
+	approvalProcessingAtom,
 	type ApprovalOption,
 } from "../atoms/approval.js"
 import { autoApproveRetryDelayAtom, autoApproveQuestionTimeoutAtom } from "../atoms/config.js"
@@ -85,6 +82,7 @@ export interface UseApprovalHandlerReturn {
  * ```
  */
 export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): UseApprovalHandlerReturn {
+	const store = useStore()
 	const pendingApproval = useAtomValue(pendingApprovalAtom)
 	const approvalOptions = useAtomValue(approvalOptionsAtom)
 	const selectedIndex = useAtomValue(selectedApprovalIndexAtom)
@@ -101,19 +99,46 @@ export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): Use
 
 	const selectNext = useSetAtom(selectNextApprovalAtom)
 	const selectPrevious = useSetAtom(selectPreviousApprovalAtom)
-	const clearPendingApproval = useSetAtom(clearPendingApprovalAtom)
+	const startProcessing = useSetAtom(startApprovalProcessingAtom)
+	const completeProcessing = useSetAtom(completeApprovalProcessingAtom)
 
 	const { sendAskResponse } = useWebviewMessage()
 
 	const approve = useCallback(
 		async (text?: string, images?: string[]) => {
-			if (!pendingApproval) {
-				logs.warn("No pending approval to approve", "useApprovalHandler")
+			// Read the current state directly from the store at call time
+			// This ensures we get the latest value, not a stale closure value
+			const currentPendingApproval = store.get(pendingApprovalAtom)
+			const processingState = store.get(approvalProcessingAtom)
+
+			if (!currentPendingApproval) {
+				logs.warn("No pending approval to approve", "useApprovalHandler", {
+					storeValue: currentPendingApproval,
+				})
+				return
+			}
+
+			// Check if already processing
+			if (processingState.isProcessing) {
+				logs.warn("Approval already being processed, skipping duplicate", "useApprovalHandler", {
+					processingTs: processingState.processingTs,
+					currentTs: currentPendingApproval.ts,
+				})
+				return
+			}
+
+			// Start processing atomically - this prevents duplicate attempts
+			const started = store.set(startApprovalProcessingAtom, "approve")
+			if (!started) {
+				logs.warn("Failed to start approval processing", "useApprovalHandler")
 				return
 			}
 
 			try {
-				logs.debug("Approving request", "useApprovalHandler", { ask: pendingApproval.ask })
+				logs.debug("Approving request", "useApprovalHandler", {
+					ask: currentPendingApproval.ask,
+					ts: currentPendingApproval.ts,
+				})
 
 				await sendAskResponse({
 					response: "yesButtonClicked",
@@ -121,24 +146,53 @@ export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): Use
 					...(images && { images }),
 				})
 
-				clearPendingApproval()
+				logs.debug("Approval response sent successfully", "useApprovalHandler", {
+					ts: currentPendingApproval.ts,
+				})
+
+				// Complete processing atomically - this clears both pending and processing state
+				store.set(completeApprovalProcessingAtom)
 			} catch (error) {
 				logs.error("Failed to approve request", "useApprovalHandler", { error })
+				// Reset processing state on error so user can retry
+				store.set(completeApprovalProcessingAtom)
 				throw error
 			}
 		},
-		[pendingApproval, sendAskResponse, clearPendingApproval],
+		[store, sendAskResponse, startApprovalProcessingAtom, completeApprovalProcessingAtom],
 	)
 
 	const reject = useCallback(
 		async (text?: string, images?: string[]) => {
-			if (!pendingApproval) {
-				logs.warn("No pending approval to reject", "useApprovalHandler")
+			// Read the current state directly from the store at call time
+			const currentPendingApproval = store.get(pendingApprovalAtom)
+			const processingState = store.get(approvalProcessingAtom)
+
+			if (!currentPendingApproval) {
+				logs.warn("No pending approval to reject", "useApprovalHandler", {
+					storeValue: currentPendingApproval,
+				})
+				return
+			}
+
+			// Check if already processing
+			if (processingState.isProcessing) {
+				logs.warn("Approval already being processed, skipping duplicate", "useApprovalHandler", {
+					processingTs: processingState.processingTs,
+					currentTs: currentPendingApproval.ts,
+				})
+				return
+			}
+
+			// Start processing atomically - this prevents duplicate attempts
+			const started = store.set(startApprovalProcessingAtom, "reject")
+			if (!started) {
+				logs.warn("Failed to start rejection processing", "useApprovalHandler")
 				return
 			}
 
 			try {
-				logs.debug("Rejecting request", "useApprovalHandler", { ask: pendingApproval.ask })
+				logs.debug("Rejecting request", "useApprovalHandler", { ask: currentPendingApproval.ask })
 
 				await sendAskResponse({
 					response: "noButtonClicked",
@@ -146,13 +200,18 @@ export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): Use
 					...(images && { images }),
 				})
 
-				clearPendingApproval()
+				logs.debug("Rejection response sent successfully", "useApprovalHandler")
+
+				// Complete processing atomically - this clears both pending and processing state
+				store.set(completeApprovalProcessingAtom)
 			} catch (error) {
 				logs.error("Failed to reject request", "useApprovalHandler", { error })
+				// Reset processing state on error so user can retry
+				store.set(completeApprovalProcessingAtom)
 				throw error
 			}
 		},
-		[pendingApproval, sendAskResponse, clearPendingApproval],
+		[store, sendAskResponse, startApprovalProcessingAtom, completeApprovalProcessingAtom],
 	)
 
 	const executeSelected = useCallback(
@@ -171,67 +230,9 @@ export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): Use
 		[selectedOption, approve, reject],
 	)
 
-	// CI mode auto-approval/rejection effect for followup questions
-	// Note: Most CI mode auto-approvals are now handled at the component level
-	// to avoid race conditions. This effect only handles followup questions which
-	// need special handling with a custom message.
-	useEffect(() => {
-		if (!isCIMode || !pendingApproval) {
-			return
-		}
-
-		const isFollowup = pendingApproval.ask === "followup"
-
-		// In CI mode, handle followup questions with special message
-		if (isFollowup) {
-			const handleFollowup = async () => {
-				try {
-					// Always approve followup questions with CI message
-					logs.info(
-						"CI mode: Auto-approving followup question with non-interactive message",
-						"useApprovalHandler",
-					)
-					await approve(CI_MODE_MESSAGES.FOLLOWUP_RESPONSE)
-				} catch (error) {
-					logs.error("CI mode: Failed to auto-approve followup question", "useApprovalHandler", { error })
-				}
-			}
-
-			handleFollowup()
-		}
-	}, [isCIMode, pendingApproval, approve])
-
-	// Regular auto-approval effect (for non-CI mode)
-	useEffect(() => {
-		// Skip if in CI mode (handled by CI effect above)
-		if (isCIMode || !pendingApproval || !shouldAutoApprove) {
-			return
-		}
-
-		const isRetry = pendingApproval.ask === "api_req_failed"
-		const isQuestion = pendingApproval.ask === "followup"
-
-		// Convert seconds to milliseconds for delay
-		let delay = 0
-		if (isRetry) {
-			delay = retryDelay * 1000
-		} else if (isQuestion) {
-			delay = questionTimeout * 1000
-		}
-
-		logs.info(
-			`Auto-approving ${pendingApproval.ask} request${delay > 0 ? ` after ${delay / 1000}s delay` : ""}`,
-			"useApprovalHandler",
-		)
-
-		const timeoutId = setTimeout(() => {
-			approve().catch((error) => {
-				logs.error("Failed to auto-approve request", "useApprovalHandler", { error })
-			})
-		}, delay)
-
-		return () => clearTimeout(timeoutId)
-	}, [isCIMode, pendingApproval, shouldAutoApprove, approve, retryDelay, questionTimeout])
+	// Note: All auto-approval logic has been moved to useApprovalEffect hook
+	// and the approvalDecision service. This hook now only handles manual
+	// approve/reject actions triggered by user interaction.
 
 	return {
 		pendingApproval,

@@ -33,8 +33,8 @@ export const DEFAULT_AUTO_APPROVAL: AutoApprovalConfig = {
 	},
 	execute: {
 		enabled: true,
-		allowed: ["*"], // Allow all commands by default (can be restricted via denied list)
-		denied: ["rm -rf", "sudo rm", "mkfs", "dd if="], // Deny dangerous commands
+		allowed: ["ls", "cat", "echo", "pwd"],
+		denied: ["rm -rf", "sudo rm", "mkfs", "dd if="],
 	},
 	question: {
 		enabled: false,

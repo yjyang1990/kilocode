@@ -54,6 +54,12 @@ export type { UseTaskStateReturn } from "./useTaskState.js"
 export { useConfig } from "./useConfig.js"
 export type { UseConfigReturn } from "./useConfig.js"
 
+// Approval hooks
+export { useApprovalHandler } from "./useApprovalHandler.js"
+export type { UseApprovalHandlerOptions, UseApprovalHandlerReturn } from "./useApprovalHandler.js"
+
+export { useApprovalEffect } from "./useApprovalEffect.js"
+
 // UI hooks
 export { useWelcomeMessage, getDefaultWelcomeContent } from "./useWelcomeMessage.js"
 export type { WelcomeMessageConfig } from "./useWelcomeMessage.js"

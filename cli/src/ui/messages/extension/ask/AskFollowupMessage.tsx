@@ -2,11 +2,15 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon, parseFollowUpData } from "../utils.js"
+import { useApprovalEffect } from "../../../../state/hooks/useApprovalEffect.js"
 
 /**
  * Display follow-up question with numbered suggestions
  */
 export const AskFollowupMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	// Use centralized approval orchestration (handles CI mode auto-approval)
+	useApprovalEffect(message)
+
 	const icon = getMessageIcon("ask", "followup")
 	const data = parseFollowUpData(message)
 

@@ -1,11 +1,7 @@
-/**
- * Approval state atoms
- * These atoms manage the approval/rejection flow for ask messages
- */
-
 import { atom } from "jotai"
 import type { ExtensionChatMessage } from "../../types/messages.js"
 import { ciModeAtom } from "./ci.js"
+import { logs } from "../../services/logs.js"
 import {
 	autoApproveReadAtom,
 	autoApproveReadOutsideAtom,
@@ -35,9 +31,28 @@ export interface ApprovalOption {
 }
 
 /**
+ * Approval processing state to track ongoing operations
+ */
+interface ApprovalProcessingState {
+	/** Whether an approval/rejection is currently being processed */
+	isProcessing: boolean
+	/** Timestamp of the message being processed */
+	processingTs?: number
+	/** Type of operation being processed */
+	operation?: "approve" | "reject"
+}
+
+/**
  * Atom to hold the message currently awaiting approval
  */
 export const pendingApprovalAtom = atom<ExtensionChatMessage | null>(null)
+
+/**
+ * Atom to track approval processing state (prevents duplicate operations)
+ */
+export const approvalProcessingAtom = atom<ApprovalProcessingState>({
+	isProcessing: false,
+})
 
 /**
  * Atom to track the selected approval option index
@@ -48,7 +63,10 @@ export const selectedApprovalIndexAtom = atom<number>(0)
  * Derived atom to check if there's a pending approval
  */
 export const isApprovalPendingAtom = atom<boolean>((get) => {
-	return get(pendingApprovalAtom) !== null
+	const pending = get(pendingApprovalAtom)
+	const processing = get(approvalProcessingAtom)
+	// Only show as pending if not currently processing
+	return pending !== null && !processing.isProcessing
 })
 
 /**
@@ -100,18 +118,114 @@ export const approvalOptionsAtom = atom<ApprovalOption[]>((get) => {
 
 /**
  * Action atom to set the pending approval message
+ * This is an atomic operation that ensures proper state transitions
  */
 export const setPendingApprovalAtom = atom(null, (get, set, message: ExtensionChatMessage | null) => {
+	const processing = get(approvalProcessingAtom)
+
+	// Don't set pending approval if we're currently processing an approval
+	if (processing.isProcessing) {
+		logs.debug("Skipping setPendingApproval - approval is being processed", "approval", {
+			processingTs: processing.processingTs,
+			newTs: message?.ts,
+		})
+		return
+	}
+
+	// Don't set if message is already answered
+	if (message?.isAnswered) {
+		logs.debug("Skipping setPendingApproval - message already answered", "approval", {
+			ts: message.ts,
+		})
+		return
+	}
+
+	logs.debug("Setting pending approval", "approval", {
+		ts: message?.ts,
+		ask: message?.ask,
+		text: message?.text?.substring(0, 100),
+	})
+
 	set(pendingApprovalAtom, message)
 	set(selectedApprovalIndexAtom, 0) // Reset selection
 })
 
 /**
  * Action atom to clear the pending approval
+ * This is an atomic operation that ensures proper cleanup
  */
 export const clearPendingApprovalAtom = atom(null, (get, set) => {
+	const current = get(pendingApprovalAtom)
+	const processing = get(approvalProcessingAtom)
+
+	if (current) {
+		logs.debug("Clearing pending approval atom", "approval", {
+			ts: current.ts,
+			ask: current.ask,
+			wasProcessing: processing.isProcessing,
+		})
+	}
+
 	set(pendingApprovalAtom, null)
 	set(selectedApprovalIndexAtom, 0)
+
+	// Also clear processing state if it matches
+	if (processing.isProcessing && processing.processingTs === current?.ts) {
+		set(approvalProcessingAtom, { isProcessing: false })
+	}
+})
+
+/**
+ * Action atom to start processing an approval/rejection
+ * This prevents duplicate operations by marking the message as being processed
+ */
+export const startApprovalProcessingAtom = atom(null, (get, set, operation: "approve" | "reject") => {
+	const pending = get(pendingApprovalAtom)
+	const processing = get(approvalProcessingAtom)
+
+	if (!pending) {
+		logs.warn("Cannot start approval processing - no pending approval", "approval")
+		return false
+	}
+
+	if (processing.isProcessing) {
+		logs.warn("Cannot start approval processing - already processing", "approval", {
+			currentTs: processing.processingTs,
+			newTs: pending.ts,
+		})
+		return false
+	}
+
+	logs.debug("Starting approval processing", "approval", {
+		ts: pending.ts,
+		operation,
+	})
+
+	set(approvalProcessingAtom, {
+		isProcessing: true,
+		processingTs: pending.ts,
+		operation,
+	})
+
+	return true
+})
+
+/**
+ * Action atom to complete approval/rejection processing
+ * This clears both the pending approval and processing state atomically
+ */
+export const completeApprovalProcessingAtom = atom(null, (get, set) => {
+	const processing = get(approvalProcessingAtom)
+
+	logs.debug("Completing approval processing", "approval", {
+		ts: processing.processingTs,
+		operation: processing.operation,
+	})
+
+	// Clear both pending approval and processing state atomically
+	set(pendingApprovalAtom, null)
+	set(selectedApprovalIndexAtom, 0)
+	set(approvalProcessingAtom, { isProcessing: false })
 })
 
 /**
@@ -252,7 +366,16 @@ export const shouldAutoApproveAtom = atom<boolean>((get) => {
 				const autoApproveExecute = get(autoApproveExecuteAtom)
 				if (!autoApproveExecute) return false
 
-				const command = pendingMessage.text || ""
+				// Parse command from message - it's stored as JSON with a "command" field
+				let command = ""
+				try {
+					const commandData = JSON.parse(pendingMessage.text || "{}")
+					command = commandData.command || pendingMessage.text || ""
+				} catch {
+					// If parsing fails, use text directly
+					command = pendingMessage.text || ""
+				}
+
 				const allowedCommands = get(autoApproveExecuteAllowedAtom)
 				const deniedCommands = get(autoApproveExecuteDeniedAtom)
 

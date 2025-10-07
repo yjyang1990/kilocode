@@ -34,7 +34,7 @@ describe("Auto Approval Configuration", () => {
 				},
 				execute: {
 					enabled: true,
-					allowed: ["*"],
+					allowed: ["ls", "cat", "echo", "pwd"],
 					denied: ["rm -rf", "sudo rm", "mkfs", "dd if="],
 				},
 				question: {
