@@ -13,7 +13,6 @@ export class GhostDocumentStore {
 	private historyLimit: number = 3 // Limit the number of snapshots to keep
 	private documentStore: Map<string, GhostDocumentStoreItem> = new Map()
 	private parserInitialized: boolean = false
-	private astEnabled: boolean = false
 
 	/**
 	 * Store a document in the document store and optionally parse its AST
@@ -85,65 +84,7 @@ export class GhostDocumentStore {
 	 * @param document The document to parse
 	 */
 	public async parseDocumentAST(document: vscode.TextDocument): Promise<void> {
-		if (!this.astEnabled) {
-			return
-		}
-		try {
-			const uri = document.uri.toString()
-			const item = this.documentStore.get(uri)
-
-			if (!item) {
-				return
-			}
-
-			// Initialize the parser if needed
-			if (!this.parserInitialized) {
-				try {
-					// Use require for web-tree-sitter as in the original code
-					const { Parser } = require("web-tree-sitter")
-					await Parser.init()
-					this.parserInitialized = true
-				} catch (initError) {
-					console.error("Failed to initialize tree-sitter parser:", initError)
-					return
-				}
-			}
-
-			// Get file extension to determine parser
-			const filePath = document.uri.fsPath
-			const ext = path.extname(filePath).substring(1).toLowerCase()
-
-			try {
-				// Load the appropriate language parser using require
-				const { loadRequiredLanguageParsers } = require("../tree-sitter/languageParser")
-				const languageParsers = await loadRequiredLanguageParsers([filePath])
-
-				// Add proper type checking
-				const parserInfo = languageParsers[ext] || {}
-				// The parser object from the language parser module
-				const parser = parserInfo.parser
-
-				if (parser) {
-					// Parse the document content into an AST
-					const documentContent = document.getText()
-					const tree = parser.parse(documentContent)
-
-					if (tree) {
-						// Store the AST in the document store
-						item.ast = {
-							rootNode: tree.rootNode,
-							language: ext,
-						}
-						item.lastParsedVersion = document.version
-					}
-				}
-			} catch (parserError) {
-				console.error(`Error loading or using language parser for ${ext}:`, parserError)
-			}
-		} catch (error) {
-			console.error("Error parsing document with tree-sitter:", error)
-			// Continue without AST if there's an error
-		}
+		return
 	}
 
 	/**
