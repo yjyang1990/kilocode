@@ -41,10 +41,6 @@ export class GhostContext {
 		return context
 	}
 
-	private addRangeASTNode(context: GhostSuggestionContext): GhostSuggestionContext {
-		return context
-	}
-
 	private addDiagnostics(context: GhostSuggestionContext): GhostSuggestionContext {
 		if (!context.document) {
 			return context
@@ -61,8 +57,6 @@ export class GhostContext {
 		context = this.addEditor(context)
 		context = this.addOpenFiles(context)
 		context = this.addRange(context)
-		//context = await this.addAST(context)
-		context = this.addRangeASTNode(context)
 		context = this.addRecentOperations(context)
 		context = this.addDiagnostics(context)
 		return context
