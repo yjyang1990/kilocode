@@ -5,6 +5,23 @@
 
 import { atom } from "jotai"
 import type { ExtensionChatMessage } from "../../types/messages.js"
+import {
+	autoApproveReadAtom,
+	autoApproveReadOutsideAtom,
+	autoApproveWriteAtom,
+	autoApproveWriteOutsideAtom,
+	autoApproveWriteProtectedAtom,
+	autoApproveBrowserAtom,
+	autoApproveRetryAtom,
+	autoApproveMcpAtom,
+	autoApproveModeAtom,
+	autoApproveSubtasksAtom,
+	autoApproveExecuteAtom,
+	autoApproveExecuteAllowedAtom,
+	autoApproveExecuteDeniedAtom,
+	autoApproveQuestionAtom,
+	autoApproveTodoAtom,
+} from "./config.js"
 
 /**
  * Approval option interface
@@ -128,4 +145,141 @@ export const selectedApprovalOptionAtom = atom<ApprovalOption | null>((get) => {
 	const selectedIndex = get(selectedApprovalIndexAtom)
 
 	return options[selectedIndex] ?? null
+})
+
+/**
+ * Helper function to check if a command matches allowed/denied patterns
+ */
+function matchesCommandPattern(command: string, patterns: string[]): boolean {
+	if (patterns.length === 0) return false
+
+	return patterns.some((pattern) => {
+		// Simple pattern matching - can be enhanced with regex if needed
+		if (pattern === "*") return true
+		if (pattern === command) return true
+		// Check if command starts with pattern (for partial matches like "npm")
+		if (command.startsWith(pattern)) return true
+		return false
+	})
+}
+
+/**
+ * Derived atom to check if the current pending approval should be auto-approved
+ * based on CLI configuration
+ */
+export const shouldAutoApproveAtom = atom<boolean>((get) => {
+	const pendingMessage = get(pendingApprovalAtom)
+
+	if (!pendingMessage || pendingMessage.type !== "ask") {
+		return false
+	}
+
+	const askType = pendingMessage.ask
+
+	try {
+		switch (askType) {
+			case "tool": {
+				const toolData = JSON.parse(pendingMessage.text || "{}")
+				const tool = toolData.tool
+
+				// Read operations
+				if (
+					tool === "readFile" ||
+					tool === "listFiles" ||
+					tool === "searchFiles" ||
+					tool === "listCodeDefinitionNames"
+				) {
+					const isOutsideWorkspace = toolData.isOutsideWorkspace === true
+					if (isOutsideWorkspace) {
+						return get(autoApproveReadOutsideAtom)
+					}
+					return get(autoApproveReadAtom)
+				}
+
+				// Write operations
+				if (
+					tool === "editedExistingFile" ||
+					tool === "appliedDiff" ||
+					tool === "newFileCreated" ||
+					tool === "insertContent"
+				) {
+					const isOutsideWorkspace = toolData.isOutsideWorkspace === true
+					const isProtected = toolData.isProtected === true
+
+					if (isProtected) {
+						return get(autoApproveWriteProtectedAtom)
+					}
+					if (isOutsideWorkspace) {
+						return get(autoApproveWriteOutsideAtom)
+					}
+					return get(autoApproveWriteAtom)
+				}
+
+				// Browser operations
+				if (tool === "browser_action") {
+					return get(autoApproveBrowserAtom)
+				}
+
+				// MCP operations
+				if (tool === "use_mcp_tool" || tool === "access_mcp_resource") {
+					return get(autoApproveMcpAtom)
+				}
+
+				// Mode switching
+				if (tool === "switch_mode") {
+					return get(autoApproveModeAtom)
+				}
+
+				// Subtasks
+				if (tool === "new_task") {
+					return get(autoApproveSubtasksAtom)
+				}
+
+				// Todo list updates
+				if (tool === "update_todo_list") {
+					return get(autoApproveTodoAtom)
+				}
+
+				break
+			}
+
+			case "command": {
+				const autoApproveExecute = get(autoApproveExecuteAtom)
+				if (!autoApproveExecute) return false
+
+				const command = pendingMessage.text || ""
+				const allowedCommands = get(autoApproveExecuteAllowedAtom)
+				const deniedCommands = get(autoApproveExecuteDeniedAtom)
+
+				// Check denied list first (takes precedence)
+				if (matchesCommandPattern(command, deniedCommands)) {
+					return false
+				}
+
+				// If allowed list is empty, don't allow any commands
+				if (allowedCommands.length === 0) {
+					return false
+				}
+
+				// Check if command matches allowed patterns
+				return matchesCommandPattern(command, allowedCommands)
+			}
+
+			case "followup": {
+				return get(autoApproveQuestionAtom)
+			}
+
+			case "api_req_failed": {
+				return get(autoApproveRetryAtom)
+			}
+
+			default:
+				return false
+		}
+	} catch (error) {
+		// If we can't parse the message, don't auto-approve
+		return false
+	}
+
+	return false
 })

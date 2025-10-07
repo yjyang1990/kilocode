@@ -4,7 +4,7 @@
  */
 
 import { useAtomValue, useSetAtom } from "jotai"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import {
 	pendingApprovalAtom,
 	approvalOptionsAtom,
@@ -14,8 +14,10 @@ import {
 	selectPreviousApprovalAtom,
 	clearPendingApprovalAtom,
 	isApprovalPendingAtom,
+	shouldAutoApproveAtom,
 	type ApprovalOption,
 } from "../atoms/approval.js"
+import { autoApproveRetryDelayAtom, autoApproveQuestionTimeoutAtom } from "../atoms/config.js"
 import { useWebviewMessage } from "./useWebviewMessage.js"
 import type { ExtensionChatMessage } from "../../types/messages.js"
 import { logs } from "../../services/logs.js"
@@ -74,6 +76,9 @@ export function useApprovalHandler(): UseApprovalHandlerReturn {
 	const selectedIndex = useAtomValue(selectedApprovalIndexAtom)
 	const selectedOption = useAtomValue(selectedApprovalOptionAtom)
 	const isApprovalPending = useAtomValue(isApprovalPendingAtom)
+	const shouldAutoApprove = useAtomValue(shouldAutoApproveAtom)
+	const retryDelay = useAtomValue(autoApproveRetryDelayAtom)
+	const questionTimeout = useAtomValue(autoApproveQuestionTimeoutAtom)
 
 	const selectNext = useSetAtom(selectNextApprovalAtom)
 	const selectPrevious = useSetAtom(selectPreviousApprovalAtom)
@@ -146,6 +151,37 @@ export function useApprovalHandler(): UseApprovalHandlerReturn {
 		},
 		[selectedOption, approve, reject],
 	)
+
+	// Auto-approval effect
+	useEffect(() => {
+		if (!pendingApproval || !shouldAutoApprove) {
+			return
+		}
+
+		const isRetry = pendingApproval.ask === "api_req_failed"
+		const isQuestion = pendingApproval.ask === "followup"
+
+		// Convert seconds to milliseconds for delay
+		let delay = 0
+		if (isRetry) {
+			delay = retryDelay * 1000
+		} else if (isQuestion) {
+			delay = questionTimeout * 1000
+		}
+
+		logs.info(
+			`Auto-approving ${pendingApproval.ask} request${delay > 0 ? ` after ${delay / 1000}s delay` : ""}`,
+			"useApprovalHandler",
+		)
+
+		const timeoutId = setTimeout(() => {
+			approve().catch((error) => {
+				logs.error("Failed to auto-approve request", "useApprovalHandler", { error })
+			})
+		}, delay)
+
+		return () => clearTimeout(timeoutId)
+	}, [pendingApproval, shouldAutoApprove, approve, retryDelay, questionTimeout])
 
 	return {
 		pendingApproval,

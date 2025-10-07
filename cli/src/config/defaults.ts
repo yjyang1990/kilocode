@@ -1,4 +1,53 @@
-import type { CLIConfig } from "./types.js"
+import type { CLIConfig, AutoApprovalConfig } from "./types.js"
+
+/**
+ * Default auto approval configuration
+ * Matches the defaults from the webview settings
+ */
+export const DEFAULT_AUTO_APPROVAL: AutoApprovalConfig = {
+	enabled: false,
+	read: {
+		enabled: true,
+		outside: true,
+	},
+	write: {
+		enabled: true,
+		outside: true,
+		protected: false,
+	},
+	browser: {
+		enabled: false,
+	},
+	retry: {
+		enabled: false,
+		delay: 10,
+	},
+	mcp: {
+		enabled: true,
+	},
+	mode: {
+		enabled: true,
+	},
+	subtasks: {
+		enabled: true,
+	},
+	execute: {
+		enabled: true,
+		allowed: [],
+		denied: [],
+	},
+	question: {
+		enabled: false,
+		timeout: 60,
+	},
+	todo: {
+		enabled: true,
+	},
+	limits: {
+		maxRequests: null,
+		maxCost: null,
+	},
+}
 
 export const DEFAULT_CONFIG: CLIConfig = {
 	version: "1.0.0",
@@ -13,6 +62,7 @@ export const DEFAULT_CONFIG: CLIConfig = {
 			kilocodeModel: "anthropic/claude-sonnet-4",
 		},
 	],
+	autoApproval: DEFAULT_AUTO_APPROVAL,
 }
 
 export function createDefaultProvider(provider: string): any {

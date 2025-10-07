@@ -19,13 +19,7 @@ export const ApprovalMenu: React.FC<ApprovalMenuProps> = ({ options, selectedInd
 	}
 
 	return (
-		<Box
-			flexDirection="column"
-			borderStyle="single"
-			borderColor="yellow"
-			paddingX={1}
-			marginTop={1}
-			marginBottom={1}>
+		<Box flexDirection="column" borderStyle="single" borderColor="yellow" paddingX={1}>
 			<Text bold color="yellow">
 				[!] Action Required:
 			</Text>

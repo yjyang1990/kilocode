@@ -173,3 +173,258 @@ export const mappedExtensionStateAtom = atom((get) => {
 	const config = get(configAtom)
 	return mapConfigToExtensionState(config)
 })
+
+// ============================================================================
+// Auto Approval Atoms
+// ============================================================================
+
+/**
+ * Derived atom to get the complete auto approval configuration
+ */
+export const autoApprovalConfigAtom = atom((get) => {
+	const config = get(configAtom)
+	return config.autoApproval
+})
+
+/**
+ * Derived atom to get the global auto approval enabled state
+ */
+export const autoApprovalEnabledAtom = atom((get) => {
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproval?.enabled ?? false
+})
+
+/**
+ * Derived atom to check if read operations should be auto-approved
+ */
+export const autoApproveReadAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.read?.enabled ?? true)
+})
+
+/**
+ * Derived atom to check if read operations outside workspace should be auto-approved
+ */
+export const autoApproveReadOutsideAtom = atom((get) => {
+	const autoApproveRead = get(autoApproveReadAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproveRead && (autoApproval?.read?.outside ?? true)
+})
+
+/**
+ * Derived atom to check if write operations should be auto-approved
+ */
+export const autoApproveWriteAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.write?.enabled ?? true)
+})
+
+/**
+ * Derived atom to check if write operations outside workspace should be auto-approved
+ */
+export const autoApproveWriteOutsideAtom = atom((get) => {
+	const autoApproveWrite = get(autoApproveWriteAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproveWrite && (autoApproval?.write?.outside ?? true)
+})
+
+/**
+ * Derived atom to check if write operations to protected files should be auto-approved
+ */
+export const autoApproveWriteProtectedAtom = atom((get) => {
+	const autoApproveWrite = get(autoApproveWriteAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproveWrite && (autoApproval?.write?.protected ?? false)
+})
+
+/**
+ * Derived atom to check if browser operations should be auto-approved
+ */
+export const autoApproveBrowserAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.browser?.enabled ?? false)
+})
+
+/**
+ * Derived atom to check if retry operations should be auto-approved
+ */
+export const autoApproveRetryAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.retry?.enabled ?? false)
+})
+
+/**
+ * Derived atom to get retry delay in seconds
+ */
+export const autoApproveRetryDelayAtom = atom((get) => {
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproval?.retry?.delay ?? 10
+})
+
+/**
+ * Derived atom to check if MCP operations should be auto-approved
+ */
+export const autoApproveMcpAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.mcp?.enabled ?? true)
+})
+
+/**
+ * Derived atom to check if mode switching should be auto-approved
+ */
+export const autoApproveModeAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.mode?.enabled ?? true)
+})
+
+/**
+ * Derived atom to check if subtask creation should be auto-approved
+ */
+export const autoApproveSubtasksAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.subtasks?.enabled ?? true)
+})
+
+/**
+ * Derived atom to check if command execution should be auto-approved
+ */
+export const autoApproveExecuteAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.execute?.enabled ?? true)
+})
+
+/**
+ * Derived atom to get allowed commands list
+ */
+export const autoApproveExecuteAllowedAtom = atom((get) => {
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproval?.execute?.allowed ?? []
+})
+
+/**
+ * Derived atom to get denied commands list
+ */
+export const autoApproveExecuteDeniedAtom = atom((get) => {
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproval?.execute?.denied ?? []
+})
+
+/**
+ * Derived atom to check if followup questions should be auto-approved
+ */
+export const autoApproveQuestionAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.question?.enabled ?? false)
+})
+
+/**
+ * Derived atom to get followup question timeout in seconds
+ */
+export const autoApproveQuestionTimeoutAtom = atom((get) => {
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproval?.question?.timeout ?? 60
+})
+
+/**
+ * Derived atom to check if todo list updates should be auto-approved
+ */
+export const autoApproveTodoAtom = atom((get) => {
+	const enabled = get(autoApprovalEnabledAtom)
+	const autoApproval = get(autoApprovalConfigAtom)
+	return enabled && (autoApproval?.todo?.enabled ?? true)
+})
+
+/**
+ * Derived atom to get max requests limit
+ */
+export const autoApprovalMaxRequestsAtom = atom((get) => {
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproval?.limits?.maxRequests ?? null
+})
+
+/**
+ * Derived atom to get max cost limit
+ */
+export const autoApprovalMaxCostAtom = atom((get) => {
+	const autoApproval = get(autoApprovalConfigAtom)
+	return autoApproval?.limits?.maxCost ?? null
+})
+
+/**
+ * Action atom to toggle global auto approval
+ */
+export const toggleAutoApprovalAtom = atom(null, async (get, set) => {
+	const config = get(configAtom)
+	const currentEnabled = config.autoApproval?.enabled ?? false
+
+	const updatedConfig = {
+		...config,
+		autoApproval: {
+			...config.autoApproval,
+			enabled: !currentEnabled,
+		},
+	}
+
+	set(configAtom, updatedConfig)
+	await set(saveConfigAtom, updatedConfig)
+
+	logs.info(`Auto approval ${!currentEnabled ? "enabled" : "disabled"}`, "ConfigAtoms")
+})
+
+/**
+ * Action atom to update auto approval configuration
+ */
+export const updateAutoApprovalAtom = atom(
+	null,
+	async (get, set, updates: Partial<import("../../config/types.js").AutoApprovalConfig>) => {
+		const config = get(configAtom)
+
+		const updatedConfig = {
+			...config,
+			autoApproval: {
+				...config.autoApproval,
+				...updates,
+			},
+		}
+
+		set(configAtom, updatedConfig)
+		await set(saveConfigAtom, updatedConfig)
+
+		logs.info("Auto approval configuration updated", "ConfigAtoms")
+	},
+)
+
+/**
+ * Action atom to update a specific auto approval setting
+ */
+export const updateAutoApprovalSettingAtom = atom(
+	null,
+	async (get, set, category: keyof import("../../config/types.js").AutoApprovalConfig, updates: any) => {
+		const config = get(configAtom)
+
+		const updatedConfig = {
+			...config,
+			autoApproval: {
+				...config.autoApproval,
+				[category]: {
+					...(config.autoApproval?.[category] as any),
+					...updates,
+				},
+			},
+		}
+
+		set(configAtom, updatedConfig)
+		await set(saveConfigAtom, updatedConfig)
+
+		logs.info(`Auto approval ${category} setting updated`, "ConfigAtoms")
+	},
+)

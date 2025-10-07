@@ -30,6 +30,188 @@
 			"items": {
 				"$ref": "#/definitions/provider"
 			}
+		},
+		"autoApproval": {
+			"type": "object",
+			"description": "Auto approval configuration for CLI operations",
+			"properties": {
+				"enabled": {
+					"type": "boolean",
+					"default": false,
+					"description": "Global toggle for auto approval"
+				},
+				"read": {
+					"type": "object",
+					"description": "Auto approval settings for read operations",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve read operations"
+						},
+						"outside": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve reads outside workspace"
+						}
+					}
+				},
+				"write": {
+					"type": "object",
+					"description": "Auto approval settings for write operations",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve write operations"
+						},
+						"outside": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve writes outside workspace"
+						},
+						"protected": {
+							"type": "boolean",
+							"default": false,
+							"description": "Auto approve writes to protected files"
+						}
+					}
+				},
+				"browser": {
+					"type": "object",
+					"description": "Auto approval settings for browser operations",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": false,
+							"description": "Auto approve browser operations"
+						}
+					}
+				},
+				"retry": {
+					"type": "object",
+					"description": "Auto approval settings for retry operations",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": false,
+							"description": "Auto approve retry operations"
+						},
+						"delay": {
+							"type": "number",
+							"minimum": 0,
+							"default": 10,
+							"description": "Delay in seconds before auto-approving retry"
+						}
+					}
+				},
+				"mcp": {
+					"type": "object",
+					"description": "Auto approval settings for MCP operations",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve MCP operations"
+						}
+					}
+				},
+				"mode": {
+					"type": "object",
+					"description": "Auto approval settings for mode switching",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve mode switches"
+						}
+					}
+				},
+				"subtasks": {
+					"type": "object",
+					"description": "Auto approval settings for subtask creation",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve subtask creation"
+						}
+					}
+				},
+				"execute": {
+					"type": "object",
+					"description": "Auto approval settings for command execution",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve command execution"
+						},
+						"allowed": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							},
+							"default": [],
+							"description": "List of allowed commands (empty means all allowed)"
+						},
+						"denied": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							},
+							"default": [],
+							"description": "List of denied commands"
+						}
+					}
+				},
+				"question": {
+					"type": "object",
+					"description": "Auto approval settings for followup questions",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": false,
+							"description": "Auto approve followup questions"
+						},
+						"timeout": {
+							"type": "number",
+							"minimum": 0,
+							"default": 60,
+							"description": "Timeout in seconds before auto-approving question"
+						}
+					}
+				},
+				"todo": {
+					"type": "object",
+					"description": "Auto approval settings for todo list updates",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"default": true,
+							"description": "Auto approve todo list updates"
+						}
+					}
+				},
+				"limits": {
+					"type": "object",
+					"description": "Auto approval limits",
+					"properties": {
+						"maxRequests": {
+							"type": ["number", "null"],
+							"minimum": 1,
+							"default": null,
+							"description": "Maximum number of auto-approved requests (null for unlimited)"
+						},
+						"maxCost": {
+							"type": ["number", "null"],
+							"minimum": 0,
+							"default": null,
+							"description": "Maximum cost for auto-approved requests (null for unlimited)"
+						}
+					}
+				}
+			}
 		}
 	},
 	"definitions": {
