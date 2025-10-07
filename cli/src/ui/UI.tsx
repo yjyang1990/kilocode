@@ -16,6 +16,7 @@ import { isCommandInput } from "../services/autocomplete.js"
 import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
 import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
 import { useWelcomeMessage } from "../state/hooks/useWelcomeMessage.js"
+import { useFollowupHandler } from "../state/hooks/useFollowupHandler.js"
 import { useCIMode } from "../state/hooks/useCIMode.js"
 import { AppOptions } from "./App.js"
 import { logs } from "../services/logs.js"
@@ -40,6 +41,9 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	const { sendUserMessage, isSending: isSendingMessage } = useMessageHandler({
 		...(options.ci !== undefined && { ciMode: options.ci }),
 	})
+
+	// Followup handler hook for automatic suggestion population
+	useFollowupHandler()
 
 	// CI mode hook for automatic exit
 	const { shouldExit, exitReason } = useCIMode({

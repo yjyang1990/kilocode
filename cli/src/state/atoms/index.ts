@@ -166,6 +166,11 @@ export {
 	argumentSuggestionsAtom,
 	selectedSuggestionIndexAtom,
 
+	// Followup suggestions state atoms
+	followupSuggestionsAtom,
+	showFollowupSuggestionsAtom,
+	selectedFollowupIndexAtom,
+
 	// Derived UI atoms
 	suggestionCountAtom,
 	isCommandInputAtom,
@@ -174,6 +179,8 @@ export {
 	lastMessageAtom,
 	hasErrorAtom,
 	getSelectedSuggestionAtom,
+	getSelectedFollowupAtom,
+	hasFollowupSuggestionsAtom,
 
 	// UI action atoms
 	addMessageAtom,
@@ -185,6 +192,11 @@ export {
 	setArgumentSuggestionsAtom,
 	selectNextSuggestionAtom,
 	selectPreviousSuggestionAtom,
+	setFollowupSuggestionsAtom,
+	clearFollowupSuggestionsAtom,
+	selectNextFollowupAtom,
+	selectPreviousFollowupAtom,
+	unselectFollowupAtom,
 	setErrorAtom,
 	setIsProcessingAtom,
 	hideAutocompleteAtom,
@@ -210,3 +222,4 @@ export type {
 } from "../../types/messages.js"
 export type { CliMessage } from "../../types/cli.js"
 export type { CommandSuggestion, ArgumentSuggestion } from "../../services/autocomplete.js"
+export type { FollowupSuggestion } from "./ui.js"

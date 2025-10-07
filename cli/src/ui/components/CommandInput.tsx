@@ -1,6 +1,6 @@
 /**
- * CommandInput component - input field with autocomplete and approval support
- * Updated to use useCommandInput, useWebviewMessage, and useApprovalHandler hooks
+ * CommandInput component - input field with autocomplete, approval, and followup suggestions support
+ * Updated to use useCommandInput, useWebviewMessage, useApprovalHandler, and useFollowupSuggestions hooks
  */
 
 import React, { useEffect, useRef } from "react"
@@ -8,8 +8,10 @@ import { Box, Text, useInput } from "ink"
 import TextInput from "ink-text-input"
 import { useCommandInput } from "../../state/hooks/useCommandInput.js"
 import { useApprovalHandler } from "../../state/hooks/useApprovalHandler.js"
+import { useFollowupSuggestions } from "../../state/hooks/useFollowupSuggestions.js"
 import { AutocompleteMenu } from "./AutocompleteMenu.js"
 import { ApprovalMenu } from "./ApprovalMenu.js"
+import { FollowupSuggestionsMenu } from "./FollowupSuggestionsMenu.js"
 
 interface CommandInputProps {
 	onSubmit: (value: string) => void
@@ -48,12 +50,24 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 		executeSelected,
 	} = useApprovalHandler()
 
+	// Use the followup suggestions hook
+	const {
+		suggestions: followupSuggestions,
+		isVisible: isFollowupVisible,
+		selectedIndex: followupSelectedIndex,
+		selectedSuggestion: selectedFollowupSuggestion,
+		selectNext: selectNextFollowup,
+		selectPrevious: selectPreviousFollowup,
+		clearSuggestions: clearFollowupSuggestions,
+		unselect: unselectFollowup,
+	} = useFollowupSuggestions()
+
 	// Key to force TextInput remount when autocompleting (resets cursor to end)
 	const [inputKey, setInputKey] = React.useState(0)
 	// Ref to track if we've already handled the Enter key in autocomplete
 	const autocompleteHandledEnter = useRef(false)
 
-	// Handle keyboard input for autocomplete and approval navigation
+	// Handle keyboard input for followup suggestions, autocomplete, and approval navigation
 	useInput(
 		(input, key) => {
 			if (disabled) {
@@ -89,7 +103,45 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 				return
 			}
 
-			// Priority 2: Handle autocomplete keys when autocomplete is showing
+			// Priority 2: Handle followup suggestions when visible
+			if (isFollowupVisible) {
+				if (key.downArrow) {
+					selectNextFollowup()
+					return
+				} else if (key.upArrow) {
+					selectPreviousFollowup()
+					return
+				} else if (key.tab) {
+					// Fill input with selected suggestion and unselect (don't submit)
+					if (selectedFollowupSuggestion) {
+						setInput(selectedFollowupSuggestion.answer)
+						// Unselect the suggestion so user can continue typing
+						unselectFollowup()
+						// Force TextInput remount to reset cursor to end
+						setInputKey((k) => k + 1)
+					}
+					return
+				} else if (key.return) {
+					// If a suggestion is selected, use it; otherwise use typed input
+					if (selectedFollowupSuggestion) {
+						// Mark that we've handled the Enter key to prevent double submission
+						autocompleteHandledEnter.current = true
+						// Submit the selected suggestion
+						onSubmit(selectedFollowupSuggestion.answer)
+						clearInput()
+						clearFollowupSuggestions()
+						// Reset the flag after a short delay
+						setTimeout(() => {
+							autocompleteHandledEnter.current = false
+						}, 100)
+					}
+					// If no suggestion selected, let normal submit handle it
+					return
+				}
+				// Allow typing while suggestions are visible (removed Escape handler)
+			}
+
+			// Priority 3: Handle autocomplete keys when autocomplete is showing
 			if (isAutocompleteVisible) {
 				if (key.downArrow) {
 					selectNext()
@@ -156,7 +208,7 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 	}
 
 	const handleSubmit = () => {
-		// Don't submit if autocomplete already handled the Enter key
+		// Don't submit if autocomplete/followup already handled the Enter key
 		if (autocompleteHandledEnter.current) {
 			autocompleteHandledEnter.current = false
 			return
@@ -164,12 +216,17 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 		if (inputValue.trim()) {
 			onSubmit(inputValue)
 			clearInput()
+			// Clear followup suggestions after submitting
+			if (isFollowupVisible) {
+				clearFollowupSuggestions()
+			}
 		}
 	}
 
-	// Determine if we should let TextInput handle Enter or if autocomplete will handle it
+	// Determine if we should let TextInput handle Enter or if autocomplete/followup will handle it
 	const hasSuggestions = commandSuggestions.length > 0 || argumentSuggestions.length > 0
-	const shouldDisableTextInputSubmit = isAutocompleteVisible && hasSuggestions
+	const shouldDisableTextInputSubmit =
+		(isAutocompleteVisible && hasSuggestions) || (isFollowupVisible && selectedFollowupSuggestion !== null)
 
 	// Determine suggestion type for autocomplete menu
 	const suggestionType =
@@ -198,8 +255,17 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 			{/* Approval menu - shown above input when approval is pending */}
 			<ApprovalMenu options={approvalOptions} selectedIndex={approvalSelectedIndex} visible={isApprovalPending} />
 
-			{/* Autocomplete menu - only shown when not in approval mode */}
-			{!isApprovalPending && (
+			{/* Followup suggestions menu - shown when followup question is active (takes priority over autocomplete) */}
+			{!isApprovalPending && isFollowupVisible && (
+				<FollowupSuggestionsMenu
+					suggestions={followupSuggestions}
+					selectedIndex={followupSelectedIndex}
+					visible={isFollowupVisible}
+				/>
+			)}
+
+			{/* Autocomplete menu - only shown when not in approval mode and no followup suggestions */}
+			{!isApprovalPending && !isFollowupVisible && (
 				<AutocompleteMenu
 					type={suggestionType}
 					commandSuggestions={commandSuggestions}

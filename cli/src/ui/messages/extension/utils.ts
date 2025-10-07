@@ -29,9 +29,26 @@ export function parseMcpServerData(message: ExtensionChatMessage): McpServerData
 
 /**
  * Parse follow-up data from message
+ * Checks both text and metadata fields
  */
 export function parseFollowUpData(message: ExtensionChatMessage): FollowUpData | null {
-	return parseMessageJson<FollowUpData>(message.text)
+	// Try parsing from text first
+	const fromText = parseMessageJson<FollowUpData>(message.text)
+	if (fromText) return fromText
+
+	// Try parsing from metadata
+	if (message.metadata) {
+		// If metadata is already an object, return it
+		if (typeof message.metadata === "object" && message.metadata !== null) {
+			return message.metadata as FollowUpData
+		}
+		// If metadata is a string, try parsing it
+		if (typeof message.metadata === "string") {
+			return parseMessageJson<FollowUpData>(message.metadata)
+		}
+	}
+
+	return null
 }
 
 /**

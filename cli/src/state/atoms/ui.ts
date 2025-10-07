@@ -66,6 +66,34 @@ export const argumentSuggestionsAtom = atom<ArgumentSuggestion[]>([])
 export const selectedSuggestionIndexAtom = atom<number>(0)
 
 // ============================================================================
+// Followup Suggestions State Atoms
+// ============================================================================
+
+/**
+ * Followup suggestion structure
+ */
+export interface FollowupSuggestion {
+	answer: string
+	mode?: string
+}
+
+/**
+ * Atom to hold followup suggestions
+ */
+export const followupSuggestionsAtom = atom<FollowupSuggestion[]>([])
+
+/**
+ * Atom to control followup suggestions menu visibility
+ */
+export const showFollowupSuggestionsAtom = atom<boolean>(false)
+
+/**
+ * Atom to track the currently selected followup suggestion index
+ * -1 means no selection (user can type custom response)
+ */
+export const selectedFollowupIndexAtom = atom<number>(-1)
+
+// ============================================================================
 // Derived Atoms
 // ============================================================================
 
@@ -305,4 +333,107 @@ export const mergedMessagesAtom = atom<UnifiedMessage[]>((get) => {
 	})
 
 	return sorted
+})
+
+// ============================================================================
+// Followup Suggestions Action Atoms
+// ============================================================================
+
+/**
+ * Action atom to set followup suggestions
+ */
+export const setFollowupSuggestionsAtom = atom(null, (get, set, suggestions: FollowupSuggestion[]) => {
+	set(followupSuggestionsAtom, suggestions)
+	set(showFollowupSuggestionsAtom, suggestions.length > 0)
+	// Start with no selection (-1) so user can type custom response
+	set(selectedFollowupIndexAtom, -1)
+})
+
+/**
+ * Action atom to clear followup suggestions
+ */
+export const clearFollowupSuggestionsAtom = atom(null, (get, set) => {
+	set(followupSuggestionsAtom, [])
+	set(showFollowupSuggestionsAtom, false)
+	set(selectedFollowupIndexAtom, -1)
+})
+
+/**
+ * Action atom to select the next followup suggestion
+ * Special behavior: if at last item, unselect (set to -1)
+ */
+export const selectNextFollowupAtom = atom(null, (get, set) => {
+	const suggestions = get(followupSuggestionsAtom)
+	if (suggestions.length === 0) return
+
+	const currentIndex = get(selectedFollowupIndexAtom)
+
+	// If no selection (-1), start at 0
+	if (currentIndex === -1) {
+		set(selectedFollowupIndexAtom, 0)
+		return
+	}
+
+	// If at last item, unselect
+	if (currentIndex === suggestions.length - 1) {
+		set(selectedFollowupIndexAtom, -1)
+		return
+	}
+
+	// Otherwise, move to next
+	set(selectedFollowupIndexAtom, currentIndex + 1)
+})
+
+/**
+ * Action atom to select the previous followup suggestion
+ * Special behavior: if at index 0, unselect (set to -1)
+ */
+export const selectPreviousFollowupAtom = atom(null, (get, set) => {
+	const suggestions = get(followupSuggestionsAtom)
+	if (suggestions.length === 0) return
+
+	const currentIndex = get(selectedFollowupIndexAtom)
+
+	// If at first item (0), unselect
+	if (currentIndex === 0) {
+		set(selectedFollowupIndexAtom, -1)
+		return
+	}
+
+	// If no selection (-1), go to last item
+	if (currentIndex === -1) {
+		set(selectedFollowupIndexAtom, suggestions.length - 1)
+		return
+	}
+
+	// Otherwise, move to previous
+	set(selectedFollowupIndexAtom, currentIndex - 1)
+})
+
+/**
+ * Action atom to unselect followup suggestion
+ */
+export const unselectFollowupAtom = atom(null, (get, set) => {
+	set(selectedFollowupIndexAtom, -1)
+})
+
+/**
+ * Derived atom to get the currently selected followup suggestion
+ */
+export const getSelectedFollowupAtom = atom<FollowupSuggestion | null>((get) => {
+	const suggestions = get(followupSuggestionsAtom)
+	const selectedIndex = get(selectedFollowupIndexAtom)
+
+	if (selectedIndex === -1 || selectedIndex >= suggestions.length) {
+		return null
+	}
+
+	return suggestions[selectedIndex] ?? null
+})
+
+/**
+ * Derived atom to check if followup suggestions are active
+ */
+export const hasFollowupSuggestionsAtom = atom<boolean>((get) => {
+	return get(followupSuggestionsAtom).length > 0
 })
