@@ -63,7 +63,6 @@ export interface GhostSuggestionContext {
 	editor?: vscode.TextEditor
 	openFiles?: vscode.TextDocument[]
 	range?: vscode.Range | vscode.Selection
-	rangeASTNode?: Node
 	userInput?: string
 	recentOperations?: UserAction[] // Stores meaningful user actions instead of raw diff
 	diagnostics?: vscode.Diagnostic[] // Document diagnostics (errors, warnings, etc.)

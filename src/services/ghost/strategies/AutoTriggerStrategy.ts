@@ -34,7 +34,6 @@ export class AutoTriggerStrategy extends BasePromptStrategy {
 			// - userInput (no explicit request)
 			// - diagnostics (not fixing errors)
 			// - openFiles (reduces tokens)
-			// - rangeASTNode (keep it simple)
 		}
 	}
 
