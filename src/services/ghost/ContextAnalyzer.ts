@@ -23,7 +23,6 @@ export class ContextAnalyzer {
 			isInlineEdit: this.isInlineEdit(context),
 			cursorLine: this.getCursorLine(context),
 			cursorPosition: context.range?.start.character || 0,
-			astNodeType: undefined,
 		}
 
 		// Determine primary use case based on priority
@@ -67,12 +66,7 @@ export class ContextAnalyzer {
 			return UseCaseType.INLINE_COMPLETION
 		}
 
-		// Priority 7: AST-aware completion
-		if (analysis.astNodeType) {
-			return UseCaseType.AST_AWARE
-		}
-
-		// Priority 8: Default auto-trigger
+		// Priority 7: Default auto-trigger
 		return UseCaseType.AUTO_TRIGGER
 	}
 
