@@ -1,7 +1,7 @@
 import * as vscode from "vscode"
 import * as path from "path"
 import { structuredPatch } from "diff"
-import { GhostDocumentStoreItem, ASTContext, UserAction, UserActionType } from "./types"
+import { GhostDocumentStoreItem, UserAction, UserActionType } from "./types"
 
 export const GHOST_DOCUMENT_STORE_LIMITS = {
 	MAX_DOCUMENTS: 50, // Limit the number of documents to keep

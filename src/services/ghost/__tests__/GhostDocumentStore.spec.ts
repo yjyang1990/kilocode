@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest"
 import * as vscode from "vscode"
 import { GhostDocumentStore } from "../GhostDocumentStore"
-import { ASTContext } from "../types"
 import { MockTextDocument } from "../../mocking/MockTextDocument"
 
 // Mock vscode
@@ -155,15 +154,8 @@ vi.mock("../tree-sitter/languageParser", () => {
 describe("GhostDocumentStore", () => {
 	let documentStore: GhostDocumentStore
 	let mockDocument: MockTextDocument
-	let mockAst: ASTContext
 
 	beforeEach(() => {
-		// Create a mock AST
-		mockAst = {
-			rootNode: {} as any,
-			language: "js",
-		}
-
 		// Create a custom implementation of GhostDocumentStore with mocked behavior
 		const mockDocumentMap = new Map()
 

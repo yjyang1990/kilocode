@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest"
 import * as vscode from "vscode"
 import { GhostStrategy } from "../GhostStrategy"
-import { GhostSuggestionContext, ASTContext } from "../types"
+import { GhostSuggestionContext } from "../types"
 import { MockTextDocument } from "../../mocking/MockTextDocument"
 import { StreamingParseResult } from "../GhostStreamingParser"
 
@@ -171,7 +171,7 @@ vi.mock("diff", () => ({
 describe("GhostStrategy", () => {
 	let strategy: GhostStrategy
 	let mockDocument: MockTextDocument
-	let mockASTContext: ASTContext
+
 	let mockRangeASTNode: MockNode
 
 	beforeEach(() => {
@@ -219,12 +219,6 @@ describe("GhostStrategy", () => {
 			text: "function test() { return true; }",
 		})
 		mockRootNode.descendantForPosition = vi.fn().mockReturnValue(mockRangeASTNode)
-
-		// Create mock AST context
-		mockASTContext = {
-			rootNode: mockRootNode as any,
-			language: "javascript",
-		}
 	})
 
 	afterEach(() => {
