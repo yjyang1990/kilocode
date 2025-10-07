@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon, getMessageColor } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display plain text messages with optional markdown formatting and image indicators
@@ -24,7 +25,7 @@ export const SayTextMessage: React.FC<MessageComponentProps> = ({ message }) => 
 				<Text color={color} bold>
 					{icon}{" "}
 				</Text>
-				<Text color="white">{text}</Text>
+				<MarkdownText>{text}</MarkdownText>
 				{message.partial && (
 					<Text color="gray" dimColor>
 						{" "}

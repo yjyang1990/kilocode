@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { parseToolData } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display user manually edited todos
@@ -37,7 +38,7 @@ export const SayUserEditTodosMessage: React.FC<MessageComponentProps> = ({ messa
 
 			{(!toolData?.todos || toolData.todos.length === 0) && message.text && (
 				<Box marginTop={1}>
-					<Text color="white">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 		</Box>

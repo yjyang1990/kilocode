@@ -1,6 +1,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { CliMessage } from "../../../types/cli.js"
+import { MarkdownText } from "../../components/MarkdownText.js"
 
 interface CliMessageRowProps {
 	message: CliMessage
@@ -48,7 +49,7 @@ export const CliMessageRow: React.FC<CliMessageRowProps> = ({ message }) => {
 				<Text color={getColor()} bold>
 					{getPrefix()}{" "}
 				</Text>
-				<Text color="white">{message.content}</Text>
+				<MarkdownText>{message.content}</MarkdownText>
 				{message.partial && (
 					<Text color="gray" dimColor>
 						{" "}

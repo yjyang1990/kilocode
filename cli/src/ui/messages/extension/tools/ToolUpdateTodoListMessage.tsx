@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display todo list updates with status indicators
@@ -52,7 +53,7 @@ export const ToolUpdateTodoListMessage: React.FC<ToolMessageProps> = ({ toolData
 					{toolData.todos.map((todo, index) => (
 						<Box key={index}>
 							<Text color={getStatusColor(todo.status)}>{getStatusIcon(todo.status)} </Text>
-							<Text color={todo.status === "completed" ? "gray" : "white"}>{todo.text}</Text>
+							<MarkdownText>{todo.text}</MarkdownText>
 						</Box>
 					))}
 				</Box>

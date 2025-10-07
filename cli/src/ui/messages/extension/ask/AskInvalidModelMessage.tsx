@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display invalid model selection warning
@@ -19,7 +20,7 @@ export const AskInvalidModelMessage: React.FC<MessageComponentProps> = ({ messag
 
 			{message.text && (
 				<Box marginTop={1}>
-					<Text color="yellow">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 

@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { parseToolData, truncateText } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display user feedback with diff content
@@ -31,7 +32,7 @@ export const SayUserFeedbackDiffMessage: React.FC<MessageComponentProps> = ({ me
 
 			{message.text && !toolData && (
 				<Box marginTop={1}>
-					<Text color="white">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 		</Box>

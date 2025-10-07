@@ -1,6 +1,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display shell integration warnings
@@ -15,7 +16,7 @@ export const SayShellIntegrationWarningMessage: React.FC<MessageComponentProps> 
 			</Box>
 			{message.text && (
 				<Box marginTop={1}>
-					<Text color="yellow">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 			<Box marginTop={1}>

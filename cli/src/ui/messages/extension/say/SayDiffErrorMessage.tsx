@@ -1,6 +1,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display diff application errors with warning icon
@@ -15,7 +16,7 @@ export const SayDiffErrorMessage: React.FC<MessageComponentProps> = ({ message }
 			</Box>
 			{message.text && (
 				<Box marginTop={1}>
-					<Text color="yellow">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 		</Box>

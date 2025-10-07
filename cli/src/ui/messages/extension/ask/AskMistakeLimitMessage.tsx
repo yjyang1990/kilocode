@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display mistake limit reached error with red error styling
@@ -18,7 +19,7 @@ export const AskMistakeLimitMessage: React.FC<MessageComponentProps> = ({ messag
 			</Box>
 			{message.text && (
 				<Box marginTop={1}>
-					<Text color="red">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 			{message.isAnswered && (

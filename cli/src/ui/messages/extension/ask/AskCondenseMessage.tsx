@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display context condensation request
@@ -19,7 +20,7 @@ export const AskCondenseMessage: React.FC<MessageComponentProps> = ({ message })
 
 			{message.text && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="white">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 

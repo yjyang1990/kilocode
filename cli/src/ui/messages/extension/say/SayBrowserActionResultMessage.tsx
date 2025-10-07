@@ -1,6 +1,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display browser action results
@@ -16,7 +17,7 @@ export const SayBrowserActionResultMessage: React.FC<MessageComponentProps> = ({
 
 			{message.text && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="white">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 		</Box>

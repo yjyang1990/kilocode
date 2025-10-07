@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display low credit warning with payment icon
@@ -19,7 +20,7 @@ export const AskPaymentRequiredMessage: React.FC<MessageComponentProps> = ({ mes
 
 			{message.text && (
 				<Box marginTop={1}>
-					<Text color="yellow">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 

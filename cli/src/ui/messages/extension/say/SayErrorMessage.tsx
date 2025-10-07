@@ -1,6 +1,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
+import { MarkdownText } from "../../../components/MarkdownText.js"
 
 /**
  * Display error messages with red bordered box
@@ -15,7 +16,7 @@ export const SayErrorMessage: React.FC<MessageComponentProps> = ({ message }) =>
 			</Box>
 			{message.text && (
 				<Box marginTop={1}>
-					<Text color="red">{message.text}</Text>
+					<MarkdownText>{message.text}</MarkdownText>
 				</Box>
 			)}
 		</Box>
