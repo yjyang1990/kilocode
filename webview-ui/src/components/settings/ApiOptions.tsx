@@ -33,6 +33,7 @@ import {
 	internationalZAiDefaultModelId,
 	mainlandZAiDefaultModelId,
 	fireworksDefaultModelId,
+	syntheticDefaultModelId, // kilocode_change
 	featherlessDefaultModelId,
 	ioIntelligenceDefaultModelId,
 	rooDefaultModelId,
@@ -97,6 +98,7 @@ import {
 	// kilocode_change start
 	GeminiCli,
 	VirtualQuotaFallbackProvider,
+	Synthetic,
 	// kilocode_change end
 	ZAi,
 	Fireworks,
@@ -122,7 +124,6 @@ import { BedrockCustomArn } from "./providers/BedrockCustomArn"
 import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_change
 import { buildDocLink } from "@src/utils/docLinks"
 import { KiloProviderRouting, KiloProviderRoutingManagedByOrganization } from "./providers/KiloProviderRouting"
-import { OpenRouterMarkupInfoView } from "../kilocode/FreeModelsLink"
 
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
@@ -209,12 +210,13 @@ const ApiOptions = ({
 		info: selectedModelInfo,
 	} = useSelectedModel(apiConfiguration)
 
-	// kilocode_change start: queryKey
+	// kilocode_change start: queryKey, chutesApiKey
 	const { data: routerModels, refetch: refetchRouterModels } = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.openRouterApiKey,
 		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId ?? "personal",
 		deepInfraApiKey: apiConfiguration?.deepInfraApiKey,
+		chutesApiKey: apiConfiguration?.chutesApiKey,
 	})
 
 	//const { data: openRouterModelProviders } = useOpenRouterModelProviders(
@@ -261,7 +263,11 @@ const ApiOptions = ({
 				vscode.postMessage({ type: "requestLmStudioModels" })
 			} else if (selectedProvider === "vscode-lm") {
 				vscode.postMessage({ type: "requestVsCodeLmModels" })
-			} else if (selectedProvider === "litellm" || selectedProvider === "deepinfra") {
+			} else if (
+				selectedProvider === "litellm" ||
+				selectedProvider === "deepinfra" ||
+				selectedProvider === "chutes" // kilocode_change
+			) {
 				vscode.postMessage({ type: "requestRouterModels" })
 			}
 		},
@@ -277,6 +283,7 @@ const ApiOptions = ({
 			apiConfiguration?.litellmApiKey,
 			apiConfiguration?.deepInfraApiKey,
 			apiConfiguration?.deepInfraBaseUrl,
+			apiConfiguration?.chutesApiKey, // kilocode_change
 			customHeaders,
 		],
 	)
@@ -374,6 +381,7 @@ const ApiOptions = ({
 							: internationalZAiDefaultModelId,
 				},
 				fireworks: { field: "apiModelId", default: fireworksDefaultModelId },
+				synthetic: { field: "apiModelId", default: syntheticDefaultModelId }, // kilocode_change
 				featherless: { field: "apiModelId", default: featherlessDefaultModelId },
 				ovhcloud: { field: "ovhCloudAiEndpointsModelId", default: ovhCloudAiEndpointsDefaultModelId },
 				"io-intelligence": { field: "ioIntelligenceModelId", default: ioIntelligenceDefaultModelId },
@@ -470,14 +478,6 @@ const ApiOptions = ({
 					data-testid="provider-select"
 				/>
 			</div>
-
-			{
-				// kilocode_change start
-				selectedProvider === "openrouter" && (
-					<OpenRouterMarkupInfoView setApiConfigurationField={setApiConfigurationField} />
-				)
-				// kilocode_change end
-			}
 
 			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
 
@@ -662,11 +662,18 @@ const ApiOptions = ({
 				<Cerebras apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
-			{selectedProvider === "chutes" && (
-				<Chutes apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
-			)}
-
 			{/* kilocode_change start */}
+
+			{selectedProvider === "chutes" && (
+				// kilocode_change: added props
+				<Chutes
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					routerModels={routerModels}
+					organizationAllowList={organizationAllowList}
+					modelValidationError={modelValidationError}
+				/>
+			)}
 
 			{selectedProvider === "gemini-cli" && (
 				<GeminiCli apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
@@ -730,6 +737,16 @@ const ApiOptions = ({
 			{selectedProvider === "fireworks" && (
 				<Fireworks apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
+			{
+				// kilocode_change start
+				selectedProvider === "synthetic" && (
+					<Synthetic
+						apiConfiguration={apiConfiguration}
+						setApiConfigurationField={setApiConfigurationField}
+					/>
+				)
+				// kilocode_change end
+			}
 
 			{selectedProvider === "roo" && (
 				<div className="flex flex-col gap-3">
