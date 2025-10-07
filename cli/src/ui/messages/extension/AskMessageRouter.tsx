@@ -48,6 +48,9 @@ export const AskMessageRouter: React.FC<MessageComponentProps> = ({ message }) =
 		case "command":
 			return <AskCommandMessage message={message} />
 
+		case "command_output":
+			return null
+
 		case "browser_action_launch":
 			return <AskBrowserActionLaunchMessage message={message} />
 
