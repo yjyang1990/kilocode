@@ -1,5 +1,4 @@
 import * as vscode from "vscode"
-import { Node } from "web-tree-sitter"
 
 /**
  * Represents the type of user action performed on a document
@@ -32,7 +31,6 @@ export interface GhostDocumentStoreItem {
 	uri: string
 	document: vscode.TextDocument
 	history: string[]
-	ast?: ASTContext
 	lastParsedVersion?: number
 	recentActions?: UserAction[]
 }
@@ -51,11 +49,6 @@ export interface GhostSuggestionEditOperationsOffset {
 	added: number
 	removed: number
 	offset: number
-}
-
-export interface ASTContext {
-	rootNode: Node
-	language: string
 }
 
 export interface GhostSuggestionContext {
