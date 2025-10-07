@@ -15,18 +15,15 @@ export class GhostDocumentStore {
 	private parserInitialized: boolean = false
 
 	/**
-	 * Store a document in the document store and optionally parse its AST
+	 * Store a document in the document store
 	 * @param document The document to store
-	 * @param parseAST Whether to parse the AST for this document
 	 * @param bypassDebounce Whether to bypass the debounce mechanism and store immediately
 	 */
 	public async storeDocument({
 		document,
-		parseAST = true,
 		bypassDebounce = false,
 	}: {
 		document: vscode.TextDocument
-		parseAST?: boolean
 		bypassDebounce?: boolean
 	}): Promise<void> {
 		const uri = document.uri.toString()

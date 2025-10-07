@@ -177,11 +177,9 @@ describe("GhostDocumentStore", () => {
 				.mockImplementation(
 					async ({
 						document,
-						parseAST = true,
 						bypassDebounce = false,
 					}: {
 						document: vscode.TextDocument
-						parseAST?: boolean
 						bypassDebounce?: boolean
 					}) => {
 						const uri = document.uri.toString()
@@ -200,15 +198,6 @@ describe("GhostDocumentStore", () => {
 						// Limit history array length
 						if (item.history.length > historyLimit) {
 							item.history = item.history.slice(-historyLimit)
-						}
-
-						// Only parse AST for supported file extensions
-						const fileExtension = document.uri.path.split(".").pop()?.toLowerCase()
-						const supportedExtensions = ["js", "ts", "jsx", "tsx"]
-
-						if (parseAST && supportedExtensions.includes(fileExtension || "")) {
-							item.ast = mockAst
-							item.lastParsedVersion = document.version
 						}
 					},
 				),
@@ -282,7 +271,6 @@ describe("GhostDocumentStore", () => {
 				await documentStore.storeDocument({
 					document: mockDocument,
 					bypassDebounce: true,
-					parseAST: false,
 				})
 			}
 
@@ -290,30 +278,6 @@ describe("GhostDocumentStore", () => {
 			expect(storedItem?.history).toHaveLength(historyLimit)
 			// First entries should be removed
 			expect(storedItem?.history[0]).toBe(`function test${5}() { return true; }`)
-		})
-
-		it("should parse AST when parseAST is true", async () => {
-			await documentStore.storeDocument({
-				document: mockDocument,
-				bypassDebounce: true,
-				parseAST: true,
-			})
-
-			const storedItem = documentStore.getDocument(mockDocument.uri)
-			expect(storedItem?.ast).toBeDefined()
-			expect(storedItem?.lastParsedVersion).toBe(mockDocument.version)
-		})
-
-		it("should not parse AST when parseAST is false", async () => {
-			await documentStore.storeDocument({
-				document: mockDocument,
-				bypassDebounce: true,
-				parseAST: false,
-			})
-
-			const storedItem = documentStore.getDocument(mockDocument.uri)
-			expect(storedItem?.ast).toBeUndefined()
-			expect(storedItem?.lastParsedVersion).toBeUndefined()
 		})
 	})
 
