@@ -85,6 +85,7 @@ describe("Config Persistence", () => {
 						apiModelId: "claude-3-5-sonnet-20241022",
 					},
 				],
+				autoApproval: DEFAULT_CONFIG.autoApproval,
 			}
 
 			await saveConfig(testConfig)
