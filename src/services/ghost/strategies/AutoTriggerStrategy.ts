@@ -104,11 +104,6 @@ Important:
 			const char = context.range.start.character + 1
 			prompt += `## Current Position\n`
 			prompt += `Line ${line}, Character ${char}\n\n`
-
-			// Analyze what might need completion
-			const currentLine = context.document.lineAt(context.range.start.line).text
-			const cursorChar = context.range.start.character
-			prompt += this.analyzeCompletionContext(currentLine, cursorChar)
 		}
 
 		// Add the full document with cursor marker
@@ -128,98 +123,5 @@ Important:
 		prompt += "If nothing obvious to complete, provide NO suggestion.\n"
 
 		return prompt
-	}
-
-	/**
-	 * Analyze the current line to provide hints about what might need completion
-	 */
-	private analyzeCompletionContext(currentLine: string, cursorPosition: number): string {
-		const beforeCursor = currentLine.substring(0, cursorPosition).trim()
-		const afterCursor = currentLine.substring(cursorPosition).trim()
-
-		let analysis = "## Completion Context\n"
-
-		// Check for incomplete patterns
-		if (beforeCursor.endsWith(".")) {
-			analysis += "- Property or method access started\n"
-		}
-		if (beforeCursor.endsWith("(")) {
-			analysis += "- Function call or declaration started\n"
-		}
-		if (beforeCursor.endsWith("{")) {
-			analysis += "- Block or object literal started\n"
-		}
-		if (beforeCursor.endsWith("[")) {
-			analysis += "- Array or index access started\n"
-		}
-		if (beforeCursor.match(/=\s*$/)) {
-			analysis += "- Assignment started\n"
-		}
-		if (beforeCursor.match(/return\s*$/)) {
-			analysis += "- Return statement started\n"
-		}
-		if (beforeCursor.match(/import\s+.*\s+from\s*$/)) {
-			analysis += "- Import statement needs module\n"
-		}
-		if (beforeCursor.match(/^\s*(const|let|var)\s+\w+\s*$/)) {
-			analysis += "- Variable declaration needs initialization\n"
-		}
-
-		// Check for missing closures
-		const openParens = (beforeCursor.match(/\(/g) || []).length
-		const closeParens = (beforeCursor.match(/\)/g) || []).length
-		if (openParens > closeParens) {
-			analysis += `- ${openParens - closeParens} unclosed parenthesis\n`
-		}
-
-		const openBrackets = (beforeCursor.match(/\[/g) || []).length
-		const closeBrackets = (beforeCursor.match(/\]/g) || []).length
-		if (openBrackets > closeBrackets) {
-			analysis += `- ${openBrackets - closeBrackets} unclosed bracket\n`
-		}
-
-		const openBraces = (beforeCursor.match(/\{/g) || []).length
-		const closeBraces = (beforeCursor.match(/\}/g) || []).length
-		if (openBraces > closeBraces && !afterCursor.startsWith("}")) {
-			analysis += `- ${openBraces - closeBraces} unclosed brace\n`
-		}
-
-		// Check if line might need semicolon
-		if (
-			!beforeCursor.endsWith(";") &&
-			!beforeCursor.endsWith("{") &&
-			!beforeCursor.endsWith("}") &&
-			beforeCursor.length > 0 &&
-			!afterCursor
-		) {
-			if (this.mightNeedSemicolon(beforeCursor)) {
-				analysis += "- Statement might need semicolon\n"
-			}
-		}
-
-		analysis += "\n"
-		return analysis
-	}
-
-	/**
-	 * Check if a line might need a semicolon
-	 */
-	private mightNeedSemicolon(line: string): boolean {
-		const trimmed = line.trim()
-
-		// Patterns that typically need semicolons
-		const needsSemicolon = [
-			/^(const|let|var)\s+\w+\s*=\s*.+$/, // Variable declaration with value
-			/^\w+\s*=\s*.+$/, // Assignment
-			/^\w+\.\w+\(.*\)$/, // Method call
-			/^return\s+.+$/, // Return with value
-			/^throw\s+.+$/, // Throw statement
-			/^break$/, // Break statement
-			/^continue$/, // Continue statement
-			/^\w+\+\+$/, // Increment
-			/^\w+--$/, // Decrement
-		]
-
-		return needsSemicolon.some((pattern) => pattern.test(trimmed))
 	}
 }
