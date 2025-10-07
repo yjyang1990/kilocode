@@ -45,42 +45,7 @@ export class AutoTriggerStrategy extends BasePromptStrategy {
 		return `Task: Subtle Auto-Completion
 Provide non-intrusive completions after a typing pause. Be conservative and helpful.
 
-Auto-Complete Rules:
-- Small, obvious completions only
-- Single line preferred (max 2-3 lines)
-- Complete the current thought based on context
-- Don't be creative or add new features
-- Match exactly what seems to be typed
-- Only suggest if there's a clear, obvious completion
-
-Common Completions:
-- Closing brackets, parentheses, or braces
-- Semicolons at end of statements
-- Simple property or method access
-- Variable assignments after declaration
-- Return statements in functions
-- Import statements completion
-- Simple loop or conditional bodies
-
-Avoid:
-- Multi-line complex suggestions
-- New functionality or features
-- Refactoring existing code
-- Complex logic or algorithms
-- Anything that changes program behavior significantly
-
-## CRITICAL: Cursor Marker Usage
-- The cursor position is marked with ${CURSOR_MARKER}
-- Your <search> block MUST include the cursor marker to avoid conflicts
-- When creating <search> content, include text around the cursor marker
-- This ensures you target the exact location, not similar text elsewhere
-- Example: If cursor is at "const x = <<<AUTOCOMPLETE_HERE>>>", your <search> should include the marker
-
-Important:
-- If nothing obvious to complete, provide NO suggestion
-- Respect the user's coding style
-- Keep suggestions minimal and predictable
-- Focus on helping finish what's being typed`
+`
 	}
 
 	/**
