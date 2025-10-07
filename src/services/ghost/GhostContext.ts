@@ -41,21 +41,6 @@ export class GhostContext {
 		return context
 	}
 
-	private async addAST(context: GhostSuggestionContext): Promise<GhostSuggestionContext> {
-		if (!context.document) {
-			return context
-		}
-		if (this.documentStore.needsASTUpdate(context.document)) {
-			await this.documentStore.storeDocument({
-				document: context.document,
-				parseAST: true,
-				bypassDebounce: true,
-			})
-		}
-		context.documentAST = this.documentStore.getAST(context.document.uri)
-		return context
-	}
-
 	private addRangeASTNode(context: GhostSuggestionContext): GhostSuggestionContext {
 		if (!context.range || !context.documentAST) {
 			return context

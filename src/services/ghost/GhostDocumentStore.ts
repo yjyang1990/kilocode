@@ -147,17 +147,6 @@ export class GhostDocumentStore {
 	}
 
 	/**
-	 * Get the AST for a document
-	 * @param documentUri The URI of the document
-	 * @returns The AST context or undefined if not available
-	 */
-	public getAST(documentUri: vscode.Uri): ASTContext | undefined {
-		const uri = documentUri.toString()
-		const item = this.documentStore.get(uri)
-		return item?.ast
-	}
-
-	/**
 	 * Get a document from the store
 	 * @param documentUri The URI of the document
 	 * @returns The document store item or undefined if not found
@@ -165,36 +154,6 @@ export class GhostDocumentStore {
 	public getDocument(documentUri: vscode.Uri): GhostDocumentStoreItem | undefined {
 		const uri = documentUri.toString()
 		return this.documentStore.get(uri)
-	}
-
-	/**
-	 * Check if a document needs its AST to be updated
-	 * @param document The document to check
-	 * @returns True if the AST needs to be updated
-	 */
-	public needsASTUpdate(document: vscode.TextDocument): boolean {
-		const uri = document.uri.toString()
-		const item = this.documentStore.get(uri)
-
-		if (!item) {
-			return true
-		}
-
-		return !item.ast || item.lastParsedVersion !== document.version
-	}
-
-	/**
-	 * Clear the AST for a document to free up memory
-	 * @param documentUri The URI of the document
-	 */
-	public clearAST(documentUri: vscode.Uri): void {
-		const uri = documentUri.toString()
-		const item = this.documentStore.get(uri)
-
-		if (item) {
-			item.ast = undefined
-			item.lastParsedVersion = undefined
-		}
 	}
 
 	/**
@@ -212,16 +171,6 @@ export class GhostDocumentStore {
 
 		// Remove the document from the store
 		this.documentStore.delete(uri)
-	}
-
-	/**
-	 * Clear all ASTs from the document store to free up memory
-	 */
-	public clearAllASTs(): void {
-		for (const item of this.documentStore.values()) {
-			item.ast = undefined
-			item.lastParsedVersion = undefined
-		}
 	}
 
 	/**
