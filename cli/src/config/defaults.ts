@@ -5,7 +5,7 @@ import type { CLIConfig, AutoApprovalConfig } from "./types.js"
  * Matches the defaults from the webview settings
  */
 export const DEFAULT_AUTO_APPROVAL: AutoApprovalConfig = {
-	enabled: false,
+	enabled: true,
 	read: {
 		enabled: true,
 		outside: true,
@@ -33,8 +33,8 @@ export const DEFAULT_AUTO_APPROVAL: AutoApprovalConfig = {
 	},
 	execute: {
 		enabled: true,
-		allowed: [],
-		denied: [],
+		allowed: ["*"], // Allow all commands by default (can be restricted via denied list)
+		denied: ["rm -rf", "sudo rm", "mkfs", "dd if="], // Deny dangerous commands
 	},
 	question: {
 		enabled: false,
@@ -42,10 +42,6 @@ export const DEFAULT_AUTO_APPROVAL: AutoApprovalConfig = {
 	},
 	todo: {
 		enabled: true,
-	},
-	limits: {
-		maxRequests: null,
-		maxCost: null,
 	},
 }
 

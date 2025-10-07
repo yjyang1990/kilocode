@@ -6,7 +6,7 @@ describe("Auto Approval Configuration", () => {
 	describe("DEFAULT_AUTO_APPROVAL", () => {
 		it("should have correct default values", () => {
 			expect(DEFAULT_AUTO_APPROVAL).toEqual({
-				enabled: false,
+				enabled: true,
 				read: {
 					enabled: true,
 					outside: true,
@@ -34,8 +34,8 @@ describe("Auto Approval Configuration", () => {
 				},
 				execute: {
 					enabled: true,
-					allowed: [],
-					denied: [],
+					allowed: ["*"],
+					denied: ["rm -rf", "sudo rm", "mkfs", "dd if="],
 				},
 				question: {
 					enabled: false,
@@ -44,15 +44,11 @@ describe("Auto Approval Configuration", () => {
 				todo: {
 					enabled: true,
 				},
-				limits: {
-					maxRequests: null,
-					maxCost: null,
-				},
 			})
 		})
 
-		it("should have global enabled set to false by default", () => {
-			expect(DEFAULT_AUTO_APPROVAL.enabled).toBe(false)
+		it("should have global enabled set to true by default", () => {
+			expect(DEFAULT_AUTO_APPROVAL.enabled).toBe(true)
 		})
 
 		it("should have safe defaults for write operations", () => {
@@ -116,10 +112,6 @@ describe("Auto Approval Configuration", () => {
 				todo: {
 					enabled: true,
 				},
-				limits: {
-					maxRequests: 100,
-					maxCost: 10.0,
-				},
 			}
 			expect(config).toBeDefined()
 		})
@@ -170,30 +162,6 @@ describe("Auto Approval Configuration", () => {
 				},
 			}
 			expect(config.execute?.denied).toHaveLength(3)
-		})
-	})
-
-	describe("Limits Configuration", () => {
-		it("should support null limits (unlimited)", () => {
-			const config: AutoApprovalConfig = {
-				limits: {
-					maxRequests: null,
-					maxCost: null,
-				},
-			}
-			expect(config.limits?.maxRequests).toBeNull()
-			expect(config.limits?.maxCost).toBeNull()
-		})
-
-		it("should support numeric limits", () => {
-			const config: AutoApprovalConfig = {
-				limits: {
-					maxRequests: 50,
-					maxCost: 5.0,
-				},
-			}
-			expect(config.limits?.maxRequests).toBe(50)
-			expect(config.limits?.maxCost).toBe(5.0)
 		})
 	})
 

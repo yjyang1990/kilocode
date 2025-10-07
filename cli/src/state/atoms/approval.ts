@@ -5,6 +5,7 @@
 
 import { atom } from "jotai"
 import type { ExtensionChatMessage } from "../../types/messages.js"
+import { ciModeAtom } from "./ci.js"
 import {
 	autoApproveReadAtom,
 	autoApproveReadOutsideAtom,
@@ -186,7 +187,10 @@ export const shouldAutoApproveAtom = atom<boolean>((get) => {
 				if (
 					tool === "readFile" ||
 					tool === "listFiles" ||
+					tool === "listFilesTopLevel" ||
+					tool === "listFilesRecursive" ||
 					tool === "searchFiles" ||
+					tool === "codebaseSearch" ||
 					tool === "listCodeDefinitionNames"
 				) {
 					const isOutsideWorkspace = toolData.isOutsideWorkspace === true
@@ -201,7 +205,8 @@ export const shouldAutoApproveAtom = atom<boolean>((get) => {
 					tool === "editedExistingFile" ||
 					tool === "appliedDiff" ||
 					tool === "newFileCreated" ||
-					tool === "insertContent"
+					tool === "insertContent" ||
+					tool === "searchAndReplace"
 				) {
 					const isOutsideWorkspace = toolData.isOutsideWorkspace === true
 					const isProtected = toolData.isProtected === true
@@ -282,4 +287,23 @@ export const shouldAutoApproveAtom = atom<boolean>((get) => {
 	}
 
 	return false
+})
+
+/**
+ * Derived atom to check if the current pending approval should be auto-rejected
+ * in CI mode based on CLI configuration.
+ *
+ * This atom returns true when:
+ * 1. CI mode is active
+ * 2. The operation is NOT allowed by shouldAutoApproveAtom
+ *
+ * This is used to automatically reject operations in CI mode that don't meet
+ * the auto-approval criteria.
+ */
+export const shouldAutoRejectAtom = atom<boolean>((get) => {
+	const isCIMode = get(ciModeAtom)
+	const shouldApprove = get(shouldAutoApproveAtom)
+
+	// Only auto-reject in CI mode when the operation is not approved
+	return isCIMode && !shouldApprove
 })

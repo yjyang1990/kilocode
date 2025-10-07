@@ -344,22 +344,6 @@ export const autoApproveTodoAtom = atom((get) => {
 })
 
 /**
- * Derived atom to get max requests limit
- */
-export const autoApprovalMaxRequestsAtom = atom((get) => {
-	const autoApproval = get(autoApprovalConfigAtom)
-	return autoApproval?.limits?.maxRequests ?? null
-})
-
-/**
- * Derived atom to get max cost limit
- */
-export const autoApprovalMaxCostAtom = atom((get) => {
-	const autoApproval = get(autoApprovalConfigAtom)
-	return autoApproval?.limits?.maxCost ?? null
-})
-
-/**
  * Action atom to toggle global auto approval
  */
 export const toggleAutoApprovalAtom = atom(null, async (get, set) => {

@@ -15,12 +15,23 @@ import {
 	clearPendingApprovalAtom,
 	isApprovalPendingAtom,
 	shouldAutoApproveAtom,
+	shouldAutoRejectAtom,
 	type ApprovalOption,
 } from "../atoms/approval.js"
 import { autoApproveRetryDelayAtom, autoApproveQuestionTimeoutAtom } from "../atoms/config.js"
+import { ciModeAtom } from "../atoms/ci.js"
 import { useWebviewMessage } from "./useWebviewMessage.js"
 import type { ExtensionChatMessage } from "../../types/messages.js"
 import { logs } from "../../services/logs.js"
+import { CI_MODE_MESSAGES } from "../../constants/ci.js"
+
+/**
+ * Options for useApprovalHandler hook
+ */
+export interface UseApprovalHandlerOptions {
+	/** Whether CI mode is active (for testing/override purposes) */
+	ciMode?: boolean
+}
 
 /**
  * Return type for useApprovalHandler hook
@@ -54,6 +65,9 @@ export interface UseApprovalHandlerReturn {
  * This hook manages the approval flow for ask messages, providing methods
  * to approve, reject, and navigate between options.
  *
+ * In CI mode, this hook automatically approves or rejects requests based on
+ * configuration settings without user interaction.
+ *
  * @example
  * ```tsx
  * function ApprovalUI() {
@@ -70,15 +84,20 @@ export interface UseApprovalHandlerReturn {
  * }
  * ```
  */
-export function useApprovalHandler(): UseApprovalHandlerReturn {
+export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): UseApprovalHandlerReturn {
 	const pendingApproval = useAtomValue(pendingApprovalAtom)
 	const approvalOptions = useAtomValue(approvalOptionsAtom)
 	const selectedIndex = useAtomValue(selectedApprovalIndexAtom)
 	const selectedOption = useAtomValue(selectedApprovalOptionAtom)
 	const isApprovalPending = useAtomValue(isApprovalPendingAtom)
 	const shouldAutoApprove = useAtomValue(shouldAutoApproveAtom)
+	const shouldAutoReject = useAtomValue(shouldAutoRejectAtom)
 	const retryDelay = useAtomValue(autoApproveRetryDelayAtom)
 	const questionTimeout = useAtomValue(autoApproveQuestionTimeoutAtom)
+	const ciModeFromAtom = useAtomValue(ciModeAtom)
+
+	// Use CI mode from options if provided, otherwise use atom value
+	const isCIMode = options.ciMode ?? ciModeFromAtom
 
 	const selectNext = useSetAtom(selectNextApprovalAtom)
 	const selectPrevious = useSetAtom(selectPreviousApprovalAtom)
@@ -152,9 +171,40 @@ export function useApprovalHandler(): UseApprovalHandlerReturn {
 		[selectedOption, approve, reject],
 	)
 
-	// Auto-approval effect
+	// CI mode auto-approval/rejection effect for followup questions
+	// Note: Most CI mode auto-approvals are now handled at the component level
+	// to avoid race conditions. This effect only handles followup questions which
+	// need special handling with a custom message.
 	useEffect(() => {
-		if (!pendingApproval || !shouldAutoApprove) {
+		if (!isCIMode || !pendingApproval) {
+			return
+		}
+
+		const isFollowup = pendingApproval.ask === "followup"
+
+		// In CI mode, handle followup questions with special message
+		if (isFollowup) {
+			const handleFollowup = async () => {
+				try {
+					// Always approve followup questions with CI message
+					logs.info(
+						"CI mode: Auto-approving followup question with non-interactive message",
+						"useApprovalHandler",
+					)
+					await approve(CI_MODE_MESSAGES.FOLLOWUP_RESPONSE)
+				} catch (error) {
+					logs.error("CI mode: Failed to auto-approve followup question", "useApprovalHandler", { error })
+				}
+			}
+
+			handleFollowup()
+		}
+	}, [isCIMode, pendingApproval, approve])
+
+	// Regular auto-approval effect (for non-CI mode)
+	useEffect(() => {
+		// Skip if in CI mode (handled by CI effect above)
+		if (isCIMode || !pendingApproval || !shouldAutoApprove) {
 			return
 		}
 
@@ -181,7 +231,7 @@ export function useApprovalHandler(): UseApprovalHandlerReturn {
 		}, delay)
 
 		return () => clearTimeout(timeoutId)
-	}, [pendingApproval, shouldAutoApprove, approve, retryDelay, questionTimeout])
+	}, [isCIMode, pendingApproval, shouldAutoApprove, approve, retryDelay, questionTimeout])
 
 	return {
 		pendingApproval,

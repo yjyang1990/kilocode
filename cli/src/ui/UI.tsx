@@ -147,7 +147,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			{!options.ci && <CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />}
 
 			{/* Status Bar */}
-			<StatusBar />
+			{!options.ci && <StatusBar />}
 		</Box>
 	)
 }

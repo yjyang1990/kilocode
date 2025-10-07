@@ -67,7 +67,7 @@ program
 		}
 
 		// Validate that timeout requires CI mode
-		if (options.timeout && !options.ci) {
+		if (options.timeout && !options.auto) {
 			console.error("Error: --timeout option requires --ci flag to be enabled")
 			process.exit(1)
 		}

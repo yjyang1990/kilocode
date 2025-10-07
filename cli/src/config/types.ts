@@ -78,14 +78,6 @@ export interface AutoApprovalTodoConfig {
 }
 
 /**
- * Auto approval limits configuration
- */
-export interface AutoApprovalLimitsConfig {
-	maxRequests?: number | null
-	maxCost?: number | null
-}
-
-/**
  * Complete auto approval configuration
  */
 export interface AutoApprovalConfig {
@@ -100,7 +92,6 @@ export interface AutoApprovalConfig {
 	execute?: AutoApprovalExecuteConfig
 	question?: AutoApprovalQuestionConfig
 	todo?: AutoApprovalTodoConfig
-	limits?: AutoApprovalLimitsConfig
 }
 
 export interface CLIConfig {
