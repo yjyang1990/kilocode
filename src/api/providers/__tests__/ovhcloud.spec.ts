@@ -1,3 +1,4 @@
+// kilocode_change - file added
 // npx vitest run src/api/providers/__tests__/ovhcloud.spec.ts
 
 // Mock vscode first to avoid import errors

@@ -2704,7 +2704,7 @@ describe("ClineProvider - Router Models", () => {
 				chutesApiKey: "chutes-key", // kilocode_change
 				litellmApiKey: "litellm-key",
 				litellmBaseUrl: "http://localhost:4000",
-				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key", // kilocode_change
 			},
 		} as any)
 
@@ -2735,7 +2735,7 @@ describe("ClineProvider - Router Models", () => {
 		expect(getModels).toHaveBeenCalledWith({ provider: "unbound", apiKey: "unbound-key" })
 		expect(getModels).toHaveBeenCalledWith({ provider: "chutes", apiKey: "chutes-key" }) // kilocode_change
 		expect(getModels).toHaveBeenCalledWith({ provider: "vercel-ai-gateway" })
-		expect(getModels).toHaveBeenCalledWith({ provider: "ovhcloud", apiKey: "ovhcloud-key" })
+		expect(getModels).toHaveBeenCalledWith({ provider: "ovhcloud", apiKey: "ovhcloud-key" }) // kilocode_change
 		expect(getModels).toHaveBeenCalledWith({
 			provider: "litellm",
 			apiKey: "litellm-key",
@@ -2757,7 +2757,7 @@ describe("ClineProvider - Router Models", () => {
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
-				ovhcloud: mockModels,
+				ovhcloud: mockModels, // kilocode_change
 				huggingface: {},
 				"io-intelligence": {},
 			},
@@ -2777,7 +2777,7 @@ describe("ClineProvider - Router Models", () => {
 				chutesApiKey: "chutes-key", // kilocode_change
 				litellmApiKey: "litellm-key",
 				litellmBaseUrl: "http://localhost:4000",
-				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
+				ovhCloudAiEndpointsApiKey: "ovhcloud-key", // kilocode_change
 			},
 		} as any)
 
@@ -2817,7 +2817,7 @@ describe("ClineProvider - Router Models", () => {
 				litellm: {},
 				"kilocode-openrouter": {},
 				"vercel-ai-gateway": mockModels,
-				ovhcloud: mockModels,
+				ovhcloud: mockModels, // kilocode_change
 				huggingface: {},
 				"io-intelligence": {},
 			},
@@ -2958,7 +2958,7 @@ describe("ClineProvider - Router Models", () => {
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
-				ovhcloud: mockModels,
+				ovhcloud: mockModels, // kilocode_change
 				huggingface: {},
 				"io-intelligence": {},
 			},

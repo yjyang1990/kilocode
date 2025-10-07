@@ -337,6 +337,7 @@ describe("ProfileValidator", () => {
 			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
 		})
 
+		// kilocode_change start
 		it("should extract ovhCloudAiEndpointsModelId for ovhcloud provider", () => {
 			const allowList: OrganizationAllowList = {
 				allowAll: false,
@@ -351,6 +352,7 @@ describe("ProfileValidator", () => {
 
 			expect(ProfileValidator.isProfileAllowed(profile, allowList)).toBe(true)
 		})
+		// kilocode_change end
 
 		it("should handle providers with undefined models list gracefully", () => {
 			const allowList: OrganizationAllowList = {

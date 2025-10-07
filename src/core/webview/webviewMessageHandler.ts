@@ -803,7 +803,7 @@ export const webviewMessageHandler = async (
 				chutes: {}, // kilocode_change
 				ollama: {},
 				lmstudio: {},
-				ovhcloud: {},
+				ovhcloud: {}, // kilocode_change
 			}
 
 			const safeGetModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
@@ -857,10 +857,12 @@ export const webviewMessageHandler = async (
 						baseUrl: apiConfiguration.deepInfraBaseUrl,
 					},
 				},
+				// kilocode_change start
 				{
 					key: "ovhcloud",
 					options: { provider: "ovhcloud", apiKey: apiConfiguration.ovhCloudAiEndpointsApiKey },
 				},
+				// kilocode_change end
 			]
 			// kilocode_change end
 
