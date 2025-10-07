@@ -32,7 +32,6 @@ export class UserRequestStrategy extends BasePromptStrategy {
 			// Explicitly exclude:
 			// - recentOperations (not needed for explicit requests)
 			// - openFiles (reduces token usage)
-			// - documentAST (full AST not needed, rangeASTNode is enough)
 		}
 	}
 

@@ -29,7 +29,6 @@ export class InlineCompletionStrategy extends BasePromptStrategy {
 		return {
 			document: context.document,
 			range: context.range,
-			documentAST: context.documentAST,
 			rangeASTNode: context.rangeASTNode,
 		}
 	}

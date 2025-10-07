@@ -42,22 +42,6 @@ export class GhostContext {
 	}
 
 	private addRangeASTNode(context: GhostSuggestionContext): GhostSuggestionContext {
-		if (!context.range || !context.documentAST) {
-			return context
-		}
-		const startPosition = {
-			row: context.range.start.line,
-			column: context.range.start.character,
-		}
-		const endPosition = {
-			row: context.range.end.line,
-			column: context.range.end.character,
-		}
-		const nodeAtCursor = context.documentAST.rootNode.descendantForPosition(startPosition, endPosition)
-		if (!nodeAtCursor) {
-			return context
-		}
-		context.rangeASTNode = nodeAtCursor
 		return context
 	}
 

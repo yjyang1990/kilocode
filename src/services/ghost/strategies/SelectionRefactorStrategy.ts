@@ -22,7 +22,6 @@ export class SelectionRefactorStrategy extends BasePromptStrategy {
 			document: context.document,
 			range: context.range,
 			diagnostics: context.diagnostics,
-			documentAST: context.documentAST,
 			rangeASTNode: context.rangeASTNode,
 		}
 	}

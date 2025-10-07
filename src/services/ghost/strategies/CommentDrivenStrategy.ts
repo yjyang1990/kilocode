@@ -34,7 +34,6 @@ export class CommentDrivenStrategy extends BasePromptStrategy {
 		return {
 			document: context.document,
 			range: context.range,
-			documentAST: context.documentAST,
 			rangeASTNode: context.rangeASTNode,
 			recentOperations: context.recentOperations,
 		}
