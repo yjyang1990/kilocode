@@ -19,7 +19,7 @@ import {
 	xaiModels,
 	groqModels,
 	groqDefaultModelId,
-	chutesModels,
+	// chutesModels, // kilocode_change
 	chutesDefaultModelId,
 	vscodeLlmModels,
 	vscodeLlmDefaultModelId,
@@ -37,6 +37,8 @@ import {
 	doubaoDefaultModelId,
 	fireworksModels,
 	fireworksDefaultModelId,
+	syntheticModels, // kilocode_change
+	syntheticDefaultModelId, // kilocode_change
 	ioIntelligenceDefaultModelId,
 	moonshotModels,
 	moonshotDefaultModelId,
@@ -111,7 +113,7 @@ export const getModelsByProvider = ({
 		}
 		case "chutes": {
 			return {
-				models: chutesModels,
+				models: routerModels.chutes, // kilocode_change
 				defaultModel: chutesDefaultModelId,
 			}
 		}
@@ -231,6 +233,14 @@ export const getModelsByProvider = ({
 				defaultModel: fireworksDefaultModelId,
 			}
 		}
+		// kilocode_change start
+		case "synthetic": {
+			return {
+				models: syntheticModels,
+				defaultModel: syntheticDefaultModelId,
+			}
+		}
+		// kilocode_change end
 		case "io-intelligence": {
 			return {
 				models: routerModels["io-intelligence"],
@@ -278,6 +288,7 @@ export const useProviderModels = (apiConfiguration?: ProviderSettings) => {
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.apiKey,
 		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId ?? "personal",
+		chutesApiKey: apiConfiguration?.chutesApiKey, // kilocode_change
 	})
 
 	const { models, defaultModel } =
