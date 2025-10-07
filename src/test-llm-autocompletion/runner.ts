@@ -206,21 +206,17 @@ class TestRunner {
 		console.log("\n" + "═".repeat(80))
 
 		const results: TestResult[] = []
-		const runTimes: number[] = []
 
 		for (let i = 0; i < numRuns; i++) {
-			const runStartTime = performance.now()
 			console.log(`\n🔄 Run ${i + 1}/${numRuns}...`)
 
 			const result = await this.runTest(testCase)
-			const totalRunTime = performance.now() - runStartTime
 
 			results.push(result)
-			runTimes.push(totalRunTime)
 
 			const status = result.isApproved ? "✓ PASSED" : "✗ FAILED"
 			const llmTime = result.llmRequestDuration ? `${result.llmRequestDuration.toFixed(0)}ms LLM` : "N/A"
-			console.log(`   ${status} - ${totalRunTime.toFixed(0)}ms total (${llmTime})`)
+			console.log(`   ${status} - ${llmTime}`)
 		}
 
 		console.log("\n" + "═".repeat(80))
@@ -230,18 +226,6 @@ class TestRunner {
 		const failedRuns = numRuns - passedRuns
 		console.log(`  ✓ Passed: ${passedRuns}/${numRuns}`)
 		console.log(`  ✗ Failed: ${failedRuns}/${numRuns}`)
-
-		const sortedTimes = [...runTimes].sort((a, b) => a - b)
-		const avgTime = runTimes.reduce((sum, time) => sum + time, 0) / numRuns
-		const minTime = sortedTimes[0]
-		const maxTime = sortedTimes[sortedTimes.length - 1]
-		const medianTime = sortedTimes[Math.floor(numRuns / 2)]
-
-		console.log("\n⏱️  Total Run Time (including LLM + parsing):")
-		console.log(`  Average: ${avgTime.toFixed(0)}ms`)
-		console.log(`  Median:  ${medianTime.toFixed(0)}ms`)
-		console.log(`  Min:     ${minTime.toFixed(0)}ms`)
-		console.log(`  Max:     ${maxTime.toFixed(0)}ms`)
 
 		const llmTimes = results.filter((r) => r.llmRequestDuration !== undefined).map((r) => r.llmRequestDuration!)
 		if (llmTimes.length > 0) {
