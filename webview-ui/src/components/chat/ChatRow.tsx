@@ -65,6 +65,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SeeNewChangesButtons } from "./kilocode/SeeNewChangesButtons"
+import ChatTimestamps from "./ChatTimestamps"
 
 interface ChatRowProps {
 	message: ClineMessage
@@ -85,7 +86,7 @@ interface ChatRowProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface ChatRowContentProps extends Omit<ChatRowProps, "onHeightChange"> {}
+interface ChatRowContentProps extends Omit<ChatRowProps, "onHeightChange"> { }
 
 const ChatRow = memo(
 	(props: ChatRowProps) => {
@@ -402,8 +403,8 @@ export const ChatRowContent = ({
 										: tool.lineNumber === 0
 											? t("chat:fileOperations.wantsToInsertAtEnd")
 											: t("chat:fileOperations.wantsToInsertWithLineNumber", {
-													lineNumber: tool.lineNumber,
-												})}
+												lineNumber: tool.lineNumber,
+											})}
 							</span>
 						</div>
 						<div className="pl-6">
@@ -560,8 +561,8 @@ export const ChatRowContent = ({
 										? t("chat:fileOperations.wantsToReadOutsideWorkspace")
 										: tool.additionalFileCount && tool.additionalFileCount > 0
 											? t("chat:fileOperations.wantsToReadAndXMore", {
-													count: tool.additionalFileCount,
-												})
+												count: tool.additionalFileCount,
+											})
 											: t("chat:fileOperations.wantsToRead")
 									: t("chat:fileOperations.didRead")}
 							</span>
@@ -1023,14 +1024,13 @@ export const ChatRowContent = ({
 					return (
 						<>
 							<div
-								className={`group text-sm transition-opacity ${
-									isApiRequestInProgress ? "opacity-100" : "opacity-40 hover:opacity-100"
-								}`}
+								className={`group text-sm transition-opacity ${isApiRequestInProgress ? "opacity-100" : "opacity-40 hover:opacity-100"
+									}`}
 								style={{
 									...headerStyle,
 									marginBottom:
 										((cost === null || cost === undefined) && apiRequestFailedMessage) ||
-										apiReqStreamingFailedMessage
+											apiReqStreamingFailedMessage
 											? 10
 											: 0,
 									justifyContent: "space-between",
@@ -1045,19 +1045,7 @@ export const ChatRowContent = ({
 									{icon}
 									<div style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1 }}>
 										{title}
-										{showTimestamps && (
-											<span
-												style={{
-													fontSize: "11px",
-													color: "var(--vscode-descriptionForeground)",
-													fontWeight: "normal",
-												}}>
-												{new Date(message.ts).toLocaleTimeString([], {
-													hour: "2-digit",
-													minute: "2-digit",
-												})}
-											</span>
-										)}
+										{showTimestamps && <ChatTimestamps ts={message.ts} />}
 									</div>
 								</div>
 								<div
@@ -1080,26 +1068,26 @@ export const ChatRowContent = ({
 							</div>
 							{(((cost === null || cost === undefined) && apiRequestFailedMessage) ||
 								apiReqStreamingFailedMessage) && (
-								<ErrorRow
-									type="api_failure"
-									message={apiRequestFailedMessage || apiReqStreamingFailedMessage || ""}
-									additionalContent={
-										apiRequestFailedMessage?.toLowerCase().includes("powershell") ? (
-											<>
-												<br />
-												<br />
-												{t("chat:powershell.issues")}{" "}
-												<a
-													href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
-													style={{ color: "inherit", textDecoration: "underline" }}>
-													troubleshooting guide
-												</a>
-												.
-											</>
-										) : undefined
-									}
-								/>
-							)}
+									<ErrorRow
+										type="api_failure"
+										message={apiRequestFailedMessage || apiReqStreamingFailedMessage || ""}
+										additionalContent={
+											apiRequestFailedMessage?.toLowerCase().includes("powershell") ? (
+												<>
+													<br />
+													<br />
+													{t("chat:powershell.issues")}{" "}
+													<a
+														href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
+														style={{ color: "inherit", textDecoration: "underline" }}>
+														troubleshooting guide
+													</a>
+													.
+												</>
+											) : undefined
+										}
+									/>
+								)}
 
 							{isExpanded && (
 								<div className="ml-6" style={{ marginTop: "10px" }}>
@@ -1167,32 +1155,19 @@ export const ChatRowContent = ({
 								{icon}
 								<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 									{title}
-									{showTimestamps && (
-										<span
-											style={{
-												fontSize: "11px",
-												color: "var(--vscode-descriptionForeground)",
-												fontWeight: "normal",
-											}}>
-											{new Date(message.ts).toLocaleTimeString([], {
-												hour: "2-digit",
-												minute: "2-digit",
-											})}
-										</span>
-									)}
+									{showTimestamps && <ChatTimestamps ts={message.ts} />}
 								</div>
 							</div>
 							<div className="border-l border-green-600/30 ml-2 pl-4 pb-1">
 								<Markdown markdown={message.text} />
 							</div>
 							{
-								// kilocode_change start
+								// kilocode_change end
 								!message.partial && enableCheckpoints !== false && commitRange ? (
 									<SeeNewChangesButtons commitRange={commitRange} />
 								) : (
 									<></>
 								)
-								// kilocode_change end
 							}
 						</>
 					)
@@ -1278,7 +1253,7 @@ export const ChatRowContent = ({
 					)
 				// kilocode_change end
 				case "user_edit_todos":
-					return <UpdateTodoListToolBlock userEdited onChange={() => {}} />
+					return <UpdateTodoListToolBlock userEdited onChange={() => { }} />
 				case "tool" as any:
 					// Handle say tool messages
 					const sayTool = safeJsonParse<ClineSayTool>(message.text)
@@ -1375,7 +1350,10 @@ export const ChatRowContent = ({
 							{title && (
 								<div style={headerStyle}>
 									{icon}
-									{title}
+									<div style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1 }}>
+										{title}
+										{showTimestamps && <ChatTimestamps ts={message.ts} />}
+									</div>
 								</div>
 							)}
 							<div style={{ paddingTop: 10 }}>
@@ -1478,7 +1456,10 @@ export const ChatRowContent = ({
 							{title && (
 								<div style={headerStyle}>
 									{icon}
-									{title}
+									<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+										{title}
+										{showTimestamps && <ChatTimestamps ts={message.ts} />}
+									</div>
 								</div>
 							)}
 							<div className="flex flex-col gap-2 ml-6">
@@ -1492,6 +1473,17 @@ export const ChatRowContent = ({
 									onCancelAutoApproval={onFollowUpUnmount}
 									isAnswered={isFollowUpAnswered}
 								/>
+								{followUpData?.generateWithPrompt && (
+									<Trans
+										i18nKey="chat:followups.currentMcpMaxRequestsTriggered"
+										components={{
+											code: (
+												<code className="font-medium">{followUpData.generateWithPrompt}</code>
+											),
+										}}
+										values={{ model: followUpData.generateWithPrompt }}
+									/>
+								)}
 							</div>
 						</>
 					)
