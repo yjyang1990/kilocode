@@ -206,6 +206,10 @@ function getCommandApprovalDecision(
 
 /**
  * Determines the approval decision for a followup question
+ *
+ * NOTE: Follow-up questions should NOT require approval in normal operation.
+ * They are handled by useFollowupCIResponse hook which sends a response (not approval).
+ * This function is kept for backward compatibility and config-based auto-approval.
  */
 function getFollowupApprovalDecision(
 	message: ExtensionChatMessage,
@@ -213,6 +217,7 @@ function getFollowupApprovalDecision(
 	isCIMode: boolean,
 ): ApprovalDecision {
 	// In CI mode, always auto-approve followup questions with special message
+	// This is handled by useFollowupCIResponse hook, but kept here for consistency
 	if (isCIMode) {
 		return {
 			action: "auto-approve",

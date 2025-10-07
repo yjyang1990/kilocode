@@ -2,14 +2,17 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon, parseFollowUpData } from "../utils.js"
-import { useApprovalEffect } from "../../../../state/hooks/useApprovalEffect.js"
+import { useFollowupCIResponse } from "../../../../state/hooks/useFollowupCIResponse.js"
 
 /**
  * Display follow-up question with numbered suggestions
+ *
+ * Follow-up questions do NOT require approval - they're just questions from the AI.
+ * In CI mode, we automatically respond to tell the AI to proceed autonomously.
  */
 export const AskFollowupMessage: React.FC<MessageComponentProps> = ({ message }) => {
-	// Use centralized approval orchestration (handles CI mode auto-approval)
-	useApprovalEffect(message)
+	// Handle CI mode auto-response (not approval)
+	useFollowupCIResponse(message)
 
 	const icon = getMessageIcon("ask", "followup")
 	const data = parseFollowUpData(message)

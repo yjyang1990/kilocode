@@ -67,4 +67,5 @@ export type { WelcomeMessageConfig } from "./useWelcomeMessage.js"
 export { useFollowupSuggestions } from "./useFollowupSuggestions.js"
 export type { UseFollowupSuggestionsReturn } from "./useFollowupSuggestions.js"
 
+export { useFollowupCIResponse } from "./useFollowupCIResponse.js"
 export { useFollowupHandler } from "./useFollowupHandler.js"
