@@ -108,11 +108,7 @@ export class ContextAnalyzer {
 			/<!--/, // HTML comment
 		]
 
-		const hasCommentPattern = commentPatterns.some((pattern) => pattern.test(beforeCursor))
-
-		const isCommentNode = false
-
-		return hasCommentPattern || isCommentNode
+		return commentPatterns.some((pattern) => pattern.test(beforeCursor))
 	}
 
 	/**
