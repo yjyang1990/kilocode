@@ -20,6 +20,7 @@ import { TelemetryService } from "@roo-code/telemetry"
 import { ClineProvider } from "../../core/webview/ClineProvider"
 import { GhostGutterAnimation } from "./GhostGutterAnimation"
 import { GhostCursor } from "./GhostCursor"
+import { RooIgnoreController } from "../../core/ignore/RooIgnoreController"
 
 export class GhostProvider {
 	private static instance: GhostProvider | null = null
@@ -55,6 +56,8 @@ export class GhostProvider {
 	public codeActionProvider: GhostCodeActionProvider
 	public codeLensProvider: GhostCodeLensProvider
 
+	private ignoreController: RooIgnoreController | undefined
+
 	private constructor(context: vscode.ExtensionContext, cline: ClineProvider) {
 		this.context = context
 		this.cline = cline
@@ -78,6 +81,7 @@ export class GhostProvider {
 		vscode.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument, this, context.subscriptions)
 		vscode.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, context.subscriptions)
 		vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, context.subscriptions)
+		vscode.workspace.onDidChangeWorkspaceFolders(this.onDidChangeWorkspaceFolders, this, context.subscriptions)
 		vscode.window.onDidChangeTextEditorSelection(this.onDidChangeTextEditorSelection, this, context.subscriptions)
 		vscode.window.onDidChangeActiveTextEditor(this.onDidChangeActiveTextEditor, this, context.subscriptions)
 
@@ -157,6 +161,23 @@ export class GhostProvider {
 		this.documentStore.removeDocument(document.uri)
 	}
 
+	private async initializeIgnoreController() {
+		if (!this.ignoreController) {
+			this.ignoreController = new RooIgnoreController(this.cline.cwd)
+			await this.ignoreController.initialize()
+		}
+		return this.ignoreController
+	}
+
+	private disposeIgnoreController() {
+		this.ignoreController?.dispose()
+		delete this.ignoreController
+	}
+
+	private onDidChangeWorkspaceFolders() {
+		this.disposeIgnoreController()
+	}
+
 	private async onDidOpenTextDocument(document: vscode.TextDocument): Promise<void> {
 		if (!this.enabled || document.uri.scheme !== "file") {
 			return
@@ -226,6 +247,10 @@ export class GhostProvider {
 		await this.provideCodeSuggestions({ document, range, userInput })
 	}
 
+	private async hasAccess(document: vscode.TextDocument) {
+		return document.isUntitled || (await this.initializeIgnoreController()).validateAccess(document.fileName)
+	}
+
 	public async codeSuggestion() {
 		if (!this.enabled) {
 			return
@@ -241,6 +266,10 @@ export class GhostProvider {
 		})
 
 		const document = editor.document
+		if (!(await this.hasAccess(document))) {
+			return
+		}
+
 		const range = editor.selection.isEmpty ? undefined : editor.selection
 
 		await this.provideCodeSuggestions({ document, range })
@@ -730,6 +759,8 @@ export class GhostProvider {
 
 		this.statusBar?.dispose()
 		this.cursorAnimation.dispose()
+
+		this.disposeIgnoreController()
 
 		GhostProvider.instance = null // Reset singleton
 	}
