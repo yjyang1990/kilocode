@@ -187,7 +187,7 @@ export function getAllowedJSONToolsForMode(
 	customModes?: ModeConfig[],
 	experiments?: Record<string, boolean>,
 	settings?: Record<string, any>,
-): OpenAI.Chat.ChatCompletionAllowedToolChoice {
+): OpenAI.Chat.ChatCompletionTool[] {
 	const config = getModeConfig(mode, customModes)
 
 	const tools = new Set<string>()
@@ -256,29 +256,16 @@ export function getAllowedJSONToolsForMode(
 		nativeToolsMap.set(tool.function.name, tool)
 	})
 
-	// Map allowed tools to their native definitions in simplified format
-	const allowedTools: Array<{ type: "function"; function: { name: string } }> = []
+	// Map allowed tools to their native definitions
+	const allowedTools: OpenAI.Chat.ChatCompletionTool[] = []
 	tools.forEach((toolName) => {
 		const nativeTool = nativeToolsMap.get(toolName)
-		if (nativeTool && nativeTool.type === "function" && "function" in nativeTool) {
-			// Return in simplified format: { type: "function", function: { name: "tool_name" } }
-			allowedTools.push({
-				type: "function",
-				function: { name: nativeTool.function.name },
-			})
+		if (nativeTool) {
+			allowedTools.push(nativeTool)
 		}
 	})
 
-	const allowedToolsAndMode: OpenAI.Chat.ChatCompletionAllowedTools = {
-		mode: "required",
-		tools: allowedTools,
-	}
-	const allowedToolChoice: OpenAI.Chat.ChatCompletionAllowedToolChoice = {
-		allowed_tools: allowedToolsAndMode,
-		type: "allowed_tools",
-	}
-
-	return allowedToolChoice
+	return allowedTools
 }
 
 // Export individual description functions for backward compatibility

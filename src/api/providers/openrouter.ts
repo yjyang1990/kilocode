@@ -11,8 +11,6 @@ import {
 
 import type { ApiHandlerOptions, ModelRecord } from "../../shared/api"
 
-import { nativeTools } from "../../core/prompts/tools/native-tools" // kilocode_change
-
 import { convertToOpenAiMessages } from "../transform/openai-format"
 import { ApiStreamChunk } from "../transform/stream"
 import { convertToR1Format } from "../transform/r1-format"
@@ -216,8 +214,11 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			stream: true,
 			stream_options: { include_usage: true },
 			parallel_tool_calls: false, // kilocode_change
-			...(this.options.toolStyle === "json" && { tools: nativeTools }),
-			...(this.options.toolStyle === "json" && metadata && { tool_choice: metadata.allowedTools }),
+			...(this.options.toolStyle === "json" &&
+				metadata?.allowedTools && {
+					tools: metadata.allowedTools,
+					tool_choice: "required" as const,
+				}),
 			...this.getProviderParams(), // kilocode_change: original expression was moved into function
 			...(transforms && { transforms }),
 			...(reasoning && { reasoning }),

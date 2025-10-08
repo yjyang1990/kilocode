@@ -76,11 +76,10 @@ export interface ApiHandlerCreateMessageMetadata {
 	 */
 	store?: boolean
 	/**
-	 * OpenAI-format tool choice configuration for JSON tool style.
-	 * When provided, specifies which tools the model should use.
-	 * Can be "auto", "none", "required", or an object specifying a specific function.
+	 * Array of allowed tools for the current mode when using JSON tool style.
+	 * This contains the full tool definitions (function schemas) that the model can use.
 	 */
-	allowedTools?: OpenAI.Chat.ChatCompletionToolChoiceOption
+	allowedTools?: OpenAI.Chat.ChatCompletionTool[]
 }
 
 export interface ApiHandler {
