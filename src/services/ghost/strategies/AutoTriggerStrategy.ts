@@ -1,31 +1,19 @@
 import { GhostSuggestionContext } from "../types"
-import { UseCaseType } from "../types/PromptStrategy"
-import { BasePromptStrategy } from "./BasePromptStrategy"
+import { PromptStrategy, UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
 import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
-/**
- * Fallback strategy for automatic completions
- * handles all other cases with subtle suggestions
- */
-export class AutoTriggerStrategy extends BasePromptStrategy {
+export class AutoTriggerStrategy implements PromptStrategy {
 	name = "Auto Trigger"
 	type = UseCaseType.AUTO_TRIGGER
 
-	/**
-	 * Can handle any context (fallback strategy)
-	 * Always returns true as this is the catch-all
-	 */
 	canHandle(context: GhostSuggestionContext): boolean {
 		// This is the fallback strategy, so it can handle anything
 		// But we check for basic requirements
 		return !!context.document
 	}
 
-	/**
-	 * System instructions for auto-trigger
-	 */
-	getSystemInstructions(): string {
+	getSystemInstructions(customInstructions?: string): string {
 		return (
 			getBaseSystemInstructions() +
 			`Task: Subtle Auto-Completion

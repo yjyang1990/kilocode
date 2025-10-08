@@ -1,14 +1,9 @@
 import { GhostSuggestionContext } from "../types"
-import { BasePromptStrategy } from "./BasePromptStrategy"
-import { UseCaseType } from "../types/PromptStrategy"
+import { PromptStrategy, UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
 import { formatDiagnostics, formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
-/**
- * Strategy for refactoring selected code
- * High priority for explicit selection actions
- */
-export class SelectionRefactorStrategy extends BasePromptStrategy {
+export class SelectionRefactorStrategy implements PromptStrategy {
 	name = "Selection Refactor"
 	type = UseCaseType.SELECTION_REFACTOR
 
@@ -18,7 +13,7 @@ export class SelectionRefactorStrategy extends BasePromptStrategy {
 		return !!(context.range && !context.range.isEmpty && !context.userInput)
 	}
 
-	getSystemInstructions(): string {
+	getSystemInstructions(customInstructions?: string): string {
 		return (
 			getBaseSystemInstructions() +
 			`You are an expert code refactoring assistant. Your task is to improve selected code while maintaining its functionality.
