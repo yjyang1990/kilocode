@@ -31,7 +31,7 @@ export abstract class BasePromptStrategy implements PromptStrategy {
 		const baseInstructions = this.getBaseSystemInstructions()
 		const specificInstructions = this.getSpecificSystemInstructions()
 
-		return `${baseInstructions}\n\n---\n\n${specificInstructions}`
+		return `${baseInstructions}${specificInstructions}`
 	}
 
 	/**
@@ -71,7 +71,11 @@ EXAMPLE:
 	 // old code
 }]]></search><replace><![CDATA[function example() {
 	 // new code
-}]]></replace></change>`
+}]]></replace></change>
+
+--
+
+`
 	}
 
 	/**
