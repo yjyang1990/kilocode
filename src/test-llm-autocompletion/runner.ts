@@ -22,10 +22,12 @@ class TestRunner {
 	private verbose: boolean
 	private results: TestResult[] = []
 	private overrideStrategy?: string
+	private skipApproval: boolean
 
-	constructor(verbose: boolean = false, overrideStrategy?: string) {
+	constructor(verbose: boolean = false, overrideStrategy?: string, skipApproval: boolean = false) {
 		this.verbose = verbose
 		this.overrideStrategy = overrideStrategy
+		this.skipApproval = skipApproval
 		this.llmClient = new LLMClient()
 		this.strategyTester = new StrategyTester(this.llmClient, { overrideStrategy })
 	}
@@ -59,7 +61,13 @@ class TestRunner {
 				}
 			}
 
-			const approvalResult = await checkApproval(testCase.category, testCase.name, testCase.input, actualValue)
+			const approvalResult = await checkApproval(
+				testCase.category,
+				testCase.name,
+				testCase.input,
+				actualValue,
+				this.skipApproval,
+			)
 
 			return {
 				...approvalResult,
@@ -84,6 +92,9 @@ class TestRunner {
 		console.log("Model:", this.llmClient["model"])
 		if (this.overrideStrategy) {
 			console.log("Strategy Override:", this.overrideStrategy)
+		}
+		if (this.skipApproval) {
+			console.log("Skip Approval: enabled (tests will fail if not already approved)")
 		}
 		console.log("Total tests:", testCases.length)
 		console.log("Categories:", getCategories().join(", "))
@@ -344,6 +355,7 @@ class TestRunner {
 async function main() {
 	const args = process.argv.slice(2)
 	const verbose = args.includes("--verbose") || args.includes("-v")
+	const skipApproval = args.includes("--skip-approval") || args.includes("-sa")
 
 	// Check for strategy override
 	const strategyArgIndex = args.findIndex((arg) => arg === "--strategy" || arg === "-s")
@@ -354,7 +366,7 @@ async function main() {
 
 	const testName = args.find((arg) => !arg.startsWith("-") && arg !== overrideStrategy)
 
-	const runner = new TestRunner(verbose, overrideStrategy)
+	const runner = new TestRunner(verbose, overrideStrategy, skipApproval)
 
 	try {
 		if (testName) {
