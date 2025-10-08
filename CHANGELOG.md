@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.101.0
-
-### Minor Changes
+## [v4.101.0]
 
 - [#2518](https://github.com/Kilo-Org/kilocode/pull/2518) [`01106a8`](https://github.com/Kilo-Org/kilocode/commit/01106a8d35159ccea34e290a2174d44d83fecd64) Thanks [@eliasto](https://github.com/eliasto)! - OVHcloud AI Endpoints provider added
 
