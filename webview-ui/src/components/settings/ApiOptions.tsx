@@ -40,6 +40,7 @@ import {
 	vercelAiGatewayDefaultModelId,
 	deepInfraDefaultModelId,
 	ovhCloudAiEndpointsDefaultModelId, // kilocode_change
+	nativeFunctionCallingProviders, // Added import for native function calling providers
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -889,10 +890,12 @@ const ApiOptions = ({
 							todoListEnabled={apiConfiguration.todoListEnabled}
 							onChange={(field, value) => setApiConfigurationField(field, value)}
 						/>
-						<ToolUseControl
-							toolStyle={apiConfiguration.toolStyle}
-							onChange={(field, value) => setApiConfigurationField(field, value)}
-						/>
+						{nativeFunctionCallingProviders.includes(selectedProvider) && (
+							<ToolUseControl
+								toolStyle={apiConfiguration.toolStyle}
+								onChange={(field, value) => setApiConfigurationField(field, value)}
+							/>
+						)}
 						<DiffSettingsControl
 							diffEnabled={apiConfiguration.diffEnabled}
 							fuzzyMatchThreshold={apiConfiguration.fuzzyMatchThreshold}
