@@ -207,7 +207,7 @@ class TestRunner {
 			process.exit(1)
 		}
 
-		const numRuns = 5
+		const numRuns = 10
 
 		console.log(`\n🧪 Running Single Test: ${testName} (${numRuns} times)\n`)
 		console.log("Category:", testCase.category)
