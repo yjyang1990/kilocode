@@ -1,6 +1,5 @@
 import { GhostSuggestionContext } from "./types"
 import { PromptStrategy } from "./types/PromptStrategy"
-import { ContextAnalyzer } from "./ContextAnalyzer"
 
 // Import all strategies
 import { UserRequestStrategy } from "./strategies/UserRequestStrategy"
@@ -16,12 +15,10 @@ import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
  */
 export class PromptStrategyManager {
 	private strategies: PromptStrategy[]
-	private contextAnalyzer: ContextAnalyzer
 	private debug: boolean
 
 	constructor(options?: { debug: boolean }) {
 		this.debug = options?.debug ?? false
-		this.contextAnalyzer = new ContextAnalyzer()
 
 		// Register all strategies in priority order
 		this.strategies = [
@@ -41,28 +38,11 @@ export class PromptStrategyManager {
 	 * @returns The selected strategy
 	 */
 	selectStrategy(context: GhostSuggestionContext): PromptStrategy {
-		// Analyze context to understand the situation
-		const analysis = this.contextAnalyzer.analyze(context)
-
-		if (this.debug) {
-			console.log("[PromptStrategyManager] Context analysis:", {
-				useCase: analysis.useCase,
-				hasUserInput: analysis.hasUserInput,
-				hasErrors: analysis.hasErrors,
-				hasSelection: analysis.hasSelection,
-				isNewLine: analysis.isNewLine,
-				isInComment: analysis.isInComment,
-				isInlineEdit: analysis.isInlineEdit,
-			})
-		}
-
 		// Find the first strategy that can handle this context
 		for (const strategy of this.strategies) {
 			if (strategy.canHandle(context)) {
 				if (this.debug) {
-					console.log(
-						`[PromptStrategyManager] Selected strategy: ${strategy.name} for use case: ${analysis.useCase}`,
-					)
+					console.log(`[PromptStrategyManager] Selected strategy: ${strategy.name}`)
 				}
 				return strategy
 			}
