@@ -1,8 +1,6 @@
 import type { TextDocument, Range, Diagnostic } from "vscode"
 import { GhostSuggestionContext } from "../types"
 import { PromptStrategy, UseCaseType } from "../types/PromptStrategy"
-import { CURSOR_MARKER } from "../ghostConstants"
-import { DiagnosticSeverityNames } from "./diagnostics"
 
 /**
  * Abstract base class for all prompt strategies
@@ -78,50 +76,4 @@ EXAMPLE:
 	 * Generates the user prompt with context
 	 */
 	abstract getUserPrompt(context: GhostSuggestionContext): string
-
-	/**
-	 * Adds the cursor marker to the document text at the specified position
-	 */
-	protected addCursorMarker(document: TextDocument, range?: Range): string {
-		if (!range) return document.getText()
-
-		const fullText = document.getText()
-		const cursorOffset = document.offsetAt(range.start)
-		const beforeCursor = fullText.substring(0, cursorOffset)
-		const afterCursor = fullText.substring(cursorOffset)
-
-		return `${beforeCursor}${CURSOR_MARKER}${afterCursor}`
-	}
-
-	/**
-	 * Formats diagnostics for inclusion in prompts
-	 */
-	protected formatDiagnostics(diagnostics: Diagnostic[]): string {
-		if (!diagnostics || diagnostics.length === 0) return ""
-
-		let result = "## Active Issues\n"
-
-		// Sort by severity (errors first)
-		const sorted = [...diagnostics].sort((a, b) => a.severity - b.severity)
-
-		sorted.forEach((d) => {
-			const severity = DiagnosticSeverityNames[d.severity] || "Unknown"
-			const line = d.range.start.line + 1
-			result += `- **${severity}** at line ${line}: ${d.message}\n`
-		})
-
-		return result
-	}
-
-	/**
-	 * Formats the document with cursor marker for the prompt
-	 */
-	protected formatDocumentWithCursor(document: TextDocument, range?: Range, languageId?: string): string {
-		const lang = languageId || document.languageId
-		const codeWithCursor = this.addCursorMarker(document, range)
-
-		return `\`\`\`${lang}
-${codeWithCursor}
-\`\`\``
-	}
 }

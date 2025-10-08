@@ -3,6 +3,7 @@ import { GhostSuggestionContext } from "../types"
 import { UseCaseType } from "../types/PromptStrategy"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
+import { formatDiagnostics, formatDocumentWithCursor } from "./StrategyHelpers"
 
 /**
  * Strategy for handling explicit user requests
@@ -83,14 +84,14 @@ Common Request Patterns:
 
 		// Include diagnostics if present (user might be asking to fix them)
 		if (context.diagnostics && context.diagnostics.length > 0) {
-			prompt += this.formatDiagnostics(context.diagnostics)
+			prompt += formatDiagnostics(context.diagnostics)
 			prompt += "\n"
 		}
 
 		// Add the full document with cursor marker
 		if (context.document) {
 			prompt += "## Full Code\n"
-			prompt += this.formatDocumentWithCursor(context.document, context.range)
+			prompt += formatDocumentWithCursor(context.document, context.range)
 			prompt += "\n\n"
 		}
 
