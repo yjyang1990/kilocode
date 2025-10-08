@@ -14,6 +14,7 @@ import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
  */
 export class PromptStrategyManager {
 	private strategies: PromptStrategy[]
+	private autoTriggerStrategy: AutoTriggerStrategy
 	private debug: boolean
 
 	constructor(options?: { debug: boolean }) {
@@ -26,8 +27,8 @@ export class PromptStrategyManager {
 			new NewLineCompletionStrategy(),
 			new CommentDrivenStrategy(),
 			new InlineCompletionStrategy(),
-			new AutoTriggerStrategy(),
 		]
+		this.autoTriggerStrategy = new AutoTriggerStrategy()
 	}
 
 	/**
@@ -36,7 +37,7 @@ export class PromptStrategyManager {
 	 * @returns The selected strategy
 	 */
 	selectStrategy(context: GhostSuggestionContext): PromptStrategy {
-		const strategy = this.strategies.find((s) => s.canHandle(context)) ?? this.strategies.at(-1)!
+		const strategy = this.strategies.find((s) => s.canHandle(context)) ?? this.autoTriggerStrategy
 
 		if (this.debug) {
 			console.log(`[PromptStrategyManager] Selected strategy: ${strategy.name}`)
