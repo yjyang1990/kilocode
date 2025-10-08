@@ -3,8 +3,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 import { GhostStrategy } from "../GhostStrategy"
 import { GhostSuggestionContext } from "../types"
 import { PromptStrategyManager } from "../PromptStrategyManager"
-import { UseCaseType } from "../types/PromptStrategy"
-import { skip } from "node:test"
 
 describe("GhostStrategy", () => {
 	let strategy: GhostStrategy
