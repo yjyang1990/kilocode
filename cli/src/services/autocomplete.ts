@@ -252,10 +252,6 @@ export function getSuggestions(input: string): CommandSuggestion[] {
 		return a.command.name.localeCompare(b.command.name)
 	})
 
-	logs.debug("Matches", "Matches", {
-		matches: matches,
-	})
-
 	return matches
 }
 
