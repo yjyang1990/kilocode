@@ -10,9 +10,12 @@ export class StrategyTester {
 	private llmClient: LLMClient
 	private strategyManager: PromptStrategyManager
 
-	constructor(llmClient: LLMClient) {
+	constructor(llmClient: LLMClient, options?: { overrideStrategy?: string }) {
 		this.llmClient = llmClient
-		this.strategyManager = new PromptStrategyManager({ debug: false })
+		this.strategyManager = new PromptStrategyManager({
+			debug: false,
+			overrideStrategy: options?.overrideStrategy,
+		})
 	}
 
 	/**

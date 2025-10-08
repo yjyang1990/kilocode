@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"test": "tsx runner.ts",
-		"test:verbose": "tsx runner.ts --verbose"
+		"test:verbose": "tsx runner.ts --verbose",
+		"test:fim": "tsx runner.ts --strategy \"FIM Codestral\""
 	},
 	"dependencies": {
 		"@anthropic-ai/sdk": "^0.51.0",

@@ -21,11 +21,13 @@ class TestRunner {
 	private strategyTester: StrategyTester
 	private verbose: boolean
 	private results: TestResult[] = []
+	private overrideStrategy?: string
 
-	constructor(verbose: boolean = false) {
+	constructor(verbose: boolean = false, overrideStrategy?: string) {
 		this.verbose = verbose
+		this.overrideStrategy = overrideStrategy
 		this.llmClient = new LLMClient()
-		this.strategyTester = new StrategyTester(this.llmClient)
+		this.strategyTester = new StrategyTester(this.llmClient, { overrideStrategy })
 	}
 
 	async runTest(testCase: TestCase): Promise<TestResult> {
@@ -80,6 +82,9 @@ class TestRunner {
 		console.log("\n🚀 Starting PromptStrategyManager LLM Tests\n")
 		console.log("Provider:", this.llmClient["provider"])
 		console.log("Model:", this.llmClient["model"])
+		if (this.overrideStrategy) {
+			console.log("Strategy Override:", this.overrideStrategy)
+		}
 		console.log("Total tests:", testCases.length)
 		console.log("Categories:", getCategories().join(", "))
 		console.log("\n" + "─".repeat(80) + "\n")
@@ -339,9 +344,17 @@ class TestRunner {
 async function main() {
 	const args = process.argv.slice(2)
 	const verbose = args.includes("--verbose") || args.includes("-v")
-	const testName = args.find((arg) => !arg.startsWith("-"))
 
-	const runner = new TestRunner(verbose)
+	// Check for strategy override
+	const strategyArgIndex = args.findIndex((arg) => arg === "--strategy" || arg === "-s")
+	const overrideStrategy =
+		strategyArgIndex !== -1 && args[strategyArgIndex + 1]
+			? args[strategyArgIndex + 1]
+			: process.env.TEST_STRATEGY || undefined
+
+	const testName = args.find((arg) => !arg.startsWith("-") && arg !== overrideStrategy)
+
+	const runner = new TestRunner(verbose, overrideStrategy)
 
 	try {
 		if (testName) {
