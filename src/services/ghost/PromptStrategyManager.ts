@@ -84,12 +84,4 @@ export class PromptStrategyManager {
 			strategy,
 		}
 	}
-
-	/**
-	 * Gets all registered strategies (for testing/debugging)
-	 * @returns Array of all strategies
-	 */
-	getStrategies(): PromptStrategy[] {
-		return [...this.strategies]
-	}
 }

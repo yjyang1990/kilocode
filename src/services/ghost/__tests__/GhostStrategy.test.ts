@@ -141,20 +141,6 @@ describe("GhostStrategy", () => {
 			manager = new PromptStrategyManager()
 		})
 
-		it("should have all 7 strategies registered", () => {
-			const strategies = manager.getStrategies()
-			expect(strategies).toHaveLength(7)
-
-			const strategyNames = strategies.map((s) => s.name)
-			expect(strategyNames).toContain("User Request")
-			expect(strategyNames).toContain("Error Fix")
-			expect(strategyNames).toContain("Selection Refactor")
-			expect(strategyNames).toContain("Comment Driven")
-			expect(strategyNames).toContain("New Line Completion")
-			expect(strategyNames).toContain("Inline Completion")
-			expect(strategyNames).toContain("Auto Trigger")
-		})
-
 		it("should select appropriate strategy based on context", () => {
 			const mockDocument = {
 				languageId: "typescript",
