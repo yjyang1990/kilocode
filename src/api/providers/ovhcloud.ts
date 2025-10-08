@@ -10,7 +10,7 @@ import { ApiStream } from "../transform/stream"
 import { convertToOpenAiMessages } from "../transform/openai-format"
 import { calculateApiCostOpenAI } from "../../shared/cost"
 
-export class OVHCloudAIEndpointsHandler extends RouterProvider implements SingleCompletionHandler {
+export class OVHcloudAIEndpointsHandler extends RouterProvider implements SingleCompletionHandler {
 	constructor(options: ApiHandlerOptions) {
 		super({
 			options,
@@ -83,7 +83,7 @@ export class OVHCloudAIEndpointsHandler extends RouterProvider implements Single
 			return response.choices[0]?.message.content || ""
 		} catch (error) {
 			if (error instanceof Error) {
-				throw new Error(`OVHCloud AI Endpoints completion error: ${error.message}`)
+				throw new Error(`OVHcloud AI Endpoints completion error: ${error.message}`)
 			}
 
 			throw error
