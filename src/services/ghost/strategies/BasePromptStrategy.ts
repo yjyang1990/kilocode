@@ -27,13 +27,11 @@ export abstract class BasePromptStrategy implements PromptStrategy {
 	/**
 	 * Generates system instructions for the AI model
 	 */
-	getSystemInstructions(customInstructions?: string): string {
+	getSystemInstructions(): string {
 		const baseInstructions = this.getBaseSystemInstructions()
 		const specificInstructions = this.getSpecificSystemInstructions()
 
-		return `${baseInstructions}\n\n---\n\n${specificInstructions}${
-			customInstructions ? `\n\n---\n\n${customInstructions}` : ""
-		}`
+		return `${baseInstructions}\n\n---\n\n${specificInstructions}`
 	}
 
 	/**
