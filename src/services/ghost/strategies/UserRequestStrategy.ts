@@ -1,3 +1,4 @@
+import type { Range, TextDocument } from "vscode"
 import { GhostSuggestionContext } from "../types"
 import { UseCaseType } from "../types/PromptStrategy"
 import { BasePromptStrategy } from "./BasePromptStrategy"
@@ -153,5 +154,28 @@ Common Request Patterns:
 
 		// Use the standard prompt building
 		return super.getUserPrompt(context)
+	}
+
+	/**
+	 * Gets the file path from the document
+	 */
+	private getFilePath(document: TextDocument): string {
+		return document.uri.toString()
+	}
+
+	/**
+	 * Formats selected text for inclusion in prompts
+	 */
+	private formatSelectedText(document: TextDocument, range: Range): string {
+		if (range.isEmpty) return ""
+
+		const selectedText = document.getText(range)
+		const startLine = range.start.line + 1
+		const endLine = range.end.line + 1
+
+		return `## Selected Code (Lines ${startLine}-${endLine})
+\`\`\`${document.languageId}
+${selectedText}
+\`\`\``
 	}
 }
