@@ -253,8 +253,7 @@ export class GhostProvider {
 		this.isRequestCancelled = false
 
 		const context = await this.ghostContext.generate(initialContext)
-		const systemPrompt = this.strategy.getSystemPrompt(context)
-		const userPrompt = this.strategy.getSuggestionPrompt(context)
+		const { systemPrompt, userPrompt } = this.strategy.getPrompts(context)
 		if (this.isRequestCancelled) {
 			return
 		}
