@@ -84,7 +84,6 @@ export function useCIMode(options: UseCIModeOptions): UseCIModeReturn {
 	// Write atoms
 	const setCommandFinished = useSetAtom(ciCommandFinishedAtom)
 	const setExitReason = useSetAtom(ciExitReasonAtom)
-	const setIsProcessing = useSetAtom(isProcessingAtom)
 
 	// Local state
 	const [shouldExit, setShouldExit] = useState(false)
@@ -117,8 +116,6 @@ export function useCIMode(options: UseCIModeOptions): UseCIModeReturn {
 		// Check if this is a completion_result message
 		if (lastMessage.type === "ask" && lastMessage.ask === "completion_result") {
 			logs.info("CI mode: completion_result message received", "useCIMode")
-			// Reset processing state now that we have the completion
-			setIsProcessing(false)
 			setLocalExitReason("completion_result")
 			setExitReason("completion_result")
 			setShouldExit(true)
@@ -142,8 +139,6 @@ export function useCIMode(options: UseCIModeOptions): UseCIModeReturn {
 		if (!enabled || !completionDetected || exitTriggeredRef.current) return
 
 		logs.info("CI mode: completion detected via atom", "useCIMode")
-		// Reset processing state now that we have the completion
-		setIsProcessing(false)
 		setLocalExitReason("completion_result")
 		setExitReason("completion_result")
 		setShouldExit(true)

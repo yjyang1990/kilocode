@@ -198,7 +198,6 @@ export {
 	selectPreviousFollowupAtom,
 	unselectFollowupAtom,
 	setErrorAtom,
-	setIsProcessingAtom,
 	hideAutocompleteAtom,
 	showAutocompleteMenuAtom,
 } from "./ui.js"

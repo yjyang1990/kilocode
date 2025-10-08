@@ -270,13 +270,6 @@ export const setErrorAtom = atom(null, (get, set, error: string | null) => {
 })
 
 /**
- * Action atom to set processing state
- */
-export const setIsProcessingAtom = atom(null, (get, set, processing: boolean) => {
-	set(isProcessingAtom, processing)
-})
-
-/**
  * Action atom to hide autocomplete
  */
 export const hideAutocompleteAtom = atom(null, (get, set) => {

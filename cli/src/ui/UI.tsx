@@ -18,6 +18,7 @@ import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
 import { useWelcomeMessage } from "../state/hooks/useWelcomeMessage.js"
 import { useFollowupHandler } from "../state/hooks/useFollowupHandler.js"
 import { useCIMode } from "../state/hooks/useCIMode.js"
+import useIsProcessingSubscription from "../state/hooks/useIsProcessingSubscription.js"
 import { AppOptions } from "./App.js"
 import { logs } from "../services/logs.js"
 
@@ -44,6 +45,8 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 
 	// Followup handler hook for automatic suggestion population
 	useFollowupHandler()
+
+	useIsProcessingSubscription()
 
 	// CI mode hook for automatic exit
 	const { shouldExit, exitReason } = useCIMode({
@@ -142,6 +145,8 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 					<Text color="red">⚠ {error}</Text>
 				</Box>
 			)}
+
+			{!options.ci && isProcessing && <Text color="gray">Thinking...</Text>}
 
 			{/* Input */}
 			{!options.ci && <CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />}

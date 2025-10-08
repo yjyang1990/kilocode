@@ -106,16 +106,6 @@ export function useMessageHandler(options: UseMessageHandlerOptions = {}): UseMe
 			} finally {
 				// Reset sending state
 				setIsSending(false)
-
-				// In CI mode, keep isProcessing true until we receive completion_result
-				// In interactive mode, reset immediately
-				if (!ciMode) {
-					setIsProcessing(false)
-					logs.debug("Message sent, processing state reset (interactive mode)", "useMessageHandler")
-				} else {
-					logs.debug("Message sent, keeping processing state active (CI mode)", "useMessageHandler")
-					// isProcessing will be reset when completion_result is received
-				}
 			}
 		},
 		[addMessage, setIsProcessing, ciMode, sendMessage, sendAskResponse, hasActiveTask],
