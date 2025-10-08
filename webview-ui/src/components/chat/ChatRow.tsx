@@ -154,11 +154,17 @@ export const ChatRowContent = ({
 		onToggleExpand(message.ts)
 	}, [onToggleExpand, message.ts])
 
-	// kilocode_change: usageMissing
-	const [cost, usageMissing, apiReqCancelReason, apiReqStreamingFailedMessage] = useMemo(() => {
+	// kilocode_change: usageMissing, inferenceProvider
+	const [cost, usageMissing, inferenceProvider, apiReqCancelReason, apiReqStreamingFailedMessage] = useMemo(() => {
 		if (message.text !== null && message.text !== undefined && message.say === "api_req_started") {
 			const info = safeJsonParse<ClineApiReqInfo>(message.text)
-			return [info?.cost, info?.usageMissing, info?.cancelReason, info?.streamingFailedMessage]
+			return [
+				info?.cost,
+				info?.usageMissing,
+				info?.inferenceProvider,
+				info?.cancelReason,
+				info?.streamingFailedMessage,
+			]
 		}
 
 		return [undefined, undefined, undefined]
@@ -273,8 +279,12 @@ export const ChatRowContent = ({
 							</span>
 						)
 					) : cost !== null && cost !== undefined ? (
-						<span style={{ color: normalColor }}>{t("chat:apiRequest.title")}</span>
-					) : apiRequestFailedMessage ? (
+						// kilocode_change start: tooltip
+						<StandardTooltip content={inferenceProvider && `Inference Provider: ${inferenceProvider}`}>
+							<span style={{ color: normalColor }}>{t("chat:apiRequest.title")}</span>
+						</StandardTooltip>
+					) : // kilocode_change end
+					apiRequestFailedMessage ? (
 						<span style={{ color: errorColor }}>{t("chat:apiRequest.failed")}</span>
 					) : (
 						<span style={{ color: normalColor }}>{t("chat:apiRequest.streaming")}</span>
@@ -298,6 +308,7 @@ export const ChatRowContent = ({
 		apiRequestFailedMessage,
 		t,
 		isExpanded,
+		inferenceProvider, // kilocode_change
 	])
 
 	const headerStyle: React.CSSProperties = {

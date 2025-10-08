@@ -45,6 +45,17 @@ class TestRunner {
 				actualValue = "(no changes parsed)"
 			}
 
+			// Auto-reject if no changes were parsed
+			if (actualValue === "(no changes parsed)") {
+				return {
+					testCase,
+					isApproved: false,
+					completion,
+					actualValue,
+					llmRequestDuration,
+				}
+			}
+
 			const approvalResult = await checkApproval(testCase.category, testCase.name, testCase.input, actualValue)
 
 			return {
@@ -196,33 +207,74 @@ class TestRunner {
 			process.exit(1)
 		}
 
-		console.log(`\n🧪 Running Single Test: ${testName}\n`)
+		const numRuns = 10
+
+		console.log(`\n🧪 Running Single Test: ${testName} (${numRuns} times)\n`)
 		console.log("Category:", testCase.category)
 		console.log("Description:", testCase.description)
 		console.log("\nInput Code:")
 		console.log(testCase.input)
+		console.log("\n" + "═".repeat(80))
 
-		const result = await this.runTest(testCase)
+		const results: TestResult[] = []
 
-		console.log("\n" + "─".repeat(40))
+		for (let i = 0; i < numRuns; i++) {
+			console.log(`\n🔄 Run ${i + 1}/${numRuns}...`)
 
-		if (result.isApproved) {
-			console.log("\n✓ TEST PASSED")
-			if (result.newOutput) {
+			const result = await this.runTest(testCase)
+
+			results.push(result)
+
+			const status = result.isApproved ? "✓ PASSED" : "✗ FAILED"
+			const llmTime = result.llmRequestDuration ? `${result.llmRequestDuration.toFixed(0)}ms LLM` : "N/A"
+			console.log(`   ${status} - ${llmTime}`)
+		}
+
+		console.log("\n" + "═".repeat(80))
+		console.log("\n📊 Test Statistics\n")
+
+		const passedRuns = results.filter((r) => r.isApproved).length
+		const failedRuns = numRuns - passedRuns
+		console.log(`  ✓ Passed: ${passedRuns}/${numRuns}`)
+		console.log(`  ✗ Failed: ${failedRuns}/${numRuns}`)
+
+		const llmTimes = results.filter((r) => r.llmRequestDuration !== undefined).map((r) => r.llmRequestDuration!)
+		if (llmTimes.length > 0) {
+			const sortedLlmTimes = [...llmTimes].sort((a, b) => a - b)
+			const avgLlmTime = llmTimes.reduce((sum, time) => sum + time, 0) / llmTimes.length
+			const minLlmTime = sortedLlmTimes[0]
+			const maxLlmTime = sortedLlmTimes[sortedLlmTimes.length - 1]
+			const medianLlmTime = sortedLlmTimes[Math.floor(llmTimes.length / 2)]
+
+			console.log("\n⚡ LLM Request Time:")
+			console.log(`  Average: ${avgLlmTime.toFixed(0)}ms`)
+			console.log(`  Median:  ${medianLlmTime.toFixed(0)}ms`)
+			console.log(`  Min:     ${minLlmTime.toFixed(0)}ms`)
+			console.log(`  Max:     ${maxLlmTime.toFixed(0)}ms`)
+		}
+
+		const lastResult = results[results.length - 1]
+
+		console.log("\n" + "═".repeat(80))
+		console.log("\n📝 Last Run Details\n")
+
+		if (lastResult.isApproved) {
+			console.log("✓ TEST PASSED")
+			if (lastResult.newOutput) {
 				console.log("(New output approved)")
 			}
 		} else {
-			console.log("\n✗ TEST FAILED")
-			if (result.error) {
-				console.log(`Error: ${result.error}`)
+			console.log("✗ TEST FAILED")
+			if (lastResult.error) {
+				console.log(`Error: ${lastResult.error}`)
 			} else {
 				console.log("\nExtracted value being tested:")
-				console.log(`  "${result.actualValue}"`)
+				console.log(`  "${lastResult.actualValue}"`)
 			}
 		}
 
-		if (result.completion) {
-			const changes = this.strategyTester.parseCompletion(result.completion)
+		if (lastResult.completion) {
+			const changes = this.strategyTester.parseCompletion(lastResult.completion)
 			if (changes.length > 0) {
 				console.log("\nParsed Changes:")
 				changes.forEach((change, i) => {
@@ -246,7 +298,6 @@ class TestRunner {
 					)
 					console.log("  " + "─".repeat(78))
 
-					// Show what was extracted for testing
 					const extracted = change.replace.replace(testCase.input, "").trim()
 					console.log("  Extracted for test:", extracted || "(full replacement)")
 				})
@@ -255,10 +306,12 @@ class TestRunner {
 			}
 
 			console.log("\nFull LLM Response:")
-			console.log(result.completion)
+			console.log(lastResult.completion)
 		}
 
-		process.exit(result.isApproved ? 0 : 1)
+		console.log("\n" + "═".repeat(80) + "\n")
+
+		process.exit(passedRuns === numRuns ? 0 : 1)
 	}
 }
 
