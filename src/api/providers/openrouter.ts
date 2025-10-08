@@ -29,6 +29,7 @@ import type {
 	SingleCompletionHandler,
 } from "../index"
 import { verifyFinishReason } from "./kilocode/verifyFinishReason"
+import { addNativeToolCallsToParams, processNativeToolCallsFromDelta } from "./kilocode/nativeToolCallHelpers"
 
 // kilocode_change start
 type OpenRouterProviderParams = {
@@ -213,17 +214,14 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			messages: openAiMessages,
 			stream: true,
 			stream_options: { include_usage: true },
-			parallel_tool_calls: false, // kilocode_change
-			...(this.options.toolStyle === "json" &&
-				metadata?.allowedTools && {
-					tools: metadata.allowedTools,
-					tool_choice: "required" as const,
-				}),
 			...this.getProviderParams(), // kilocode_change: original expression was moved into function
 			...(transforms && { transforms }),
 			...(reasoning && { reasoning }),
-			// kilocode_change end
 		}
+
+		// kilocode_change start: Add native tool call support when toolStyle is "json"
+		addNativeToolCallsToParams(completionParams, this.options, metadata)
+		// kilocode_change end
 
 		let stream
 		try {
@@ -271,38 +269,7 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 				}
 
 				// Handle native tool calls when toolStyle is "json"
-				if (delta && delta.tool_calls && delta.tool_calls.length > 0) {
-					if (this.options.toolStyle === "json") {
-						// Yield native tool calls as structured data for AssistantMessageParser to accumulate
-						// Note: OpenAI streaming format:
-						// - First delta: {index: 0, id: 'call_xxx', function: {name: 'tool', arguments: ''}}
-						// - Subsequent deltas: {index: 0, function: {arguments: 'partial json'}}
-						// The index is stable across deltas for the same tool call
-						const validToolCalls = delta.tool_calls
-							.filter((tc) => tc.function) // Keep any delta with function data
-							.map((tc) => ({
-								index: tc.index, // Use index to track across deltas
-								id: tc.id, // Only present in first delta
-								type: tc.type,
-								function: {
-									name: tc.function!.name || "", // Name only in first delta
-									arguments: tc.function!.arguments || "",
-								},
-							}))
-
-						if (validToolCalls.length > 0) {
-							yield {
-								type: "native_tool_calls",
-								toolCalls: validToolCalls,
-							}
-						}
-					} else {
-						console.error(
-							"Model tried to use native tool calls but toolStyle is not 'json'",
-							delta.tool_calls,
-						)
-					}
-				}
+				yield* processNativeToolCallsFromDelta(delta, this.options.toolStyle)
 				// kilocode_change end
 
 				if (delta?.content) {

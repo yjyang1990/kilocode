@@ -2920,6 +2920,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 					providerState?.customModes,
 					providerState?.experiments,
 					providerState?.apiConfiguration,
+					providerState, // Pass full providerState for Fast Apply checking
 				)
 
 				metadata.allowedTools = allowedTools
