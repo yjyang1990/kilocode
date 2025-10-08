@@ -2,7 +2,7 @@ import { GhostSuggestionContext } from "../types"
 import { UseCaseType } from "../types/PromptStrategy"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
-import { formatDocumentWithCursor } from "./StrategyHelpers"
+import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
 /**
  * Fallback strategy for automatic completions
@@ -27,7 +27,7 @@ export class AutoTriggerStrategy extends BasePromptStrategy {
 	 */
 	getSystemInstructions(): string {
 		return (
-			this.getBaseSystemInstructions() +
+			getBaseSystemInstructions() +
 			`Task: Subtle Auto-Completion
 Provide non-intrusive completions after a typing pause. Be conservative and helpful.
 

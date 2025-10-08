@@ -2,7 +2,7 @@ import { GhostSuggestionContext } from "../types"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
-import { formatDocumentWithCursor } from "./StrategyHelpers"
+import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
 /**
  * Strategy for inline code completions (mid-line completions)
@@ -28,7 +28,7 @@ export class InlineCompletionStrategy extends BasePromptStrategy {
 
 	getSystemInstructions(): string {
 		return (
-			this.getBaseSystemInstructions() +
+			getBaseSystemInstructions() +
 			`You are an expert code completion assistant specializing in inline completions.
 
 ## Core Responsibilities:

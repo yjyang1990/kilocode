@@ -2,7 +2,7 @@ import { GhostSuggestionContext } from "../types"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
-import { formatDiagnostics, formatDocumentWithCursor } from "./StrategyHelpers"
+import { formatDiagnostics, formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
 /**
  * Strategy for refactoring selected code
@@ -20,7 +20,7 @@ export class SelectionRefactorStrategy extends BasePromptStrategy {
 
 	getSystemInstructions(): string {
 		return (
-			this.getBaseSystemInstructions() +
+			getBaseSystemInstructions() +
 			`You are an expert code refactoring assistant. Your task is to improve selected code while maintaining its functionality.
 
 ## Core Responsibilities:

@@ -2,7 +2,7 @@ import { GhostSuggestionContext } from "../types"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
-import { formatDocumentWithCursor } from "./StrategyHelpers"
+import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
 /**
  * Strategy for generating code based on comments
@@ -33,7 +33,7 @@ export class CommentDrivenStrategy extends BasePromptStrategy {
 
 	getSystemInstructions(): string {
 		return (
-			this.getBaseSystemInstructions() +
+			getBaseSystemInstructions() +
 			`You are an expert code generation assistant that implements code based on comments.
 
 ## Core Responsibilities:

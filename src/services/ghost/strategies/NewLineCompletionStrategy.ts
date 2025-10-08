@@ -3,7 +3,7 @@ import { GhostSuggestionContext } from "../types"
 import { UseCaseType } from "../types/PromptStrategy"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
-import { formatDocumentWithCursor } from "./StrategyHelpers"
+import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
 /**
  * Strategy for proactive code completion on new/empty lines
@@ -28,7 +28,7 @@ export class NewLineCompletionStrategy extends BasePromptStrategy {
 	 */
 	getSystemInstructions(): string {
 		return (
-			this.getBaseSystemInstructions() +
+			getBaseSystemInstructions() +
 			`Task: Proactive Code Completion for New Lines
 The user has created a new line. Suggest the most logical next code based on context.
 

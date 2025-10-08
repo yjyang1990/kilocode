@@ -3,7 +3,7 @@ import { GhostSuggestionContext } from "../types"
 import { UseCaseType } from "../types/PromptStrategy"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
-import { formatDiagnostics, formatDocumentWithCursor } from "./StrategyHelpers"
+import { formatDiagnostics, formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
 /**
  * Strategy for handling explicit user requests
@@ -25,7 +25,7 @@ export class UserRequestStrategy extends BasePromptStrategy {
 	 */
 	getSystemInstructions(): string {
 		return (
-			this.getBaseSystemInstructions() +
+			getBaseSystemInstructions() +
 			`Task: Execute User's Explicit Request
 You are responding to a direct user instruction. Your primary goal is to fulfill their specific request accurately.
 
