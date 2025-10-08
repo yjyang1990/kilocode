@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+// Load .env file before any other imports or initialization
+import { loadEnvFile } from "./utils/env-loader.js"
+loadEnvFile()
+
 import { Command } from "commander"
 import { existsSync } from "fs"
 import { spawn } from "child_process"
@@ -8,12 +12,8 @@ import { CLI } from "./cli.js"
 import { DEFAULT_MODES } from "./constants/modes/defaults.js"
 import { configExists, saveConfig, getConfigPath, ensureConfigDir } from "./config/persistence.js"
 import { DEFAULT_CONFIG } from "./config/defaults.js"
-
-// Mock package info for CLI
-const Package = {
-	name: "kilo-code-cli",
-	version: "1.0.0",
-}
+import { getTelemetryService } from "./services/telemetry/index.js"
+import { Package } from "./constants/package.js"
 
 const program = new Command()
 let cli: CLI | null = null
@@ -76,6 +76,11 @@ program
 		if (options.timeout && (isNaN(options.timeout) || options.timeout <= 0)) {
 			console.error("Error: --timeout must be a positive number")
 			process.exit(1)
+		}
+
+		// Track CI mode start if applicable
+		if (options.auto && finalPrompt) {
+			getTelemetryService().trackCIModeStarted(finalPrompt.length, options.timeout)
 		}
 
 		cli = new CLI({

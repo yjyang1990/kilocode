@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from "../../config/defaults.js"
 import { loadConfig, saveConfig } from "../../config/persistence.js"
 import { mapConfigToExtensionState } from "../../config/mapper.js"
 import { logs } from "../../services/logs.js"
+import { getTelemetryService } from "../../services/telemetry/index.js"
 
 // Core config atom - holds the current configuration
 export const configAtom = atom<CLIConfig>(DEFAULT_CONFIG)
@@ -43,6 +44,10 @@ export const loadConfigAtom = atom(null, async (get, set, mode?: string) => {
 		set(configAtom, finalConfig)
 
 		logs.info("Config loaded successfully", "ConfigAtoms", { mode: finalConfig.mode })
+
+		// Track config loaded
+		getTelemetryService().trackConfigLoaded(finalConfig)
+
 		return finalConfig
 	} catch (error) {
 		const err = error instanceof Error ? error : new Error(String(error))
@@ -65,6 +70,9 @@ export const saveConfigAtom = atom(null, async (get, set, config?: CLIConfig) =>
 		}
 
 		logs.info("Config saved successfully", "ConfigAtoms")
+
+		// Track config saved
+		getTelemetryService().trackConfigSaved(configToSave)
 	} catch (error) {
 		const err = error instanceof Error ? error : new Error(String(error))
 		set(configErrorAtom, err)
@@ -82,6 +90,7 @@ export const selectProviderAtom = atom(null, async (get, set, providerId: string
 		throw new Error(`Provider ${providerId} not found`)
 	}
 
+	const previousProvider = config.provider
 	const updatedConfig = {
 		...config,
 		provider: providerId,
@@ -89,6 +98,13 @@ export const selectProviderAtom = atom(null, async (get, set, providerId: string
 
 	set(configAtom, updatedConfig)
 	await set(saveConfigAtom, updatedConfig)
+
+	// Track provider change
+	getTelemetryService().trackProviderChanged(
+		previousProvider,
+		providerId,
+		provider.apiModelId || provider.kilocodeModel,
+	)
 })
 
 // Action atom to add a new provider
@@ -151,6 +167,7 @@ export const removeProviderAtom = atom(null, async (get, set, providerId: string
 // Action atom to update mode in config and persist
 export const setModeAtom = atom(null, async (get, set, mode: string) => {
 	const config = get(configAtom)
+	const previousMode = config.mode
 	const updatedConfig = {
 		...config,
 		mode,
@@ -160,6 +177,10 @@ export const setModeAtom = atom(null, async (get, set, mode: string) => {
 	await set(saveConfigAtom, updatedConfig)
 
 	logs.info(`Mode updated to: ${mode}`, "ConfigAtoms")
+
+	// Track mode change
+	getTelemetryService().trackModeChanged(previousMode, mode)
+	getTelemetryService().setMode(mode)
 
 	// Import from config-sync to avoid circular dependency
 	const { syncConfigToExtensionEffectAtom } = await import("./config-sync.js")

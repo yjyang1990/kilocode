@@ -1,9 +1,10 @@
 import { EventEmitter } from "events"
-import { createExtensionHost, ExtensionHost, ExtensionAPI } from "../host/ExtensionHost.js"
+import { createExtensionHost, ExtensionHost, ExtensionAPI, type ExtensionHostOptions } from "../host/ExtensionHost.js"
 import { createMessageBridge, MessageBridge } from "../communication/ipc.js"
 import { logs } from "./logs.js"
 import { resolveExtensionPaths } from "../utils/extension-paths.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
+import type { IdentityInfo } from "../host/VSCode.js"
 
 /**
  * Configuration options for ExtensionService
@@ -17,6 +18,8 @@ export interface ExtensionServiceOptions {
 	extensionBundlePath?: string
 	/** Custom extension root path (for testing) */
 	extensionRootPath?: string
+	/** Identity information for VSCode environment */
+	identity?: IdentityInfo
 }
 
 /**
@@ -66,7 +69,7 @@ export interface ExtensionServiceEvents {
 export class ExtensionService extends EventEmitter {
 	private extensionHost: ExtensionHost
 	private messageBridge: MessageBridge
-	private options: Required<ExtensionServiceOptions>
+	private options: Required<Omit<ExtensionServiceOptions, "identity">> & { identity?: IdentityInfo }
 	private isInitialized = false
 	private isDisposed = false
 
@@ -82,14 +85,19 @@ export class ExtensionService extends EventEmitter {
 			mode: options.mode || "code",
 			extensionBundlePath: options.extensionBundlePath || extensionPaths.extensionBundlePath,
 			extensionRootPath: options.extensionRootPath || extensionPaths.extensionRootPath,
+			...(options.identity && { identity: options.identity }),
 		}
 
 		// Create extension host
-		this.extensionHost = createExtensionHost({
+		const hostOptions: ExtensionHostOptions = {
 			workspacePath: this.options.workspace,
 			extensionBundlePath: this.options.extensionBundlePath,
 			extensionRootPath: this.options.extensionRootPath,
-		})
+		}
+		if (this.options.identity) {
+			hostOptions.identity = this.options.identity
+		}
+		this.extensionHost = createExtensionHost(hostOptions)
 
 		// Create message bridge
 		this.messageBridge = createMessageBridge({

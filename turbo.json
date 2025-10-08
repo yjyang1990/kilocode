@@ -41,9 +41,6 @@
 		"cli:build": {
 			"dependsOn": ["@kilo-code/cli#build"]
 		},
-		"cli:bundle": {
-			"dependsOn": ["@kilo-code/cli#build:bundle"]
-		},
 		"chromatic": {
 			"dependsOn": ["storybook:build"],
 			"cache": false

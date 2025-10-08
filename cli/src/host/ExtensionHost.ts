@@ -1,12 +1,14 @@
 import { EventEmitter } from "events"
-import { createVSCodeAPIMock } from "./VSCode.js"
+import { createVSCodeAPIMock, type IdentityInfo } from "./VSCode.js"
 import { logs } from "../services/logs.js"
 import type { ExtensionMessage, WebviewMessage, ExtensionState } from "../types/messages.js"
+import { getTelemetryService } from "../services/telemetry/index.js"
 
 export interface ExtensionHostOptions {
 	workspacePath: string
 	extensionBundlePath: string // Direct path to extension.js
 	extensionRootPath: string // Root path for extension assets
+	identity?: IdentityInfo // Identity information for VSCode environment
 }
 
 export interface ExtensionAPI {
@@ -129,6 +131,9 @@ export class ExtensionHost extends EventEmitter {
 				return
 			}
 
+			// Track extension message sent
+			getTelemetryService().trackExtensionMessageSent(message.type)
+
 			// Handle webviewDidLaunch for CLI state synchronization
 			if (message.type === "webviewDidLaunch") {
 				// Prevent rapid-fire webviewDidLaunch messages
@@ -154,8 +159,12 @@ export class ExtensionHost extends EventEmitter {
 	}
 
 	private async setupVSCodeAPIMock(): Promise<void> {
-		// Create VSCode API mock with extension root path for assets
-		this.vscodeAPI = createVSCodeAPIMock(this.options.extensionRootPath, this.options.workspacePath)
+		// Create VSCode API mock with extension root path for assets and identity
+		this.vscodeAPI = createVSCodeAPIMock(
+			this.options.extensionRootPath,
+			this.options.workspacePath,
+			this.options.identity,
+		)
 
 		// Set global vscode object for the extension
 		;(global as any).vscode = this.vscodeAPI
@@ -288,6 +297,7 @@ export class ExtensionHost extends EventEmitter {
 			/Failed connecting to Ollama/,
 			/Error fetching Ollama models/,
 			/Error parsing Ollama models response/,
+			/KILOTEL/,
 		]
 
 		return hiddenPatterns.some((pattern) => pattern.test(message.trim()))
@@ -441,6 +451,9 @@ export class ExtensionHost extends EventEmitter {
 
 				logs.debug(`Received extension webview message: ${message.type}`, "ExtensionHost")
 
+				// Track extension message received
+				getTelemetryService().trackExtensionMessageReceived(message.type)
+
 				// Only forward specific message types that are important for CLI
 				switch (message.type) {
 					case "state":
@@ -566,7 +579,7 @@ export class ExtensionHost extends EventEmitter {
 			taskHistoryFullLength: 0,
 			taskHistoryVersion: 0,
 			renderContext: "cli",
-			telemetrySetting: "enabled",
+			telemetrySetting: "unset", // Start with unset, will be configured by CLI
 			cwd: this.options.workspacePath,
 			mcpServers: [],
 			listApiConfigMeta: [],
@@ -717,9 +730,10 @@ export class ExtensionHost extends EventEmitter {
 		// Sync telemetry setting if present
 		if (configState.telemetrySetting) {
 			await this.sendWebviewMessage({
-				type: "telemetrySettings",
+				type: "telemetrySetting",
 				text: configState.telemetrySetting,
 			})
+			logs.debug(`Telemetry setting synchronized: ${configState.telemetrySetting}`, "ExtensionHost")
 		}
 	}
 

@@ -13,6 +13,15 @@ const buildConfig = {
 	target: 'node20',
 	format: 'esm',
 	outfile: 'dist/index.js',
+	banner: {
+		js: `import { createRequire as __createRequire__ } from 'module';
+import { fileURLToPath as __fileURLToPath__ } from 'url';
+import { dirname as __dirname__ } from 'path';
+const require = __createRequire__(import.meta.url);
+const __filename = __fileURLToPath__(import.meta.url);
+const __dirname = __dirname__(__filename);
+`,
+	},
 	external: [
 		// Keep these as external dependencies (will be installed via npm)
 		'@anthropic-ai/bedrock-sdk',

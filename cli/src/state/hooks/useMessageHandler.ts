@@ -10,6 +10,7 @@ import { useWebviewMessage } from "./useWebviewMessage.js"
 import { useTaskState } from "./useTaskState.js"
 import type { CliMessage } from "../../types/cli.js"
 import { logs } from "../../services/logs.js"
+import { getTelemetryService } from "../../services/telemetry/index.js"
 
 /**
  * Options for useMessageHandler hook
@@ -77,6 +78,14 @@ export function useMessageHandler(options: UseMessageHandlerOptions = {}): UseMe
 			setIsProcessing(true)
 
 			try {
+				// Track user message
+				getTelemetryService().trackUserMessageSent(
+					trimmedText.length,
+					false, // hasImages - CLI doesn't support images yet
+					hasActiveTask,
+					undefined, // taskId - will be added when we have task tracking
+				)
+
 				// Check if there's an active task to determine message type
 				// This matches the webview behavior in ChatView.tsx (lines 650-683)
 				if (hasActiveTask) {

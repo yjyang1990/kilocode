@@ -21,6 +21,7 @@ import { useWebviewMessage } from "./useWebviewMessage.js"
 import type { ExtensionChatMessage } from "../../types/messages.js"
 import { logs } from "../../services/logs.js"
 import { CI_MODE_MESSAGES } from "../../constants/ci.js"
+import { useApprovalTelemetry } from "./useApprovalTelemetry.js"
 
 /**
  * Options for useApprovalHandler hook
@@ -103,6 +104,7 @@ export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): Use
 	const completeProcessing = useSetAtom(completeApprovalProcessingAtom)
 
 	const { sendAskResponse } = useWebviewMessage()
+	const approvalTelemetry = useApprovalTelemetry()
 
 	const approve = useCallback(
 		async (text?: string, images?: string[]) => {
@@ -149,6 +151,9 @@ export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): Use
 				logs.debug("Approval response sent successfully", "useApprovalHandler", {
 					ts: currentPendingApproval.ts,
 				})
+
+				// Track manual approval
+				approvalTelemetry.trackManualApproval(currentPendingApproval)
 
 				// Complete processing atomically - this clears both pending and processing state
 				store.set(completeApprovalProcessingAtom)
@@ -201,6 +206,9 @@ export function useApprovalHandler(options: UseApprovalHandlerOptions = {}): Use
 				})
 
 				logs.debug("Rejection response sent successfully", "useApprovalHandler")
+
+				// Track manual rejection
+				approvalTelemetry.trackManualRejection(currentPendingApproval)
 
 				// Complete processing atomically - this clears both pending and processing state
 				store.set(completeApprovalProcessingAtom)

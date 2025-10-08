@@ -7,6 +7,7 @@ import { commandRegistry } from "../commands/core/registry.js"
 import { parseCommand } from "../commands/core/parser.js"
 import { isCommandInput } from "./autocomplete.js"
 import type { Command, CommandContext, ParsedCommand } from "../commands/core/types.js"
+import { getTelemetryService } from "./telemetry/index.js"
 
 /**
  * Result of command validation
@@ -79,13 +80,28 @@ export async function executeCommandWithContext(
 	command: Command,
 	context: CommandContext,
 ): Promise<CommandExecutionResult> {
+	const startTime = Date.now()
+
 	try {
 		await command.handler(context)
+
+		const executionTime = Date.now() - startTime
+
+		// Track successful command execution
+		getTelemetryService().trackCommandExecuted(command.name, context.args, executionTime, true)
+
 		return { success: true }
 	} catch (error) {
+		const executionTime = Date.now() - startTime
+		const errorMessage = error instanceof Error ? error.message : String(error)
+
+		// Track failed command execution
+		getTelemetryService().trackCommandExecuted(command.name, context.args, executionTime, false)
+		getTelemetryService().trackCommandFailed(command.name, errorMessage)
+
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : String(error),
+			error: errorMessage,
 		}
 	}
 }

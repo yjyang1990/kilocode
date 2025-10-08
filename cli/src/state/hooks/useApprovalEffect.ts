@@ -48,6 +48,7 @@ import { useApprovalHandler } from "./useApprovalHandler.js"
 import { getApprovalDecision } from "../../services/approvalDecision.js"
 import type { AutoApprovalConfig } from "../../config/types.js"
 import { logs } from "../../services/logs.js"
+import { useApprovalTelemetry } from "./useApprovalTelemetry.js"
 
 /**
  * Hook that orchestrates approval flow for Ask messages
@@ -100,6 +101,7 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 	const isCIMode = useAtomValue(ciModeAtom)
 
 	const { approve, reject } = useApprovalHandler()
+	const approvalTelemetry = useApprovalTelemetry()
 
 	// Track if we've already handled auto-approval for this message timestamp
 	const autoApprovalHandledRef = useRef<Set<number>>(new Set())
@@ -231,6 +233,8 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 					}, delay)
 				} else {
 					logs.info(`${isCIMode ? "CI mode: " : ""}Auto-approving ${message.ask}`, "useApprovalEffect")
+					// Track auto-approval
+					approvalTelemetry.trackAutoApproval(message)
 					// Execute approval immediately
 					approve(decision.message).catch((error) => {
 						logs.error(`Failed to auto-approve ${message.ask}`, "useApprovalEffect", { error })
@@ -238,6 +242,8 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 				}
 			} else if (decision.action === "auto-reject") {
 				logs.info(`CI mode: Auto-rejecting ${message.ask}`, "useApprovalEffect")
+				// Track auto-rejection
+				approvalTelemetry.trackAutoRejection(message)
 				// Execute rejection immediately
 				reject(decision.message).catch((error) => {
 					logs.error(`CI mode: Failed to auto-reject ${message.ask}`, "useApprovalEffect", { error })

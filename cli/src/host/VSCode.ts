@@ -2,6 +2,14 @@ import * as fs from "fs"
 import * as path from "path"
 import { logs } from "../services/logs.js"
 import { KiloCodePaths } from "../utils/paths.js"
+import { Package } from "../constants/package.js"
+
+// Identity information for VSCode environment
+export interface IdentityInfo {
+	machineId: string
+	sessionId: string
+	cliUserId?: string
+}
 
 // Basic VSCode API types and enums
 export interface Thenable<T> extends Promise<T> {}
@@ -1040,41 +1048,41 @@ export class CommandsAPI {
 	}
 }
 
-// Environment mock
-export const env = {
-	appName: "wrapper|cli|cli|0.0.1",
-	appRoot: process.cwd(),
-	language: "en",
-	machineId: "cli-machine-id",
-	sessionId: "cli-session-id",
-	remoteName: undefined,
-	shell: process.env.SHELL || "/bin/bash",
-	uriScheme: "vscode",
-	uiKind: 1, // Desktop
-	openExternal: async (uri: Uri): Promise<boolean> => {
-		logs.info(`Would open external URL: ${uri.toString()}`, "VSCode.Env")
-		return true
-	},
-	clipboard: {
-		readText: async (): Promise<string> => {
-			logs.debug("Clipboard read requested", "VSCode.Clipboard")
-			return ""
-		},
-		writeText: async (text: string): Promise<void> => {
-			logs.debug(
-				`Clipboard write: ${text.substring(0, 100)}${text.length > 100 ? "..." : ""}`,
-				"VSCode.Clipboard",
-			)
-		},
-	},
-}
-
 // Main VSCode API mock
-export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: string) {
+export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: string, identity?: IdentityInfo) {
 	const context = new ExtensionContext(extensionRootPath, workspacePath)
 	const workspace = new WorkspaceAPI(workspacePath, context)
 	const window = new WindowAPI()
 	const commands = new CommandsAPI()
+
+	// Environment mock with identity values
+	const env = {
+		appName: `wrapper|cli|cli|${Package.version}`,
+		appRoot: process.cwd(),
+		language: "en",
+		machineId: identity?.machineId || "cli-machine-id",
+		sessionId: identity?.sessionId || "cli-session-id",
+		remoteName: undefined,
+		shell: process.env.SHELL || "/bin/bash",
+		uriScheme: "vscode",
+		uiKind: 1, // Desktop
+		openExternal: async (uri: Uri): Promise<boolean> => {
+			logs.info(`Would open external URL: ${uri.toString()}`, "VSCode.Env")
+			return true
+		},
+		clipboard: {
+			readText: async (): Promise<string> => {
+				logs.debug("Clipboard read requested", "VSCode.Clipboard")
+				return ""
+			},
+			writeText: async (text: string): Promise<void> => {
+				logs.debug(
+					`Clipboard write: ${text.substring(0, 100)}${text.length > 100 ? "..." : ""}`,
+					"VSCode.Clipboard",
+				)
+			},
+		},
+	}
 
 	return {
 		version: "1.84.0",

@@ -1,10 +1,10 @@
 import Ajv from "ajv"
 import * as fs from "fs/promises"
 import * as path from "path"
-import { fileURLToPath } from "url"
 import type { CLIConfig } from "./types.js"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+// __dirname is provided by the banner in the bundled output
+declare const __dirname: string
 
 let ajv: Ajv | null = null
 let validateFunction: any = null

@@ -1,5 +1,4 @@
 import React from "react"
-import Markdown from "@jescalan/ink-markdown"
 import { Text } from "ink"
 
 interface MarkdownTextProps {
@@ -18,7 +17,7 @@ export const MarkdownText: React.FC<MarkdownTextProps> = ({ children }) => {
 
 	try {
 		// Render markdown - the library handles its own styling
-		return <Markdown>{children}</Markdown>
+		return <Text>{children}</Text>
 	} catch (error) {
 		// Fallback to plain text if markdown parsing fails
 		return <Text>{children}</Text>

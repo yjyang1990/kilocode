@@ -19,12 +19,6 @@
 			"cache": false,
 			"outputs": ["dist/**"],
 			"inputs": ["src/**"],
-			"dependsOn": ["copy:kilocode"]
-		},
-		"build:bundle": {
-			"cache": false,
-			"outputs": ["dist/**"],
-			"inputs": ["src/**"],
 			"dependsOn": ["clean", "copy:kilocode"]
 		},
 		"start": {

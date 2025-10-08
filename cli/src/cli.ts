@@ -10,6 +10,7 @@ import { initializeServiceEffectAtom } from "./state/atoms/effects.js"
 import { loadConfigAtom, mappedExtensionStateAtom } from "./state/atoms/config.js"
 import { ciExitReasonAtom } from "./state/atoms/ci.js"
 import { requestRouterModelsAtom } from "./state/atoms/actions.js"
+import { getTelemetryService, getIdentityManager } from "./services/telemetry/index.js"
 
 export interface CLIOptions {
 	mode?: string
@@ -73,25 +74,55 @@ export class CLI {
 			this.store = createStore()
 			logs.debug("Jotai store created", "CLI")
 
-			// Create ExtensionService
-			this.service = createExtensionService({
+			// Initialize telemetry service first to get identity
+			const config = await this.store.set(loadConfigAtom, this.options.mode)
+			logs.debug("CLI configuration loaded", "CLI", { mode: this.options.mode })
+
+			const telemetryService = getTelemetryService()
+			await telemetryService.initialize(config, {
 				workspace: this.options.workspace || process.cwd(),
 				mode: this.options.mode || "code",
+				ciMode: this.options.ci || false,
 			})
-			logs.debug("ExtensionService created", "CLI")
+			logs.debug("Telemetry service initialized", "CLI")
+
+			// Get identity from Identity Manager
+			const identityManager = getIdentityManager()
+			const identity = identityManager.getIdentity()
+
+			// Create ExtensionService with identity
+			const serviceOptions: Parameters<typeof createExtensionService>[0] = {
+				workspace: this.options.workspace || process.cwd(),
+				mode: this.options.mode || "code",
+			}
+
+			if (identity) {
+				serviceOptions.identity = {
+					machineId: identity.machineId,
+					sessionId: identity.sessionId,
+					cliUserId: identity.cliUserId,
+				}
+			}
+
+			this.service = createExtensionService(serviceOptions)
+			logs.debug("ExtensionService created with identity", "CLI", {
+				hasIdentity: !!identity,
+			})
 
 			// Set service in store
 			this.store.set(extensionServiceAtom, this.service)
 			logs.debug("ExtensionService set in store", "CLI")
 
-			// Load CLI configuration with mode override if provided
-			await this.store.set(loadConfigAtom, this.options.mode)
-			logs.debug("CLI configuration loaded", "CLI", { mode: this.options.mode })
+			// Track extension initialization
+			telemetryService.trackExtensionInitialized(false) // Will be updated after actual initialization
 
 			// Initialize service through effect atom
 			// This sets up all event listeners and activates the extension
 			await this.store.set(initializeServiceEffectAtom, this.store)
 			logs.info("ExtensionService initialized through effects", "CLI")
+
+			// Track successful extension initialization
+			telemetryService.trackExtensionInitialized(true)
 
 			// Inject CLI configuration into ExtensionHost
 			await this.injectConfigurationToExtension()
@@ -177,6 +208,8 @@ export class CLI {
 				if (exitReason === "timeout") {
 					exitCode = 124
 					logs.warn("Exiting with timeout code", "CLI")
+					// Track CI mode timeout
+					getTelemetryService().trackCIModeTimeout()
 				} else if (exitReason === "completion_result" || exitReason === "command_finished") {
 					exitCode = 0
 					logs.info("Exiting with success code", "CLI", { reason: exitReason })
@@ -186,6 +219,11 @@ export class CLI {
 					logs.info("Exiting with default success code", "CLI")
 				}
 			}
+
+			// Shutdown telemetry service before exiting
+			const telemetryService = getTelemetryService()
+			await telemetryService.shutdown()
+			logs.debug("Telemetry service shut down", "CLI")
 
 			// Unmount UI
 			if (this.ui) {
