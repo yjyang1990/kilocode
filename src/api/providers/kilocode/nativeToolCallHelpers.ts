@@ -67,8 +67,6 @@
  *
  * See the following providers for complete implementation examples:
  * - `openrouter.ts` - OpenRouter implementation
- * - `openai.ts` - OpenAI implementation
- * - `anthropic.ts` - Anthropic implementation (if using OpenAI format)
  */
 
 import OpenAI from "openai"
