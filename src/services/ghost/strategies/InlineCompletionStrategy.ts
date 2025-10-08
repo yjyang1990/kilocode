@@ -25,8 +25,10 @@ export class InlineCompletionStrategy extends BasePromptStrategy {
 		return hasContentBefore && !context.userInput && !context.range.isEmpty === false && isNotAtEnd
 	}
 
-	protected getSpecificSystemInstructions(): string {
-		return `You are an expert code completion assistant specializing in inline completions.
+	getSystemInstructions(): string {
+		return (
+			this.getBaseSystemInstructions() +
+			`You are an expert code completion assistant specializing in inline completions.
 
 ## Core Responsibilities:
 1. Complete partial statements and expressions
@@ -63,6 +65,7 @@ export class InlineCompletionStrategy extends BasePromptStrategy {
 - Complete just enough to finish the current expression
 - Ensure syntactic correctness
 - Match the existing code style`
+		)
 	}
 
 	getUserPrompt(context: GhostSuggestionContext): string {

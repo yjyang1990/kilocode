@@ -24,11 +24,14 @@ export class AutoTriggerStrategy extends BasePromptStrategy {
 	/**
 	 * System instructions for auto-trigger
 	 */
-	protected getSpecificSystemInstructions(): string {
-		return `Task: Subtle Auto-Completion
+	getSystemInstructions(): string {
+		return (
+			this.getBaseSystemInstructions() +
+			`Task: Subtle Auto-Completion
 Provide non-intrusive completions after a typing pause. Be conservative and helpful.
 
 `
+		)
 	}
 
 	/**

@@ -25,16 +25,6 @@ export abstract class BasePromptStrategy implements PromptStrategy {
 	abstract canHandle(context: GhostSuggestionContext): boolean
 
 	/**
-	 * Generates system instructions for the AI model
-	 */
-	getSystemInstructions(): string {
-		const baseInstructions = this.getBaseSystemInstructions()
-		const specificInstructions = this.getSpecificSystemInstructions()
-
-		return `${baseInstructions}${specificInstructions}`
-	}
-
-	/**
 	 * Gets the base system instructions that apply to all strategies
 	 */
 	protected getBaseSystemInstructions(): string {
@@ -82,7 +72,7 @@ EXAMPLE:
 	 * Gets strategy-specific system instructions
 	 * Must be implemented by each strategy
 	 */
-	protected abstract getSpecificSystemInstructions(): string
+	abstract getSystemInstructions(): string
 
 	/**
 	 * Generates the user prompt with context

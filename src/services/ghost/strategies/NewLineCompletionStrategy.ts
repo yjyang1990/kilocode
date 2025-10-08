@@ -25,8 +25,10 @@ export class NewLineCompletionStrategy extends BasePromptStrategy {
 	/**
 	 * System instructions for new line completion
 	 */
-	protected getSpecificSystemInstructions(): string {
-		return `Task: Proactive Code Completion for New Lines
+	getSystemInstructions(): string {
+		return (
+			this.getBaseSystemInstructions() +
+			`Task: Proactive Code Completion for New Lines
 The user has created a new line. Suggest the most logical next code based on context.
 
 Completion Guidelines:
@@ -59,6 +61,7 @@ Important:
 - Respect existing code patterns and comments
 - Maintain consistent style
 - Consider the most likely next step`
+		)
 	}
 
 	/**

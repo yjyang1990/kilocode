@@ -22,8 +22,10 @@ export class UserRequestStrategy extends BasePromptStrategy {
 	/**
 	 * System instructions specific to user requests
 	 */
-	protected getSpecificSystemInstructions(): string {
-		return `Task: Execute User's Explicit Request
+	getSystemInstructions(): string {
+		return (
+			this.getBaseSystemInstructions() +
+			`Task: Execute User's Explicit Request
 You are responding to a direct user instruction. Your primary goal is to fulfill their specific request accurately.
 
 Priority Order:
@@ -48,6 +50,7 @@ Common Request Patterns:
 - "add comments" → add JSDoc or inline comments
 - "extract function" → move selected code to a new function
 - "fix" → resolve errors, warnings, or obvious issues`
+		)
 	}
 
 	/**

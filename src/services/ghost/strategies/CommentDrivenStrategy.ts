@@ -30,8 +30,10 @@ export class CommentDrivenStrategy extends BasePromptStrategy {
 		return isComment && !context.userInput // User input takes precedence
 	}
 
-	protected getSpecificSystemInstructions(): string {
-		return `You are an expert code generation assistant that implements code based on comments.
+	getSystemInstructions(): string {
+		return (
+			this.getBaseSystemInstructions() +
+			`You are an expert code generation assistant that implements code based on comments.
 
 ## Core Responsibilities:
 1. Read and understand the comment's intent
@@ -63,6 +65,7 @@ export class CommentDrivenStrategy extends BasePromptStrategy {
 - Do not add explanatory comments unless necessary for complex logic
 - Ensure the code is production-ready
 - When using search/replace format, include ALL existing code to preserve it`
+		)
 	}
 
 	getUserPrompt(context: GhostSuggestionContext): string {
