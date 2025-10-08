@@ -327,6 +327,8 @@
 		"huggingFaceApiKey": "Ключ API Hugging Face",
 		"getOvhCloudAiEndpointsApiKey": "Отримати ключ API OVHcloud AI Endpoints",
 		"ovhCloudAiEndpointsApiKey": "Ключ API OVHcloud AI Endpoints",
+		"ovhCloudAiEndpointsBaseUrl": "Базовий URL",
+		"getOvhCloudAiEndpointsBaseUrl": "Використовувати користувацький базовий URL",
 		"huggingFaceModelId": "ID моделі",
 		"huggingFaceLoading": "Завантаження...",
 		"huggingFaceModelsCount": "({{count}} моделей)",

@@ -315,6 +315,8 @@
 		"huggingFaceApiKey": "Kunci API Hugging Face",
 		"getOvhCloudAiEndpointsApiKey": "Dapatkan Kunci API OVHcloud AI Endpoints",
 		"ovhCloudAiEndpointsApiKey": "Kunci API OVHcloud AI Endpoints",
+		"ovhCloudAiEndpointsBaseUrl": "URL Dasar",
+		"getOvhCloudAiEndpointsBaseUrl": "Gunakan URL dasar kustom",
 		"huggingFaceModelId": "ID Model",
 		"getGeminiApiKey": "Dapatkan Gemini API Key",
 		"huggingFaceLoading": "Memuat...",

@@ -40,6 +40,16 @@ describe("OVHcloudAIEndpointsHandler", () => {
 			)
 		})
 
+		it("should override base URL if custom endpoint provided", () => {
+			const customBaseUrl = "https://custom.endpoints.kepler.ai.cloud.ovh.net/v1"
+			new OVHcloudAIEndpointsHandler({ ovhCloudAiEndpointsApiKey, ovhCloudAiEndpointsBaseUrl: customBaseUrl })
+			expect(OpenAI).toHaveBeenCalledWith(
+				expect.objectContaining({
+					baseURL: "https://custom.endpoints.kepler.ai.cloud.ovh.net/v1",
+				}),
+			)
+		})
+
 		it("should initialize with the provided API key", () => {
 			new OVHcloudAIEndpointsHandler({ ovhCloudAiEndpointsApiKey })
 			expect(OpenAI).toHaveBeenCalledWith(

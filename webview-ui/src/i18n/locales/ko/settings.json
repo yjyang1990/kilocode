@@ -316,6 +316,8 @@
 		"huggingFaceApiKey": "Hugging Face API 키",
 		"getOvhCloudAiEndpointsApiKey": "OVHcloud AI Endpoints API 키 받기",
 		"ovhCloudAiEndpointsApiKey": "OVHcloud AI Endpoints API 키",
+		"ovhCloudAiEndpointsBaseUrl": "기본 URL",
+		"getOvhCloudAiEndpointsBaseUrl": "사용자 정의 기본 URL 사용",
 		"huggingFaceModelId": "모델 ID",
 		"huggingFaceLoading": "로딩 중...",
 		"huggingFaceModelsCount": "({{count}}개 모델)",

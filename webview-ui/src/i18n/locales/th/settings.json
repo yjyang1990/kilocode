@@ -327,6 +327,8 @@
 		"huggingFaceApiKey": "คีย์ API ของ Hugging Face",
 		"getOvhCloudAiEndpointsApiKey": "รับคีย์ API ของ OVHcloud AI Endpoints",
 		"ovhCloudAiEndpointsApiKey": "คีย์ API ของ OVHcloud AI Endpoints",
+		"ovhCloudAiEndpointsBaseUrl": "URL ฐาน",
+		"getOvhCloudAiEndpointsBaseUrl": "ใช้ URL ฐานแบบกำหนดเอง",
 		"huggingFaceModelId": "รหัสโมเดล",
 		"huggingFaceLoading": "กำลังโหลด...",
 		"huggingFaceModelsCount": "({{count}} โมเดล)",

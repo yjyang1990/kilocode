@@ -315,6 +315,8 @@
 		"huggingFaceApiKey": "Khóa API Hugging Face",
 		"getOvhCloudAiEndpointsApiKey": "Lấy Khóa API OVHcloud AI Endpoints",
 		"ovhCloudAiEndpointsApiKey": "Khóa API OVHcloud AI Endpoints",
+		"ovhCloudAiEndpointsBaseUrl": "URL Cơ sở",
+		"getOvhCloudAiEndpointsBaseUrl": "Sử dụng URL cơ sở tùy chỉnh",
 		"huggingFaceModelId": "ID Mô hình",
 		"huggingFaceLoading": "Đang tải...",
 		"huggingFaceModelsCount": "({{count}} mô hình)",

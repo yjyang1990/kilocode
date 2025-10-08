@@ -15,7 +15,7 @@ export class OVHcloudAIEndpointsHandler extends RouterProvider implements Single
 		super({
 			options,
 			name: "ovhcloud",
-			baseURL: "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+			baseURL: `${options.ovhCloudAiEndpointsBaseUrl || "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1"}`,
 			apiKey: options.ovhCloudAiEndpointsApiKey,
 			modelId: options.ovhCloudAiEndpointsModelId,
 			defaultModelId: ovhCloudAiEndpointsDefaultModelId,

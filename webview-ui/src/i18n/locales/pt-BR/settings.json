@@ -316,6 +316,8 @@
 		"huggingFaceApiKey": "Chave de API Hugging Face",
 		"getOvhCloudAiEndpointsApiKey": "Obter chave de API OVHcloud AI Endpoints",
 		"ovhCloudAiEndpointsApiKey": "Chave de API OVHcloud AI Endpoints",
+		"ovhCloudAiEndpointsBaseUrl": "URL base",
+		"getOvhCloudAiEndpointsBaseUrl": "Usar uma URL base personalizada",
 		"huggingFaceModelId": "ID do modelo",
 		"huggingFaceLoading": "Carregando...",
 		"huggingFaceModelsCount": "({{count}} modelos)",
