@@ -3,7 +3,6 @@ import { PromptStrategy } from "./types/PromptStrategy"
 
 // Import all strategies
 import { UserRequestStrategy } from "./strategies/UserRequestStrategy"
-import { ErrorFixStrategy } from "./strategies/ErrorFixStrategy"
 import { SelectionRefactorStrategy } from "./strategies/SelectionRefactorStrategy"
 import { CommentDrivenStrategy } from "./strategies/CommentDrivenStrategy"
 import { NewLineCompletionStrategy } from "./strategies/NewLineCompletionStrategy"
@@ -28,7 +27,6 @@ export class PromptStrategyManager {
 			new CommentDrivenStrategy(),
 			new InlineCompletionStrategy(),
 			new AutoTriggerStrategy(),
-			new ErrorFixStrategy(), // This need to be implemented in background
 		]
 	}
 
