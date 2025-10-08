@@ -2041,6 +2041,26 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 									pendingGroundingSources.push(...chunk.sources)
 								}
 								break
+							//kilocode_change start
+							case "native_tool_calls": {
+								// Handle native OpenAI-format tool calls
+								// Process native tool calls through the parser
+								this.assistantMessageParser.processNativeToolCalls(chunk.toolCalls)
+
+								// Update content blocks after processing native tool calls
+								const prevLength = this.assistantMessageContent.length
+								this.assistantMessageContent = this.assistantMessageParser.getContentBlocks()
+
+								if (this.assistantMessageContent.length > prevLength) {
+									// New content we need to present
+									this.userMessageContentReady = false
+								}
+
+								// Present content to user
+								presentAssistantMessage(this)
+								break
+							}
+							//kilocode_change end
 							case "text": {
 								assistantMessage += chunk.text
 
@@ -2376,7 +2396,12 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				// able to save the assistant's response.
 				let didEndLoop = false
 
-				if (assistantMessage.length > 0) {
+				// kilocode_change start: Check for tool use before determining if response is empty
+				const didToolUse = this.assistantMessageContent.some((block) => block.type === "tool_use")
+				// kilocode_change end
+
+				if (assistantMessage.length > 0 || didToolUse) {
+					// kilocode_change: also check for tool use
 					// Display grounding sources to the user if they exist
 					if (pendingGroundingSources.length > 0) {
 						const citationLinks = pendingGroundingSources.map((source, i) => `[${i + 1}](${source.url})`)
@@ -2595,6 +2620,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				throw new Error("Provider not available")
 			}
 
+			// Get the tool use style from apiConfiguration
+			const toolUseStyle = apiConfiguration?.toolStyle || "xml"
+
 			return SYSTEM_PROMPT(
 				provider.context,
 				this.cwd,
@@ -2623,7 +2651,8 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				},
 				undefined, // todoList
 				this.api.getModel().id,
-				await provider.getState(), // kilocode_change
+				toolUseStyle, // toolUseStyle parameter
+				state, // clineProviderState parameter
 			)
 		})()
 	}

@@ -1,4 +1,4 @@
-import type { ToolName, ModeConfig } from "@roo-code/types"
+import type { ToolName, ModeConfig, ToolUseStyle } from "@roo-code/types"
 
 import { TOOL_GROUPS, ALWAYS_AVAILABLE_TOOLS, DiffStrategy } from "../../../shared/tools"
 import { McpHub } from "../../../services/mcp/McpHub"
@@ -83,8 +83,20 @@ export function getToolDescriptionsForMode(
 	settings?: Record<string, any>,
 	enableMcpServerCreation?: boolean,
 	modelId?: string,
+	toolUseStyle?: ToolUseStyle,
 	clineProviderState?: ClineProviderState, // kilocode_change
 ): string {
+	// If toolUseStyle is json, return an empty string
+	// We do this because tool definitions are handled differently in JSON mode
+	// and are specified in the tools array, with inline tool definitions and usage
+	// descriptions.
+
+	//So rather than generate the instructions here, we return an empty string and generate them
+	//in a dedicated section elsewhere.
+	if (toolUseStyle === "json") {
+		return ""
+	}
+
 	const config = getModeConfig(mode, customModes)
 	const args: ToolArgs = {
 		cwd,

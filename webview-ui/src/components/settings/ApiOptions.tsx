@@ -120,6 +120,7 @@ import { TodoListSettingsControl } from "./TodoListSettingsControl"
 import { TemperatureControl } from "./TemperatureControl"
 import { RateLimitSecondsControl } from "./RateLimitSecondsControl"
 import { ConsecutiveMistakeLimitControl } from "./ConsecutiveMistakeLimitControl"
+import { ToolUseControl } from "./ToolUseControl"
 import { BedrockCustomArn } from "./providers/BedrockCustomArn"
 import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_change
 import { buildDocLink } from "@src/utils/docLinks"
@@ -886,6 +887,10 @@ const ApiOptions = ({
 					<CollapsibleContent className="space-y-3">
 						<TodoListSettingsControl
 							todoListEnabled={apiConfiguration.todoListEnabled}
+							onChange={(field, value) => setApiConfigurationField(field, value)}
+						/>
+						<ToolUseControl
+							toolStyle={apiConfiguration.toolStyle}
 							onChange={(field, value) => setApiConfigurationField(field, value)}
 						/>
 						<DiffSettingsControl

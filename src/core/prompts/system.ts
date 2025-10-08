@@ -15,7 +15,7 @@ import { Mode, modes, defaultModeSlug, getModeBySlug, getGroupName, getModeSelec
 import { DiffStrategy } from "../../shared/tools"
 import { formatLanguage } from "../../shared/language"
 import { isEmpty } from "../../utils/object"
-
+import { ToolUseStyle } from "../../../packages/types/src"
 import { McpHub } from "../../services/mcp/McpHub"
 import { CodeIndexManager } from "../../services/code-index/manager"
 
@@ -69,6 +69,7 @@ async function generatePrompt(
 	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
 	modelId?: string,
+	toolUseStyle?: ToolUseStyle,
 	clineProviderState?: ClineProviderState, // kilocode_change
 ): Promise<string> {
 	if (!context) {
@@ -100,7 +101,7 @@ async function generatePrompt(
 
 ${markdownFormattingSection()}
 
-${getSharedToolUseSection()}
+${getSharedToolUseSection(toolUseStyle)}
 
 ${getToolDescriptionsForMode(
 	mode,
@@ -116,6 +117,7 @@ ${getToolDescriptionsForMode(
 	settings,
 	enableMcpServerCreation,
 	modelId,
+	toolUseStyle,
 	clineProviderState, // kilocode_change
 )}
 
@@ -164,6 +166,7 @@ export const SYSTEM_PROMPT = async (
 	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
 	modelId?: string,
+	toolUseStyle?: ToolUseStyle,
 	clineProviderState?: ClineProviderState, // kilocode_change
 ): Promise<string> => {
 	if (!context) {
@@ -240,6 +243,7 @@ ${customInstructions}`
 		settings,
 		todoList,
 		modelId,
+		toolUseStyle,
 		clineProviderState, // kilocode_change
 	)
 }
