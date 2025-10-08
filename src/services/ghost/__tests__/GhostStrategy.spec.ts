@@ -232,6 +232,20 @@ describe("GhostStrategy", () => {
 	})
 
 	describe("prompt generation", () => {
+		it("should generate both prompts efficiently with getPrompts", () => {
+			const context: GhostSuggestionContext = {
+				document: mockDocument,
+				userInput: "Add a comment",
+				range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
+			}
+
+			const { systemPrompt, userPrompt } = strategy.getPrompts(context)
+			expect(systemPrompt).toContain("CRITICAL OUTPUT FORMAT")
+			expect(systemPrompt).toContain("XML-formatted changes")
+			expect(userPrompt).toContain("Add a comment")
+			expect(userPrompt).toContain("<<<AUTOCOMPLETE_HERE>>>")
+		})
+
 		it("should generate system prompt", () => {
 			const context: GhostSuggestionContext = {
 				document: mockDocument,
