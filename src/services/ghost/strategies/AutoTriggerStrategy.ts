@@ -2,6 +2,7 @@ import { GhostSuggestionContext } from "../types"
 import { UseCaseType } from "../types/PromptStrategy"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
+import { formatDocumentWithCursor } from "./StrategyHelpers"
 
 /**
  * Fallback strategy for automatic completions
@@ -22,35 +23,22 @@ export class AutoTriggerStrategy extends BasePromptStrategy {
 	}
 
 	/**
-	 * Minimal context for auto-trigger
-	 * Focus on immediate context only
-	 */
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			range: context.range,
-			recentOperations: context.recentOperations?.slice(0, 3), // Only last 3 operations
-			// Exclude:
-			// - userInput (no explicit request)
-			// - diagnostics (not fixing errors)
-			// - openFiles (reduces tokens)
-		}
-	}
-
-	/**
 	 * System instructions for auto-trigger
 	 */
-	protected getSpecificSystemInstructions(): string {
-		return `Task: Subtle Auto-Completion
+	getSystemInstructions(): string {
+		return (
+			this.getBaseSystemInstructions() +
+			`Task: Subtle Auto-Completion
 Provide non-intrusive completions after a typing pause. Be conservative and helpful.
 
 `
+		)
 	}
 
 	/**
 	 * Build minimal prompt for auto-trigger
 	 */
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		let prompt = ""
 
 		// Start with recent typing context
@@ -73,7 +61,7 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 		// Add the full document with cursor marker
 		if (context.document) {
 			prompt += "## Full Code\n"
-			prompt += this.formatDocumentWithCursor(context.document, context.range)
+			prompt += formatDocumentWithCursor(context.document, context.range)
 			prompt += "\n\n"
 		}
 

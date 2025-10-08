@@ -45,6 +45,17 @@ class TestRunner {
 				actualValue = "(no changes parsed)"
 			}
 
+			// Auto-reject if no changes were parsed
+			if (actualValue === "(no changes parsed)") {
+				return {
+					testCase,
+					isApproved: false,
+					completion,
+					actualValue,
+					llmRequestDuration,
+				}
+			}
+
 			const approvalResult = await checkApproval(testCase.category, testCase.name, testCase.input, actualValue)
 
 			return {
@@ -196,7 +207,7 @@ class TestRunner {
 			process.exit(1)
 		}
 
-		const numRuns = 5
+		const numRuns = 10
 
 		console.log(`\n🧪 Running Single Test: ${testName} (${numRuns} times)\n`)
 		console.log("Category:", testCase.category)
