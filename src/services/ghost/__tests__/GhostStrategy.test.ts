@@ -54,37 +54,6 @@ describe("GhostStrategy", () => {
 			expect(systemPrompt).toContain("Execute User's Explicit Request")
 			expect(userPrompt).toContain("Add a function to calculate sum")
 		})
-
-		skip("should select ErrorFixStrategy when diagnostics are present", () => {
-			const mockDocument = {
-				languageId: "typescript",
-				getText: () => "const x = 1",
-				lineAt: (line: number) => ({ text: "const x = 1" }),
-				uri: { toString: () => "file:///test.ts" },
-				offsetAt: (position: vscode.Position) => 11,
-			} as vscode.TextDocument
-
-			const mockRange = {
-				start: { line: 0, character: 11 } as vscode.Position,
-				end: { line: 0, character: 11 } as vscode.Position,
-			} as vscode.Range
-
-			const context: GhostSuggestionContext = {
-				document: mockDocument,
-				diagnostics: [
-					{
-						severity: vscode.DiagnosticSeverity.Error,
-						message: "Missing semicolon",
-						range: mockRange,
-					} as vscode.Diagnostic,
-				],
-			}
-
-			const systemPrompt = strategy.getSystemPrompt(context)
-
-			// ErrorFixStrategy should be selected
-			expect(systemPrompt).toContain("Fix Compilation Errors and Warnings")
-		})
 	})
 
 	describe("getSuggestionPrompt", () => {
