@@ -25,13 +25,6 @@ export class InlineCompletionStrategy extends BasePromptStrategy {
 		return hasContentBefore && !context.userInput && !context.range.isEmpty === false && isNotAtEnd
 	}
 
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			range: context.range,
-		}
-	}
-
 	protected getSpecificSystemInstructions(): string {
 		return `You are an expert code completion assistant specializing in inline completions.
 

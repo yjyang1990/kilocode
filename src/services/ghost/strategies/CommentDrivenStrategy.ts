@@ -30,14 +30,6 @@ export class CommentDrivenStrategy extends BasePromptStrategy {
 		return isComment && !context.userInput // User input takes precedence
 	}
 
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			range: context.range,
-			recentOperations: context.recentOperations,
-		}
-	}
-
 	protected getSpecificSystemInstructions(): string {
 		return `You are an expert code generation assistant that implements code based on comments.
 

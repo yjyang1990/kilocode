@@ -23,22 +23,6 @@ export class NewLineCompletionStrategy extends BasePromptStrategy {
 	}
 
 	/**
-	 * Focus on surrounding code and recent actions
-	 * Exclude diagnostics and user input
-	 */
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			range: context.range,
-			recentOperations: context.recentOperations,
-			// Exclude:
-			// - userInput (no explicit request)
-			// - diagnostics (not relevant for new line)
-			// - openFiles (reduces tokens)
-		}
-	}
-
-	/**
 	 * System instructions for new line completion
 	 */
 	protected getSpecificSystemInstructions(): string {

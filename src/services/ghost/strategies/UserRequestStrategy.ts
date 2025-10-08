@@ -20,22 +20,6 @@ export class UserRequestStrategy extends BasePromptStrategy {
 	}
 
 	/**
-	 * Include user input, document, selection, and diagnostics
-	 * Exclude recent operations and open files as they're less relevant
-	 */
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			userInput: context.userInput,
-			range: context.range,
-			diagnostics: context.diagnostics,
-			// Explicitly exclude:
-			// - recentOperations (not needed for explicit requests)
-			// - openFiles (reduces token usage)
-		}
-	}
-
-	/**
 	 * System instructions specific to user requests
 	 */
 	protected getSpecificSystemInstructions(): string {

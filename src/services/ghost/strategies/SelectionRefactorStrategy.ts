@@ -17,14 +17,6 @@ export class SelectionRefactorStrategy extends BasePromptStrategy {
 		return !!(context.range && !context.range.isEmpty && !context.userInput)
 	}
 
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			range: context.range,
-			diagnostics: context.diagnostics,
-		}
-	}
-
 	protected getSpecificSystemInstructions(): string {
 		return `You are an expert code refactoring assistant. Your task is to improve selected code while maintaining its functionality.
 

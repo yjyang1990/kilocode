@@ -22,22 +22,6 @@ export class AutoTriggerStrategy extends BasePromptStrategy {
 	}
 
 	/**
-	 * Minimal context for auto-trigger
-	 * Focus on immediate context only
-	 */
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			range: context.range,
-			recentOperations: context.recentOperations?.slice(0, 3), // Only last 3 operations
-			// Exclude:
-			// - userInput (no explicit request)
-			// - diagnostics (not fixing errors)
-			// - openFiles (reduces tokens)
-		}
-	}
-
-	/**
 	 * System instructions for auto-trigger
 	 */
 	protected getSpecificSystemInstructions(): string {
