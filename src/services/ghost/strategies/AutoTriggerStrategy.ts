@@ -34,7 +34,7 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 	/**
 	 * Build minimal prompt for auto-trigger
 	 */
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		let prompt = ""
 
 		// Start with recent typing context

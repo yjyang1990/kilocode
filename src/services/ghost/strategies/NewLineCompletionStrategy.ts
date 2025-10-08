@@ -64,7 +64,7 @@ Important:
 	/**
 	 * Build prompt focused on surrounding context
 	 */
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		let prompt = ""
 
 		// Start with cursor context

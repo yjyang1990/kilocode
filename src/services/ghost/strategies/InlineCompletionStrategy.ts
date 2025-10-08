@@ -65,7 +65,7 @@ export class InlineCompletionStrategy extends BasePromptStrategy {
 - Match the existing code style`
 	}
 
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		if (!context.document || !context.range) {
 			return "No context available for inline completion."
 		}

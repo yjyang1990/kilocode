@@ -53,7 +53,7 @@ Common Request Patterns:
 	/**
 	 * Build the user prompt with all relevant context
 	 */
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		let prompt = ""
 
 		// User request is the most important part
@@ -121,23 +121,6 @@ Common Request Patterns:
 		}
 
 		return prompt
-	}
-
-	/**
-	 * Override to provide more context for certain types of requests
-	 */
-	override getUserPrompt(context: GhostSuggestionContext): string {
-		// For certain requests, we might want to include more context
-		const request = context.userInput?.toLowerCase() || ""
-
-		// If the request mentions other files or imports, include more context
-		if (request.includes("import") || request.includes("from")) {
-			// Could potentially include information about available modules
-			// For now, we'll use the standard approach
-		}
-
-		// Use the standard prompt building
-		return super.getUserPrompt(context)
 	}
 
 	/**

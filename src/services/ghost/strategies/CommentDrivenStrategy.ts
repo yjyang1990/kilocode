@@ -65,7 +65,7 @@ export class CommentDrivenStrategy extends BasePromptStrategy {
 - When using search/replace format, include ALL existing code to preserve it`
 	}
 
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		if (!context.document || !context.range) {
 			return "No context available for comment-driven generation."
 		}

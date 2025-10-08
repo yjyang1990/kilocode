@@ -46,7 +46,7 @@ export class SelectionRefactorStrategy extends BasePromptStrategy {
 Remember: The goal is to improve the code quality while keeping the exact same behavior.`
 	}
 
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		if (!context.document || !context.range) {
 			return "No selection available for refactoring."
 		}

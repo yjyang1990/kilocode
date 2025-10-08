@@ -85,15 +85,7 @@ EXAMPLE:
 	/**
 	 * Generates the user prompt with context
 	 */
-	getUserPrompt(context: GhostSuggestionContext): string {
-		return this.buildUserPrompt(context)
-	}
-
-	/**
-	 * Builds the user prompt from the relevant context
-	 * Must be implemented by each strategy
-	 */
-	protected abstract buildUserPrompt(context: GhostSuggestionContext): string
+	abstract getUserPrompt(context: GhostSuggestionContext): string
 
 	/**
 	 * Adds the cursor marker to the document text at the specified position
