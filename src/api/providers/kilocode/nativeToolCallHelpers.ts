@@ -1,3 +1,76 @@
+/**
+ * Native Tool Call Helpers
+ *
+ * This module provides helper functions to enable native tool calling support for API providers
+ * that use OpenAI-compatible chat completion APIs. Native tool calling allows models to invoke
+ * tools directly rather than returning XML-formatted instructions.
+ *
+ * ## Enabling Native Tool Calling for a Provider
+ *
+ * To add native tool calling support to a provider, follow these steps:
+ *
+ * ### 1. Import the helper functions
+ * ```typescript
+ * import { addNativeToolCallsToParams, processNativeToolCallsFromDelta } from "./kilocode/nativeToolCallHelpers"
+ * ```
+ *
+ * ### 2. Add tool parameters before creating the completion
+ * In your provider's `createMessage` method, after constructing the completion parameters object,
+ * call `addNativeToolCallsToParams` to add tool calling support:
+ *
+ * ```typescript
+ * const completionParams = {
+ *   model: modelId,
+ *   messages: openAiMessages,
+ *   stream: true,
+ *   // ... other params
+ * }
+ *
+ * // Add native tool call support when toolStyle is "json"
+ * addNativeToolCallsToParams(completionParams, this.options, metadata)
+ *
+ * const stream = await this.client.chat.completions.create(completionParams)
+ * ```
+ *
+ * ### 3. Process tool calls in the streaming response
+ * In your stream processing loop, after handling reasoning content but before handling regular content,
+ * add tool call processing:
+ *
+ * ```typescript
+ * for await (const chunk of stream) {
+ *   const delta = chunk.choices[0]?.delta
+ *
+ *   // Handle reasoning if present
+ *   if (delta?.reasoning) {
+ *     yield { type: "reasoning", text: delta.reasoning }
+ *   }
+ *
+ *   // Handle native tool calls when toolStyle is "json"
+ *   yield* processNativeToolCallsFromDelta(delta, this.options.toolStyle)
+ *
+ *   // Handle regular content
+ *   if (delta?.content) {
+ *     yield { type: "text", text: delta.content }
+ *   }
+ * }
+ * ```
+ *
+ * ## What These Helpers Do
+ *
+ * - `addNativeToolCallsToParams`: Sets `parallel_tool_calls: false` and adds `tools` and `tool_choice`
+ *   parameters when toolStyle is "json" and allowed tools are provided
+ *
+ * - `processNativeToolCallsFromDelta`: Processes streaming tool call deltas and yields them as
+ *   ApiStreamNativeToolCallsChunk objects for the AssistantMessageParser to accumulate
+ *
+ * ## Example Providers
+ *
+ * See the following providers for complete implementation examples:
+ * - `openrouter.ts` - OpenRouter implementation
+ * - `openai.ts` - OpenAI implementation
+ * - `anthropic.ts` - Anthropic implementation (if using OpenAI format)
+ */
+
 import OpenAI from "openai"
 import type { ApiHandlerCreateMessageMetadata } from "../../index"
 import type { ApiStreamNativeToolCallsChunk } from "../../transform/stream"
