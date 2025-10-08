@@ -27,24 +27,6 @@ export class GhostStrategy {
 	}
 
 	/**
-	 * Get the system prompt based on context using the new strategy system
-	 * @deprecated Use getPrompts() instead for better performance
-	 */
-	getSystemPrompt(context: GhostSuggestionContext): string {
-		return this.getPrompts(context).systemPrompt
-	}
-
-	/**
-	 * Get the user prompt based on context using the new strategy system
-	 * @param context The suggestion context
-	 * @returns The user prompt
-	 * @deprecated Use getPrompts() instead for better performance
-	 */
-	getSuggestionPrompt(context: GhostSuggestionContext): string {
-		return this.getPrompts(context).userPrompt
-	}
-
-	/**
 	 * Initialize streaming parser for incremental parsing
 	 */
 	public initializeStreamingParser(context: GhostSuggestionContext): void {
