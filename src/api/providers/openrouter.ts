@@ -207,7 +207,6 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 
 		const transforms = (this.options.openRouterUseMiddleOutTransform ?? true) ? ["middle-out"] : undefined
 
-		// https://openrouter.ai/docs/transforms
 		const completionParams: OpenRouterChatCompletionParams = {
 			model: modelId,
 			...(maxTokens && maxTokens > 0 && { max_tokens: maxTokens }),
@@ -216,7 +215,9 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			messages: openAiMessages,
 			stream: true,
 			stream_options: { include_usage: true },
+			parallel_tool_calls: false, // kilocode_change
 			...(this.options.toolStyle === "json" && { tools: nativeTools }),
+			...(this.options.toolStyle === "json" && metadata && { tool_choice: metadata.allowedTools }),
 			...this.getProviderParams(), // kilocode_change: original expression was moved into function
 			...(transforms && { transforms }),
 			...(reasoning && { reasoning }),

@@ -21,7 +21,7 @@ import { CodeIndexManager } from "../../services/code-index/manager"
 
 import { PromptVariables, loadSystemPromptFile } from "./sections/custom-system-prompt"
 
-import { getToolDescriptionsForMode } from "./tools"
+import { getXMLToolDescriptionsForMode } from "./tools"
 import {
 	getRulesSection,
 	getSystemInfoSection,
@@ -89,7 +89,7 @@ async function generatePrompt(
 	const shouldIncludeMcp = hasMcpGroup && hasMcpServers
 
 	const [modesSection, mcpServersSection] = await Promise.all([
-		getModesSection(context),
+		getModesSection(context, toolUseStyle),
 		shouldIncludeMcp
 			? getMcpServersSection(mcpHub, effectiveDiffStrategy, enableMcpServerCreation)
 			: Promise.resolve(""),
@@ -97,31 +97,36 @@ async function generatePrompt(
 
 	const codeIndexManager = CodeIndexManager.getInstance(context, cwd)
 
-	const basePrompt = `${roleDefinition}
+	const basePrompt = `
+${roleDefinition}
 
 ${markdownFormattingSection()}
 
 ${getSharedToolUseSection(toolUseStyle)}
 
-${getToolDescriptionsForMode(
-	mode,
-	cwd,
-	supportsComputerUse,
-	codeIndexManager,
-	effectiveDiffStrategy,
-	browserViewportSize,
-	shouldIncludeMcp ? mcpHub : undefined,
-	customModeConfigs,
-	experiments,
-	partialReadsEnabled,
-	settings,
-	enableMcpServerCreation,
-	modelId,
-	toolUseStyle,
-	clineProviderState, // kilocode_change
-)}
+${
+	toolUseStyle === "xml"
+		? getXMLToolDescriptionsForMode(
+				mode,
+				cwd,
+				supportsComputerUse,
+				codeIndexManager,
+				effectiveDiffStrategy,
+				browserViewportSize,
+				shouldIncludeMcp ? mcpHub : undefined,
+				customModeConfigs,
+				experiments,
+				partialReadsEnabled,
+				settings,
+				enableMcpServerCreation,
+				modelId,
+				toolUseStyle,
+				clineProviderState, // kilocode_change
+			)
+		: ""
+}
 
-${getToolUseGuidelinesSection(codeIndexManager)}
+${getToolUseGuidelinesSection(codeIndexManager, toolUseStyle)}
 
 ${mcpServersSection}
 

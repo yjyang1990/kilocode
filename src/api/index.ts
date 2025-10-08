@@ -1,4 +1,5 @@
 import { Anthropic } from "@anthropic-ai/sdk"
+import OpenAI from "openai"
 
 import type { ProviderSettings, ModelInfo } from "@roo-code/types"
 
@@ -74,6 +75,12 @@ export interface ApiHandlerCreateMessageMetadata {
 	 * @default true
 	 */
 	store?: boolean
+	/**
+	 * OpenAI-format tool choice configuration for JSON tool style.
+	 * When provided, specifies which tools the model should use.
+	 * Can be "auto", "none", "required", or an object specifying a specific function.
+	 */
+	allowedTools?: OpenAI.Chat.ChatCompletionToolChoiceOption
 }
 
 export interface ApiHandler {

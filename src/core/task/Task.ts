@@ -77,6 +77,7 @@ import { getWorkspacePath } from "../../utils/path"
 // prompts
 import { formatResponse } from "../prompts/responses"
 import { SYSTEM_PROMPT } from "../prompts/system"
+import { getAllowedJSONToolsForMode } from "../prompts/tools"
 
 // core modules
 import { ToolRepetitionDetector } from "../tools/ToolRepetitionDetector"
@@ -2905,6 +2906,27 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			...(previousResponseId && !this.skipPrevResponseIdOnce ? { previousResponseId } : {}),
 			// If a condense just occurred, explicitly suppress continuity fallback for the next call
 			...(this.skipPrevResponseIdOnce ? { suppressPreviousResponseId: true } : {}),
+		}
+
+		// Add allowed tools for JSON tool style
+		if (apiConfiguration?.toolStyle === "json" && mode) {
+			try {
+				const provider = this.providerRef.deref()
+				const providerState = await provider?.getState()
+
+				const allowedTools = getAllowedJSONToolsForMode(
+					mode,
+					undefined, // codeIndexManager is private, not accessible here
+					providerState?.customModes,
+					providerState?.experiments,
+					providerState?.apiConfiguration,
+				)
+
+				metadata.allowedTools = allowedTools
+			} catch (error) {
+				console.error("[Task] Error getting allowed tools for mode:", error)
+				// Continue without allowedTools - will fall back to default behavior
+			}
 		}
 
 		// Reset skip flag after applying (it only affects the immediate next call)
