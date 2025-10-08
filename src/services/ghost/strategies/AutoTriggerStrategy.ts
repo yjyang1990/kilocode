@@ -2,6 +2,7 @@ import { GhostSuggestionContext } from "../types"
 import { UseCaseType } from "../types/PromptStrategy"
 import { BasePromptStrategy } from "./BasePromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
+import { formatDocumentWithCursor } from "./StrategyHelpers"
 
 /**
  * Fallback strategy for automatic completions
@@ -60,7 +61,7 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 		// Add the full document with cursor marker
 		if (context.document) {
 			prompt += "## Full Code\n"
-			prompt += this.formatDocumentWithCursor(context.document, context.range)
+			prompt += formatDocumentWithCursor(context.document, context.range)
 			prompt += "\n\n"
 		}
 
