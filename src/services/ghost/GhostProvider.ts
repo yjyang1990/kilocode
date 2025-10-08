@@ -56,7 +56,7 @@ export class GhostProvider {
 	public codeActionProvider: GhostCodeActionProvider
 	public codeLensProvider: GhostCodeLensProvider
 
-	private ignoreController: RooIgnoreController | undefined
+	private ignoreController?: Promise<RooIgnoreController>
 
 	private constructor(context: vscode.ExtensionContext, cline: ClineProvider) {
 		this.context = context
@@ -161,17 +161,23 @@ export class GhostProvider {
 		this.documentStore.removeDocument(document.uri)
 	}
 
-	private async initializeIgnoreController() {
+	private initializeIgnoreController() {
 		if (!this.ignoreController) {
-			this.ignoreController = new RooIgnoreController(this.cline.cwd)
-			await this.ignoreController.initialize()
+			this.ignoreController = (async () => {
+				const ignoreController = new RooIgnoreController(this.cline.cwd)
+				await ignoreController.initialize()
+				return ignoreController
+			})()
 		}
 		return this.ignoreController
 	}
 
-	private disposeIgnoreController() {
-		this.ignoreController?.dispose()
-		delete this.ignoreController
+	private async disposeIgnoreController() {
+		if (this.ignoreController) {
+			const ignoreController = this.ignoreController
+			delete this.ignoreController
+			;(await ignoreController).dispose()
+		}
 	}
 
 	private onDidChangeWorkspaceFolders() {
