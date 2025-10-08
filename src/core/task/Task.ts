@@ -1906,6 +1906,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				let totalCost: number | undefined
 
 				// kilocode_change start
+				let inferenceProvider: string | undefined
 				let usageMissing = false
 				const apiRequestStartTime = performance.now()
 				// kilocode_change end
@@ -1938,7 +1939,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 								cacheWriteTokens,
 								cacheReadTokens,
 							),
-						usageMissing, // kilocode_change
+						// kilocode_change start
+						usageMissing,
+						inferenceProvider,
+						// kilocode_change end
 						cancelReason,
 						streamingFailedMessage,
 					} satisfies ClineApiReqInfo)
@@ -2028,6 +2032,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 								cacheWriteTokens += chunk.cacheWriteTokens ?? 0
 								cacheReadTokens += chunk.cacheReadTokens ?? 0
 								totalCost = chunk.totalCost
+								inferenceProvider = chunk.inferenceProvider // kilocode_change
 								break
 							case "grounding":
 								// Handle grounding sources separately from regular content
@@ -2171,7 +2176,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 											tokens.cacheWrite,
 											tokens.cacheRead,
 										),
-									completionTime: performance.now() - apiRequestStartTime, // kilocode_change
+									// kilocode_change start
+									completionTime: performance.now() - apiRequestStartTime,
+									inferenceProvider,
+									// kilocode_change end
 								})
 							}
 						}
@@ -2206,6 +2214,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 									bgCacheWriteTokens += chunk.cacheWriteTokens ?? 0
 									bgCacheReadTokens += chunk.cacheReadTokens ?? 0
 									bgTotalCost = chunk.totalCost
+									inferenceProvider = chunk.inferenceProvider // kilocode_change
 								}
 							}
 
