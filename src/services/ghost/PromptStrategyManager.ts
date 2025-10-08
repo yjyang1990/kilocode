@@ -36,22 +36,13 @@ export class PromptStrategyManager {
 	 * @returns The selected strategy
 	 */
 	selectStrategy(context: GhostSuggestionContext): PromptStrategy {
-		// Find the first strategy that can handle this context
-		for (const strategy of this.strategies) {
-			if (strategy.canHandle(context)) {
-				if (this.debug) {
-					console.log(`[PromptStrategyManager] Selected strategy: ${strategy.name}`)
-				}
-				return strategy
-			}
+		const strategy = this.strategies.find((s) => s.canHandle(context)) ?? this.strategies.at(-1)!
+
+		if (this.debug) {
+			console.log(`[PromptStrategyManager] Selected strategy: ${strategy.name}`)
 		}
 
-		// Fallback: return the last strategy (AutoTriggerStrategy)
-		const fallback = this.strategies[this.strategies.length - 1]
-		if (this.debug) {
-			console.log(`[PromptStrategyManager] Falling back to: ${fallback.name}`)
-		}
-		return fallback
+		return strategy
 	}
 
 	/**
