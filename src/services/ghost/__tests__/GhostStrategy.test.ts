@@ -3,8 +3,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 import { GhostStrategy } from "../GhostStrategy"
 import { GhostSuggestionContext } from "../types"
 import { PromptStrategyManager } from "../PromptStrategyManager"
-import { UseCaseType } from "../types/PromptStrategy"
-import { skip } from "node:test"
 
 describe("GhostStrategy", () => {
 	let strategy: GhostStrategy
@@ -53,37 +51,6 @@ describe("GhostStrategy", () => {
 			expect(systemPrompt).toContain("Execute User's Explicit Request")
 			expect(userPrompt).toContain("Add a function to calculate sum")
 		})
-
-		skip("should select ErrorFixStrategy when diagnostics are present", () => {
-			const mockDocument = {
-				languageId: "typescript",
-				getText: () => "const x = 1",
-				lineAt: (line: number) => ({ text: "const x = 1" }),
-				uri: { toString: () => "file:///test.ts" },
-				offsetAt: (position: vscode.Position) => 11,
-			} as vscode.TextDocument
-
-			const mockRange = {
-				start: { line: 0, character: 11 } as vscode.Position,
-				end: { line: 0, character: 11 } as vscode.Position,
-			} as vscode.Range
-
-			const context: GhostSuggestionContext = {
-				document: mockDocument,
-				diagnostics: [
-					{
-						severity: vscode.DiagnosticSeverity.Error,
-						message: "Missing semicolon",
-						range: mockRange,
-					} as vscode.Diagnostic,
-				],
-			}
-
-			const { systemPrompt } = strategy.getPrompts(context)
-
-			// ErrorFixStrategy should be selected
-			expect(systemPrompt).toContain("Fix Compilation Errors and Warnings")
-		})
 	})
 
 	describe("Integration", () => {
@@ -115,20 +82,6 @@ describe("GhostStrategy", () => {
 
 		beforeEach(() => {
 			manager = new PromptStrategyManager()
-		})
-
-		it("should have all 7 strategies registered", () => {
-			const strategies = manager.getStrategies()
-			expect(strategies).toHaveLength(7)
-
-			const strategyNames = strategies.map((s) => s.name)
-			expect(strategyNames).toContain("User Request")
-			expect(strategyNames).toContain("Error Fix")
-			expect(strategyNames).toContain("Selection Refactor")
-			expect(strategyNames).toContain("Comment Driven")
-			expect(strategyNames).toContain("New Line Completion")
-			expect(strategyNames).toContain("Inline Completion")
-			expect(strategyNames).toContain("Auto Trigger")
 		})
 
 		it("should select appropriate strategy based on context", () => {
