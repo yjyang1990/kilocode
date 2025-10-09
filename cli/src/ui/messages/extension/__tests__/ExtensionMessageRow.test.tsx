@@ -248,6 +248,54 @@ describe("ExtensionMessageRow", () => {
 			// Should show ellipsis for partial messages
 			expect(lastFrame()).toContain("...")
 		})
+
+		it("should preserve spacing between icon and text during streaming", () => {
+			const message: ExtensionChatMessage = {
+				ts: Date.now(),
+				type: "say",
+				say: "text",
+				text: "Hello! I'm Kilo Code",
+				partial: true,
+			}
+
+			const { lastFrame } = render(<ExtensionMessageRow message={message} />)
+
+			expect(lastFrame()).toBeDefined()
+			// The icon (>) should be followed by a space before the text
+			// This regex checks for the icon followed by whitespace and then text
+			expect(lastFrame()).toMatch(/>\s+Hello/)
+			expect(lastFrame()).toContain("Hello! I'm Kilo Code")
+		})
+
+		it("should preserve spacing even when text starts streaming from empty", () => {
+			// First render with empty text
+			const emptyMessage: ExtensionChatMessage = {
+				ts: Date.now(),
+				type: "say",
+				say: "text",
+				text: "",
+				partial: true,
+			}
+
+			const { lastFrame: emptyFrame } = render(<ExtensionMessageRow message={emptyMessage} />)
+			// Should render nothing when text is empty
+			expect(emptyFrame()).toBe("")
+
+			// Then render with text arriving
+			const streamingMessage: ExtensionChatMessage = {
+				ts: Date.now(),
+				type: "say",
+				say: "text",
+				text: "Hello",
+				partial: true,
+			}
+
+			const { lastFrame: streamingFrame } = render(<ExtensionMessageRow message={streamingMessage} />)
+
+			expect(streamingFrame()).toBeDefined()
+			// Should have proper spacing between icon and text
+			expect(streamingFrame()).toMatch(/>\s+Hello/)
+		})
 	})
 
 	describe("Messages with Images", () => {

@@ -23,8 +23,9 @@ export const SayTextMessage: React.FC<MessageComponentProps> = ({ message }) => 
 		<Box flexDirection="column" marginBottom={1}>
 			<Box>
 				<Text color={color} bold>
-					{icon}{" "}
+					{icon}
 				</Text>
+				<Text> </Text>
 				<MarkdownText>{text}</MarkdownText>
 				{message.partial && (
 					<Text color="gray" dimColor>
