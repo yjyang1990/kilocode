@@ -165,7 +165,7 @@ describe("messageCompletion", () => {
 		})
 
 		describe("Extension messages - ask messages", () => {
-			it("should return false for ask message without isAnswered", () => {
+			it("should return true for ask message in final form (not partial)", () => {
 				const message: UnifiedMessage = {
 					source: "extension",
 					message: {
@@ -175,10 +175,10 @@ describe("messageCompletion", () => {
 						text: "Question?",
 					},
 				}
-				expect(isMessageComplete(message)).toBe(false)
+				expect(isMessageComplete(message)).toBe(true)
 			})
 
-			it("should return false for ask message with isAnswered=false", () => {
+			it("should return true for ask message with partial=false", () => {
 				const message: UnifiedMessage = {
 					source: "extension",
 					message: {
@@ -186,21 +186,61 @@ describe("messageCompletion", () => {
 						type: "ask",
 						ask: "followup",
 						text: "Question?",
-						isAnswered: false,
+						partial: false,
+					},
+				}
+				expect(isMessageComplete(message)).toBe(true)
+			})
+
+			it("should return false for ask message with partial=true", () => {
+				const message: UnifiedMessage = {
+					source: "extension",
+					message: {
+						ts: Date.now(),
+						type: "ask",
+						ask: "followup",
+						text: "Question?",
+						partial: true,
 					},
 				}
 				expect(isMessageComplete(message)).toBe(false)
 			})
 
-			it("should return true for ask message with isAnswered=true", () => {
+			it("should return true for tool ask message in final form", () => {
 				const message: UnifiedMessage = {
 					source: "extension",
 					message: {
 						ts: Date.now(),
 						type: "ask",
-						ask: "followup",
-						text: "Question?",
-						isAnswered: true,
+						ask: "tool",
+						text: '{"tool":"readFile"}',
+						partial: false,
+					},
+				}
+				expect(isMessageComplete(message)).toBe(true)
+			})
+
+			it("should return true for non-rendering ask types (completion_result)", () => {
+				const message: UnifiedMessage = {
+					source: "extension",
+					message: {
+						ts: Date.now(),
+						type: "ask",
+						ask: "completion_result",
+						text: "",
+					},
+				}
+				expect(isMessageComplete(message)).toBe(true)
+			})
+
+			it("should return true for non-rendering ask types (command_output)", () => {
+				const message: UnifiedMessage = {
+					source: "extension",
+					message: {
+						ts: Date.now(),
+						type: "ask",
+						ask: "command_output",
+						text: "",
 					},
 				}
 				expect(isMessageComplete(message)).toBe(true)
@@ -344,6 +384,44 @@ describe("messageCompletion", () => {
 				},
 			]
 			const result = splitMessages(messages)
+			expect(result.staticMessages).toHaveLength(2)
+			expect(result.dynamicMessages).toHaveLength(0)
+		})
+
+		it("should deduplicate checkpoint_saved messages with same hash", () => {
+			const messages: UnifiedMessage[] = [
+				{
+					source: "extension",
+					message: { ts: 1, type: "say", say: "checkpoint_saved", text: "abc123", partial: false },
+				},
+				{
+					source: "extension",
+					message: { ts: 2, type: "say", say: "text", text: "Some text", partial: false },
+				},
+				{
+					source: "extension",
+					message: { ts: 3, type: "say", say: "checkpoint_saved", text: "abc123", partial: false },
+				},
+			]
+			const result = splitMessages(messages)
+			// Should only have 2 messages (duplicate checkpoint removed)
+			expect(result.staticMessages).toHaveLength(2)
+			expect(result.dynamicMessages).toHaveLength(0)
+		})
+
+		it("should keep checkpoint_saved messages with different hashes", () => {
+			const messages: UnifiedMessage[] = [
+				{
+					source: "extension",
+					message: { ts: 1, type: "say", say: "checkpoint_saved", text: "abc123", partial: false },
+				},
+				{
+					source: "extension",
+					message: { ts: 2, type: "say", say: "checkpoint_saved", text: "def456", partial: false },
+				},
+			]
+			const result = splitMessages(messages)
+			// Should keep both (different hashes)
 			expect(result.staticMessages).toHaveLength(2)
 			expect(result.dynamicMessages).toHaveLength(0)
 		})
