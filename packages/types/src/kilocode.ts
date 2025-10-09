@@ -12,6 +12,14 @@ export const ghostServiceSettingsSchema = z
 
 export type GhostServiceSettings = z.infer<typeof ghostServiceSettingsSchema>
 
+export function normalizeAutoTriggerDelay(value: number | undefined): number {
+	if (value === undefined) return 3000
+	if (value < 50) {
+		return Math.min(value, 5) * 1000
+	}
+	return value
+}
+
 export const commitRangeSchema = z.object({
 	from: z.string(),
 	fromTimeStamp: z.number().optional(),

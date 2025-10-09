@@ -12,7 +12,7 @@ import { getWorkspacePath } from "../../utils/path"
 import { GhostSuggestionsState } from "./GhostSuggestions"
 import { GhostCodeActionProvider } from "./GhostCodeActionProvider"
 import { GhostCodeLensProvider } from "./GhostCodeLensProvider"
-import { GhostServiceSettings, TelemetryEventName } from "@roo-code/types"
+import { GhostServiceSettings, TelemetryEventName, normalizeAutoTriggerDelay } from "@roo-code/types"
 import { ContextProxy } from "../../core/config/ContextProxy"
 import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManager"
 import { GhostContext } from "./GhostContext"
@@ -706,13 +706,7 @@ export class GhostProvider {
 		// Clear any existing timer
 		this.clearAutoTriggerTimer()
 		this.startProcessing()
-		// Start a new timer
-		// Backward compatibility: values below 50 are in seconds, convert to milliseconds
-		// Cap at 5 seconds to respect the 5000ms max
-		let delay = this.settings?.autoTriggerDelay || 3000
-		if (delay < 50) {
-			delay = Math.min(delay, 5) * 1000
-		}
+		const delay = normalizeAutoTriggerDelay(this.settings?.autoTriggerDelay)
 		this.autoTriggerTimer = setTimeout(() => {
 			this.onAutoTriggerTimeout()
 		}, delay)
