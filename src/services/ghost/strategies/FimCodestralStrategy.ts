@@ -12,7 +12,7 @@ import { getBaseSystemInstructions } from "./StrategyHelpers"
  */
 export class FimCodestralStrategy implements PromptStrategy {
 	name = "FIM Codestral"
-	type = UseCaseType.AUTO_TRIGGER
+	type = UseCaseType.FIM_CODESTRAL
 
 	canHandle(_context: GhostSuggestionContext): boolean {
 		// This strategy can handle all cases when explicitly selected
