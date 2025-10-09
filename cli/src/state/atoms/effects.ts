@@ -63,14 +63,23 @@ export const initializeServiceEffectAtom = atom(null, async (get, set, store?: a
 		})
 
 		service.on("stateChange", (state) => {
-			logs.debug("State change received", "effects")
+			logs.debug(
+				`[EFFECTS] stateChange event with ${state.clineMessages?.length || state.chatMessages?.length || 0} messages`,
+				"effects",
+			)
 			if (atomStore) {
 				atomStore.set(updateExtensionStateAtom, state)
 			}
 		})
 
 		service.on("message", (message) => {
-			logs.debug(`Extension message received: ${message.type}`, "effects")
+			logs.debug(`[EFFECTS] Extension message received: ${message.type}`, "effects")
+			if (message.type === "messageUpdated" && message.chatMessage) {
+				logs.debug(
+					`[EFFECTS] messageUpdated: ts=${message.chatMessage.ts} type=${message.chatMessage.type} partial=${message.chatMessage.partial}`,
+					"effects",
+				)
+			}
 			if (atomStore) {
 				atomStore.set(messageHandlerEffectAtom, message)
 			}
@@ -121,13 +130,17 @@ export const messageHandlerEffectAtom = atom(null, (get, set, message: Extension
 		// Handle different message types
 		switch (message.type) {
 			case "state":
-				if (message.state) {
-					set(updateExtensionStateAtom, message.state)
-				}
+				// State messages are handled by the stateChange event listener
+				// Skip processing here to avoid duplication
+				logs.debug(`[EFFECTS] Skipping state message (handled by stateChange event)`, "effects")
 				break
 
 			case "messageUpdated":
 				if (message.chatMessage) {
+					logs.debug(
+						`[EFFECTS] Processing messageUpdated: ts=${message.chatMessage.ts} type=${message.chatMessage.type} partial=${message.chatMessage.partial}`,
+						"effects",
+					)
 					set(updateChatMessageByTsAtom, message.chatMessage)
 				}
 				break

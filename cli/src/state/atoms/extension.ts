@@ -177,14 +177,31 @@ export const updateExtensionStateAtom = atom(null, (get, set, state: ExtensionSt
 	const versionMap = get(messageVersionMapAtom)
 	const streamingSet = get(streamingMessagesSetAtom)
 
+	logs.debug(
+		`[STATE UPDATE] Received state update with ${state?.clineMessages?.length || state?.chatMessages?.length || 0} messages`,
+		"extension",
+	)
+	logs.debug(
+		`[STATE UPDATE] Current state: ${currentMessages.length} messages, ${streamingSet.size} streaming`,
+		"extension",
+	)
+
 	set(extensionStateAtom, state)
 
 	if (state) {
 		// Get incoming messages from state
 		const incomingMessages = state.clineMessages || state.chatMessages || []
 
+		logs.debug(
+			`[STATE UPDATE] Incoming messages: ${incomingMessages.map((m) => `ts=${m.ts} type=${m.type} partial=${m.partial} len=${getMessageContentLength(m)}`).join(", ")}`,
+			"extension",
+		)
+
 		// Reconcile with current messages to preserve streaming state
 		const reconciledMessages = reconcileMessages(currentMessages, incomingMessages, versionMap, streamingSet)
+
+		logs.debug(`[STATE UPDATE] After reconciliation: ${reconciledMessages.length} messages`, "extension")
+
 		set(chatMessagesAtom, reconciledMessages)
 
 		// Update version map for all reconciled messages
@@ -272,6 +289,13 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 	const versionMap = get(messageVersionMapAtom)
 	const streamingSet = get(streamingMessagesSetAtom)
 
+	logs.debug(
+		`[MESSAGE UPDATE] Received update for ts=${updatedMessage.ts} type=${updatedMessage.type} partial=${updatedMessage.partial} len=${getMessageContentLength(updatedMessage)}`,
+		"extension",
+	)
+	logs.debug(`[MESSAGE UPDATE] Current messages: ${messages.map((m) => `ts=${m.ts}`).join(", ")}`, "extension")
+	logs.debug(`[MESSAGE UPDATE] Streaming set: ${Array.from(streamingSet).join(", ")}`, "extension")
+
 	// Find the message by timestamp (using findLastIndex to match webview behavior)
 	let messageIndex = -1
 	for (let i = messages.length - 1; i >= 0; i--) {
@@ -280,6 +304,8 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 			break
 		}
 	}
+
+	logs.debug(`[MESSAGE UPDATE] Found message at index ${messageIndex}`, "extension")
 
 	// If message not found by timestamp, check if this is a streaming update to the last message
 	// This handles cases where timestamps might differ slightly during rapid updates
@@ -298,7 +324,12 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 		if (lastMessage?.partial && isSameType && isSameSubtype) {
 			messageIndex = messages.length - 1
 			logs.debug(
-				`Treating ts=${updatedMessage.ts} as update to last message ts=${lastMessage.ts} (type/subtype match, last was partial)`,
+				`[MESSAGE UPDATE] Treating ts=${updatedMessage.ts} as update to last message ts=${lastMessage.ts} (type/subtype match, last was partial)`,
+				"extension",
+			)
+		} else {
+			logs.debug(
+				`[MESSAGE UPDATE] NOT treating as update to last message: partial=${lastMessage?.partial} sameType=${isSameType} sameSubtype=${isSameSubtype}`,
 				"extension",
 			)
 		}
@@ -307,7 +338,7 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 	// If still not found, ignore the update (it will come through state update)
 	if (messageIndex === -1) {
 		logs.debug(
-			`Ignoring messageUpdated for non-existent message ts=${updatedMessage.ts} (will come through state update)`,
+			`[MESSAGE UPDATE] Ignoring messageUpdated for non-existent message ts=${updatedMessage.ts} (will come through state update)`,
 			"extension",
 		)
 		return
@@ -322,26 +353,31 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 	// Partial messages always update to show streaming progress
 	if (newVersion < currentVersion && !updatedMessage.partial) {
 		logs.debug(
-			`Skipping outdated message update for ts=${updatedMessage.ts} (version ${newVersion} < ${currentVersion})`,
+			`[MESSAGE UPDATE] Skipping outdated message update for ts=${updatedMessage.ts} (version ${newVersion} < ${currentVersion})`,
 			"extension",
 		)
 		return
 	}
 
-	// Update version tracking (use the existing message's timestamp for version tracking)
+	logs.debug(
+		`[MESSAGE UPDATE] Accepting update: newVersion=${newVersion} currentVersion=${currentVersion} partial=${updatedMessage.partial}`,
+		"extension",
+	)
+
+	// Update version tracking (use the updated message's timestamp)
 	const newVersionMap = new Map(versionMap)
-	newVersionMap.set(existingMessage!.ts, newVersion)
+	newVersionMap.set(updatedMessage.ts, newVersion)
 	set(messageVersionMapAtom, newVersionMap)
 
-	// Track streaming state (use the existing message's timestamp)
+	// Track streaming state (use the updated message's timestamp)
 	const newStreamingSet = new Set(streamingSet)
 	if (updatedMessage.partial) {
-		newStreamingSet.add(existingMessage!.ts)
-		logs.debug(`Message ts=${existingMessage!.ts} is now streaming`, "extension")
+		newStreamingSet.add(updatedMessage.ts)
+		logs.debug(`[MESSAGE UPDATE] Message ts=${updatedMessage.ts} is now streaming`, "extension")
 	} else {
-		newStreamingSet.delete(existingMessage!.ts)
-		if (streamingSet.has(existingMessage!.ts)) {
-			logs.debug(`Message ts=${existingMessage!.ts} streaming completed`, "extension")
+		newStreamingSet.delete(updatedMessage.ts)
+		if (streamingSet.has(updatedMessage.ts)) {
+			logs.debug(`[MESSAGE UPDATE] Message ts=${updatedMessage.ts} streaming completed`, "extension")
 		}
 	}
 	set(streamingMessagesSetAtom, newStreamingSet)
@@ -350,7 +386,10 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 	const newMessages = [...messages]
 	newMessages[messageIndex] = updatedMessage
 	set(updateChatMessagesAtom, newMessages)
-	logs.debug(`Updated existing message ts=${updatedMessage.ts} (version ${newVersion})`, "extension")
+	logs.debug(
+		`[MESSAGE UPDATE] Updated existing message ts=${updatedMessage.ts} (version ${newVersion}) - Total messages now: ${newMessages.length}`,
+		"extension",
+	)
 })
 
 /**
@@ -492,9 +531,36 @@ function reconcileMessages(
 	const messageMap = new Map<number, ExtensionChatMessage>()
 	current.forEach((msg) => messageMap.set(msg.ts, msg))
 
+	// Track duplicate timestamps to detect when extension sends multiple messages with same ts
+	const timestampCounts = new Map<number, number>()
+	incoming.forEach((msg) => {
+		timestampCounts.set(msg.ts, (timestampCounts.get(msg.ts) || 0) + 1)
+	})
+
 	// Process incoming messages
-	incoming.forEach((incomingMsg) => {
+	incoming.forEach((incomingMsg, index) => {
 		const existingMsg = messageMap.get(incomingMsg.ts)
+		const hasDuplicateTimestamp = (timestampCounts.get(incomingMsg.ts) || 0) > 1
+
+		// If there are duplicate timestamps, only keep the LAST occurrence
+		// This matches the extension's behavior where later messages override earlier ones
+		if (hasDuplicateTimestamp) {
+			// Find last index manually (findLastIndex not available in older TS)
+			let lastIndexWithSameTs = -1
+			for (let i = incoming.length - 1; i >= 0; i--) {
+				if (incoming[i]?.ts === incomingMsg.ts) {
+					lastIndexWithSameTs = i
+					break
+				}
+			}
+			if (index !== lastIndexWithSameTs) {
+				logs.debug(
+					`[RECONCILE] Skipping duplicate timestamp ts=${incomingMsg.ts} at index ${index} (keeping last at ${lastIndexWithSameTs})`,
+					"extension",
+				)
+				return
+			}
+		}
 
 		// If we have a streaming message with more content, preserve it
 		// This handles race conditions where state updates arrive with older content
@@ -505,11 +571,15 @@ function reconcileMessages(
 			// Keep the version with more content
 			if (currentVersion > incomingVersion) {
 				logs.debug(
-					`Preserving streaming message ts=${incomingMsg.ts} (${currentVersion} > ${incomingVersion})`,
+					`[RECONCILE] Preserving streaming message ts=${incomingMsg.ts} (${currentVersion} > ${incomingVersion})`,
 					"extension",
 				)
 				return
 			}
+			logs.debug(
+				`[RECONCILE] Accepting incoming streaming message ts=${incomingMsg.ts} (${incomingVersion} >= ${currentVersion})`,
+				"extension",
+			)
 		}
 
 		// Accept incoming message

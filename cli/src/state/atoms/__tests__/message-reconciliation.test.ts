@@ -754,6 +754,89 @@ describe("Message Reconciliation", () => {
 		})
 	})
 
+	describe("Duplicate Timestamp Handling", () => {
+		it("should handle duplicate timestamps by keeping the last occurrence", () => {
+			// This reproduces the bug where extension sends multiple messages with same timestamp
+			const stateWithDuplicates: ExtensionState = {
+				version: "1.0.0",
+				apiConfiguration: {},
+				chatMessages: [
+					{ ts: 1000, type: "say", say: "text", text: "First version" },
+					{ ts: 1000, type: "say", say: "text", text: "Second version - should be kept" },
+				],
+				mode: "code",
+				customModes: [],
+				taskHistoryFullLength: 0,
+				taskHistoryVersion: 0,
+				renderContext: "cli",
+				telemetrySetting: "disabled",
+			}
+
+			store.set(updateExtensionStateAtom, stateWithDuplicates)
+
+			// Should only have one message (the last one with that timestamp)
+			const messages = store.get(chatMessagesAtom)
+			expect(messages).toHaveLength(1)
+			expect(messages[0]?.text).toBe("Second version - should be kept")
+			expect(messages[0]?.ts).toBe(1000)
+		})
+
+		it("should handle duplicate timestamps with different partial states", () => {
+			// Extension sends both partial and non-partial versions with same timestamp
+			const stateWithMixedDuplicates: ExtensionState = {
+				version: "1.0.0",
+				apiConfiguration: {},
+				chatMessages: [
+					{ ts: 2000, type: "say", say: "text", text: "Partial version", partial: true },
+					{ ts: 2000, type: "say", say: "text", text: "Complete version", partial: false },
+				],
+				mode: "code",
+				customModes: [],
+				taskHistoryFullLength: 0,
+				taskHistoryVersion: 0,
+				renderContext: "cli",
+				telemetrySetting: "disabled",
+			}
+
+			store.set(updateExtensionStateAtom, stateWithMixedDuplicates)
+
+			// Should keep the last one (complete version)
+			const messages = store.get(chatMessagesAtom)
+			expect(messages).toHaveLength(1)
+			expect(messages[0]?.text).toBe("Complete version")
+			expect(messages[0]?.partial).toBe(false)
+
+			// Streaming set should not include this timestamp since final version is not partial
+			const streamingSet = store.get(streamingMessagesSetAtom)
+			expect(streamingSet.has(2000)).toBe(false)
+		})
+
+		it("should handle three or more messages with same timestamp", () => {
+			const stateWithMultipleDuplicates: ExtensionState = {
+				version: "1.0.0",
+				apiConfiguration: {},
+				chatMessages: [
+					{ ts: 3000, type: "say", say: "text", text: "Version 1" },
+					{ ts: 3000, type: "say", say: "text", text: "Version 2" },
+					{ ts: 3000, type: "say", say: "text", text: "Version 3 - final" },
+				],
+				mode: "code",
+				customModes: [],
+				taskHistoryFullLength: 0,
+				taskHistoryVersion: 0,
+				renderContext: "cli",
+				telemetrySetting: "disabled",
+			}
+
+			store.set(updateExtensionStateAtom, stateWithMultipleDuplicates)
+
+			// Should only keep the last one
+			const messages = store.get(chatMessagesAtom)
+			expect(messages).toHaveLength(1)
+			expect(messages[0]?.text).toBe("Version 3 - final")
+		})
+	})
+
 	describe("Version Map Management", () => {
 		it("should track versions for all messages", () => {
 			// Add messages via state first
