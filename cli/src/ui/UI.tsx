@@ -4,7 +4,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react"
-import { Box, Text, useInput } from "ink"
+import { Box, Text, useInput, useStdout } from "ink"
 import { useAtomValue, useSetAtom } from "jotai"
 import { isProcessingAtom, errorAtom } from "../state/atoms/ui.js"
 import { setCIModeAtom } from "../state/atoms/ci.js"
@@ -15,12 +15,12 @@ import { initializeCommands } from "../commands/index.js"
 import { isCommandInput } from "../services/autocomplete.js"
 import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
 import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
-import { useWelcomeMessage } from "../state/hooks/useWelcomeMessage.js"
 import { useFollowupHandler } from "../state/hooks/useFollowupHandler.js"
 import { useCIMode } from "../state/hooks/useCIMode.js"
 import useIsProcessingSubscription from "../state/hooks/useIsProcessingSubscription.js"
 import { AppOptions } from "./App.js"
 import { logs } from "../services/logs.js"
+import { SplashScreen } from "./components/SplashScreen.js"
 
 // Initialize commands on module load
 initializeCommands()
@@ -31,6 +31,7 @@ interface UIAppProps {
 }
 
 export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
+	const { stdout } = useStdout()
 	const isProcessing = useAtomValue(isProcessingAtom)
 	const error = useAtomValue(errorAtom)
 
@@ -89,9 +90,6 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 		{ isActive: !options.ci },
 	)
 
-	// Display welcome message on mount (disabled if prompt is provided)
-	useWelcomeMessage({ enabled: !options.prompt })
-
 	// Execute prompt automatically on mount if provided
 	useEffect(() => {
 		if (options.prompt && !promptExecutedRef.current) {
@@ -133,26 +131,25 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	const isAnyOperationInProgress = isProcessing || isExecutingCommand || isSendingMessage
 
 	return (
-		<Box flexDirection="column" height="100%">
-			{/* Messages */}
-			<Box flexGrow={1} flexDirection="column" overflow="hidden">
+		<Box flexDirection="column" minHeight={options.ci ? 0 : stdout.rows}>
+			{!options.ci && <SplashScreen renderWelcomeMessage={!options.prompt} />}
+			<Box flexDirection="column" overflow="hidden">
 				<MessageDisplay />
 			</Box>
 
-			{/* Error display */}
 			{error && (
 				<Box borderStyle="single" borderColor="red" paddingX={1} marginY={1}>
 					<Text color="red">⚠ {error}</Text>
 				</Box>
 			)}
 
-			{!options.ci && isProcessing && <Text color="gray">Thinking...</Text>}
-
-			{/* Input */}
-			{!options.ci && <CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />}
-
-			{/* Status Bar */}
-			{!options.ci && <StatusBar />}
+			{!options.ci && (
+				<>
+					{isProcessing && <Text color="gray">Thinking...</Text>}
+					<CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />
+					<StatusBar />
+				</>
+			)}
 		</Box>
 	)
 }

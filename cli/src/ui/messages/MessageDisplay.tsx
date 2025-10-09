@@ -67,11 +67,7 @@ export const MessageDisplay: React.FC<MessageDisplayProps> = ({ filterType, maxM
 	const allMessages = useAtomValue(mergedMessagesAtom)
 
 	if (allMessages.length === 0) {
-		return (
-			<Box flexDirection="column" paddingX={1} paddingY={1}>
-				<Text color="gray">No messages yet. Type a message or /help for available commands.</Text>
-			</Box>
-		)
+		return null
 	}
 
 	return (

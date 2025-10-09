@@ -9,7 +9,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 import { createStore } from "jotai"
 import { render } from "ink-testing-library"
 import { Provider } from "jotai"
-import React from "react"
 
 describe("Command Hook Exports", () => {
 	let store: ReturnType<typeof createStore>
@@ -36,14 +35,6 @@ describe("Command Hook Exports", () => {
 			expect(useMessageHandler).toBeDefined()
 			expect(typeof useMessageHandler).toBe("function")
 		})
-
-		it("should export useWelcomeMessage", async () => {
-			const { useWelcomeMessage, getDefaultWelcomeContent } = await import("../useWelcomeMessage.js")
-			expect(useWelcomeMessage).toBeDefined()
-			expect(typeof useWelcomeMessage).toBe("function")
-			expect(getDefaultWelcomeContent).toBeDefined()
-			expect(typeof getDefaultWelcomeContent).toBe("function")
-		})
 	})
 
 	describe("Hook Integration in index.ts", () => {
@@ -54,8 +45,6 @@ describe("Command Hook Exports", () => {
 			expect(hooks.useCommandContext).toBeDefined()
 			expect(hooks.useCommandHandler).toBeDefined()
 			expect(hooks.useMessageHandler).toBeDefined()
-			expect(hooks.useWelcomeMessage).toBeDefined()
-			expect(hooks.getDefaultWelcomeContent).toBeDefined()
 
 			// Check existing hooks are still exported
 			expect(hooks.useExtensionService).toBeDefined()
@@ -73,19 +62,6 @@ describe("Command Hook Exports", () => {
 			expect(typeof hooks.useCommandContext).toBe("function")
 			expect(typeof hooks.useCommandHandler).toBe("function")
 			expect(typeof hooks.useMessageHandler).toBe("function")
-			expect(typeof hooks.useWelcomeMessage).toBe("function")
-			expect(typeof hooks.getDefaultWelcomeContent).toBe("function")
-		})
-	})
-
-	describe("Welcome Message", () => {
-		it("should provide default welcome content", async () => {
-			const { getDefaultWelcomeContent } = await import("../useWelcomeMessage.js")
-			const content = getDefaultWelcomeContent()
-
-			expect(Array.isArray(content)).toBe(true)
-			expect(content.length).toBeGreaterThan(0)
-			expect(content[0]).toContain("Welcome to Kilo Code CLI")
 		})
 	})
 })

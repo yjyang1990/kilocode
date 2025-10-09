@@ -60,10 +60,6 @@ export type { UseApprovalHandlerOptions, UseApprovalHandlerReturn } from "./useA
 
 export { useApprovalEffect } from "./useApprovalEffect.js"
 
-// UI hooks
-export { useWelcomeMessage, getDefaultWelcomeContent } from "./useWelcomeMessage.js"
-export type { WelcomeMessageConfig } from "./useWelcomeMessage.js"
-
 export { useFollowupSuggestions } from "./useFollowupSuggestions.js"
 export type { UseFollowupSuggestionsReturn } from "./useFollowupSuggestions.js"
 

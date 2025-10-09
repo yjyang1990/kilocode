@@ -3,7 +3,6 @@ import React from "react"
 import { createStore } from "jotai"
 import { createExtensionService, ExtensionService } from "./services/extension.js"
 import { App } from "./ui/App.js"
-import { Logo } from "./ui/assets/Logo.js"
 import { logs } from "./services/logs.js"
 import { extensionServiceAtom } from "./state/atoms/service.js"
 import { initializeServiceEffectAtom } from "./state/atoms/effects.js"
@@ -27,29 +26,11 @@ export class CLI {
 	private service: ExtensionService | null = null
 	private store: ReturnType<typeof createStore> | null = null
 	private ui: Instance | null = null
-	private splashInstance: Instance | null = null
 	private options: CLIOptions
 	private isInitialized = false
 
 	constructor(options: CLIOptions = {}) {
 		this.options = options
-	}
-
-	/**
-	 * Show splash screen during initialization
-	 */
-	private showSplashScreen(): void {
-		this.splashInstance = render(React.createElement(Logo))
-	}
-
-	/**
-	 * Hide splash screen after initialization
-	 */
-	private hideSplashScreen(): void {
-		if (this.splashInstance) {
-			this.splashInstance.unmount()
-			this.splashInstance = null
-		}
 	}
 
 	/**
@@ -65,9 +46,6 @@ export class CLI {
 		}
 
 		try {
-			// Show splash screen
-			this.showSplashScreen()
-
 			logs.info("Initializing Kilo Code CLI...", "CLI")
 
 			// Create Jotai store
@@ -133,12 +111,8 @@ export class CLI {
 
 			this.isInitialized = true
 			logs.info("Kilo Code CLI initialized successfully", "CLI")
-
-			// Hide splash screen
-			this.hideSplashScreen()
 		} catch (error) {
 			logs.error("Failed to initialize CLI", "CLI", { error })
-			this.hideSplashScreen()
 			throw error
 		}
 	}
