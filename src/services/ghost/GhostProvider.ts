@@ -707,7 +707,7 @@ export class GhostProvider {
 		this.clearAutoTriggerTimer()
 		this.startProcessing()
 		// Start a new timer
-		const delay = (this.settings?.autoTriggerDelay || 3) * 1000
+		const delay = this.settings?.autoTriggerDelay || 3000
 		this.autoTriggerTimer = setTimeout(() => {
 			this.onAutoTriggerTimeout()
 		}, delay)
