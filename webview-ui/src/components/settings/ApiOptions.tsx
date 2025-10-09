@@ -286,6 +286,7 @@ const ApiOptions = ({
 			apiConfiguration?.deepInfraApiKey,
 			apiConfiguration?.deepInfraBaseUrl,
 			apiConfiguration?.chutesApiKey, // kilocode_change
+			apiConfiguration?.ovhCloudAiEndpointsBaseUrl, // kilocode_change
 			customHeaders,
 		],
 	)
