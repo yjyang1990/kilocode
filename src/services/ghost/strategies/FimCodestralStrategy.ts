@@ -58,6 +58,7 @@ Generate code to fill in at the cursor position. The code should:
 		const document = context.document
 		const position = context.range.start
 
+		// FIXME: use addCursorMarker from StrategyHelpers.ts
 		// Get the code before and after the cursor
 		const fullText = document.getText()
 		const offset = document.offsetAt(position)
