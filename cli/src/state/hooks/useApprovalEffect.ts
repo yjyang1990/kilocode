@@ -167,28 +167,18 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 		// CRITICAL FIX: Skip if we've already processed this exact message timestamp
 		// This prevents re-processing on re-renders when the message object reference changes
 		if (lastProcessedTsRef.current === message.ts) {
-			logs.debug("Skipping already processed message", "useApprovalEffect", {
-				ts: message.ts,
-			})
 			return
 		}
 
 		// Check if we're already processing this message
 		const processingState = store.get(approvalProcessingAtom)
 		if (processingState.isProcessing && processingState.processingTs === message.ts) {
-			logs.debug("Message already being processed, skipping", "useApprovalEffect", {
-				ts: message.ts,
-				operation: processingState.operation,
-			})
 			return
 		}
 
 		// Check if this message is already pending
 		const currentPending = store.get(pendingApprovalAtom)
 		if (currentPending?.ts === message.ts) {
-			logs.debug("Message already pending, skipping setPendingApproval", "useApprovalEffect", {
-				ts: message.ts,
-			})
 			// Don't set pending again, but continue with auto-approval check
 		} else {
 			// Set pending approval (this will be skipped if already processing)
@@ -205,13 +195,6 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 			// Get approval decision from service
 			const decision = getApprovalDecision(message, config, isCIMode)
 
-			logs.debug("Approval decision made", "useApprovalEffect", {
-				ts: message.ts,
-				ask: message.ask,
-				action: decision.action,
-				delay: decision.delay,
-			})
-
 			// Execute based on decision
 			if (decision.action === "auto-approve") {
 				const delay = decision.delay || 0
@@ -224,10 +207,6 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 						if (currentPending?.ts === message.ts && !currentPending.isAnswered) {
 							approve(decision.message).catch((error) => {
 								logs.error(`Failed to auto-approve ${message.ask}`, "useApprovalEffect", { error })
-							})
-						} else {
-							logs.debug("Message no longer pending, skipping delayed approval", "useApprovalEffect", {
-								ts: message.ts,
 							})
 						}
 					}, delay)
@@ -248,9 +227,6 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 				reject(decision.message).catch((error) => {
 					logs.error(`CI mode: Failed to auto-reject ${message.ask}`, "useApprovalEffect", { error })
 				})
-			} else {
-				// Manual approval - do nothing, let the UI handle it
-				logs.debug(`Manual approval required for ${message.ask}`, "useApprovalEffect")
 			}
 		}
 

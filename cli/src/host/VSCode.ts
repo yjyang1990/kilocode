@@ -80,11 +80,336 @@ export enum ViewColumn {
 	Three = 3,
 }
 
+export enum TextEditorRevealType {
+	Default = 0,
+	InCenter = 1,
+	InCenterIfOutsideViewport = 2,
+	AtTop = 3,
+}
+
 export enum DiagnosticSeverity {
 	Error = 0,
 	Warning = 1,
 	Information = 2,
 	Hint = 3,
+}
+
+// Position class
+export class Position {
+	constructor(
+		public line: number,
+		public character: number,
+	) {}
+
+	isEqual(other: Position): boolean {
+		return this.line === other.line && this.character === other.character
+	}
+
+	isBefore(other: Position): boolean {
+		if (this.line < other.line) {
+			return true
+		}
+		if (this.line === other.line) {
+			return this.character < other.character
+		}
+		return false
+	}
+
+	isBeforeOrEqual(other: Position): boolean {
+		return this.isBefore(other) || this.isEqual(other)
+	}
+
+	isAfter(other: Position): boolean {
+		return !this.isBeforeOrEqual(other)
+	}
+
+	isAfterOrEqual(other: Position): boolean {
+		return !this.isBefore(other)
+	}
+
+	compareTo(other: Position): number {
+		if (this.line < other.line) {
+			return -1
+		}
+		if (this.line > other.line) {
+			return 1
+		}
+		if (this.character < other.character) {
+			return -1
+		}
+		if (this.character > other.character) {
+			return 1
+		}
+		return 0
+	}
+
+	translate(lineDelta?: number, characterDelta?: number): Position
+	translate(change: { lineDelta?: number; characterDelta?: number }): Position
+	translate(
+		lineDeltaOrChange?: number | { lineDelta?: number; characterDelta?: number },
+		characterDelta?: number,
+	): Position {
+		if (typeof lineDeltaOrChange === "object") {
+			return new Position(
+				this.line + (lineDeltaOrChange.lineDelta || 0),
+				this.character + (lineDeltaOrChange.characterDelta || 0),
+			)
+		}
+		return new Position(this.line + (lineDeltaOrChange || 0), this.character + (characterDelta || 0))
+	}
+
+	with(line?: number, character?: number): Position
+	with(change: { line?: number; character?: number }): Position
+	with(lineOrChange?: number | { line?: number; character?: number }, character?: number): Position {
+		if (typeof lineOrChange === "object") {
+			return new Position(
+				lineOrChange.line !== undefined ? lineOrChange.line : this.line,
+				lineOrChange.character !== undefined ? lineOrChange.character : this.character,
+			)
+		}
+		return new Position(
+			lineOrChange !== undefined ? lineOrChange : this.line,
+			character !== undefined ? character : this.character,
+		)
+	}
+}
+
+// Range class
+export class Range {
+	public start: Position
+	public end: Position
+
+	constructor(start: Position, end: Position)
+	constructor(startLine: number, startCharacter: number, endLine: number, endCharacter: number)
+	constructor(
+		startOrStartLine: Position | number,
+		endOrStartCharacter: Position | number,
+		endLine?: number,
+		endCharacter?: number,
+	) {
+		if (typeof startOrStartLine === "number") {
+			this.start = new Position(startOrStartLine, endOrStartCharacter as number)
+			this.end = new Position(endLine!, endCharacter!)
+		} else {
+			this.start = startOrStartLine
+			this.end = endOrStartCharacter as Position
+		}
+	}
+
+	get isEmpty(): boolean {
+		return this.start.isEqual(this.end)
+	}
+
+	get isSingleLine(): boolean {
+		return this.start.line === this.end.line
+	}
+
+	contains(positionOrRange: Position | Range): boolean {
+		if (positionOrRange instanceof Range) {
+			return this.contains(positionOrRange.start) && this.contains(positionOrRange.end)
+		}
+		return positionOrRange.isAfterOrEqual(this.start) && positionOrRange.isBeforeOrEqual(this.end)
+	}
+
+	isEqual(other: Range): boolean {
+		return this.start.isEqual(other.start) && this.end.isEqual(other.end)
+	}
+
+	intersection(other: Range): Range | undefined {
+		const start = this.start.isAfter(other.start) ? this.start : other.start
+		const end = this.end.isBefore(other.end) ? this.end : other.end
+		if (start.isAfter(end)) {
+			return undefined
+		}
+		return new Range(start, end)
+	}
+
+	union(other: Range): Range {
+		const start = this.start.isBefore(other.start) ? this.start : other.start
+		const end = this.end.isAfter(other.end) ? this.end : other.end
+		return new Range(start, end)
+	}
+
+	with(start?: Position, end?: Position): Range
+	with(change: { start?: Position; end?: Position }): Range
+	with(startOrChange?: Position | { start?: Position; end?: Position }, end?: Position): Range {
+		if (startOrChange instanceof Position) {
+			return new Range(startOrChange, end || this.end)
+		}
+		if (typeof startOrChange === "object") {
+			return new Range(startOrChange.start || this.start, startOrChange.end || this.end)
+		}
+		return new Range(this.start, this.end)
+	}
+}
+
+// Selection class (extends Range)
+export class Selection extends Range {
+	public anchor: Position
+	public active: Position
+
+	constructor(anchor: Position, active: Position)
+	constructor(anchorLine: number, anchorCharacter: number, activeLine: number, activeCharacter: number)
+	constructor(
+		anchorOrAnchorLine: Position | number,
+		activeOrAnchorCharacter: Position | number,
+		activeLine?: number,
+		activeCharacter?: number,
+	) {
+		let anchor: Position
+		let active: Position
+
+		if (typeof anchorOrAnchorLine === "number") {
+			anchor = new Position(anchorOrAnchorLine, activeOrAnchorCharacter as number)
+			active = new Position(activeLine!, activeCharacter!)
+		} else {
+			anchor = anchorOrAnchorLine
+			active = activeOrAnchorCharacter as Position
+		}
+
+		super(anchor, active)
+		this.anchor = anchor
+		this.active = active
+	}
+
+	get isReversed(): boolean {
+		return this.anchor.isAfter(this.active)
+	}
+}
+
+// Location class
+export class Location {
+	constructor(
+		public uri: Uri,
+		public range: Range | Position,
+	) {}
+}
+
+// Diagnostic-related classes
+export enum DiagnosticTag {
+	Unnecessary = 1,
+	Deprecated = 2,
+}
+
+export class DiagnosticRelatedInformation {
+	constructor(
+		public location: Location,
+		public message: string,
+	) {}
+}
+
+export class Diagnostic {
+	range: Range
+	message: string
+	severity: DiagnosticSeverity
+	source?: string
+	code?: string | number | { value: string | number; target: Uri }
+	relatedInformation?: DiagnosticRelatedInformation[]
+	tags?: DiagnosticTag[]
+
+	constructor(range: Range, message: string, severity?: DiagnosticSeverity) {
+		this.range = range
+		this.message = message
+		this.severity = severity !== undefined ? severity : DiagnosticSeverity.Error
+	}
+}
+
+// DiagnosticCollection interface
+export interface DiagnosticCollection extends Disposable {
+	name: string
+	set(uri: Uri, diagnostics: Diagnostic[] | undefined): void
+	set(entries: [Uri, Diagnostic[] | undefined][]): void
+	delete(uri: Uri): void
+	clear(): void
+	forEach(
+		callback: (uri: Uri, diagnostics: Diagnostic[], collection: DiagnosticCollection) => any,
+		thisArg?: any,
+	): void
+	get(uri: Uri): Diagnostic[] | undefined
+	has(uri: Uri): boolean
+}
+
+// TextEdit class
+export class TextEdit {
+	range: Range
+	newText: string
+
+	constructor(range: Range, newText: string) {
+		this.range = range
+		this.newText = newText
+	}
+
+	static replace(range: Range, newText: string): TextEdit {
+		return new TextEdit(range, newText)
+	}
+
+	static insert(position: Position, newText: string): TextEdit {
+		return new TextEdit(new Range(position, position), newText)
+	}
+
+	static delete(range: Range): TextEdit {
+		return new TextEdit(range, "")
+	}
+
+	static setEndOfLine(eol: EndOfLine): TextEdit {
+		// Simplified implementation
+		return new TextEdit(new Range(new Position(0, 0), new Position(0, 0)), "")
+	}
+}
+
+// EndOfLine enum
+export enum EndOfLine {
+	LF = 1,
+	CRLF = 2,
+}
+
+// WorkspaceEdit class
+export class WorkspaceEdit {
+	private _edits: Map<string, TextEdit[]> = new Map()
+
+	set(uri: Uri, edits: TextEdit[]): void {
+		this._edits.set(uri.toString(), edits)
+	}
+
+	get(uri: Uri): TextEdit[] {
+		return this._edits.get(uri.toString()) || []
+	}
+
+	has(uri: Uri): boolean {
+		return this._edits.has(uri.toString())
+	}
+
+	delete(uri: Uri, range: Range): void {
+		const key = uri.toString()
+		if (!this._edits.has(key)) {
+			this._edits.set(key, [])
+		}
+		this._edits.get(key)!.push(TextEdit.delete(range))
+	}
+
+	insert(uri: Uri, position: Position, newText: string): void {
+		const key = uri.toString()
+		if (!this._edits.has(key)) {
+			this._edits.set(key, [])
+		}
+		this._edits.get(key)!.push(TextEdit.insert(position, newText))
+	}
+
+	replace(uri: Uri, range: Range, newText: string): void {
+		const key = uri.toString()
+		if (!this._edits.has(key)) {
+			this._edits.set(key, [])
+		}
+		this._edits.get(key)!.push(TextEdit.replace(range, newText))
+	}
+
+	get size(): number {
+		return this._edits.size
+	}
+
+	entries(): [Uri, TextEdit[]][] {
+		return Array.from(this._edits.entries()).map(([uriString, edits]) => [Uri.parse(uriString), edits])
+	}
 }
 
 // UI Kind enum
@@ -175,6 +500,16 @@ export class Uri {
 	static joinPath(base: Uri, ...pathSegments: string[]): Uri {
 		const joinedPath = path.join(base.path, ...pathSegments)
 		return new Uri(base.scheme, base.authority, joinedPath, base.query, base.fragment)
+	}
+
+	with(change: { scheme?: string; authority?: string; path?: string; query?: string; fragment?: string }): Uri {
+		return new Uri(
+			change.scheme !== undefined ? change.scheme : this.scheme,
+			change.authority !== undefined ? change.authority : this.authority,
+			change.path !== undefined ? change.path : this.path,
+			change.query !== undefined ? change.query : this.query,
+			change.fragment !== undefined ? change.fragment : this.fragment,
+		)
 	}
 
 	get fsPath(): string {
@@ -533,7 +868,11 @@ export class WorkspaceAPI {
 	public name: string | undefined
 	public workspaceFile: Uri | undefined
 	public fs: FileSystemAPI
+	public textDocuments: any[] = []
 	private _onDidChangeWorkspaceFolders = new EventEmitter<any>()
+	private _onDidOpenTextDocument = new EventEmitter<any>()
+	private _onDidChangeTextDocument = new EventEmitter<any>()
+	private _onDidCloseTextDocument = new EventEmitter<any>()
 	private workspacePath: string
 	private context: ExtensionContext
 
@@ -562,18 +901,16 @@ export class WorkspaceAPI {
 	}
 
 	onDidChangeTextDocument(listener: (event: any) => void): Disposable {
-		const emitter = new EventEmitter<any>()
-		return emitter.event(listener)
+		return this._onDidChangeTextDocument.event(listener)
 	}
 
 	onDidOpenTextDocument(listener: (event: any) => void): Disposable {
-		const emitter = new EventEmitter<any>()
-		return emitter.event(listener)
+		logs.debug("Registering onDidOpenTextDocument listener", "VSCode.Workspace")
+		return this._onDidOpenTextDocument.event(listener)
 	}
 
 	onDidCloseTextDocument(listener: (event: any) => void): Disposable {
-		const emitter = new EventEmitter<any>()
-		return emitter.event(listener)
+		return this._onDidCloseTextDocument.event(listener)
 	}
 
 	getConfiguration(section?: string): WorkspaceConfiguration {
@@ -585,18 +922,132 @@ export class WorkspaceAPI {
 		return Promise.resolve([])
 	}
 
-	openTextDocument(uri: Uri): Thenable<any> {
-		return Promise.resolve({
+	async openTextDocument(uri: Uri): Promise<any> {
+		logs.debug(`openTextDocument called for: ${uri.fsPath}`, "VSCode.Workspace")
+
+		// Read file content
+		let content = ""
+		try {
+			content = fs.readFileSync(uri.fsPath, "utf-8")
+			logs.debug(`File content read successfully, length: ${content.length}`, "VSCode.Workspace")
+		} catch (error) {
+			logs.warn(`Failed to read file: ${uri.fsPath}`, "VSCode.Workspace", { error })
+		}
+
+		const lines = content.split("\n")
+		const document = {
 			uri,
 			fileName: uri.fsPath,
-			getText: () => {
-				try {
-					return fs.readFileSync(uri.fsPath, "utf-8")
-				} catch {
-					return ""
+			languageId: "plaintext",
+			version: 1,
+			isDirty: false,
+			isClosed: false,
+			lineCount: lines.length,
+			getText: (range?: Range) => {
+				if (!range) {
+					return content
+				}
+				return lines.slice(range.start.line, range.end.line + 1).join("\n")
+			},
+			lineAt: (line: number) => {
+				const text = lines[line] || ""
+				return {
+					text,
+					range: new Range(new Position(line, 0), new Position(line, text.length)),
+					rangeIncludingLineBreak: new Range(new Position(line, 0), new Position(line + 1, 0)),
+					firstNonWhitespaceCharacterIndex: text.search(/\S/),
+					isEmptyOrWhitespace: text.trim().length === 0,
 				}
 			},
-		})
+			offsetAt: (position: Position) => {
+				let offset = 0
+				for (let i = 0; i < position.line && i < lines.length; i++) {
+					offset += (lines[i]?.length || 0) + 1 // +1 for newline
+				}
+				offset += position.character
+				return offset
+			},
+			positionAt: (offset: number) => {
+				let currentOffset = 0
+				for (let i = 0; i < lines.length; i++) {
+					const lineLength = (lines[i]?.length || 0) + 1 // +1 for newline
+					if (currentOffset + lineLength > offset) {
+						return new Position(i, offset - currentOffset)
+					}
+					currentOffset += lineLength
+				}
+				return new Position(lines.length - 1, lines[lines.length - 1]?.length || 0)
+			},
+			save: () => Promise.resolve(true),
+			validateRange: (range: Range) => range,
+			validatePosition: (position: Position) => position,
+		}
+
+		// Add to textDocuments array
+		this.textDocuments.push(document)
+		logs.debug(`Document added to textDocuments array, total: ${this.textDocuments.length}`, "VSCode.Workspace")
+
+		// Fire the event after a small delay to ensure listeners are fully registered
+		logs.debug("Waiting before firing onDidOpenTextDocument", "VSCode.Workspace")
+		await new Promise((resolve) => setTimeout(resolve, 10))
+		logs.debug("Firing onDidOpenTextDocument event", "VSCode.Workspace")
+		this._onDidOpenTextDocument.fire(document)
+		logs.debug("onDidOpenTextDocument event fired", "VSCode.Workspace")
+
+		return document
+	}
+
+	async applyEdit(edit: WorkspaceEdit): Promise<boolean> {
+		// In CLI mode, we need to apply the edits to the actual files
+		try {
+			for (const [uri, edits] of edit.entries()) {
+				const filePath = uri.fsPath
+				let content = ""
+
+				// Read existing content if file exists
+				try {
+					content = fs.readFileSync(filePath, "utf-8")
+				} catch {
+					// File doesn't exist, start with empty content
+				}
+
+				// Apply edits in reverse order to maintain correct positions
+				const sortedEdits = edits.sort((a, b) => {
+					const lineDiff = b.range.start.line - a.range.start.line
+					if (lineDiff !== 0) return lineDiff
+					return b.range.start.character - a.range.start.character
+				})
+
+				const lines = content.split("\n")
+				for (const textEdit of sortedEdits) {
+					const startLine = textEdit.range.start.line
+					const startChar = textEdit.range.start.character
+					const endLine = textEdit.range.end.line
+					const endChar = textEdit.range.end.character
+
+					if (startLine === endLine) {
+						// Single line edit
+						const line = lines[startLine] || ""
+						lines[startLine] = line.substring(0, startChar) + textEdit.newText + line.substring(endChar)
+					} else {
+						// Multi-line edit
+						const firstLine = lines[startLine] || ""
+						const lastLine = lines[endLine] || ""
+						const newContent =
+							firstLine.substring(0, startChar) + textEdit.newText + lastLine.substring(endChar)
+						lines.splice(startLine, endLine - startLine + 1, newContent)
+					}
+				}
+
+				// Write back to file
+				const newContent = lines.join("\n")
+				fs.writeFileSync(filePath, newContent, "utf-8")
+			}
+			return true
+		} catch (error) {
+			logs.error("Failed to apply workspace edit", "VSCode.Workspace", { error })
+			return false
+		}
 	}
 
 	createFileSystemWatcher(
@@ -835,9 +1286,15 @@ export class TabGroupsAPI {
 export class WindowAPI {
 	public tabGroups: TabGroupsAPI
 	public visibleTextEditors: any[] = []
+	public _onDidChangeVisibleTextEditors = new EventEmitter<any[]>()
+	private _workspace?: WorkspaceAPI
 
 	constructor() {
 		this.tabGroups = new TabGroupsAPI()
+	}
+
+	setWorkspace(workspace: WorkspaceAPI) {
+		this._workspace = workspace
 	}
 
 	createOutputChannel(name: string): OutputChannel {
@@ -878,6 +1335,61 @@ export class WindowAPI {
 		return Promise.resolve([])
 	}
 
+	async showTextDocument(
+		documentOrUri: any | Uri,
+		columnOrOptions?: ViewColumn | any,
+		preserveFocus?: boolean,
+	): Promise<any> {
+		// Mock implementation for CLI
+		// In a real VSCode environment, this would open the document in an editor
+		const uri = documentOrUri instanceof Uri ? documentOrUri : documentOrUri.uri
+		logs.debug(`showTextDocument called for: ${uri?.toString() || "unknown"}`, "VSCode.Window")
+
+		// Create a placeholder editor first so it's in visibleTextEditors when onDidOpenTextDocument fires
+		const placeholderEditor = {
+			document: { uri },
+			selection: new Selection(new Position(0, 0), new Position(0, 0)),
+			selections: [new Selection(new Position(0, 0), new Position(0, 0))],
+			visibleRanges: [new Range(new Position(0, 0), new Position(0, 0))],
+			options: {},
+			viewColumn: typeof columnOrOptions === "number" ? columnOrOptions : ViewColumn.One,
+			edit: () => Promise.resolve(true),
+			insertSnippet: () => Promise.resolve(true),
+			setDecorations: () => {},
+			revealRange: () => {},
+			show: () => {},
+			hide: () => {},
+		}
+
+		// Add placeholder to visible editors BEFORE opening document
+		this.visibleTextEditors.push(placeholderEditor)
+		logs.debug(
+			`Placeholder editor added to visibleTextEditors, total: ${this.visibleTextEditors.length}`,
+			"VSCode.Window",
+		)
+
+		// If we have a URI, open the document (this will fire onDidOpenTextDocument)
+		let document = documentOrUri
+		if (documentOrUri instanceof Uri && this._workspace) {
+			logs.debug("Opening document via workspace.openTextDocument", "VSCode.Window")
+			document = await this._workspace.openTextDocument(uri)
+			logs.debug("Document opened successfully", "VSCode.Window")
+
+			// Update the placeholder editor with the real document
+			placeholderEditor.document = document
+		}
+
+		// Fire events immediately using setImmediate
+		setImmediate(() => {
+			logs.debug("Firing onDidChangeVisibleTextEditors event", "VSCode.Window")
+			this._onDidChangeVisibleTextEditors.fire(this.visibleTextEditors)
+			logs.debug("onDidChangeVisibleTextEditors event fired", "VSCode.Window")
+		})
+
+		logs.debug("Returning editor from showTextDocument", "VSCode.Window")
+		return placeholderEditor
+	}
+
 	registerWebviewViewProvider(viewId: string, provider: any, options?: any): Disposable {
 		// Store the provider for later use by ExtensionHost
 		if ((global as any).__extensionHost) {
@@ -886,7 +1398,6 @@ export class WindowAPI {
 			// Set up webview mock that captures messages from the extension
 			const mockWebview = {
 				postMessage: (message: any) => {
-					logs.debug(`Extension sending webview message: ${message.type}`, "VSCode.Webview")
 					// Forward extension messages to ExtensionHost for CLI consumption
 					if ((global as any).__extensionHost) {
 						;(global as any).__extensionHost.emit("extensionWebviewMessage", message)
@@ -960,9 +1471,8 @@ export class WindowAPI {
 		return emitter.event(listener)
 	}
 
-	onDidChangeVisibleTextEditors(listener: (event: any) => void): Disposable {
-		const emitter = new EventEmitter<any>()
-		return emitter.event(listener)
+	onDidChangeVisibleTextEditors(listener: (editors: any[]) => void): Disposable {
+		return this._onDidChangeVisibleTextEditors.event(listener)
 	}
 
 	// Terminal event handlers
@@ -1041,9 +1551,122 @@ export class CommandsAPI {
 			case "workbench.action.closeWindow":
 			case "workbench.action.reloadWindow":
 				return Promise.resolve(undefined as T)
+			case "vscode.diff":
+				// Simulate opening a diff view for the CLI
+				// The extension's DiffViewProvider expects this to create a diff editor
+				return this.handleDiffCommand(rest[0], rest[1], rest[2], rest[3]) as Thenable<T>
 			default:
 				logs.warn(`Unknown command: ${command}`, "VSCode.Commands")
 				return Promise.resolve(undefined as T)
+		}
+	}
+
+	private async handleDiffCommand(originalUri: Uri, modifiedUri: Uri, title?: string, options?: any): Promise<void> {
+		// The DiffViewProvider is waiting for the modified document to appear in visibleTextEditors
+		// We need to simulate this by opening the document and adding it to visible editors
+
+		logs.info(`[DIFF] Handling vscode.diff command`, "VSCode.Commands", {
+			originalUri: originalUri?.toString(),
+			modifiedUri: modifiedUri?.toString(),
+			title,
+		})
+
+		if (!modifiedUri) {
+			logs.warn("[DIFF] vscode.diff called without modified URI", "VSCode.Commands")
+			return
+		}
+
+		// Get the workspace API to open the document
+		const workspace = (global as any).vscode?.workspace
+		const window = (global as any).vscode?.window
+
+		if (!workspace || !window) {
+			logs.warn("[DIFF] VSCode APIs not available for diff command", "VSCode.Commands")
+			return
+		}
+
+		logs.info(
+			`[DIFF] Current visibleTextEditors count: ${window.visibleTextEditors?.length || 0}`,
+			"VSCode.Commands",
+		)
+
+		try {
+			// The document should already be open from the showTextDocument call
+			// Find it in the existing textDocuments
+			logs.info(`[DIFF] Looking for already-opened document: ${modifiedUri.fsPath}`, "VSCode.Commands")
+			let document = workspace.textDocuments.find((doc: any) => doc.uri.fsPath === modifiedUri.fsPath)
+
+			if (!document) {
+				// If not found, open it now
+				logs.info(`[DIFF] Document not found, opening: ${modifiedUri.fsPath}`, "VSCode.Commands")
+				document = await workspace.openTextDocument(modifiedUri)
+				logs.info(`[DIFF] Document opened successfully, lineCount: ${document.lineCount}`, "VSCode.Commands")
+			} else {
+				logs.info(`[DIFF] Found existing document, lineCount: ${document.lineCount}`, "VSCode.Commands")
+			}
+
+			// Create a mock editor for the diff view
+			const mockEditor = {
+				document,
+				selection: new Selection(new Position(0, 0), new Position(0, 0)),
+				selections: [new Selection(new Position(0, 0), new Position(0, 0))],
+				visibleRanges: [new Range(new Position(0, 0), new Position(0, 0))],
+				options: {},
+				viewColumn: ViewColumn.One,
+				edit: async (callback: (editBuilder: any) => void) => {
+					// Create a mock edit builder
+					const editBuilder = {
+						replace: (range: Range, text: string) => {
+							// In CLI mode, we don't actually edit here
+							// The DiffViewProvider will handle the actual edits
+							logs.debug("Mock edit builder replace called", "VSCode.Commands")
+						},
+						insert: (position: Position, text: string) => {
+							logs.debug("Mock edit builder insert called", "VSCode.Commands")
+						},
+						delete: (range: Range) => {
+							logs.debug("Mock edit builder delete called", "VSCode.Commands")
+						},
+					}
+					callback(editBuilder)
+					return true
+				},
+				insertSnippet: () => Promise.resolve(true),
+				setDecorations: () => {},
+				revealRange: () => {},
+				show: () => {},
+				hide: () => {},
+			}
+
+			// Add the editor to visible editors
+			if (!window.visibleTextEditors) {
+				window.visibleTextEditors = []
+			}
+
+			// Check if this editor is already in visibleTextEditors (from showTextDocument)
+			const existingEditor = window.visibleTextEditors.find(
+				(e: any) => e.document.uri.fsPath === modifiedUri.fsPath,
+			)
+
+			if (existingEditor) {
+				logs.info(`[DIFF] Editor already in visibleTextEditors, updating it`, "VSCode.Commands")
+				// Update the existing editor with the mock editor properties
+				Object.assign(existingEditor, mockEditor)
+			} else {
+				logs.info(`[DIFF] Adding new mock editor to visibleTextEditors`, "VSCode.Commands")
+				window.visibleTextEditors.push(mockEditor)
+			}
+
+			logs.info(`[DIFF] visibleTextEditors count: ${window.visibleTextEditors.length}`, "VSCode.Commands")
+
+			// The onDidChangeVisibleTextEditors event was already fired by showTextDocument
+			// We don't need to fire it again here
+			logs.info(
+				`[DIFF] Diff view simulation complete (events already fired by showTextDocument)`,
+				"VSCode.Commands",
+			)
+		} catch (error) {
+			logs.error("[DIFF] Error simulating diff view", "VSCode.Commands", { error })
 		}
 	}
 }
@@ -1054,6 +1677,9 @@ export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: st
 	const workspace = new WorkspaceAPI(workspacePath, context)
 	const window = new WindowAPI()
 	const commands = new CommandsAPI()
+
+	// Link window and workspace for cross-API calls
+	window.setWorkspace(workspace)
 
 	// Environment mock with identity values
 	const env = {
@@ -1090,7 +1716,18 @@ export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: st
 		EventEmitter,
 		ConfigurationTarget,
 		ViewColumn,
+		TextEditorRevealType,
 		DiagnosticSeverity,
+		DiagnosticTag,
+		Position,
+		Range,
+		Selection,
+		Location,
+		Diagnostic,
+		DiagnosticRelatedInformation,
+		TextEdit,
+		WorkspaceEdit,
+		EndOfLine,
 		UIKind,
 		ExtensionMode,
 		CodeActionKind,
@@ -1116,6 +1753,12 @@ export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: st
 		TabInputText: class TabInputText {
 			constructor(public uri: Uri) {}
 		},
+		TabInputTextDiff: class TabInputTextDiff {
+			constructor(
+				public original: Uri,
+				public modified: Uri,
+			) {}
+		},
 		workspace,
 		window,
 		commands,
@@ -1135,6 +1778,66 @@ export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: st
 			registerDocumentFormattingEditProvider: () => ({ dispose: () => {} }),
 			registerDocumentRangeFormattingEditProvider: () => ({ dispose: () => {} }),
 			registerSignatureHelpProvider: () => ({ dispose: () => {} }),
+			getDiagnostics: (uri?: Uri): [Uri, Diagnostic[]][] | Diagnostic[] => {
+				// In CLI mode, we don't have real diagnostics
+				// Return empty array or empty diagnostics for the specific URI
+				if (uri) {
+					return []
+				}
+				return []
+			},
+			createDiagnosticCollection: (name?: string): DiagnosticCollection => {
+				const diagnostics = new Map<string, Diagnostic[]>()
+				const collection: DiagnosticCollection = {
+					name: name || "default",
+					set: (
+						uriOrEntries: Uri | [Uri, Diagnostic[] | undefined][],
+						diagnosticsOrUndefined?: Diagnostic[] | undefined,
+					) => {
+						if (Array.isArray(uriOrEntries)) {
+							// Handle array of entries
+							for (const [uri, diags] of uriOrEntries) {
+								if (diags === undefined) {
+									diagnostics.delete(uri.toString())
+								} else {
+									diagnostics.set(uri.toString(), diags)
+								}
+							}
+						} else {
+							// Handle single URI
+							if (diagnosticsOrUndefined === undefined) {
+								diagnostics.delete(uriOrEntries.toString())
+							} else {
+								diagnostics.set(uriOrEntries.toString(), diagnosticsOrUndefined)
+							}
+						}
+					},
+					delete: (uri: Uri) => {
+						diagnostics.delete(uri.toString())
+					},
+					clear: () => {
+						diagnostics.clear()
+					},
+					forEach: (
+						callback: (uri: Uri, diagnostics: Diagnostic[], collection: DiagnosticCollection) => any,
+						thisArg?: any,
+					) => {
+						diagnostics.forEach((diags, uriString) => {
+							callback.call(thisArg, Uri.parse(uriString), diags, collection)
+						})
+					},
+					get: (uri: Uri) => {
+						return diagnostics.get(uri.toString())
+					},
+					has: (uri: Uri) => {
+						return diagnostics.has(uri.toString())
+					},
+					dispose: () => {
+						diagnostics.clear()
+					},
+				}
+				return collection
+			},
 		},
 		debug: {
 			onDidStartDebugSession: () => ({ dispose: () => {} }),

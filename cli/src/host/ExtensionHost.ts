@@ -449,8 +449,6 @@ export class ExtensionHost extends EventEmitter {
 					oldestIds.forEach((id) => processedMessageIds.delete(id))
 				}
 
-				logs.debug(`Received extension webview message: ${message.type}`, "ExtensionHost")
-
 				// Track extension message received
 				getTelemetryService().trackExtensionMessageReceived(message.type)
 
@@ -584,6 +582,16 @@ export class ExtensionHost extends EventEmitter {
 			mcpServers: [],
 			listApiConfigMeta: [],
 			currentApiConfigName: "default",
+			// Enable background editing (preventFocusDisruption) for CLI mode
+			// This prevents the extension from trying to show VSCode diff views
+			experiments: {
+				preventFocusDisruption: true,
+				morphFastApply: false,
+				multiFileApplyDiff: false,
+				powerSteering: false,
+				imageGeneration: false,
+				runSlashCommand: false,
+			},
 		}
 
 		// The CLI will inject the actual configuration through updateState
@@ -735,6 +743,15 @@ export class ExtensionHost extends EventEmitter {
 			})
 			logs.debug(`Telemetry setting synchronized: ${configState.telemetrySetting}`, "ExtensionHost")
 		}
+
+		// Sync experiments if present (critical for CLI background editing)
+		if (configState.experiments || this.currentState?.experiments) {
+			const experiments = configState.experiments || this.currentState?.experiments
+			await this.sendWebviewMessage({
+				type: "updateExperimental",
+				values: experiments,
+			})
+		}
 	}
 
 	/**
@@ -747,10 +764,16 @@ export class ExtensionHost extends EventEmitter {
 			return
 		}
 
+		// Preserve experiments from current state when merging
+		// This ensures CLI-specific settings like preventFocusDisruption are not overwritten
+		const preservedExperiments = this.currentState.experiments
+
 		// Merge the configuration into current state
 		this.currentState = {
 			...this.currentState,
 			...configState,
+			// Restore experiments if they were set in initial state
+			experiments: preservedExperiments || configState.experiments,
 		}
 
 		// Send configuration to the extension through webview message
