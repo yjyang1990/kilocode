@@ -5,7 +5,6 @@ import { PromptStrategy } from "./types/PromptStrategy"
 import { UserRequestStrategy } from "./strategies/UserRequestStrategy"
 import { CommentDrivenStrategy } from "./strategies/CommentDrivenStrategy"
 import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
-import { FimCodestralStrategy } from "./strategies/FimCodestralStrategy"
 
 /**
  * Manages prompt strategies and selects the appropriate one based on context
@@ -21,7 +20,7 @@ export class PromptStrategyManager {
 		this.overrideStrategy = options?.overrideStrategy
 
 		// Register all strategies in priority order
-		this.strategies = [new UserRequestStrategy(), new CommentDrivenStrategy(), new FimCodestralStrategy()]
+		this.strategies = [new UserRequestStrategy(), new CommentDrivenStrategy()]
 		this.autoTriggerStrategy = new AutoTriggerStrategy()
 	}
 
