@@ -15,6 +15,8 @@ export type GhostServiceSettings = z.infer<typeof ghostServiceSettingsSchema>
 export function normalizeAutoTriggerDelay(value: number | undefined): number {
 	if (value === undefined) return 3000
 	if (value < 50) {
+		// it used to be seconds, not milliseconds, so anything below 50 (current min)
+		// is seconds, so we convert it to milliseconds
 		return Math.min(value, 5) * 1000
 	}
 	return value
