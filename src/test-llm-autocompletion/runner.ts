@@ -87,6 +87,10 @@ class TestRunner {
 		}
 	}
 
+	private isUnknownResult(result: TestResult): boolean {
+		return !result.isApproved && result.newOutput === true && this.skipApproval
+	}
+
 	async runAllTests(): Promise<void> {
 		console.log("\n🚀 Starting PromptStrategyManager LLM Tests\n")
 		console.log("Provider:", this.llmClient["provider"])
@@ -120,7 +124,7 @@ class TestRunner {
 					if (result.newOutput) {
 						console.log(`    (New output approved)`)
 					}
-				} else if (result.newOutput && this.skipApproval) {
+				} else if (this.isUnknownResult(result)) {
 					console.log("? UNKNOWN")
 					console.log(`    (New output without approval)`)
 				} else {
@@ -172,9 +176,13 @@ class TestRunner {
 		console.log("\n" + "═".repeat(80))
 		console.log("\n📊 Test Summary\n")
 
-		const passed = this.results.filter((r) => r.isApproved).length
-		const unknown = this.results.filter((r) => !r.isApproved && r.newOutput && this.skipApproval).length
-		const failed = this.results.filter((r) => !r.isApproved && !(r.newOutput && this.skipApproval)).length
+		const unknownResults = this.results.filter((r) => this.isUnknownResult(r))
+		const failedResults = this.results.filter((r) => !r.isApproved && !this.isUnknownResult(r))
+		const passedResults = this.results.filter((r) => r.isApproved)
+
+		const passed = passedResults.length
+		const unknown = unknownResults.length
+		const failed = failedResults.length
 		const knownTotal = passed + failed
 		const passRate = knownTotal > 0 ? ((passed / knownTotal) * 100).toFixed(1) : "0.0"
 
@@ -201,9 +209,10 @@ class TestRunner {
 			const categoryResults = this.results.filter((r) => r.testCase.category === category)
 			const categoryPassed = categoryResults.filter((r) => r.isApproved).length
 			const categoryTotal = categoryResults.length
-			const categoryRate = ((categoryPassed / categoryTotal) * 100).toFixed(0)
+			const categoryRateNum = (categoryPassed / categoryTotal) * 100
+			const categoryRate = categoryRateNum.toFixed(0)
 
-			const statusIndicator = categoryRate === "100" ? "✓" : categoryRate >= "75" ? "⚠" : "✗"
+			const statusIndicator = categoryRateNum === 100 ? "✓" : categoryRateNum >= 75 ? "⚠" : "✗"
 
 			console.log(`  ${category}: ${statusIndicator} ${categoryPassed}/${categoryTotal} (${categoryRate}%)`)
 		}
@@ -226,8 +235,7 @@ class TestRunner {
 		}
 
 		// Failed tests details
-		const failedResults = this.results.filter((r) => !r.isApproved && !(r.newOutput && this.skipApproval))
-		if (failedResults.length > 0) {
+		if (failed > 0) {
 			console.log("\n❌ Failed Tests:")
 			for (const result of failedResults) {
 				console.log(`  • ${result.testCase.name} (${result.testCase.category})`)
@@ -238,8 +246,7 @@ class TestRunner {
 		}
 
 		// Unknown tests details
-		const unknownResults = this.results.filter((r) => !r.isApproved && r.newOutput && this.skipApproval)
-		if (unknownResults.length > 0) {
+		if (unknown > 0) {
 			console.log("\n❓ Unknown Tests (new outputs without approval):")
 			for (const result of unknownResults) {
 				console.log(`  • ${result.testCase.name} (${result.testCase.category})`)
