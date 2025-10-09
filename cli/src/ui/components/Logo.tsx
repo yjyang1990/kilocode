@@ -1,6 +1,7 @@
-import { Box, Text, Static } from "ink"
+import React from "react"
+import { Box, Text } from "ink"
 
-const ASCII_LOGO = `⣿⡿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⢿⣿
+export const ASCII_LOGO = `⣿⡿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⢿⣿
 ⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿
 ⣿⡇⠀⠀⢰⣶⠀⠀⣶⡆⢰⣶⣶⣄⠀⠀⠀⠀⢸⣿
 ⣿⡇⠀⠀⢸⣿⠿⠿⣦⡀⠀⠀⢸⣿⠀⠀⠀⠀⢸⣿
@@ -11,7 +12,7 @@ const ASCII_LOGO = `⣿⡿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⢿⣿
 ⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿
 ⣿⣷⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣾⣿`
 
-const BIG_TEXT = ` █████   ████  ███  ████                █████████               █████
+export const BIG_TEXT = ` █████   ████  ███  ████                █████████               █████
 ░░███   ███░  ░░░  ░░███               ███░░░░░███             ░░███
  ░███  ███    ████  ░███   ██████     ███     ░░░   ██████   ███████   ██████
  ░███████    ░░███  ░███  ███░░███   ░███          ███░░███ ███░░███  ███░░███
@@ -20,53 +21,35 @@ const BIG_TEXT = ` █████   ████  ███  ████      
  █████ ░░████ █████ █████░░██████     ░░█████████ ░░██████ ░░████████░░██████
 ░░░░░   ░░░░ ░░░░░ ░░░░░  ░░░░░░       ░░░░░░░░░   ░░░░░░   ░░░░░░░░  ░░░░░░ `
 
-const brandYellow = "#F7F864"
+export const DEFAULT_BRAND_YELLOW = "#F7F864"
 
-export const Logo: React.FC = () => {
-	return (
-		<Box flexDirection="row" alignItems="center" gap={4}>
-			<Box flexDirection="column">
-				{ASCII_LOGO.split("\n").map((line, index) => (
-					<Text key={index} color={brandYellow}>
-						{line}
-					</Text>
-				))}
-			</Box>
-			<Box flexDirection="column">
-				{BIG_TEXT.split("\n").map((line, index) => (
-					<Text key={index} color={brandYellow}>
-						{line}
-					</Text>
-				))}
-			</Box>
-		</Box>
-	)
+interface LogoProps {
+	color?: string
+	showBigText?: boolean
+	alignment?: "left" | "center" | "right"
 }
 
-export function SplashScreen({ renderWelcomeMessage = true }: { renderWelcomeMessage?: boolean }) {
+export const Logo: React.FC<LogoProps> = ({ color = DEFAULT_BRAND_YELLOW, showBigText = true, alignment = "left" }) => {
+	const justifyContent = alignment === "center" ? "center" : alignment === "right" ? "flex-end" : "flex-start"
+
 	return (
-		<Static items={[1]}>
-			{() => (
-				<Box
-					key={"splashscreen"}
-					flexGrow={1}
-					justifyContent="center"
-					flexDirection="column"
-					gap={2}
-					marginLeft={2}
-					marginTop={4}
-					marginBottom={4}>
-					<Logo />
-					{renderWelcomeMessage && (
-						<Box flexDirection="column">
-							<Text color="gray">
-								Type a message to start chatting, or use /help to see available commands.
-							</Text>
-							<Text color="gray">Commands start with / (e.g., /help, /mode, /clear)</Text>
-						</Box>
-					)}
+		<Box flexDirection="row" alignItems="center" gap={4} justifyContent={justifyContent}>
+			<Box flexDirection="column">
+				{ASCII_LOGO.split("\n").map((line, index) => (
+					<Text key={index} color={color}>
+						{line}
+					</Text>
+				))}
+			</Box>
+			{showBigText && (
+				<Box flexDirection="column">
+					{BIG_TEXT.split("\n").map((line, index) => (
+						<Text key={index} color={color}>
+							{line}
+						</Text>
+					))}
 				</Box>
 			)}
-		</Static>
+		</Box>
 	)
 }

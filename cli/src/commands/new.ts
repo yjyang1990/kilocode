@@ -2,6 +2,7 @@
  * /new command - Start a new task with a clean slate
  */
 
+import { createWelcomeMessage } from "../ui/utils/welcomeMessage.js"
 import type { Command } from "./core/types.js"
 
 export const newCommand: Command = {
@@ -13,20 +14,23 @@ export const newCommand: Command = {
 	category: "system",
 	priority: 9,
 	handler: async (context) => {
-		const { clearTask, clearMessages, addMessage } = context
+		const { clearTask, replaceMessages } = context
 
-		// Clear the extension task state
+		// Clear the extension task state (this also clears extension messages)
 		await clearTask()
 
-		// Clear the CLI message history
-		clearMessages()
-
-		// Add a system message confirming the new task start
-		addMessage({
-			id: Date.now().toString(),
-			type: "system",
-			content: "Ready for a new task. Message history and task state cleared.",
-			ts: Date.now(),
-		})
+		// Replace CLI message history with fresh welcome message
+		// This will increment the reset counter, forcing Static component to re-render
+		replaceMessages([
+			createWelcomeMessage({
+				clearScreen: true,
+				showInstructions: true,
+				instructions: [
+					"🎉 Fresh start! Ready for a new task.",
+					"All previous messages and task state have been cleared.",
+					"Type your message to begin, or use /help to explore available commands.",
+				],
+			}),
+		])
 	},
 }

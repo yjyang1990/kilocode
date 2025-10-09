@@ -34,6 +34,7 @@ export interface CommandContext {
 	sendMessage: (message: any) => Promise<void>
 	addMessage: (message: any) => void
 	clearMessages: () => void
+	replaceMessages: (messages: any[]) => void
 	clearTask: () => Promise<void>
 	setMode: (mode: string) => void
 	exit: () => void

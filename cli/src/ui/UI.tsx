@@ -6,7 +6,7 @@
 import React, { useCallback, useEffect, useRef } from "react"
 import { Box, Text, useInput, useStdout } from "ink"
 import { useAtomValue, useSetAtom } from "jotai"
-import { isProcessingAtom, errorAtom } from "../state/atoms/ui.js"
+import { isProcessingAtom, errorAtom, addMessageAtom } from "../state/atoms/ui.js"
 import { setCIModeAtom } from "../state/atoms/ci.js"
 import { MessageDisplay } from "./messages/MessageDisplay.js"
 import { CommandInput } from "./components/CommandInput.js"
@@ -20,7 +20,7 @@ import { useCIMode } from "../state/hooks/useCIMode.js"
 import useIsProcessingSubscription from "../state/hooks/useIsProcessingSubscription.js"
 import { AppOptions } from "./App.js"
 import { logs } from "../services/logs.js"
-import { SplashScreen } from "./components/SplashScreen.js"
+import { createWelcomeMessage } from "./utils/welcomeMessage.js"
 
 // Initialize commands on module load
 initializeCommands()
@@ -37,6 +37,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 
 	// Initialize CI mode configuration
 	const setCIMode = useSetAtom(setCIModeAtom)
+	const addMessage = useSetAtom(addMessageAtom)
 
 	// Use specialized hooks for command and message handling
 	const { executeCommand, isExecuting: isExecutingCommand } = useCommandHandler()
@@ -56,8 +57,9 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 		onExit: onExit,
 	})
 
-	// Track if prompt has been executed
+	// Track if prompt has been executed and welcome message shown
 	const promptExecutedRef = useRef(false)
+	const welcomeShownRef = useRef(false)
 
 	// Initialize CI mode atoms
 	useEffect(() => {
@@ -130,11 +132,23 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	// Determine if any operation is in progress
 	const isAnyOperationInProgress = isProcessing || isExecutingCommand || isSendingMessage
 
+	// Show welcome message as a CliMessage on first render
+	useEffect(() => {
+		if (!welcomeShownRef.current) {
+			welcomeShownRef.current = true
+
+			addMessage(
+				createWelcomeMessage({
+					clearScreen: !options.ci,
+					showInstructions: !options.ci || !options.prompt,
+				}),
+			)
+		}
+	}, [options.ci, options.prompt, addMessage])
+
 	return (
 		// Using stdout.rows causes layout shift during renders
 		<Box flexDirection="column">
-			{!options.ci && <SplashScreen renderWelcomeMessage={!options.prompt} />}
-
 			<Box flexDirection="column" overflow="hidden">
 				<MessageDisplay />
 			</Box>

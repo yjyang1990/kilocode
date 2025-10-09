@@ -7,7 +7,7 @@ import { useSetAtom, useAtomValue } from "jotai"
 import { useCallback } from "react"
 import type { CommandContext } from "../../commands/core/types.js"
 import type { CliMessage } from "../../types/cli.js"
-import { addMessageAtom, clearMessagesAtom } from "../atoms/ui.js"
+import { addMessageAtom, clearMessagesAtom, replaceMessagesAtom } from "../atoms/ui.js"
 import { setModeAtom, providerAtom, updateProviderAtom } from "../atoms/config.js"
 import { routerModelsAtom, extensionStateAtom } from "../atoms/extension.js"
 import { requestRouterModelsAtom } from "../atoms/actions.js"
@@ -54,6 +54,7 @@ export function useCommandContext(): UseCommandContextReturn {
 	// Get atoms and hooks
 	const addMessage = useSetAtom(addMessageAtom)
 	const clearMessages = useSetAtom(clearMessagesAtom)
+	const replaceMessages = useSetAtom(replaceMessagesAtom)
 	const setMode = useSetAtom(setModeAtom)
 	const updateProvider = useSetAtom(updateProviderAtom)
 	const refreshRouterModels = useSetAtom(requestRouterModelsAtom)
@@ -80,6 +81,9 @@ export function useCommandContext(): UseCommandContextReturn {
 				},
 				clearMessages: () => {
 					clearMessages()
+				},
+				replaceMessages: (messages: CliMessage[]) => {
+					replaceMessages(messages)
 				},
 				clearTask: async () => {
 					await clearTask()

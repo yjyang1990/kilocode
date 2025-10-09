@@ -2,12 +2,22 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { CliMessage } from "../../../types/cli.js"
 import { MarkdownText } from "../../components/MarkdownText.js"
+import { WelcomeMessage } from "./WelcomeMessage.js"
 
 interface CliMessageRowProps {
 	message: CliMessage
 }
 
 export const CliMessageRow: React.FC<CliMessageRowProps> = ({ message }) => {
+	// Handle welcome message type specially
+	if (message.type === "welcome") {
+		return (
+			<Box flexDirection="column" marginBottom={2} marginTop={2}>
+				<WelcomeMessage options={message.metadata?.welcomeOptions} />
+			</Box>
+		)
+	}
+
 	const getColor = () => {
 		switch (message.type) {
 			case "user":

@@ -28,6 +28,12 @@ export type UnifiedMessage =
 export const messagesAtom = atom<CliMessage[]>([])
 
 /**
+ * Atom to track when messages have been reset/replaced
+ * Increments each time replaceMessages is called to force Static component re-render
+ */
+export const messageResetCounterAtom = atom<number>(0)
+
+/**
  * Atom to hold the current input value
  */
 export const inputValueAtom = atom<string>("")
@@ -163,6 +169,15 @@ export const addMessageAtom = atom(null, (get, set, message: CliMessage) => {
  */
 export const clearMessagesAtom = atom(null, (get, set) => {
 	set(messagesAtom, [])
+})
+
+/**
+ * Action atom to replace the entire message history
+ * Increments the reset counter to force Static component re-render
+ */
+export const replaceMessagesAtom = atom(null, (get, set, messages: CliMessage[]) => {
+	set(messagesAtom, messages)
+	set(messageResetCounterAtom, (prev) => prev + 1)
 })
 
 /**

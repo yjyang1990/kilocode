@@ -40,7 +40,12 @@
 import React from "react"
 import { Box, Text, Static } from "ink"
 import { useAtomValue } from "jotai"
-import { type UnifiedMessage, staticMessagesAtom, dynamicMessagesAtom } from "../../state/atoms/ui.js"
+import {
+	type UnifiedMessage,
+	staticMessagesAtom,
+	dynamicMessagesAtom,
+	messageResetCounterAtom,
+} from "../../state/atoms/ui.js"
 import { MessageRow } from "./MessageRow.js"
 
 interface MessageDisplayProps {
@@ -82,6 +87,7 @@ function getMessageKey(msg: UnifiedMessage, index: number): string {
 export const MessageDisplay: React.FC<MessageDisplayProps> = ({ filterType, maxMessages }) => {
 	const staticMessages = useAtomValue(staticMessagesAtom)
 	const dynamicMessages = useAtomValue(dynamicMessagesAtom)
+	const resetCounter = useAtomValue(messageResetCounterAtom)
 
 	if (staticMessages.length === 0 && dynamicMessages.length === 0) {
 		return null
@@ -90,8 +96,9 @@ export const MessageDisplay: React.FC<MessageDisplayProps> = ({ filterType, maxM
 	return (
 		<Box flexDirection="column">
 			{/* Static section for completed messages - won't re-render */}
+			{/* Key includes resetCounter to force re-mount when messages are replaced */}
 			{staticMessages.length > 0 && (
-				<Static items={staticMessages}>
+				<Static key={`static-${resetCounter}`} items={staticMessages}>
 					{(message, index) => (
 						<Box key={getMessageKey(message, index)} paddingX={1}>
 							<MessageRow unifiedMessage={message} />
