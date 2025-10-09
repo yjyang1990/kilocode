@@ -28,7 +28,7 @@ export const SayUserEditTodosMessage: React.FC<MessageComponentProps> = ({ messa
 						return (
 							<Box key={index} marginTop={index > 0 ? 0 : 0}>
 								<Text color={statusColor}>
-									{statusIcon} {todo.text}
+									{statusIcon} {todo.content}
 								</Text>
 							</Box>
 						)

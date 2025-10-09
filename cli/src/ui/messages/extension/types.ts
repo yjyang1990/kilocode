@@ -46,7 +46,7 @@ export interface ToolData {
  */
 export interface TodoItem {
 	id: string
-	text: string
+	content: string
 	status: "pending" | "in_progress" | "completed"
 }
 

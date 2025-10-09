@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { logs } from "../../../../services/logs.js"
 
 /**
  * Display todo list updates with status indicators
@@ -50,12 +51,15 @@ export const ToolUpdateTodoListMessage: React.FC<ToolMessageProps> = ({ toolData
 					paddingX={1}
 					marginTop={1}
 					marginLeft={2}>
-					{toolData.todos.map((todo, index) => (
-						<Box key={index}>
-							<Text color={getStatusColor(todo.status)}>{getStatusIcon(todo.status)} </Text>
-							<MarkdownText>{todo.text}</MarkdownText>
-						</Box>
-					))}
+					{toolData.todos.map((todo, index) => {
+						logs.info("TODO", "ToolUpdateTodoListMessage", { todo })
+						return (
+							<Box key={index}>
+								<Text color={getStatusColor(todo.status)}>{getStatusIcon(todo.status)} </Text>
+								<MarkdownText>{todo.content}</MarkdownText>
+							</Box>
+						)
+					})}
 				</Box>
 			)}
 
