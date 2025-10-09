@@ -48,6 +48,7 @@ export function SplashScreen({ renderWelcomeMessage = true }: { renderWelcomeMes
 		<Static items={[1]}>
 			{() => (
 				<Box
+					key={"splashscreen"}
 					flexGrow={1}
 					justifyContent="center"
 					flexDirection="column"
