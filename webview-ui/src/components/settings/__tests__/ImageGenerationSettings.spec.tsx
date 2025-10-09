@@ -44,7 +44,7 @@ describe("ImageGenerationSettings", () => {
 				<ImageGenerationSettings
 					{...defaultProps}
 					openRouterImageApiKey="existing-key"
-					openRouterImageGenerationSelectedModel="google/gemini-2.5-flash-image-preview"
+					openRouterImageGenerationSelectedModel="google/gemini-2.5-flash-image"
 				/>,
 			)
 
