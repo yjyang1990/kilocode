@@ -17,6 +17,16 @@ const DELAY_VALUES = [
 	50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000,
 ]
 
+const normalizeDelayValue = (value: number | undefined): number => {
+	if (value === undefined) return 3000
+	// Backward compatibility: values below 50 are in seconds, convert to milliseconds
+	// Cap at 5 seconds to respect the 5000ms max
+	if (value < 50) {
+		return Math.min(value, 5) * 1000
+	}
+	return value
+}
+
 const formatDelay = (ms: number): string => {
 	if (ms < 1000) {
 		return `${ms}ms`
@@ -40,8 +50,8 @@ export const GhostServiceSettingsView = ({
 		ghostServiceSettings || {}
 	const keybindings = useKeybindings(["kilo-code.ghost.promptCodeSuggestion", "kilo-code.ghost.generateSuggestions"])
 
-	const currentDelay = autoTriggerDelay || 3000
-	const currentDelayIndex = DELAY_VALUES.indexOf(currentDelay)
+	const normalizedDelay = normalizeDelayValue(autoTriggerDelay)
+	const currentDelayIndex = DELAY_VALUES.indexOf(normalizedDelay)
 	const validIndex = currentDelayIndex === -1 ? DELAY_VALUES.indexOf(3000) : currentDelayIndex
 
 	const onEnableAutoTriggerChange = (newValue: boolean) => {
@@ -120,7 +130,7 @@ export const GhostServiceSettingsView = ({
 									disabled={!enableAutoTrigger}
 								/>
 								<span className="text-sm text-vscode-descriptionForeground w-12 text-right">
-									{formatDelay(currentDelay)}
+									{formatDelay(normalizedDelay)}
 								</span>
 							</div>
 							<div className="text-vscode-descriptionForeground text-xs mt-1">

@@ -707,7 +707,12 @@ export class GhostProvider {
 		this.clearAutoTriggerTimer()
 		this.startProcessing()
 		// Start a new timer
-		const delay = this.settings?.autoTriggerDelay || 3000
+		// Backward compatibility: values below 50 are in seconds, convert to milliseconds
+		// Cap at 5 seconds to respect the 5000ms max
+		let delay = this.settings?.autoTriggerDelay || 3000
+		if (delay < 50) {
+			delay = Math.min(delay, 5) * 1000
+		}
 		this.autoTriggerTimer = setTimeout(() => {
 			this.onAutoTriggerTimeout()
 		}, delay)
