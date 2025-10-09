@@ -105,6 +105,8 @@ export function useCommandHandler(): UseCommandHandlerReturn {
 				}
 				addMessage(errorMessage)
 			} finally {
+				// Reset executing state
+				setIsExecuting(false)
 				// Mark command as finished for CI mode (only for actual commands like /exit, /help, etc.)
 				// For regular messages, we wait for completion_result from the extension
 				setCommandFinished(true)

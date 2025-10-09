@@ -5,8 +5,11 @@
  * Full integration testing would require @testing-library/react.
  */
 
-import { describe, it, expect, beforeEach } from "vitest"
+import { describe, it, expect, beforeEach, vi } from "vitest"
 import { createStore } from "jotai"
+import { render } from "ink-testing-library"
+import { Provider } from "jotai"
+import React from "react"
 
 describe("Command Hook Exports", () => {
 	let store: ReturnType<typeof createStore>
@@ -112,5 +115,71 @@ describe("Command Executor Service", () => {
 		expect(typeof executor.formatCommandError).toBe("function")
 		expect(typeof executor.getCommandUsage).toBe("function")
 		expect(typeof executor.isCompleteCommand).toBe("function")
+	})
+})
+
+describe("useCommandHandler", () => {
+	it("should reset isExecuting to false after command execution", async () => {
+		const store = createStore()
+		const { useCommandHandler } = await import("../useCommandHandler.js")
+
+		let hookResult: ReturnType<typeof useCommandHandler> | undefined
+
+		const TestComponent = () => {
+			hookResult = useCommandHandler()
+			return null
+		}
+
+		render(
+			<Provider store={store}>
+				<TestComponent />
+			</Provider>,
+		)
+
+		// Initially, isExecuting should be false
+		expect(hookResult?.isExecuting).toBe(false)
+
+		// Mock onExit function
+		const onExit = vi.fn()
+
+		// Execute a command (using /help as it's a simple command)
+		if (hookResult) {
+			await hookResult.executeCommand("/help", onExit)
+		}
+
+		// After execution, isExecuting should be reset to false
+		expect(hookResult?.isExecuting).toBe(false)
+	})
+
+	it("should reset isExecuting to false even when command fails", async () => {
+		const store = createStore()
+		const { useCommandHandler } = await import("../useCommandHandler.js")
+
+		let hookResult: ReturnType<typeof useCommandHandler> | undefined
+
+		const TestComponent = () => {
+			hookResult = useCommandHandler()
+			return null
+		}
+
+		render(
+			<Provider store={store}>
+				<TestComponent />
+			</Provider>,
+		)
+
+		// Initially, isExecuting should be false
+		expect(hookResult?.isExecuting).toBe(false)
+
+		// Mock onExit function
+		const onExit = vi.fn()
+
+		// Execute an invalid command
+		if (hookResult) {
+			await hookResult.executeCommand("/invalid-command", onExit)
+		}
+
+		// After execution (even failed), isExecuting should be reset to false
+		expect(hookResult?.isExecuting).toBe(false)
 	})
 })

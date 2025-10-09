@@ -12,7 +12,7 @@ let validateFunction: any = null
 async function getValidator() {
 	if (!validateFunction) {
 		ajv = new Ajv({ allErrors: true, strict: false })
-		const schemaPath = path.join(__dirname, "schema.json")
+		const schemaPath = path.join(__dirname, "config", "schema.json")
 		const schemaContent = await fs.readFile(schemaPath, "utf-8")
 		const schema = JSON.parse(schemaContent)
 		validateFunction = ajv.compile(schema)
