@@ -27,10 +27,10 @@ export class PromptStrategyManager {
 		this.strategies = [
 			new UserRequestStrategy(),
 			new SelectionRefactorStrategy(),
-			new NewLineCompletionStrategy(),
+			// new NewLineCompletionStrategy(),
 			new CommentDrivenStrategy(),
-			new InlineCompletionStrategy(),
-			new FimCodestralStrategy(),
+			// new InlineCompletionStrategy(),
+			// new FimCodestralStrategy(),
 		]
 		this.autoTriggerStrategy = new AutoTriggerStrategy()
 	}

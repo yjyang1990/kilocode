@@ -1,9 +1,0 @@
-for (let i = 0; i < input; i++) {
-  // Optimized using memoization for repeated calculations
-  const memo = {};
-  if (memo[i] === undefined) {
-    memo[i] = Math.pow(i, 2);
-  }
-  result += memo[i];
-  result += Math.pow(i, 2);
-}
