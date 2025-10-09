@@ -1,6 +1,6 @@
 /**
  * Tests for extension message update logic
- * Specifically testing the deduplication logic in updateChatMessageByTsAtom
+ * Tests the simplified updateChatMessageByTsAtom that only updates existing messages
  */
 
 import { describe, it, expect, beforeEach } from "vitest"
@@ -15,7 +15,7 @@ describe("updateChatMessageByTsAtom", () => {
 		store = createStore()
 	})
 
-	it("should update existing message by timestamp", () => {
+	it("should update existing message by timestamp with longer content", () => {
 		// Setup: Add initial message
 		const initialMessage: ExtensionChatMessage = {
 			ts: 1000,
@@ -26,12 +26,12 @@ describe("updateChatMessageByTsAtom", () => {
 		}
 		store.set(updateChatMessagesAtom, [initialMessage])
 
-		// Update the message
+		// Update the message with longer content
 		const updatedMessage: ExtensionChatMessage = {
 			ts: 1000,
 			type: "say",
 			say: "text",
-			text: "Updated text",
+			text: "Updated text with more content",
 			partial: false,
 		}
 		store.set(updateChatMessageByTsAtom, updatedMessage)
@@ -39,38 +39,29 @@ describe("updateChatMessageByTsAtom", () => {
 		// Verify: Should have one message with updated text
 		const messages = store.get(chatMessagesAtom)
 		expect(messages).toHaveLength(1)
-		expect(messages[0]?.text).toBe("Updated text")
+		expect(messages[0]?.text).toBe("Updated text with more content")
 	})
 
-	it("should update last partial message when streaming with same type/subtype", () => {
-		// Setup: Add partial message
-		const partialMessage: ExtensionChatMessage = {
-			ts: 1000,
+	it("should ignore non-existent message (will come via state update)", () => {
+		// Setup: Empty state
+		store.set(updateChatMessagesAtom, [])
+
+		// Try to update a message that doesn't exist
+		const newMessage: ExtensionChatMessage = {
+			ts: 1001,
 			type: "say",
 			say: "text",
-			text: "Hello",
-			partial: true,
+			text: "New message",
+			partial: false,
 		}
-		store.set(updateChatMessagesAtom, [partialMessage])
+		store.set(updateChatMessageByTsAtom, newMessage)
 
-		// Send update with different timestamp but same type/subtype
-		const streamUpdate: ExtensionChatMessage = {
-			ts: 1001, // Different timestamp
-			type: "say",
-			say: "text",
-			text: "Hello, world!",
-			partial: true,
-		}
-		store.set(updateChatMessageByTsAtom, streamUpdate)
-
-		// Verify: Should still have one message (updated, not duplicated)
+		// Verify: Should still be empty (message ignored, will come via state update)
 		const messages = store.get(chatMessagesAtom)
-		expect(messages).toHaveLength(1)
-		expect(messages[0]?.text).toBe("Hello, world!")
-		expect(messages[0]?.ts).toBe(1001)
+		expect(messages).toHaveLength(0)
 	})
 
-	it("should ignore new message when type/subtype differs (not a streaming update)", () => {
+	it("should ignore update for non-existent message even with different type", () => {
 		// Setup: Add initial message
 		const initialMessage: ExtensionChatMessage = {
 			ts: 1000,
@@ -81,7 +72,7 @@ describe("updateChatMessageByTsAtom", () => {
 		}
 		store.set(updateChatMessagesAtom, [initialMessage])
 
-		// Try to add different type message via messageUpdated (should be ignored)
+		// Try to update a different message that doesn't exist
 		const newMessage: ExtensionChatMessage = {
 			ts: 1001,
 			type: "say",
@@ -97,31 +88,32 @@ describe("updateChatMessageByTsAtom", () => {
 		expect(messages[0]?.text).toBe("First message")
 	})
 
-	it("should ignore new message when last message is not partial", () => {
-		// Setup: Add complete (non-partial) message
-		const completeMessage: ExtensionChatMessage = {
+	it("should always update partial messages regardless of content length", () => {
+		// Setup: Add partial message
+		const partialMessage: ExtensionChatMessage = {
 			ts: 1000,
 			type: "say",
 			say: "text",
-			text: "Complete message",
-			partial: false,
+			text: "Hello world",
+			partial: true,
 		}
-		store.set(updateChatMessagesAtom, [completeMessage])
+		store.set(updateChatMessagesAtom, [partialMessage])
 
-		// Try to add another message with same type/subtype (should be ignored)
-		const newMessage: ExtensionChatMessage = {
-			ts: 1001,
+		// Update with shorter partial content (streaming can restart)
+		const streamUpdate: ExtensionChatMessage = {
+			ts: 1000,
 			type: "say",
 			say: "text",
-			text: "New message",
-			partial: false,
+			text: "Hi",
+			partial: true,
 		}
-		store.set(updateChatMessageByTsAtom, newMessage)
+		store.set(updateChatMessageByTsAtom, streamUpdate)
 
-		// Verify: Should still have one message (new message ignored, will come via state update)
+		// Verify: Should accept the update even though it's shorter
 		const messages = store.get(chatMessagesAtom)
 		expect(messages).toHaveLength(1)
-		expect(messages[0]?.text).toBe("Complete message")
+		expect(messages[0]?.text).toBe("Hi")
+		expect(messages[0]?.partial).toBe(true)
 	})
 
 	it("should handle rapid streaming updates correctly", () => {
@@ -135,15 +127,15 @@ describe("updateChatMessageByTsAtom", () => {
 		}
 		store.set(updateChatMessagesAtom, [initialMessage])
 
-		// Simulate rapid streaming updates with different timestamps
+		// Simulate rapid streaming updates with same timestamp
 		const updates: ExtensionChatMessage[] = [
-			{ ts: 1001, type: "say", say: "text", text: "He", partial: true },
-			{ ts: 1002, type: "say", say: "text", text: "Hel", partial: true },
-			{ ts: 1003, type: "say", say: "text", text: "Hell", partial: true },
-			{ ts: 1004, type: "say", say: "text", text: "Hello", partial: false },
+			{ ts: 1000, type: "say", say: "text", text: "He", partial: true },
+			{ ts: 1000, type: "say", say: "text", text: "Hel", partial: true },
+			{ ts: 1000, type: "say", say: "text", text: "Hell", partial: true },
+			{ ts: 1000, type: "say", say: "text", text: "Hello", partial: false },
 		]
 
-		// Apply all updates (they should update the last message since it's partial and same type/subtype)
+		// Apply all updates
 		for (const update of updates) {
 			store.set(updateChatMessageByTsAtom, update)
 		}
@@ -153,6 +145,36 @@ describe("updateChatMessageByTsAtom", () => {
 		expect(messages).toHaveLength(1)
 		expect(messages[0]?.text).toBe("Hello")
 		expect(messages[0]?.partial).toBe(false)
+	})
+
+	it("should ignore updates with shorter content for non-partial messages", () => {
+		// Setup: Add complete message via updateChatMessageByTsAtom to initialize version map
+		const completeMessage: ExtensionChatMessage = {
+			ts: 1000,
+			type: "say",
+			say: "text",
+			text: "This is a long message",
+			partial: false,
+		}
+		// First add via updateChatMessagesAtom
+		store.set(updateChatMessagesAtom, [completeMessage])
+		// Then update via updateChatMessageByTsAtom to initialize version tracking
+		store.set(updateChatMessageByTsAtom, completeMessage)
+
+		// Try to update with shorter content (should be ignored)
+		const shorterMessage: ExtensionChatMessage = {
+			ts: 1000,
+			type: "say",
+			say: "text",
+			text: "Short",
+			partial: false,
+		}
+		store.set(updateChatMessageByTsAtom, shorterMessage)
+
+		// Verify: Should keep the longer message (shorter update was ignored)
+		const messages = store.get(chatMessagesAtom)
+		expect(messages).toHaveLength(1)
+		expect(messages[0]?.text).toBe("This is a long message")
 	})
 
 	it("should handle ask messages correctly", () => {
@@ -166,9 +188,9 @@ describe("updateChatMessageByTsAtom", () => {
 		}
 		store.set(updateChatMessagesAtom, [partialAsk])
 
-		// Update with same ask type
+		// Update with longer content
 		const updatedAsk: ExtensionChatMessage = {
-			ts: 1001,
+			ts: 1000,
 			type: "ask",
 			ask: "followup",
 			text: "What would you like to do next?",
@@ -182,30 +204,31 @@ describe("updateChatMessageByTsAtom", () => {
 		expect(messages[0]?.text).toBe("What would you like to do next?")
 	})
 
-	it("should ignore update when ask subtype differs", () => {
-		// Setup: Add partial ask message
-		const partialAsk: ExtensionChatMessage = {
+	it("should clear streaming flag when message completes", () => {
+		// Setup: Add partial message
+		const partialMessage: ExtensionChatMessage = {
 			ts: 1000,
-			type: "ask",
-			ask: "followup",
-			text: "Question 1",
+			type: "say",
+			say: "text",
+			text: "Streaming...",
 			partial: true,
 		}
-		store.set(updateChatMessagesAtom, [partialAsk])
+		store.set(updateChatMessagesAtom, [partialMessage])
 
-		// Try to add different ask subtype (should be ignored)
-		const differentAsk: ExtensionChatMessage = {
-			ts: 1001,
-			type: "ask",
-			ask: "completion_result",
-			text: "Question 2",
+		// Complete the message
+		const completedMessage: ExtensionChatMessage = {
+			ts: 1000,
+			type: "say",
+			say: "text",
+			text: "Streaming complete!",
 			partial: false,
 		}
-		store.set(updateChatMessageByTsAtom, differentAsk)
+		store.set(updateChatMessageByTsAtom, completedMessage)
 
-		// Verify: Should still have one message (different subtype ignored, will come via state update)
+		// Verify: Message is updated and not partial
 		const messages = store.get(chatMessagesAtom)
 		expect(messages).toHaveLength(1)
-		expect(messages[0]?.ask).toBe("followup")
+		expect(messages[0]?.text).toBe("Streaming complete!")
+		expect(messages[0]?.partial).toBe(false)
 	})
 })

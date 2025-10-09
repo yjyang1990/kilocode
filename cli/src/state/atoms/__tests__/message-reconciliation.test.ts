@@ -754,15 +754,15 @@ describe("Message Reconciliation", () => {
 		})
 	})
 
-	describe("Duplicate Timestamp Handling", () => {
-		it("should handle duplicate timestamps by keeping the last occurrence", () => {
-			// This reproduces the bug where extension sends multiple messages with same timestamp
-			const stateWithDuplicates: ExtensionState = {
+	describe("State Reconciliation", () => {
+		it("should accept all messages from state (state is source of truth for count)", () => {
+			// State determines which messages exist
+			const state: ExtensionState = {
 				version: "1.0.0",
 				apiConfiguration: {},
 				chatMessages: [
-					{ ts: 1000, type: "say", say: "text", text: "First version" },
-					{ ts: 1000, type: "say", say: "text", text: "Second version - should be kept" },
+					{ ts: 1000, type: "say", say: "text", text: "First" },
+					{ ts: 2000, type: "say", say: "text", text: "Second" },
 				],
 				mode: "code",
 				customModes: [],
@@ -772,24 +772,21 @@ describe("Message Reconciliation", () => {
 				telemetrySetting: "disabled",
 			}
 
-			store.set(updateExtensionStateAtom, stateWithDuplicates)
+			store.set(updateExtensionStateAtom, state)
 
-			// Should only have one message (the last one with that timestamp)
+			// Should have both messages from state
 			const messages = store.get(chatMessagesAtom)
-			expect(messages).toHaveLength(1)
-			expect(messages[0]?.text).toBe("Second version - should be kept")
-			expect(messages[0]?.ts).toBe(1000)
+			expect(messages).toHaveLength(2)
+			expect(messages[0]?.text).toBe("First")
+			expect(messages[1]?.text).toBe("Second")
 		})
 
-		it("should handle duplicate timestamps with different partial states", () => {
-			// Extension sends both partial and non-partial versions with same timestamp
-			const stateWithMixedDuplicates: ExtensionState = {
+		it("should preserve streaming message content when state has older version", () => {
+			// Setup: Initial state
+			const initialState: ExtensionState = {
 				version: "1.0.0",
 				apiConfiguration: {},
-				chatMessages: [
-					{ ts: 2000, type: "say", say: "text", text: "Partial version", partial: true },
-					{ ts: 2000, type: "say", say: "text", text: "Complete version", partial: false },
-				],
+				chatMessages: [{ ts: 1000, type: "say", say: "text", text: "Initial" }],
 				mode: "code",
 				customModes: [],
 				taskHistoryFullLength: 0,
@@ -798,28 +795,47 @@ describe("Message Reconciliation", () => {
 				telemetrySetting: "disabled",
 			}
 
-			store.set(updateExtensionStateAtom, stateWithMixedDuplicates)
+			store.set(updateExtensionStateAtom, initialState)
 
-			// Should keep the last one (complete version)
+			// Start streaming with more content
+			const streamingMessage: ExtensionChatMessage = {
+				ts: 1000,
+				type: "say",
+				say: "text",
+				text: "Initial with streaming content added",
+				partial: true,
+			}
+
+			store.set(updateChatMessageByTsAtom, streamingMessage)
+
+			// State update arrives with older (shorter) content
+			const olderState: ExtensionState = {
+				version: "1.0.0",
+				apiConfiguration: {},
+				chatMessages: [{ ts: 1000, type: "say", say: "text", text: "Initial", partial: false }],
+				mode: "code",
+				customModes: [],
+				taskHistoryFullLength: 0,
+				taskHistoryVersion: 0,
+				renderContext: "cli",
+				telemetrySetting: "disabled",
+			}
+
+			store.set(updateExtensionStateAtom, olderState)
+
+			// Should preserve the streaming content (longer version)
 			const messages = store.get(chatMessagesAtom)
 			expect(messages).toHaveLength(1)
-			expect(messages[0]?.text).toBe("Complete version")
-			expect(messages[0]?.partial).toBe(false)
-
-			// Streaming set should not include this timestamp since final version is not partial
-			const streamingSet = store.get(streamingMessagesSetAtom)
-			expect(streamingSet.has(2000)).toBe(false)
+			expect(messages[0]?.text).toBe("Initial with streaming content added")
+			expect(messages[0]?.partial).toBe(true)
 		})
 
-		it("should handle three or more messages with same timestamp", () => {
-			const stateWithMultipleDuplicates: ExtensionState = {
+		it("should accept newer state content when not actively streaming", () => {
+			// Setup: Initial state
+			const initialState: ExtensionState = {
 				version: "1.0.0",
 				apiConfiguration: {},
-				chatMessages: [
-					{ ts: 3000, type: "say", say: "text", text: "Version 1" },
-					{ ts: 3000, type: "say", say: "text", text: "Version 2" },
-					{ ts: 3000, type: "say", say: "text", text: "Version 3 - final" },
-				],
+				chatMessages: [{ ts: 1000, type: "say", say: "text", text: "Old content" }],
 				mode: "code",
 				customModes: [],
 				taskHistoryFullLength: 0,
@@ -828,12 +844,27 @@ describe("Message Reconciliation", () => {
 				telemetrySetting: "disabled",
 			}
 
-			store.set(updateExtensionStateAtom, stateWithMultipleDuplicates)
+			store.set(updateExtensionStateAtom, initialState)
 
-			// Should only keep the last one
+			// State update with new content (not streaming)
+			const newerState: ExtensionState = {
+				version: "1.0.0",
+				apiConfiguration: {},
+				chatMessages: [{ ts: 1000, type: "say", say: "text", text: "New content from state" }],
+				mode: "code",
+				customModes: [],
+				taskHistoryFullLength: 0,
+				taskHistoryVersion: 0,
+				renderContext: "cli",
+				telemetrySetting: "disabled",
+			}
+
+			store.set(updateExtensionStateAtom, newerState)
+
+			// Should accept the new state content
 			const messages = store.get(chatMessagesAtom)
 			expect(messages).toHaveLength(1)
-			expect(messages[0]?.text).toBe("Version 3 - final")
+			expect(messages[0]?.text).toBe("New content from state")
 		})
 	})
 
