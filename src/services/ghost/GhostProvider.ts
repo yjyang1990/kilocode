@@ -21,7 +21,7 @@ import { ClineProvider } from "../../core/webview/ClineProvider"
 import { GhostGutterAnimation } from "./GhostGutterAnimation"
 import { GhostCursor } from "./GhostCursor"
 import { RooIgnoreController } from "../../core/ignore/RooIgnoreController"
-import { normalizeAutoTriggerDelayToMs } from "./utils/delayUtils"
+import { normalizeAutoTriggerDelayToMs } from "./utils/autocompleteDelayUtils"
 
 export class GhostProvider {
 	private static instance: GhostProvider | null = null

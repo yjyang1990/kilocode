@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { normalizeAutoTriggerDelayToMs, formatDelay, DELAY_VALUES } from "../delayUtils"
+import { normalizeAutoTriggerDelayToMs, formatDelay, DELAY_VALUES } from "../autocompleteDelayUtils"
 
 describe("normalizeAutoTriggerDelay", () => {
 	it("should return 3000 for undefined", () => {
