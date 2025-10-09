@@ -54,22 +54,20 @@ export const SayApiReqStartedMessage: React.FC<MessageComponentProps> = ({ messa
 
 	// Completed state
 	return (
-		<Box flexDirection="column" marginY={1}>
-			<Box>
-				<Text color="green" bold>
-					✓ API Request
-				</Text>
-			</Box>
+		<Box marginY={1}>
+			<Text color="green" bold>
+				✓ API Request
+			</Text>
 			{apiInfo?.cost !== undefined && (
-				<Box marginLeft={2} marginTop={1}>
-					<Text color="cyan">Cost: ${apiInfo.cost.toFixed(4)}</Text>
+				<>
+					<Text color="cyan"> - Cost: ${apiInfo.cost.toFixed(4)}</Text>
 					{apiInfo.usageMissing && (
 						<Text color="gray" dimColor>
 							{" "}
 							(estimated)
 						</Text>
 					)}
-				</Box>
+				</>
 			)}
 		</Box>
 	)
