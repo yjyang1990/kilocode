@@ -1,6 +1,22 @@
 /**
  * MessageDisplay component - displays chat messages from both CLI and extension state
- * Updated to merge messages directly in component to avoid stale derived atom issues
+ * Uses Ink Static component to optimize rendering of completed messages
+ *
+ * Performance Optimization:
+ * ------------------------
+ * Messages are split into two sections:
+ * 1. Static section: Completed messages that won't change (rendered once with Ink Static)
+ * 2. Dynamic section: Incomplete/updating messages (re-rendered as needed)
+ *
+ * This prevents unnecessary re-renders of completed messages, improving performance
+ * especially in long conversations.
+ *
+ * Message Completion Logic:
+ * -------------------------
+ * A message is considered complete when:
+ * - CLI messages: partial !== true
+ * - Extension messages: depends on type (see messageCompletion.ts)
+ * - Sequential rule: A message can only be static if all previous messages are complete
  *
  * Key Generation Strategy:
  * -----------------------
@@ -22,9 +38,9 @@
  */
 
 import React from "react"
-import { Box, Text } from "ink"
+import { Box, Text, Static } from "ink"
 import { useAtomValue } from "jotai"
-import { type UnifiedMessage, mergedMessagesAtom } from "../../state/atoms/ui.js"
+import { type UnifiedMessage, staticMessagesAtom, dynamicMessagesAtom } from "../../state/atoms/ui.js"
 import { MessageRow } from "./MessageRow.js"
 
 interface MessageDisplayProps {
@@ -64,16 +80,28 @@ function getMessageKey(msg: UnifiedMessage, index: number): string {
 }
 
 export const MessageDisplay: React.FC<MessageDisplayProps> = ({ filterType, maxMessages }) => {
-	const allMessages = useAtomValue(mergedMessagesAtom)
+	const staticMessages = useAtomValue(staticMessagesAtom)
+	const dynamicMessages = useAtomValue(dynamicMessagesAtom)
 
-	if (allMessages.length === 0) {
+	if (staticMessages.length === 0 && dynamicMessages.length === 0) {
 		return null
 	}
 
 	return (
 		<Box flexDirection="column" paddingX={1}>
-			{allMessages.map((unifiedMsg, index) => (
-				<MessageRow key={getMessageKey(unifiedMsg, index)} unifiedMessage={unifiedMsg} />
+			{/* Static section for completed messages - won't re-render */}
+			{staticMessages.length > 0 && (
+				<Static items={staticMessages}>
+					{(message, index) => <MessageRow key={getMessageKey(message, index)} unifiedMessage={message} />}
+				</Static>
+			)}
+
+			{/* Dynamic section for incomplete/updating messages - will re-render */}
+			{dynamicMessages.map((unifiedMsg, index) => (
+				<MessageRow
+					key={getMessageKey(unifiedMsg, staticMessages.length + index)}
+					unifiedMessage={unifiedMsg}
+				/>
 			))}
 		</Box>
 	)

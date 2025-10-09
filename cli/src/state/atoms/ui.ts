@@ -9,6 +9,7 @@ import type { ExtensionChatMessage } from "../../types/messages.js"
 import type { CommandSuggestion, ArgumentSuggestion } from "../../services/autocomplete.js"
 import { chatMessagesAtom } from "./extension.js"
 import { logs } from "../../services/logs.js"
+import { splitMessages } from "../../ui/messages/utils/messageCompletion.js"
 
 /**
  * Unified message type that can represent both CLI and extension messages
@@ -429,4 +430,36 @@ export const getSelectedFollowupAtom = atom<FollowupSuggestion | null>((get) => 
  */
 export const hasFollowupSuggestionsAtom = atom<boolean>((get) => {
 	return get(followupSuggestionsAtom).length > 0
+})
+
+// ============================================================================
+// Message Splitting Atoms (for Ink Static optimization)
+// ============================================================================
+
+/**
+ * Derived atom that splits messages into static (complete) and dynamic (incomplete)
+ * This enables Ink Static optimization by separating messages that won't change
+ * from those that are still being updated
+ */
+export const splitMessagesAtom = atom((get) => {
+	const allMessages = get(mergedMessagesAtom)
+	return splitMessages(allMessages)
+})
+
+/**
+ * Derived atom for static messages (complete, ready for static rendering)
+ * These messages won't change and can be rendered once without re-rendering
+ */
+export const staticMessagesAtom = atom<UnifiedMessage[]>((get) => {
+	const { staticMessages } = get(splitMessagesAtom)
+	return staticMessages
+})
+
+/**
+ * Derived atom for dynamic messages (incomplete, need active rendering)
+ * These messages may still be updating and need to be re-rendered
+ */
+export const dynamicMessagesAtom = atom<UnifiedMessage[]>((get) => {
+	const { dynamicMessages } = get(splitMessagesAtom)
+	return dynamicMessages
 })

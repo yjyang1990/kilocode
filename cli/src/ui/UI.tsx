@@ -132,8 +132,9 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 
 	return (
 		// Using stdout.rows causes layout shift during renders
-		<Box flexDirection="column" minHeight={options.ci ? 0 : stdout.rows - 1}>
+		<Box flexDirection="column">
 			{!options.ci && <SplashScreen renderWelcomeMessage={!options.prompt} />}
+
 			<Box flexDirection="column" overflow="hidden">
 				<MessageDisplay />
 			</Box>
