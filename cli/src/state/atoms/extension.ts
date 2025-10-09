@@ -180,23 +180,29 @@ export const updateExtensionStateAtom = atom(null, (get, set, state: ExtensionSt
 	set(extensionStateAtom, state)
 
 	if (state) {
-		// Reconcile messages intelligently instead of replacing
+		// Get incoming messages from state
 		const incomingMessages = state.clineMessages || state.chatMessages || []
-		const reconciledMessages = reconcileMessages(currentMessages, incomingMessages, versionMap, streamingSet)
 
-		// Update messages with reconciled version
+		// Reconcile with current messages to preserve streaming state
+		const reconciledMessages = reconcileMessages(currentMessages, incomingMessages, versionMap, streamingSet)
 		set(chatMessagesAtom, reconciledMessages)
 
 		// Update version map for all reconciled messages
-		const newVersionMap = new Map(versionMap)
+		const newVersionMap = new Map<number, number>()
 		reconciledMessages.forEach((msg) => {
 			const version = getMessageContentLength(msg)
-			const existingVersion = newVersionMap.get(msg.ts) || 0
-			if (version >= existingVersion) {
-				newVersionMap.set(msg.ts, version)
-			}
+			newVersionMap.set(msg.ts, version)
 		})
 		set(messageVersionMapAtom, newVersionMap)
+
+		// Update streaming set based on reconciled messages
+		const newStreamingSet = new Set<number>()
+		reconciledMessages.forEach((msg) => {
+			if (msg.partial) {
+				newStreamingSet.add(msg.ts)
+			}
+		})
+		set(streamingMessagesSetAtom, newStreamingSet)
 
 		// Sync other derived atoms
 		set(currentTaskAtom, state.currentTaskItem || null)
@@ -277,6 +283,7 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 
 	// If message not found by timestamp, check if this is a streaming update to the last message
 	// This handles cases where timestamps might differ slightly during rapid updates
+	// ONLY do this if the last message is partial (actively streaming)
 	if (messageIndex === -1 && messages.length > 0) {
 		const lastMessage = messages[messages.length - 1]
 
@@ -286,11 +293,12 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 			(lastMessage?.type === "say" && lastMessage?.say === updatedMessage.say) ||
 			(lastMessage?.type === "ask" && lastMessage?.ask === updatedMessage.ask)
 
-		// If the last message was partial and this is the same type/subtype, update it
+		// Only treat as update if last message is partial AND types match
+		// This prevents incorrectly merging completed messages
 		if (lastMessage?.partial && isSameType && isSameSubtype) {
 			messageIndex = messages.length - 1
 			logs.debug(
-				`Treating ts=${updatedMessage.ts} as update to last message ts=${lastMessage.ts} (type/subtype match)`,
+				`Treating ts=${updatedMessage.ts} as update to last message ts=${lastMessage.ts} (type/subtype match, last was partial)`,
 				"extension",
 			)
 		}
@@ -472,7 +480,7 @@ function getMessageContentLength(msg: ExtensionChatMessage): number {
 
 /**
  * Helper function to reconcile messages from state updates with existing messages
- * Preserves streaming messages and messages with higher versions
+ * Simplified approach matching webview behavior - trusts the extension to send correct state
  */
 function reconcileMessages(
 	current: ExtensionChatMessage[],
@@ -480,43 +488,32 @@ function reconcileMessages(
 	versionMap: Map<number, number>,
 	streamingSet: Set<number>,
 ): ExtensionChatMessage[] {
+	// Build a map from current messages first
 	const messageMap = new Map<number, ExtensionChatMessage>()
-
-	// Start with current messages
 	current.forEach((msg) => messageMap.set(msg.ts, msg))
 
 	// Process incoming messages
 	incoming.forEach((incomingMsg) => {
 		const existingMsg = messageMap.get(incomingMsg.ts)
 
-		// Skip if message is currently streaming - preserve the streaming version
-		if (streamingSet.has(incomingMsg.ts) && existingMsg) {
-			logs.debug(`Preserving streaming message ts=${incomingMsg.ts}`, "extension")
-			return
-		}
-
-		// Check version if we have tracking info
-		if (existingMsg && versionMap.has(incomingMsg.ts)) {
+		// If we have a streaming message with more content, preserve it
+		// This handles race conditions where state updates arrive with older content
+		if (existingMsg && streamingSet.has(incomingMsg.ts)) {
 			const currentVersion = versionMap.get(incomingMsg.ts) || 0
 			const incomingVersion = getMessageContentLength(incomingMsg)
 
-			// Only update if incoming is newer or equal
-			if (incomingVersion >= currentVersion) {
-				messageMap.set(incomingMsg.ts, incomingMsg)
+			// Keep the version with more content
+			if (currentVersion > incomingVersion) {
 				logs.debug(
-					`Accepting incoming message ts=${incomingMsg.ts} (version ${incomingVersion} >= ${currentVersion})`,
+					`Preserving streaming message ts=${incomingMsg.ts} (${currentVersion} > ${incomingVersion})`,
 					"extension",
 				)
-			} else {
-				logs.debug(
-					`Rejecting outdated message ts=${incomingMsg.ts} (version ${incomingVersion} < ${currentVersion})`,
-					"extension",
-				)
+				return
 			}
-		} else {
-			// No existing message or version info, accept incoming
-			messageMap.set(incomingMsg.ts, incomingMsg)
 		}
+
+		// Accept incoming message
+		messageMap.set(incomingMsg.ts, incomingMsg)
 	})
 
 	// Return sorted array by timestamp
