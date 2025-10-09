@@ -6,23 +6,13 @@ import { Bot, Zap } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SectionHeader } from "../../settings/SectionHeader"
 import { Section } from "../../settings/Section"
-import { GhostServiceSettings, normalizeAutoTriggerDelay } from "@roo-code/types"
+import { GhostServiceSettings } from "@roo-code/types"
 import { SetCachedStateField } from "../../settings/types"
 import { Slider } from "@src/components/ui"
 import { vscode } from "@/utils/vscode"
 import { ControlledCheckbox } from "../common/ControlledCheckbox"
 import { useKeybindings } from "@/hooks/useKeybindings"
-
-const DELAY_VALUES = [
-	50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000,
-]
-
-const formatDelay = (ms: number): string => {
-	if (ms < 1000) {
-		return `${ms}ms`
-	}
-	return `${ms / 1000}s`
-}
+import { normalizeAutoTriggerDelay, DELAY_VALUES, formatDelay } from "@/utils/delayUtils"
 
 type GhostServiceSettingsViewProps = HTMLAttributes<HTMLDivElement> & {
 	ghostServiceSettings: GhostServiceSettings

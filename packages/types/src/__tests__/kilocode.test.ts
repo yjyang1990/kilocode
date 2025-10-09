@@ -1,7 +1,7 @@
 // npx vitest run src/__tests__/kilocode.test.ts
 
 import { describe, it, expect } from "vitest"
-import { ghostServiceSettingsSchema, normalizeAutoTriggerDelay } from "../kilocode.js"
+import { ghostServiceSettingsSchema } from "../kilocode.js"
 
 describe("ghostServiceSettingsSchema", () => {
 	describe("autoTriggerDelay", () => {
@@ -91,30 +91,5 @@ describe("ghostServiceSettingsSchema", () => {
 				expect(result.data?.autoTriggerDelay).toBe(1500)
 			}
 		})
-	})
-})
-
-describe("normalizeAutoTriggerDelay", () => {
-	it("should return 3000 for undefined", () => {
-		expect(normalizeAutoTriggerDelay(undefined)).toBe(3000)
-	})
-
-	it("should return value as-is for values >= 50", () => {
-		expect(normalizeAutoTriggerDelay(50)).toBe(50)
-		expect(normalizeAutoTriggerDelay(100)).toBe(100)
-		expect(normalizeAutoTriggerDelay(1000)).toBe(1000)
-		expect(normalizeAutoTriggerDelay(5000)).toBe(5000)
-	})
-
-	it("should convert legacy second values to milliseconds (values < 50)", () => {
-		expect(normalizeAutoTriggerDelay(1)).toBe(1000)
-		expect(normalizeAutoTriggerDelay(3)).toBe(3000)
-		expect(normalizeAutoTriggerDelay(5)).toBe(5000)
-	})
-
-	it("should cap legacy values at 5 seconds (5000ms)", () => {
-		expect(normalizeAutoTriggerDelay(6)).toBe(5000)
-		expect(normalizeAutoTriggerDelay(10)).toBe(5000)
-		expect(normalizeAutoTriggerDelay(30)).toBe(5000)
 	})
 })

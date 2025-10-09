@@ -12,7 +12,7 @@ import { getWorkspacePath } from "../../utils/path"
 import { GhostSuggestionsState } from "./GhostSuggestions"
 import { GhostCodeActionProvider } from "./GhostCodeActionProvider"
 import { GhostCodeLensProvider } from "./GhostCodeLensProvider"
-import { GhostServiceSettings, TelemetryEventName, normalizeAutoTriggerDelay } from "@roo-code/types"
+import { GhostServiceSettings, TelemetryEventName } from "@roo-code/types"
 import { ContextProxy } from "../../core/config/ContextProxy"
 import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManager"
 import { GhostContext } from "./GhostContext"
@@ -21,6 +21,7 @@ import { ClineProvider } from "../../core/webview/ClineProvider"
 import { GhostGutterAnimation } from "./GhostGutterAnimation"
 import { GhostCursor } from "./GhostCursor"
 import { RooIgnoreController } from "../../core/ignore/RooIgnoreController"
+import { normalizeAutoTriggerDelay } from "./utils/delayUtils"
 
 export class GhostProvider {
 	private static instance: GhostProvider | null = null
