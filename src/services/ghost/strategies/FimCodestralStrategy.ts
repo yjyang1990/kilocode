@@ -1,7 +1,7 @@
 import { GhostSuggestionContext } from "../types"
-import { BasePromptStrategy } from "./BasePromptStrategy"
-import { UseCaseType } from "../types/PromptStrategy"
+import { PromptStrategy, UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
+import { getBaseSystemInstructions } from "./StrategyHelpers"
 
 /**
  * Strategy using Fill-In-the-Middle (FIM) format for Codestral
@@ -10,7 +10,7 @@ import { CURSOR_MARKER } from "../ghostConstants"
  * This strategy implements the FIM prompt template with special [SUFFIX] and [PREFIX] markers
  * that Codestral models are trained to understand for code completion.
  */
-export class FimCodestralStrategy extends BasePromptStrategy {
+export class FimCodestralStrategy implements PromptStrategy {
 	name = "FIM Codestral"
 	type = UseCaseType.AUTO_TRIGGER
 
@@ -20,9 +20,9 @@ export class FimCodestralStrategy extends BasePromptStrategy {
 		return false // We will enable in the next PR -- 2025-10-09
 	}
 
-	getSystemInstructions(): string {
+	getSystemInstructions(customInstructions?: string): string {
 		return (
-			this.getBaseSystemInstructions() +
+			getBaseSystemInstructions() +
 			`You are an AI assistant specialized in code completion using Fill-In-the-Middle (FIM) format.
 
 ## FIM Format Understanding
