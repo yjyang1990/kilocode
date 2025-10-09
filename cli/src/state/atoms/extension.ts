@@ -27,6 +27,18 @@ export const extensionStateAtom = atom<ExtensionState | null>(null)
 export const chatMessagesAtom = atom<ExtensionChatMessage[]>([])
 
 /**
+ * Atom to track message versions (content length) for reconciliation
+ * Maps message timestamp to content length to determine which version is newer
+ */
+export const messageVersionMapAtom = atom<Map<number, number>>(new Map<number, number>())
+
+/**
+ * Atom to track actively streaming messages
+ * Messages in this set are protected from being overwritten by state updates
+ */
+export const streamingMessagesSetAtom = atom<Set<number>>(new Set<number>())
+
+/**
  * Atom to hold the current task item
  */
 export const currentTaskAtom = atom<HistoryItem | null>(null)
@@ -157,16 +169,36 @@ export const inProgressTodosCountAtom = atom<number>((get) => {
 /**
  * Action atom to update the complete extension state
  * This syncs all derived atoms with the new state
+ * Uses intelligent message reconciliation to prevent flickering during streaming
  */
 export const updateExtensionStateAtom = atom(null, (get, set, state: ExtensionState | null) => {
 	const currentRouterModels = get(routerModelsAtom)
+	const currentMessages = get(chatMessagesAtom)
+	const versionMap = get(messageVersionMapAtom)
+	const streamingSet = get(streamingMessagesSetAtom)
 
 	set(extensionStateAtom, state)
 
 	if (state) {
-		// Sync all derived atoms
-		const messages = state.clineMessages || state.chatMessages || []
-		set(chatMessagesAtom, [...messages])
+		// Reconcile messages intelligently instead of replacing
+		const incomingMessages = state.clineMessages || state.chatMessages || []
+		const reconciledMessages = reconcileMessages(currentMessages, incomingMessages, versionMap, streamingSet)
+
+		// Update messages with reconciled version
+		set(chatMessagesAtom, reconciledMessages)
+
+		// Update version map for all reconciled messages
+		const newVersionMap = new Map(versionMap)
+		reconciledMessages.forEach((msg) => {
+			const version = getMessageContentLength(msg)
+			const existingVersion = newVersionMap.get(msg.ts) || 0
+			if (version >= existingVersion) {
+				newVersionMap.set(msg.ts, version)
+			}
+		})
+		set(messageVersionMapAtom, newVersionMap)
+
+		// Sync other derived atoms
 		set(currentTaskAtom, state.currentTaskItem || null)
 		set(taskTodosAtom, state.currentTaskTodos || [])
 		// Preserve existing routerModels if not provided in new state
@@ -187,6 +219,9 @@ export const updateExtensionStateAtom = atom(null, (get, set, state: ExtensionSt
 		set(customModesAtom, [])
 		set(mcpServersAtom, [])
 		set(cwdAtom, null)
+		// Clear version tracking
+		set(messageVersionMapAtom, new Map<number, number>())
+		set(streamingMessagesSetAtom, new Set<number>())
 	}
 })
 
@@ -219,26 +254,30 @@ export const addChatMessageAtom = atom(null, (get, set, message: ExtensionChatMe
  * Action atom to update a single message by timestamp
  * Used for incremental message updates during streaming
  *
- * This function handles three scenarios:
- * 1. Message exists with matching timestamp - update it
- * 2. Message is a streaming update (partial) - update the last message if it matches type/subtype
- * 3. Message is new - add it to the list
+ * This function handles message updates with version checking and streaming protection:
+ * 1. Finds existing message by timestamp
+ * 2. If not found, checks if it's a streaming update to the last message (different timestamp but same type/subtype)
+ * 3. Checks if the update is newer (longer content) than existing version
+ * 4. Tracks streaming state to protect partial messages
+ * 5. Updates existing message or ignores if not found and not a streaming update
  */
 export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: ExtensionChatMessage) => {
 	const messages = get(chatMessagesAtom)
-	const messageIndex = messages.findIndex((msg) => msg.ts === updatedMessage.ts)
+	const versionMap = get(messageVersionMapAtom)
+	const streamingSet = get(streamingMessagesSetAtom)
 
-	if (messageIndex >= 0) {
-		// Update existing message by timestamp
-		const newMessages = [...messages]
-		newMessages[messageIndex] = updatedMessage
-		set(updateChatMessagesAtom, newMessages)
-		return
+	// Find the message by timestamp (using findLastIndex to match webview behavior)
+	let messageIndex = -1
+	for (let i = messages.length - 1; i >= 0; i--) {
+		if (messages[i]?.ts === updatedMessage.ts) {
+			messageIndex = i
+			break
+		}
 	}
 
-	// Check if this is a streaming update to the last message
+	// If message not found by timestamp, check if this is a streaming update to the last message
 	// This handles cases where timestamps might differ slightly during rapid updates
-	if (messages.length > 0) {
+	if (messageIndex === -1 && messages.length > 0) {
 		const lastMessage = messages[messages.length - 1]
 
 		// Check if this update belongs to the last message based on type and subtype
@@ -249,15 +288,61 @@ export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: E
 
 		// If the last message was partial and this is the same type/subtype, update it
 		if (lastMessage?.partial && isSameType && isSameSubtype) {
-			const newMessages = [...messages]
-			newMessages[newMessages.length - 1] = updatedMessage
-			set(updateChatMessagesAtom, newMessages)
-			return
+			messageIndex = messages.length - 1
+			logs.debug(
+				`Treating ts=${updatedMessage.ts} as update to last message ts=${lastMessage.ts} (type/subtype match)`,
+				"extension",
+			)
 		}
 	}
 
-	// This is a genuinely new message, add it
-	set(addChatMessageAtom, updatedMessage)
+	// If still not found, ignore the update (it will come through state update)
+	if (messageIndex === -1) {
+		logs.debug(
+			`Ignoring messageUpdated for non-existent message ts=${updatedMessage.ts} (will come through state update)`,
+			"extension",
+		)
+		return
+	}
+
+	// Calculate content length as version
+	const newVersion = getMessageContentLength(updatedMessage)
+	const existingMessage = messages[messageIndex]
+	const currentVersion = versionMap.get(existingMessage!.ts) || 0
+
+	// Only update if new version is greater, OR if it's a partial message (streaming)
+	// Partial messages always update to show streaming progress
+	if (newVersion < currentVersion && !updatedMessage.partial) {
+		logs.debug(
+			`Skipping outdated message update for ts=${updatedMessage.ts} (version ${newVersion} < ${currentVersion})`,
+			"extension",
+		)
+		return
+	}
+
+	// Update version tracking (use the existing message's timestamp for version tracking)
+	const newVersionMap = new Map(versionMap)
+	newVersionMap.set(existingMessage!.ts, newVersion)
+	set(messageVersionMapAtom, newVersionMap)
+
+	// Track streaming state (use the existing message's timestamp)
+	const newStreamingSet = new Set(streamingSet)
+	if (updatedMessage.partial) {
+		newStreamingSet.add(existingMessage!.ts)
+		logs.debug(`Message ts=${existingMessage!.ts} is now streaming`, "extension")
+	} else {
+		newStreamingSet.delete(existingMessage!.ts)
+		if (streamingSet.has(existingMessage!.ts)) {
+			logs.debug(`Message ts=${existingMessage!.ts} streaming completed`, "extension")
+		}
+	}
+	set(streamingMessagesSetAtom, newStreamingSet)
+
+	// Update existing message
+	const newMessages = [...messages]
+	newMessages[messageIndex] = updatedMessage
+	set(updateChatMessagesAtom, newMessages)
+	logs.debug(`Updated existing message ts=${updatedMessage.ts} (version ${newVersion})`, "extension")
 })
 
 /**
@@ -368,4 +453,72 @@ export const updatePartialExtensionStateAtom = atom(null, (get, set, partialStat
  */
 export const clearExtensionStateAtom = atom(null, (get, set) => {
 	set(updateExtensionStateAtom, null)
+	// Clear version tracking
+	set(messageVersionMapAtom, new Map<number, number>())
+	set(streamingMessagesSetAtom, new Set<number>())
 })
+
+/**
+ * Helper function to calculate message content length for versioning
+ * Used to determine which version of a message is newer
+ */
+function getMessageContentLength(msg: ExtensionChatMessage): number {
+	let length = 0
+	if (msg.text) length += msg.text.length
+	if (msg.say) length += msg.say.length
+	if (msg.ask) length += msg.ask.length
+	return length
+}
+
+/**
+ * Helper function to reconcile messages from state updates with existing messages
+ * Preserves streaming messages and messages with higher versions
+ */
+function reconcileMessages(
+	current: ExtensionChatMessage[],
+	incoming: ExtensionChatMessage[],
+	versionMap: Map<number, number>,
+	streamingSet: Set<number>,
+): ExtensionChatMessage[] {
+	const messageMap = new Map<number, ExtensionChatMessage>()
+
+	// Start with current messages
+	current.forEach((msg) => messageMap.set(msg.ts, msg))
+
+	// Process incoming messages
+	incoming.forEach((incomingMsg) => {
+		const existingMsg = messageMap.get(incomingMsg.ts)
+
+		// Skip if message is currently streaming - preserve the streaming version
+		if (streamingSet.has(incomingMsg.ts) && existingMsg) {
+			logs.debug(`Preserving streaming message ts=${incomingMsg.ts}`, "extension")
+			return
+		}
+
+		// Check version if we have tracking info
+		if (existingMsg && versionMap.has(incomingMsg.ts)) {
+			const currentVersion = versionMap.get(incomingMsg.ts) || 0
+			const incomingVersion = getMessageContentLength(incomingMsg)
+
+			// Only update if incoming is newer or equal
+			if (incomingVersion >= currentVersion) {
+				messageMap.set(incomingMsg.ts, incomingMsg)
+				logs.debug(
+					`Accepting incoming message ts=${incomingMsg.ts} (version ${incomingVersion} >= ${currentVersion})`,
+					"extension",
+				)
+			} else {
+				logs.debug(
+					`Rejecting outdated message ts=${incomingMsg.ts} (version ${incomingVersion} < ${currentVersion})`,
+					"extension",
+				)
+			}
+		} else {
+			// No existing message or version info, accept incoming
+			messageMap.set(incomingMsg.ts, incomingMsg)
+		}
+	})
+
+	// Return sorted array by timestamp
+	return Array.from(messageMap.values()).sort((a, b) => a.ts - b.ts)
+}
