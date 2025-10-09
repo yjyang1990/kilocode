@@ -1,9 +1,29 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import * as fs from "fs/promises"
 import * as path from "path"
 import { loadConfig, saveConfig, setConfigPaths, resetConfigPaths } from "../persistence.js"
 import { DEFAULT_AUTO_APPROVAL } from "../defaults.js"
 import type { CLIConfig } from "../types.js"
+
+// Mock fs/promises to handle schema.json reads
+vi.mock("fs/promises", async () => {
+	const actual = await vi.importActual<typeof import("fs/promises")>("fs/promises")
+	return {
+		...actual,
+		readFile: vi.fn(async (filePath: any, encoding?: any) => {
+			// If reading schema.json, return a minimal valid schema
+			if (typeof filePath === "string" && filePath.includes("schema.json")) {
+				return JSON.stringify({
+					type: "object",
+					properties: {},
+					additionalProperties: true,
+				})
+			}
+			// Otherwise use the actual implementation
+			return actual.readFile(filePath, encoding)
+		}),
+	}
+})
 
 describe("Config Persistence - Merge with Defaults", () => {
 	const testDir = path.join(process.cwd(), "test-config-merge")

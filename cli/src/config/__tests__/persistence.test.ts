@@ -23,6 +23,26 @@ vi.mock("../../services/logs.js", () => ({
 	},
 }))
 
+// Mock fs/promises to handle schema.json reads
+vi.mock("fs/promises", async () => {
+	const actual = await vi.importActual<typeof import("fs/promises")>("fs/promises")
+	return {
+		...actual,
+		readFile: vi.fn(async (filePath: any, encoding?: any) => {
+			// If reading schema.json, return a minimal valid schema
+			if (typeof filePath === "string" && filePath.includes("schema.json")) {
+				return JSON.stringify({
+					type: "object",
+					properties: {},
+					additionalProperties: true,
+				})
+			}
+			// Otherwise use the actual implementation
+			return actual.readFile(filePath, encoding)
+		}),
+	}
+})
+
 // Define test paths
 const TEST_CONFIG_DIR = path.join(homedir(), ".kilocode", "cli-test")
 const TEST_CONFIG_FILE = path.join(TEST_CONFIG_DIR, "config.json")
