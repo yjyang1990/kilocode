@@ -1,28 +1,28 @@
 import { describe, it, expect } from "vitest"
-import { normalizeAutoTriggerDelay, formatDelay, DELAY_VALUES } from "../delayUtils"
+import { normalizeAutoTriggerDelayToMs, formatDelay, DELAY_VALUES } from "../delayUtils"
 
 describe("normalizeAutoTriggerDelay", () => {
 	it("should return 3000 for undefined", () => {
-		expect(normalizeAutoTriggerDelay(undefined)).toBe(3000)
+		expect(normalizeAutoTriggerDelayToMs(undefined)).toBe(3000)
 	})
 
 	it("should return value as-is for values >= 50", () => {
-		expect(normalizeAutoTriggerDelay(50)).toBe(50)
-		expect(normalizeAutoTriggerDelay(100)).toBe(100)
-		expect(normalizeAutoTriggerDelay(1000)).toBe(1000)
-		expect(normalizeAutoTriggerDelay(5000)).toBe(5000)
+		expect(normalizeAutoTriggerDelayToMs(50)).toBe(50)
+		expect(normalizeAutoTriggerDelayToMs(100)).toBe(100)
+		expect(normalizeAutoTriggerDelayToMs(1000)).toBe(1000)
+		expect(normalizeAutoTriggerDelayToMs(5000)).toBe(5000)
 	})
 
 	it("should convert legacy second values to milliseconds (values < 50)", () => {
-		expect(normalizeAutoTriggerDelay(1)).toBe(1000)
-		expect(normalizeAutoTriggerDelay(3)).toBe(3000)
-		expect(normalizeAutoTriggerDelay(5)).toBe(5000)
+		expect(normalizeAutoTriggerDelayToMs(1)).toBe(1000)
+		expect(normalizeAutoTriggerDelayToMs(3)).toBe(3000)
+		expect(normalizeAutoTriggerDelayToMs(5)).toBe(5000)
 	})
 
 	it("should cap legacy values at 5 seconds (5000ms)", () => {
-		expect(normalizeAutoTriggerDelay(6)).toBe(5000)
-		expect(normalizeAutoTriggerDelay(10)).toBe(5000)
-		expect(normalizeAutoTriggerDelay(30)).toBe(5000)
+		expect(normalizeAutoTriggerDelayToMs(6)).toBe(5000)
+		expect(normalizeAutoTriggerDelayToMs(10)).toBe(5000)
+		expect(normalizeAutoTriggerDelayToMs(30)).toBe(5000)
 	})
 })
 

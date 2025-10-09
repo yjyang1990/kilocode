@@ -21,7 +21,7 @@ import { ClineProvider } from "../../core/webview/ClineProvider"
 import { GhostGutterAnimation } from "./GhostGutterAnimation"
 import { GhostCursor } from "./GhostCursor"
 import { RooIgnoreController } from "../../core/ignore/RooIgnoreController"
-import { normalizeAutoTriggerDelay } from "./utils/delayUtils"
+import { normalizeAutoTriggerDelayToMs } from "./utils/delayUtils"
 
 export class GhostProvider {
 	private static instance: GhostProvider | null = null
@@ -707,7 +707,7 @@ export class GhostProvider {
 		// Clear any existing timer
 		this.clearAutoTriggerTimer()
 		this.startProcessing()
-		const delay = normalizeAutoTriggerDelay(this.settings?.autoTriggerDelay)
+		const delay = normalizeAutoTriggerDelayToMs(this.settings?.autoTriggerDelay)
 		this.autoTriggerTimer = setTimeout(() => {
 			this.onAutoTriggerTimeout()
 		}, delay)
