@@ -218,19 +218,46 @@ export const addChatMessageAtom = atom(null, (get, set, message: ExtensionChatMe
 /**
  * Action atom to update a single message by timestamp
  * Used for incremental message updates during streaming
+ *
+ * This function handles three scenarios:
+ * 1. Message exists with matching timestamp - update it
+ * 2. Message is a streaming update (partial) - update the last message if it matches type/subtype
+ * 3. Message is new - add it to the list
  */
 export const updateChatMessageByTsAtom = atom(null, (get, set, updatedMessage: ExtensionChatMessage) => {
 	const messages = get(chatMessagesAtom)
 	const messageIndex = messages.findIndex((msg) => msg.ts === updatedMessage.ts)
 
 	if (messageIndex >= 0) {
-		// Update existing message
+		// Update existing message by timestamp
 		const newMessages = [...messages]
 		newMessages[messageIndex] = updatedMessage
 		set(updateChatMessagesAtom, newMessages)
-	} else {
-		set(addChatMessageAtom, updatedMessage)
+		return
 	}
+
+	// Check if this is a streaming update to the last message
+	// This handles cases where timestamps might differ slightly during rapid updates
+	if (messages.length > 0) {
+		const lastMessage = messages[messages.length - 1]
+
+		// Check if this update belongs to the last message based on type and subtype
+		const isSameType = lastMessage?.type === updatedMessage.type
+		const isSameSubtype =
+			(lastMessage?.type === "say" && lastMessage?.say === updatedMessage.say) ||
+			(lastMessage?.type === "ask" && lastMessage?.ask === updatedMessage.ask)
+
+		// If the last message was partial and this is the same type/subtype, update it
+		if (lastMessage?.partial && isSameType && isSameSubtype) {
+			const newMessages = [...messages]
+			newMessages[newMessages.length - 1] = updatedMessage
+			set(updateChatMessagesAtom, newMessages)
+			return
+		}
+	}
+
+	// This is a genuinely new message, add it
+	set(addChatMessageAtom, updatedMessage)
 })
 
 /**
