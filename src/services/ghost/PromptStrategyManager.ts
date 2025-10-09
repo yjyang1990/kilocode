@@ -8,6 +8,7 @@ import { CommentDrivenStrategy } from "./strategies/CommentDrivenStrategy"
 import { NewLineCompletionStrategy } from "./strategies/NewLineCompletionStrategy"
 import { InlineCompletionStrategy } from "./strategies/InlineCompletionStrategy"
 import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
+import { FimCodestralStrategy } from "./strategies/FimCodestralStrategy"
 
 /**
  * Manages prompt strategies and selects the appropriate one based on context
@@ -16,9 +17,11 @@ export class PromptStrategyManager {
 	private strategies: PromptStrategy[]
 	private autoTriggerStrategy: AutoTriggerStrategy
 	private debug: boolean
+	private overrideStrategy?: string
 
-	constructor(options?: { debug: boolean }) {
+	constructor(options?: { debug?: boolean; overrideStrategy?: string }) {
 		this.debug = options?.debug ?? false
+		this.overrideStrategy = options?.overrideStrategy
 
 		// Register all strategies in priority order
 		this.strategies = [
@@ -27,6 +30,7 @@ export class PromptStrategyManager {
 			new NewLineCompletionStrategy(),
 			new CommentDrivenStrategy(),
 			new InlineCompletionStrategy(),
+			new FimCodestralStrategy(),
 		]
 		this.autoTriggerStrategy = new AutoTriggerStrategy()
 	}
@@ -37,6 +41,17 @@ export class PromptStrategyManager {
 	 * @returns The selected strategy
 	 */
 	selectStrategy(context: GhostSuggestionContext): PromptStrategy {
+		// If an override strategy is specified, use that
+		if (this.overrideStrategy) {
+			const overrideStrat = this.strategies.find((s) => s.name === this.overrideStrategy)
+			if (overrideStrat) {
+				if (this.debug) {
+					console.log(`[PromptStrategyManager] Using override strategy: ${overrideStrat.name}`)
+				}
+				return overrideStrat
+			}
+		}
+
 		const strategy = this.strategies.find((s) => s.canHandle(context)) ?? this.autoTriggerStrategy
 
 		if (this.debug) {
@@ -44,6 +59,13 @@ export class PromptStrategyManager {
 		}
 
 		return strategy
+	}
+
+	/**
+	 * Get all available strategy names
+	 */
+	getAvailableStrategies(): string[] {
+		return [...this.strategies.map((s) => s.name), this.autoTriggerStrategy.name]
 	}
 
 	/**

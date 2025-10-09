@@ -1,18 +1,21 @@
 import { LLMClient } from "./llm-client.js"
-import { AutoTriggerStrategy } from "../services/ghost/strategies/AutoTriggerStrategy.js"
+import { PromptStrategyManager } from "../services/ghost/PromptStrategyManager.js"
 import { GhostSuggestionContext } from "../services/ghost/types.js"
 import { MockTextDocument } from "../services/mocking/MockTextDocument.js"
 import { CURSOR_MARKER } from "../services/ghost/ghostConstants.js"
 import { GhostStreamingParser } from "../services/ghost/GhostStreamingParser.js"
 import * as vscode from "vscode"
 
-export class AutoTriggerStrategyTester {
+export class StrategyTester {
 	private llmClient: LLMClient
-	private strategy: AutoTriggerStrategy
+	private strategyManager: PromptStrategyManager
 
-	constructor(llmClient: LLMClient) {
+	constructor(llmClient: LLMClient, options?: { overrideStrategy?: string }) {
 		this.llmClient = llmClient
-		this.strategy = new AutoTriggerStrategy()
+		this.strategyManager = new PromptStrategyManager({
+			debug: false,
+			overrideStrategy: options?.overrideStrategy,
+		})
 	}
 
 	/**
@@ -53,18 +56,9 @@ export class AutoTriggerStrategyTester {
 		}
 	}
 
-	getSystemInstructions(): string {
-		return this.strategy.getSystemInstructions()
-	}
-
-	buildUserPrompt(code: string): string {
-		const context = this.createContext(code)
-		return this.strategy.getUserPrompt(context)
-	}
-
 	async getCompletion(code: string): Promise<string> {
-		const systemPrompt = this.getSystemInstructions()
-		const userPrompt = this.buildUserPrompt(code)
+		const context = this.createContext(code)
+		const { systemPrompt, userPrompt, strategy } = this.strategyManager.buildPrompt(context)
 
 		const response = await this.llmClient.sendPrompt(systemPrompt, userPrompt)
 		return response.content
@@ -83,5 +77,14 @@ export class AutoTriggerStrategyTester {
 		parser.finishStream()
 
 		return parser.getCompletedChanges()
+	}
+
+	/**
+	 * Get the name of the strategy that would be selected for the given code
+	 */
+	getSelectedStrategyName(code: string): string {
+		const context = this.createContext(code)
+		const strategy = this.strategyManager.selectStrategy(context)
+		return strategy.name
 	}
 }
