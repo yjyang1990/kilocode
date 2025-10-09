@@ -3,10 +3,7 @@ import { PromptStrategy } from "./types/PromptStrategy"
 
 // Import all strategies
 import { UserRequestStrategy } from "./strategies/UserRequestStrategy"
-import { SelectionRefactorStrategy } from "./strategies/SelectionRefactorStrategy"
 import { CommentDrivenStrategy } from "./strategies/CommentDrivenStrategy"
-import { NewLineCompletionStrategy } from "./strategies/NewLineCompletionStrategy"
-import { InlineCompletionStrategy } from "./strategies/InlineCompletionStrategy"
 import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
 import { FimCodestralStrategy } from "./strategies/FimCodestralStrategy"
 
@@ -24,14 +21,7 @@ export class PromptStrategyManager {
 		this.overrideStrategy = options?.overrideStrategy
 
 		// Register all strategies in priority order
-		this.strategies = [
-			new UserRequestStrategy(),
-			new SelectionRefactorStrategy(),
-			new NewLineCompletionStrategy(),
-			new CommentDrivenStrategy(),
-			new InlineCompletionStrategy(),
-			new FimCodestralStrategy(),
-		]
+		this.strategies = [new UserRequestStrategy(), new CommentDrivenStrategy(), new FimCodestralStrategy()]
 		this.autoTriggerStrategy = new AutoTriggerStrategy()
 	}
 
