@@ -282,6 +282,7 @@ export class ExtensionHost extends EventEmitter {
 		// Hide logs that match extension internal patterns
 		const hiddenPatterns = [
 			/^\[createTask\]/,
+			/^\[clearTask\]/,
 			/^\[Task#/,
 			/^\[e#/,
 			/^Fetched default model from/,
