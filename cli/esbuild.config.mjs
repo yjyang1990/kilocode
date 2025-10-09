@@ -111,6 +111,8 @@ const __dirname = __dirname__(__filename);
 		"lodash.debounce",
 		"lru-cache",
 		"mammoth",
+		"marked",
+		"marked-terminal",
 		"monaco-vscode-textmate-theme-converter",
 		"node-cache",
 		"node-ipc",
