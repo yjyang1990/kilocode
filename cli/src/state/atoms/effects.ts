@@ -63,23 +63,12 @@ export const initializeServiceEffectAtom = atom(null, async (get, set, store?: a
 		})
 
 		service.on("stateChange", (state) => {
-			logs.debug(
-				`[EFFECTS] stateChange event with ${state.clineMessages?.length || state.chatMessages?.length || 0} messages`,
-				"effects",
-			)
 			if (atomStore) {
 				atomStore.set(updateExtensionStateAtom, state)
 			}
 		})
 
 		service.on("message", (message) => {
-			logs.debug(`[EFFECTS] Extension message received: ${message.type}`, "effects")
-			if (message.type === "messageUpdated" && message.chatMessage) {
-				logs.debug(
-					`[EFFECTS] messageUpdated: ts=${message.chatMessage.ts} type=${message.chatMessage.type} partial=${message.chatMessage.partial}`,
-					"effects",
-				)
-			}
 			if (atomStore) {
 				atomStore.set(messageHandlerEffectAtom, message)
 			}
@@ -132,38 +121,29 @@ export const messageHandlerEffectAtom = atom(null, (get, set, message: Extension
 			case "state":
 				// State messages are handled by the stateChange event listener
 				// Skip processing here to avoid duplication
-				logs.debug(`[EFFECTS] Skipping state message (handled by stateChange event)`, "effects")
 				break
 
 			case "messageUpdated":
 				if (message.chatMessage) {
-					logs.debug(
-						`[EFFECTS] Processing messageUpdated: ts=${message.chatMessage.ts} type=${message.chatMessage.type} partial=${message.chatMessage.partial}`,
-						"effects",
-					)
 					set(updateChatMessageByTsAtom, message.chatMessage)
 				}
 				break
 
 			case "routerModels":
 				if (message.routerModels) {
-					logs.debug("Received router models from extension", "effects")
 					set(updateRouterModelsAtom, message.routerModels)
 				}
 				break
 
 			case "action":
-				logs.debug(`Processing action message: ${message.action}`, "effects")
 				// Action messages are typically handled by the UI
 				break
 
 			case "partialMessage":
-				logs.debug("Processing partial message", "effects")
 				// Partial messages update the current message being streamed
 				break
 
 			case "invoke":
-				logs.debug("Processing invoke message", "effects")
 				// Invoke messages trigger specific UI actions
 				break
 

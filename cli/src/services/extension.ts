@@ -125,8 +125,6 @@ export class ExtensionService extends EventEmitter {
 
 		// Forward extension messages to message bridge and emit as events
 		this.extensionHost.on("message", (message: ExtensionMessage) => {
-			logs.debug(`Extension message: ${message.type}`, "ExtensionService")
-
 			// Send to message bridge for TUI consumption
 			this.messageBridge.sendExtensionMessage(message)
 
@@ -179,8 +177,6 @@ export class ExtensionService extends EventEmitter {
 		try {
 			if (data.type === "webviewMessage") {
 				const message = data.payload
-				logs.debug(`Forwarding webview message to extension host: ${message.type}`, "ExtensionService")
-
 				await this.extensionHost.sendWebviewMessage(message)
 				return { success: true }
 			}

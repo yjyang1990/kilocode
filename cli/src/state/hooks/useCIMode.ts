@@ -12,7 +12,6 @@ import {
 	ciCommandFinishedAtom,
 	ciExitReasonAtom,
 } from "../atoms/ci.js"
-import { isProcessingAtom } from "../atoms/ui.js"
 import { useExtensionMessage } from "./useExtensionMessage.js"
 import { logs } from "../../services/logs.js"
 
@@ -73,8 +72,6 @@ export interface UseCIModeReturn {
 export function useCIMode(options: UseCIModeOptions): UseCIModeReturn {
 	const { enabled, timeout, onExit } = options
 
-	logs.debug("useCIMode hook called", "useCIMode", { enabled, timeout })
-
 	// Read CI state atoms
 	const isCIMode = useAtomValue(ciModeAtom)
 	const ciTimeout = useAtomValue(ciTimeoutAtom)
@@ -97,17 +94,6 @@ export function useCIMode(options: UseCIModeOptions): UseCIModeReturn {
 
 	// Get extension messages to monitor for completion_result
 	const { lastMessage } = useExtensionMessage()
-
-	logs.debug("useCIMode state", "useCIMode", {
-		enabled,
-		isCIMode,
-		completionDetected,
-		commandFinished,
-		shouldExit,
-		localExitReason,
-		lastMessageType: lastMessage?.type,
-		lastMessageAsk: lastMessage?.ask,
-	})
 
 	// Monitor for completion_result messages
 	useEffect(() => {
@@ -180,7 +166,6 @@ export function useCIMode(options: UseCIModeOptions): UseCIModeReturn {
 	// Mark command as finished (called by command/message handlers)
 	const markCommandFinished = useCallback(() => {
 		if (enabled) {
-			logs.debug("CI mode: marking command as finished", "useCIMode")
 			setCommandFinished(true)
 		}
 	}, [enabled, setCommandFinished])
