@@ -860,7 +860,11 @@ export const webviewMessageHandler = async (
 				// kilocode_change start
 				{
 					key: "ovhcloud",
-					options: { provider: "ovhcloud", apiKey: apiConfiguration.ovhCloudAiEndpointsApiKey },
+					options: {
+						provider: "ovhcloud",
+						apiKey: apiConfiguration.ovhCloudAiEndpointsApiKey,
+						baseUrl: apiConfiguration.ovhCloudAiEndpointsBaseUrl,
+					},
 				},
 				// kilocode_change end
 			]
