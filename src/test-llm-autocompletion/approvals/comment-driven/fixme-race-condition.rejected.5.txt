@@ -1,0 +1,6 @@
+async function updateCounter() {
+  // FIXME: Race condition when multiple updates happen simultaneously
+  // TODO: Implement locking mechanism to prevent concurrent updates
+  const current = await getCounter();
+  await setCounter(current + 1);
+}
