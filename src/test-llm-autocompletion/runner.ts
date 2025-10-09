@@ -120,6 +120,9 @@ class TestRunner {
 					if (result.newOutput) {
 						console.log(`    (New output approved)`)
 					}
+				} else if (result.newOutput && this.skipApproval) {
+					console.log("? UNKNOWN")
+					console.log(`    (New output without approval)`)
 				} else {
 					console.log("✗ FAILED")
 					if (result.error) {
@@ -170,12 +173,17 @@ class TestRunner {
 		console.log("\n📊 Test Summary\n")
 
 		const passed = this.results.filter((r) => r.isApproved).length
-		const failed = this.results.filter((r) => !r.isApproved).length
-		const passRate = ((passed / this.results.length) * 100).toFixed(1)
+		const unknown = this.results.filter((r) => !r.isApproved && r.newOutput && this.skipApproval).length
+		const failed = this.results.filter((r) => !r.isApproved && !(r.newOutput && this.skipApproval)).length
+		const knownTotal = passed + failed
+		const passRate = knownTotal > 0 ? ((passed / knownTotal) * 100).toFixed(1) : "0.0"
 
 		console.log(`  ✓ Passed: ${passed}`)
 		console.log(`  ✗ Failed: ${failed}`)
-		console.log(`  📈 Pass Rate: ${passRate}%`)
+		if (unknown > 0) {
+			console.log(`  ? Unknown: ${unknown}`)
+		}
+		console.log(`  📈 Accuracy: ${passRate}% (${passed}/${knownTotal})`)
 
 		const requestDurations = this.results
 			.filter((r) => r.llmRequestDuration !== undefined)
@@ -218,7 +226,7 @@ class TestRunner {
 		}
 
 		// Failed tests details
-		const failedResults = this.results.filter((r) => !r.isApproved)
+		const failedResults = this.results.filter((r) => !r.isApproved && !(r.newOutput && this.skipApproval))
 		if (failedResults.length > 0) {
 			console.log("\n❌ Failed Tests:")
 			for (const result of failedResults) {
@@ -226,6 +234,15 @@ class TestRunner {
 				if (result.error) {
 					console.log(`    Error: ${result.error}`)
 				}
+			}
+		}
+
+		// Unknown tests details
+		const unknownResults = this.results.filter((r) => !r.isApproved && r.newOutput && this.skipApproval)
+		if (unknownResults.length > 0) {
+			console.log("\n❓ Unknown Tests (new outputs without approval):")
+			for (const result of unknownResults) {
+				console.log(`  • ${result.testCase.name} (${result.testCase.category})`)
 			}
 		}
 
