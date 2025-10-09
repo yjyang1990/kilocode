@@ -11,6 +11,7 @@ export enum UseCaseType {
 	COMMENT_DRIVEN = "COMMENT_DRIVEN",
 	SELECTION_REFACTOR = "SELECTION_REFACTOR",
 	AUTO_TRIGGER = "AUTO_TRIGGER",
+	FIM_CODESTRAL = "FIM_CODESTRAL",
 }
 
 /**
@@ -33,13 +34,6 @@ export interface PromptStrategy {
 	 * @returns true if this strategy can handle the context
 	 */
 	canHandle(context: GhostSuggestionContext): boolean
-
-	/**
-	 * Filters the context to only include relevant fields for this strategy
-	 * @param context The full suggestion context
-	 * @returns Partial context with only relevant fields
-	 */
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext>
 
 	/**
 	 * Generates system instructions for the AI model

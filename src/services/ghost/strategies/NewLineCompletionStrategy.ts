@@ -1,20 +1,13 @@
 import type { TextDocument, Range } from "vscode"
 import { GhostSuggestionContext } from "../types"
-import { UseCaseType } from "../types/PromptStrategy"
-import { BasePromptStrategy } from "./BasePromptStrategy"
+import { PromptStrategy, UseCaseType } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
+import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 
-/**
- * Strategy for proactive code completion on new/empty lines
- * suggests logical next code when user creates a new line
- */
-export class NewLineCompletionStrategy extends BasePromptStrategy {
+export class NewLineCompletionStrategy implements PromptStrategy {
 	name = "New Line Completion"
 	type = UseCaseType.NEW_LINE
 
-	/**
-	 * Can handle when cursor is on an empty line
-	 */
 	canHandle(context: GhostSuggestionContext): boolean {
 		if (!context.document || !context.range) return false
 
@@ -22,27 +15,10 @@ export class NewLineCompletionStrategy extends BasePromptStrategy {
 		return line.trim() === ""
 	}
 
-	/**
-	 * Focus on surrounding code and recent actions
-	 * Exclude diagnostics and user input
-	 */
-	getRelevantContext(context: GhostSuggestionContext): Partial<GhostSuggestionContext> {
-		return {
-			document: context.document,
-			range: context.range,
-			recentOperations: context.recentOperations,
-			// Exclude:
-			// - userInput (no explicit request)
-			// - diagnostics (not relevant for new line)
-			// - openFiles (reduces tokens)
-		}
-	}
-
-	/**
-	 * System instructions for new line completion
-	 */
-	protected getSpecificSystemInstructions(): string {
-		return `Task: Proactive Code Completion for New Lines
+	getSystemInstructions(customInstructions?: string): string {
+		return (
+			getBaseSystemInstructions() +
+			`Task: Proactive Code Completion for New Lines
 The user has created a new line. Suggest the most logical next code based on context.
 
 Completion Guidelines:
@@ -75,12 +51,13 @@ Important:
 - Respect existing code patterns and comments
 - Maintain consistent style
 - Consider the most likely next step`
+		)
 	}
 
 	/**
 	 * Build prompt focused on surrounding context
 	 */
-	protected buildUserPrompt(context: Partial<GhostSuggestionContext>): string {
+	getUserPrompt(context: GhostSuggestionContext): string {
 		let prompt = ""
 
 		// Start with cursor context
@@ -99,7 +76,7 @@ Important:
 		// Add the full document with cursor marker
 		if (context.document) {
 			prompt += "## Full Code\n"
-			prompt += this.formatDocumentWithCursor(context.document, context.range)
+			prompt += formatDocumentWithCursor(context.document, context.range)
 			prompt += "\n\n"
 		}
 
