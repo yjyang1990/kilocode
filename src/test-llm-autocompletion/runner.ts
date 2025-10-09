@@ -4,6 +4,7 @@ import { LLMClient } from "./llm-client.js"
 import { StrategyTester } from "./strategy-tester.js"
 import { testCases, getCategories, TestCase } from "./test-cases.js"
 import { checkApproval } from "./approvals.js"
+import { PromptStrategyManager } from "../services/ghost/PromptStrategyManager.js"
 
 interface TestResult {
 	testCase: TestCase
@@ -359,10 +360,31 @@ async function main() {
 
 	// Check for strategy override
 	const strategyArgIndex = args.findIndex((arg) => arg === "--strategy" || arg === "-s")
-	const overrideStrategy =
-		strategyArgIndex !== -1 && args[strategyArgIndex + 1]
-			? args[strategyArgIndex + 1]
-			: process.env.TEST_STRATEGY || undefined
+	let overrideStrategy: string | undefined
+
+	if (strategyArgIndex !== -1) {
+		const strategyValue = args[strategyArgIndex + 1]
+		if (!strategyValue || strategyValue.startsWith("-")) {
+			console.error("\n❌ Error: --strategy/-s flag requires a strategy name")
+			console.log("\nUsage: --strategy <strategy-name> or -s <strategy-name>\n")
+			process.exit(1)
+		}
+		overrideStrategy = strategyValue
+	}
+
+	// Validate strategy if provided
+	if (overrideStrategy) {
+		const strategyManager = new PromptStrategyManager()
+		const availableStrategies = strategyManager.getAvailableStrategies()
+
+		if (!availableStrategies.includes(overrideStrategy)) {
+			console.error(`\n❌ Error: Strategy "${overrideStrategy}" does not exist`)
+			console.log("\nAvailable strategies:")
+			availableStrategies.forEach((strategy) => console.log(`  - ${strategy}`))
+			console.log()
+			process.exit(1)
+		}
+	}
 
 	const testName = args.find((arg) => !arg.startsWith("-") && arg !== overrideStrategy)
 
