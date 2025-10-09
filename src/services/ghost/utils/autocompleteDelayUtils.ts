@@ -5,7 +5,9 @@ export const DELAY_VALUES = [
 export const DEFAULT_DELAY_VALUE = 3000
 
 export function normalizeAutoTriggerDelayToMs(value: number | undefined): number {
-	if (value === undefined) return DEFAULT_DELAY_VALUE
+	if (value === undefined) {
+		return DEFAULT_DELAY_VALUE
+	}
 	if (value < 50) {
 		return Math.min(value, 5) * 1000
 	}
