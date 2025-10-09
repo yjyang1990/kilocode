@@ -1,6 +1,6 @@
 {
-	"name": "@kilo-code/cli",
-	"version": "1.0.0",
+	"name": "@kilocode/cli",
+	"version": "0.0.1-alpha.0",
 	"description": "Terminal User Interface for Kilo Code",
 	"type": "module",
 	"main": "dist/index.js",
@@ -9,7 +9,7 @@
 		"kilo": "dist/index.js"
 	},
 	"scripts": {
-		"build": "node esbuild.config.mjs && chmod +x dist/index.js && mkdir -p dist/config && cp src/config/schema.json dist/config/schema.json && cp package.dist.json dist/package.json && cp README.md dist/README.md",
+		"build": "node esbuild.config.mjs && chmod +x dist/index.js && mkdir -p dist/config && cp src/config/schema.json dist/config/schema.json && cp package.dist.json dist/package.json && cp README.md dist/README.md && cp .env dist/.env",
 		"deps:install": "npm install --prefix ./dist",
 		"start": "node dist/index.js",
 		"clean": "rimraf dist",
