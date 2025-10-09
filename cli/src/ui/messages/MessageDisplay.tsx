@@ -88,20 +88,23 @@ export const MessageDisplay: React.FC<MessageDisplayProps> = ({ filterType, maxM
 	}
 
 	return (
-		<Box flexDirection="column" paddingX={1}>
+		<Box flexDirection="column">
 			{/* Static section for completed messages - won't re-render */}
 			{staticMessages.length > 0 && (
 				<Static items={staticMessages}>
-					{(message, index) => <MessageRow key={getMessageKey(message, index)} unifiedMessage={message} />}
+					{(message, index) => (
+						<Box key={getMessageKey(message, index)} paddingX={1}>
+							<MessageRow unifiedMessage={message} />
+						</Box>
+					)}
 				</Static>
 			)}
 
 			{/* Dynamic section for incomplete/updating messages - will re-render */}
 			{dynamicMessages.map((unifiedMsg, index) => (
-				<MessageRow
-					key={getMessageKey(unifiedMsg, staticMessages.length + index)}
-					unifiedMessage={unifiedMsg}
-				/>
+				<Box paddingX={1} key={getMessageKey(unifiedMsg, staticMessages.length + index)}>
+					<MessageRow unifiedMessage={unifiedMsg} />
+				</Box>
 			))}
 		</Box>
 	)
