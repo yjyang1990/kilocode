@@ -9,7 +9,7 @@
 		"kilo": "dist/index.js"
 	},
 	"scripts": {
-		"build": "node esbuild.config.mjs && chmod +x dist/index.js && mkdir -p dist/config && cp src/config/schema.json dist/config/schema.json && cp package.dist.json dist/package.json && cp README.md dist/README.md && cp .env dist/.env",
+		"build": "node esbuild.config.mjs",
 		"deps:install": "npm install --prefix ./dist",
 		"start": "node dist/index.js",
 		"clean": "rimraf dist",
