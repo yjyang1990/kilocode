@@ -950,7 +950,8 @@
 		"providerNotAllowed": "المزوّد '{{provider}}' غير مسموح به.",
 		"modelNotAllowed": "النموذج '{{model}}' غير مسموح به للمزوّد '{{provider}}'.",
 		"profileInvalid": "الملف يحتوي مزوّد أو نموذج غير مسموح.",
-		"qwenCodeOauthPath": "يجب توفير مسار صالح لبيانات OAuth."
+		"qwenCodeOauthPath": "يجب توفير مسار صالح لبيانات OAuth.",
+		"modelDeprecated": "هذا النموذج لم يعد متوفرًا. يرجى اختيار نموذج آخر."
 	},
 	"placeholders": {
 		"apiKey": "اكتب مفتاح API...",

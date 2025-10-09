@@ -961,6 +961,7 @@
 		"providerNotAllowed": "Poskytovatel '{{provider}}' není povolen vaší organizací",
 		"modelNotAllowed": "Model '{{model}}' není povolen pro poskytovatele '{{provider}}' vaší organizací",
 		"profileInvalid": "Tento profil obsahuje poskytovatele nebo model, který není povolen vaší organizací",
+		"modelDeprecated": "Tento model již není dostupný. Prosím vyberte jiný model.",
 		"qwenCodeOauthPath": "Musíte poskytnout platnou cestu k OAuth pověřením."
 	},
 	"placeholders": {
