@@ -66,10 +66,6 @@ Generate code to fill in at the cursor position. The code should:
 			new (context.range.constructor as any)(position, new (position.constructor as any)(document.lineCount, 0)),
 		)
 
-		// Build the prompt using Continue's codestral format
-		// Format: [SUFFIX]suffix[PREFIX]prefix
-		let prompt = `[SUFFIX]${textAfterCursor}[PREFIX]${textBeforeCursor}${CURSOR_MARKER}`
-
-		return prompt
+		return `[SUFFIX]${textAfterCursor}[PREFIX]${textBeforeCursor}${CURSOR_MARKER}`
 	}
 }
