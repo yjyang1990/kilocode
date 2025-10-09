@@ -17,7 +17,7 @@ export class FimCodestralStrategy extends BasePromptStrategy {
 	canHandle(_context: GhostSuggestionContext): boolean {
 		// This strategy can handle all cases when explicitly selected
 		// In production, you'd add specific logic here
-		return true
+		return false // We will enable in the next PR -- 2025-10-09
 	}
 
 	getSystemInstructions(): string {
@@ -59,12 +59,10 @@ Generate code to fill in at the cursor position. The code should:
 		const position = context.range.start
 
 		// Get the code before and after the cursor
-		const textBeforeCursor = document.getText(
-			new (context.range.constructor as any)(new (position.constructor as any)(0, 0), position),
-		)
-		const textAfterCursor = document.getText(
-			new (context.range.constructor as any)(position, new (position.constructor as any)(document.lineCount, 0)),
-		)
+		const fullText = document.getText()
+		const offset = document.offsetAt(position)
+		const textBeforeCursor = fullText.substring(0, offset)
+		const textAfterCursor = fullText.substring(offset)
 
 		return `[SUFFIX]${textAfterCursor}[PREFIX]${textBeforeCursor}${CURSOR_MARKER}`
 	}
