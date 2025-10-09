@@ -131,7 +131,8 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	const isAnyOperationInProgress = isProcessing || isExecutingCommand || isSendingMessage
 
 	return (
-		<Box flexDirection="column" minHeight={options.ci ? 0 : stdout.rows}>
+		// Using stdout.rows causes layout shift during renders
+		<Box flexDirection="column" minHeight={options.ci ? 0 : stdout.rows - 1}>
 			{!options.ci && <SplashScreen renderWelcomeMessage={!options.prompt} />}
 			<Box flexDirection="column" overflow="hidden">
 				<MessageDisplay />
