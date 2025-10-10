@@ -153,6 +153,14 @@ export const updateProviderAtom = atom(null, async (get, set, providerId: string
 
 	set(configAtom, updatedConfig)
 	await set(saveConfigAtom, updatedConfig)
+
+	logs.info("Provider updated, syncing to extension", "ConfigAtoms")
+
+	// Import from config-sync to avoid circular dependency
+	const { syncConfigToExtensionEffectAtom } = await import("./config-sync.js")
+
+	// Trigger sync to extension after provider update
+	await set(syncConfigToExtensionEffectAtom)
 })
 
 // Action atom to remove a provider
