@@ -16,6 +16,15 @@ export interface ParsedChange {
 	cursorPosition?: number // Offset within replace content where cursor should be positioned
 }
 
+function extractCursorPosition(content: string): number | undefined {
+	const markerIndex = content.indexOf(CURSOR_MARKER)
+	return markerIndex !== -1 ? markerIndex : undefined
+}
+
+function removeCursorMarker(content: string): string {
+	return content.replaceAll(CURSOR_MARKER, "")
+}
+
 /**
  * Streaming XML parser for Ghost suggestions that can process incomplete responses
  * and emit suggestions as soon as complete <change> blocks are available
@@ -124,7 +133,7 @@ export class GhostStreamingParser {
 			const searchContent = match[1]
 			// Extract cursor position from replace content
 			const replaceContent = match[2]
-			const cursorPosition = this.extractCursorPosition(replaceContent)
+			const cursorPosition = extractCursorPosition(replaceContent)
 
 			newChanges.push({
 				search: searchContent,
@@ -199,7 +208,7 @@ export class GhostStreamingParser {
 		// Process changes: preserve search content as-is, clean replace content for application
 		const filteredChanges = changes.map((change) => ({
 			search: change.search, // Keep cursor markers for matching against document
-			replace: this.removeCursorMarker(change.replace), // Clean for content application
+			replace: removeCursorMarker(change.replace), // Clean for content application
 			cursorPosition: change.cursorPosition,
 		}))
 
@@ -276,7 +285,7 @@ export class GhostStreamingParser {
 
 		// Remove cursor marker from the final content if we added it
 		if (needsCursorMarker) {
-			modifiedContent = this.removeCursorMarker(modifiedContent)
+			modifiedContent = removeCursorMarker(modifiedContent)
 		}
 
 		// Generate diff between original and modified content
@@ -436,21 +445,6 @@ export class GhostStreamingParser {
 		}
 
 		return originalIndex
-	}
-
-	/**
-	 * Extract cursor position from content containing cursor marker
-	 */
-	private extractCursorPosition(content: string): number | undefined {
-		const markerIndex = content.indexOf(CURSOR_MARKER)
-		return markerIndex !== -1 ? markerIndex : undefined
-	}
-
-	/**
-	 * Remove cursor marker from content and return clean content
-	 */
-	private removeCursorMarker(content: string): string {
-		return content.replaceAll(CURSOR_MARKER, "")
 	}
 
 	/**
