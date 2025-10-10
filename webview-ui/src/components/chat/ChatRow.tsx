@@ -65,7 +65,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SeeNewChangesButtons } from "./kilocode/SeeNewChangesButtons"
-import ChatTimestamps from "./ChatTimestamps"
+import ChatTimestamps from "./ChatTimestamps" // kilocode_change
 
 interface ChatRowProps {
 	message: ClineMessage
@@ -147,6 +147,7 @@ export const ChatRowContent = ({
 }: ChatRowContentProps) => {
 	const { t } = useTranslation()
 
+	// kilocode_change: add showTimestamps
 	const { mcpServers, alwaysAllowMcp, currentCheckpoint, showTimestamps } = useExtensionState()
 
 	// Memoized callback to prevent re-renders caused by inline arrow functions.
@@ -1065,10 +1066,12 @@ export const ChatRowContent = ({
 								onClick={handleToggleExpand}>
 								<div style={{ display: "flex", alignItems: "center", gap: "10px", flexGrow: 1 }}>
 									{icon}
+									{/* kilocode_change start */}
 									<div style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1 }}>
 										{title}
 										{showTimestamps && <ChatTimestamps ts={message.ts} />}
 									</div>
+									{/* kilocode_change end */}
 								</div>
 								<div
 									className="text-xs text-vscode-dropdown-foreground border-vscode-dropdown-border/50 border px-1.5 py-0.5 rounded-lg"
@@ -1175,21 +1178,24 @@ export const ChatRowContent = ({
 						<>
 							<div style={headerStyle}>
 								{icon}
+								{/* kilocode_change start */}
 								<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 									{title}
 									{showTimestamps && <ChatTimestamps ts={message.ts} />}
 								</div>
+								{/* kilocode_change end */}
 							</div>
 							<div className="border-l border-green-600/30 ml-2 pl-4 pb-1">
 								<Markdown markdown={message.text} />
 							</div>
 							{
-								// kilocode_change end
+								// kilocode_change start
 								!message.partial && enableCheckpoints !== false && commitRange ? (
 									<SeeNewChangesButtons commitRange={commitRange} />
 								) : (
 									<></>
 								)
+								// kilocode_change end
 							}
 						</>
 					)
@@ -1372,10 +1378,12 @@ export const ChatRowContent = ({
 							{title && (
 								<div style={headerStyle}>
 									{icon}
+									{/* kilocode_change start */}
 									<div style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1 }}>
 										{title}
 										{showTimestamps && <ChatTimestamps ts={message.ts} />}
 									</div>
+									{/* kilocode_change end */}
 								</div>
 							)}
 							<div style={{ paddingTop: 10 }}>
@@ -1478,10 +1486,12 @@ export const ChatRowContent = ({
 							{title && (
 								<div style={headerStyle}>
 									{icon}
+									{/* kilocode_change start */}
 									<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 										{title}
 										{showTimestamps && <ChatTimestamps ts={message.ts} />}
 									</div>
+									{/* kilocode_change start */}
 								</div>
 							)}
 							<div className="flex flex-col gap-2 ml-6">
