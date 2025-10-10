@@ -76,6 +76,11 @@ function isResponseComplete(buffer: string, completedChangesCount: number): bool
 	// consider it complete
 	const trimmedBuffer = buffer.trim()
 
+	// If the buffer is empty or only whitespace, consider it complete
+	if (trimmedBuffer.length === 0) {
+		return true
+	}
+
 	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(trimmedBuffer)
 	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(trimmedBuffer)
 	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(trimmedBuffer)
@@ -84,11 +89,6 @@ function isResponseComplete(buffer: string, completedChangesCount: number): bool
 	// If we have incomplete tags, the response is not complete
 	if (incompleteChangeMatch || incompleteSearchMatch || incompleteReplaceMatch || incompleteCDataMatch) {
 		return false
-	}
-
-	// If the buffer is empty or only whitespace, consider it complete
-	if (trimmedBuffer.length === 0) {
-		return true
 	}
 
 	// If we have at least one complete change and no incomplete tags, likely complete
