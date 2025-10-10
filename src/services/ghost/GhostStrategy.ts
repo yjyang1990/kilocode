@@ -60,11 +60,4 @@ export class GhostStrategy {
 	public getStreamingBuffer(): string {
 		return this.streamingParser.buffer
 	}
-
-	/**
-	 * Get completed changes from the streaming parser (for debugging)
-	 */
-	public getStreamingCompletedChanges() {
-		return this.streamingParser.getCompletedChanges()
-	}
 }

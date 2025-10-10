@@ -162,10 +162,6 @@ describe("Ghost Streaming Integration", () => {
 			expect(suggestionUpdates).toBe(2)
 			expect(finalSuggestions).not.toBeNull()
 			expect(finalSuggestions.hasSuggestions()).toBe(true)
-
-			// Verify we have the expected number of completed changes
-			const completedChanges = strategy.getStreamingCompletedChanges()
-			expect(completedChanges).toHaveLength(2)
 		})
 
 		it("should handle cancellation during streaming", async () => {

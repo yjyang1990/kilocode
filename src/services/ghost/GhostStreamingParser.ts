@@ -72,11 +72,10 @@ function sanitizeXMLConservative(buffer: string): string {
  * Check if the response appears to be complete
  */
 function isResponseComplete(buffer: string, completedChangesCount: number): boolean {
-	// Simple heuristic: if we haven't seen new content for a while and
-	// the buffer doesn't end with an incomplete tag, consider it complete
+	// Simple heuristic: if the buffer doesn't end with an incomplete tag,
+	// consider it complete
 	const trimmedBuffer = buffer.trim()
 
-	// Check if we have any incomplete <change> tags
 	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(trimmedBuffer)
 	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(trimmedBuffer)
 	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(trimmedBuffer)
