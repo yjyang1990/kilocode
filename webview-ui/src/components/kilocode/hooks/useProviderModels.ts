@@ -19,7 +19,7 @@ import {
 	xaiModels,
 	groqModels,
 	groqDefaultModelId,
-	chutesModels,
+	// chutesModels, // kilocode_change
 	chutesDefaultModelId,
 	vscodeLlmModels,
 	vscodeLlmDefaultModelId,
@@ -49,6 +49,7 @@ import {
 	deepInfraDefaultModelId,
 	cerebrasModels,
 	cerebrasDefaultModelId,
+	ovhCloudAiEndpointsDefaultModelId, // kilocode_change
 } from "@roo-code/types"
 import type { ModelRecord, RouterModels } from "@roo/api"
 import { useRouterModels } from "../../ui/hooks/useRouterModels"
@@ -113,7 +114,7 @@ export const getModelsByProvider = ({
 		}
 		case "chutes": {
 			return {
-				models: chutesModels,
+				models: routerModels.chutes, // kilocode_change
 				defaultModel: chutesDefaultModelId,
 			}
 		}
@@ -271,6 +272,14 @@ export const getModelsByProvider = ({
 				defaultModel: deepInfraDefaultModelId,
 			}
 		}
+		// kilocode_change start
+		case "ovhcloud": {
+			return {
+				models: routerModels.ovhcloud,
+				defaultModel: ovhCloudAiEndpointsDefaultModelId,
+			}
+		}
+		// kilocode_change end
 		default:
 			return {
 				models: {},
@@ -288,6 +297,7 @@ export const useProviderModels = (apiConfiguration?: ProviderSettings) => {
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.apiKey,
 		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId ?? "personal",
+		chutesApiKey: apiConfiguration?.chutesApiKey, // kilocode_change
 	})
 
 	const { models, defaultModel } =

@@ -17,7 +17,7 @@ import {
 	vertexModels,
 	xaiModels,
 	groqModels,
-	chutesModels,
+	// chutesModels, // kilocode_change
 	sambaNovaModels,
 	doubaoModels,
 	internationalZAiModels,
@@ -45,7 +45,7 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	vertex: vertexModels,
 	xai: xaiModels,
 	groq: groqModels,
-	chutes: chutesModels,
+	// chutes: chutesModels, // kilocode_change
 	sambanova: sambaNovaModels,
 	zai: internationalZAiModels,
 	fireworks: fireworksModels,
@@ -78,6 +78,7 @@ export const PROVIDERS = [
 	{ value: "mistral", label: "Mistral" },
 	{ value: "lmstudio", label: "LM Studio" },
 	{ value: "ollama", label: "Ollama" },
+	{ value: "ovhcloud", label: "OVHcloud AI Endpoints" }, // kilocode_change
 	{ value: "unbound", label: "Unbound" },
 	{ value: "requesty", label: "Requesty" },
 	{ value: "human-relay", label: "Human Relay" },

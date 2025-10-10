@@ -39,6 +39,7 @@ import {
 	rooDefaultModelId,
 	vercelAiGatewayDefaultModelId,
 	deepInfraDefaultModelId,
+	ovhCloudAiEndpointsDefaultModelId, // kilocode_change
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -104,6 +105,7 @@ import {
 	Featherless,
 	VercelAiGateway,
 	DeepInfra,
+	OvhCloudAiEndpoints, // kilocode_change
 } from "./providers"
 
 import { MODELS_BY_PROVIDER, PROVIDERS } from "./constants"
@@ -122,7 +124,6 @@ import { BedrockCustomArn } from "./providers/BedrockCustomArn"
 import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_change
 import { buildDocLink } from "@src/utils/docLinks"
 import { KiloProviderRouting, KiloProviderRoutingManagedByOrganization } from "./providers/KiloProviderRouting"
-import { OpenRouterMarkupInfoView } from "../kilocode/FreeModelsLink"
 
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
@@ -209,12 +210,13 @@ const ApiOptions = ({
 		info: selectedModelInfo,
 	} = useSelectedModel(apiConfiguration)
 
-	// kilocode_change start: queryKey
+	// kilocode_change start: queryKey, chutesApiKey
 	const { data: routerModels, refetch: refetchRouterModels } = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
 		openRouterApiKey: apiConfiguration?.openRouterApiKey,
 		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId ?? "personal",
 		deepInfraApiKey: apiConfiguration?.deepInfraApiKey,
+		chutesApiKey: apiConfiguration?.chutesApiKey,
 	})
 
 	//const { data: openRouterModelProviders } = useOpenRouterModelProviders(
@@ -234,7 +236,9 @@ const ApiOptions = ({
 	// Update `apiModelId` whenever `selectedModelId` changes.
 	useEffect(() => {
 		if (selectedModelId && apiConfiguration.apiModelId !== selectedModelId) {
-			setApiConfigurationField("apiModelId", selectedModelId)
+			// Pass false as third parameter to indicate this is not a user action
+			// This is an internal sync, not a user-initiated change
+			setApiConfigurationField("apiModelId", selectedModelId, false)
 		}
 	}, [selectedModelId, setApiConfigurationField, apiConfiguration.apiModelId])
 
@@ -261,7 +265,11 @@ const ApiOptions = ({
 				vscode.postMessage({ type: "requestLmStudioModels" })
 			} else if (selectedProvider === "vscode-lm") {
 				vscode.postMessage({ type: "requestVsCodeLmModels" })
-			} else if (selectedProvider === "litellm" || selectedProvider === "deepinfra") {
+			} else if (
+				selectedProvider === "litellm" ||
+				selectedProvider === "deepinfra" ||
+				selectedProvider === "chutes" // kilocode_change
+			) {
 				vscode.postMessage({ type: "requestRouterModels" })
 			}
 		},
@@ -277,6 +285,8 @@ const ApiOptions = ({
 			apiConfiguration?.litellmApiKey,
 			apiConfiguration?.deepInfraApiKey,
 			apiConfiguration?.deepInfraBaseUrl,
+			apiConfiguration?.chutesApiKey, // kilocode_change
+			apiConfiguration?.ovhCloudAiEndpointsBaseUrl, // kilocode_change
 			customHeaders,
 		],
 	)
@@ -296,15 +306,24 @@ const ApiOptions = ({
 
 		const filteredModels = filterModels(models, selectedProvider, organizationAllowList)
 
-		const modelOptions = filteredModels
-			? Object.keys(filteredModels).map((modelId) => ({
-					value: modelId,
-					label: modelId,
-				}))
+		// Include the currently selected model even if deprecated (so users can see what they have selected)
+		// But filter out other deprecated models from being newly selectable
+		const availableModels = filteredModels
+			? Object.entries(filteredModels)
+					.filter(([modelId, modelInfo]) => {
+						// Always include the currently selected model
+						if (modelId === selectedModelId) return true
+						// Filter out deprecated models that aren't currently selected
+						return !modelInfo.deprecated
+					})
+					.map(([modelId]) => ({
+						value: modelId,
+						label: modelId,
+					}))
 			: []
 
-		return modelOptions
-	}, [selectedProvider, organizationAllowList])
+		return availableModels
+	}, [selectedProvider, organizationAllowList, selectedModelId])
 
 	const onProviderChange = useCallback(
 		(value: ProviderName) => {
@@ -376,6 +395,7 @@ const ApiOptions = ({
 				fireworks: { field: "apiModelId", default: fireworksDefaultModelId },
 				synthetic: { field: "apiModelId", default: syntheticDefaultModelId }, // kilocode_change
 				featherless: { field: "apiModelId", default: featherlessDefaultModelId },
+				ovhcloud: { field: "ovhCloudAiEndpointsModelId", default: ovhCloudAiEndpointsDefaultModelId }, // kilocode_change
 				"io-intelligence": { field: "ioIntelligenceModelId", default: ioIntelligenceDefaultModelId },
 				roo: { field: "apiModelId", default: rooDefaultModelId },
 				"vercel-ai-gateway": { field: "vercelAiGatewayModelId", default: vercelAiGatewayDefaultModelId },
@@ -471,14 +491,6 @@ const ApiOptions = ({
 				/>
 			</div>
 
-			{
-				// kilocode_change start
-				selectedProvider === "openrouter" && (
-					<OpenRouterMarkupInfoView setApiConfigurationField={setApiConfigurationField} />
-				)
-				// kilocode_change end
-			}
-
 			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
 
 			{/* kilocode_change start */}
@@ -571,6 +583,18 @@ const ApiOptions = ({
 				/>
 			)}
 
+			{/* kilocode_change start */}
+			{selectedProvider === "ovhcloud" && (
+				<OvhCloudAiEndpoints
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					routerModels={routerModels}
+					organizationAllowList={organizationAllowList}
+					modelValidationError={modelValidationError}
+				/>
+			)}
+			{/* kilocode_change end */}
+
 			{selectedProvider === "mistral" && (
 				<Mistral apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
@@ -652,11 +676,18 @@ const ApiOptions = ({
 				<Cerebras apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
-			{selectedProvider === "chutes" && (
-				<Chutes apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
-			)}
-
 			{/* kilocode_change start */}
+
+			{selectedProvider === "chutes" && (
+				// kilocode_change: added props
+				<Chutes
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					routerModels={routerModels}
+					organizationAllowList={organizationAllowList}
+					modelValidationError={modelValidationError}
+				/>
+			)}
 
 			{selectedProvider === "gemini-cli" && (
 				<GeminiCli apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
@@ -790,6 +821,11 @@ const ApiOptions = ({
 						</Select>
 					</div>
 
+					{/* Show error if a deprecated model is selected */}
+					{selectedModelInfo?.deprecated && (
+						<ApiErrorMessage errorMessage={t("settings:validation.modelDeprecated")} />
+					)}
+
 					{selectedProvider === "bedrock" && selectedModelId === "custom-arn" && (
 						<BedrockCustomArn
 							apiConfiguration={apiConfiguration}
@@ -797,13 +833,16 @@ const ApiOptions = ({
 						/>
 					)}
 
-					<ModelInfoView
-						apiProvider={selectedProvider}
-						selectedModelId={selectedModelId}
-						modelInfo={selectedModelInfo}
-						isDescriptionExpanded={isDescriptionExpanded}
-						setIsDescriptionExpanded={setIsDescriptionExpanded}
-					/>
+					{/* Only show model info if not deprecated */}
+					{!selectedModelInfo?.deprecated && (
+						<ModelInfoView
+							apiProvider={selectedProvider}
+							selectedModelId={selectedModelId}
+							modelInfo={selectedModelInfo}
+							isDescriptionExpanded={isDescriptionExpanded}
+							setIsDescriptionExpanded={setIsDescriptionExpanded}
+						/>
+					)}
 				</>
 			)}
 
