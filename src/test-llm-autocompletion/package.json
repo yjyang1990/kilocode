@@ -6,7 +6,6 @@
 	"scripts": {
 		"test": "tsx runner.ts",
 		"test:verbose": "tsx runner.ts --verbose",
-		"test:fim": "tsx runner.ts --strategy \"FIM Codestral\"",
 		"clean": "tsx runner.ts clean"
 	},
 	"dependencies": {
