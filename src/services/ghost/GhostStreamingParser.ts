@@ -26,6 +26,49 @@ function removeCursorMarker(content: string): string {
 }
 
 /**
+ * Conservative XML sanitization - only fixes the specific case from user feedback
+ */
+function sanitizeXMLConservative(buffer: string): string {
+	let sanitized = buffer
+
+	// Fix malformed CDATA sections first - this is the main bug from user logs
+	// Replace </![CDATA[ with ]]> to fix malformed CDATA closures
+	sanitized = sanitized.replace(/<\/!\[CDATA\[/g, "]]>")
+
+	// Only fix the specific case: missing </change> tag when we have complete search/replace pairs
+	const changeOpenCount = (sanitized.match(/<change>/g) || []).length
+	const changeCloseCount = (sanitized.match(/<\/change>/g) || []).length
+
+	// Check if we have an incomplete </change> tag (like "</change" without the final ">")
+	const incompleteChangeClose = sanitized.includes("</change") && !sanitized.includes("</change>")
+
+	// Handle two cases:
+	// 1. Missing </change> tag entirely (changeCloseCount === 0 && !incompleteChangeClose)
+	// 2. Incomplete </change> tag (incompleteChangeClose)
+	if (changeOpenCount === 1 && changeCloseCount === 0) {
+		const searchCloseCount = (sanitized.match(/<\/search>/g) || []).length
+		const replaceCloseCount = (sanitized.match(/<\/replace>/g) || []).length
+
+		// Only fix if we have complete search/replace pairs
+		if (searchCloseCount === 1 && replaceCloseCount === 1) {
+			if (incompleteChangeClose) {
+				// Fix incomplete </change tag by adding the missing ">"
+				sanitized = sanitized.replace("</change", "</change>")
+			} else {
+				// Add missing </change> tag entirely
+				const trimmed = sanitized.trim()
+				// Make sure we're not in the middle of streaming an incomplete tag
+				if (!trimmed.endsWith("<")) {
+					sanitized += "</change>"
+				}
+			}
+		}
+	}
+
+	return sanitized
+}
+
+/**
  * Streaming XML parser for Ghost suggestions that can process incomplete responses
  * and emit suggestions as soon as complete <change> blocks are available
  */
@@ -81,7 +124,7 @@ export class GhostStreamingParser {
 		// Apply very conservative sanitization only when the stream is finished
 		// and we still have no completed changes but have content in the buffer
 		if (this.completedChanges.length === 0 && this.buffer.trim().length > 0 && this.streamFinished) {
-			const sanitizedBuffer = this.sanitizeXMLConservative(this.buffer)
+			const sanitizedBuffer = sanitizeXMLConservative(this.buffer)
 			if (sanitizedBuffer !== this.buffer) {
 				// Re-process with sanitized buffer
 				this.buffer = sanitizedBuffer
@@ -459,48 +502,5 @@ export class GhostStreamingParser {
 	 */
 	public getCompletedChanges(): ParsedChange[] {
 		return [...this.completedChanges]
-	}
-
-	/**
-	 * Conservative XML sanitization - only fixes the specific case from user feedback
-	 */
-	private sanitizeXMLConservative(buffer: string): string {
-		let sanitized = buffer
-
-		// Fix malformed CDATA sections first - this is the main bug from user logs
-		// Replace </![CDATA[ with ]]> to fix malformed CDATA closures
-		sanitized = sanitized.replace(/<\/!\[CDATA\[/g, "]]>")
-
-		// Only fix the specific case: missing </change> tag when we have complete search/replace pairs
-		const changeOpenCount = (sanitized.match(/<change>/g) || []).length
-		const changeCloseCount = (sanitized.match(/<\/change>/g) || []).length
-
-		// Check if we have an incomplete </change> tag (like "</change" without the final ">")
-		const incompleteChangeClose = sanitized.includes("</change") && !sanitized.includes("</change>")
-
-		// Handle two cases:
-		// 1. Missing </change> tag entirely (changeCloseCount === 0 && !incompleteChangeClose)
-		// 2. Incomplete </change> tag (incompleteChangeClose)
-		if (changeOpenCount === 1 && changeCloseCount === 0) {
-			const searchCloseCount = (sanitized.match(/<\/search>/g) || []).length
-			const replaceCloseCount = (sanitized.match(/<\/replace>/g) || []).length
-
-			// Only fix if we have complete search/replace pairs
-			if (searchCloseCount === 1 && replaceCloseCount === 1) {
-				if (incompleteChangeClose) {
-					// Fix incomplete </change tag by adding the missing ">"
-					sanitized = sanitized.replace("</change", "</change>")
-				} else {
-					// Add missing </change> tag entirely
-					const trimmed = sanitized.trim()
-					// Make sure we're not in the middle of streaming an incomplete tag
-					if (!trimmed.endsWith("<")) {
-						sanitized += "</change>"
-					}
-				}
-			}
-		}
-
-		return sanitized
 	}
 }
