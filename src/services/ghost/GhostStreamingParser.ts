@@ -119,7 +119,7 @@ export class GhostStreamingParser {
 		this.completedChanges.push(...newChanges)
 
 		// Check if the response appears complete
-		let isComplete = this.isResponseComplete()
+		let isComplete = this.isResponseComplete(this.buffer, this.completedChanges.length)
 
 		// Apply very conservative sanitization only when the stream is finished
 		// and we still have no completed changes but have content in the buffer
@@ -132,7 +132,7 @@ export class GhostStreamingParser {
 				if (sanitizedChanges.length > 0) {
 					this.completedChanges.push(...sanitizedChanges)
 					hasNewSuggestions = true
-					isComplete = this.isResponseComplete() // Re-check completion after sanitization
+					isComplete = this.isResponseComplete(this.buffer, this.completedChanges.length) // Re-check completion after sanitization
 				}
 			}
 		}
@@ -198,10 +198,10 @@ export class GhostStreamingParser {
 	/**
 	 * Check if the response appears to be complete
 	 */
-	private isResponseComplete(): boolean {
+	private isResponseComplete(buffer: string, completedChangesCount: number): boolean {
 		// Simple heuristic: if we haven't seen new content for a while and
 		// the buffer doesn't end with an incomplete tag, consider it complete
-		const trimmedBuffer = this.buffer.trim()
+		const trimmedBuffer = buffer.trim()
 
 		// Check if we have any incomplete <change> tags
 		const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(trimmedBuffer)
@@ -220,7 +220,7 @@ export class GhostStreamingParser {
 		}
 
 		// If we have at least one complete change and no incomplete tags, likely complete
-		return this.completedChanges.length > 0
+		return completedChangesCount > 0
 	}
 
 	/**
