@@ -96,6 +96,107 @@ function isResponseComplete(buffer: string, completedChangesCount: number): bool
 	return completedChangesCount > 0
 }
 
+/*
+ * Find the best match for search content in the document, handling whitespace differences and cursor markers
+ * This is a simplified version of the method from GhostStrategy
+ */
+function findBestMatch(content: string, searchPattern: string): number {
+	// Validate inputs
+	if (!content || !searchPattern) {
+		return -1
+	}
+
+	// First try exact match
+	let index = content.indexOf(searchPattern)
+	if (index !== -1) {
+		return index
+	}
+
+	// Handle the case where search pattern has trailing whitespace that might not match exactly
+	if (searchPattern.endsWith("\n")) {
+		// Try matching without the trailing newline, then check if we can find it in context
+		const searchWithoutTrailingNewline = searchPattern.slice(0, -1)
+		index = content.indexOf(searchWithoutTrailingNewline)
+		if (index !== -1) {
+			// Check if the character after the match is a newline or end of string
+			const afterMatchIndex = index + searchWithoutTrailingNewline.length
+			if (afterMatchIndex >= content.length || content[afterMatchIndex] === "\n") {
+				return index
+			}
+		}
+	}
+
+	// Normalize whitespace for both content and search pattern
+	const normalizeWhitespace = (text: string): string => {
+		return text
+			.replace(/\r\n/g, "\n") // Normalize line endings
+			.replace(/\r/g, "\n") // Handle old Mac line endings
+			.replace(/\t/g, "    ") // Convert tabs to spaces
+			.replace(/[ \t]+$/gm, "") // Remove trailing whitespace from each line
+	}
+
+	const normalizedContent = normalizeWhitespace(content)
+	const normalizedSearch = normalizeWhitespace(searchPattern)
+
+	// Try normalized match
+	index = normalizedContent.indexOf(normalizedSearch)
+	if (index !== -1) {
+		// Map back to original content position
+		return mapNormalizedToOriginalIndex(content, normalizedContent, index)
+	}
+
+	// Try trimmed search (remove leading/trailing whitespace)
+	const trimmedSearch = searchPattern.trim()
+	if (trimmedSearch !== searchPattern) {
+		index = content.indexOf(trimmedSearch)
+		if (index !== -1) {
+			return index
+		}
+	}
+
+	return -1 // No match found
+}
+
+/**
+ * Map an index from normalized content back to the original content
+ */
+function mapNormalizedToOriginalIndex(
+	originalContent: string,
+	normalizedContent: string,
+	normalizedIndex: number,
+): number {
+	let originalIndex = 0
+	let normalizedPos = 0
+
+	while (normalizedPos < normalizedIndex && originalIndex < originalContent.length) {
+		const originalChar = originalContent[originalIndex]
+		const normalizedChar = normalizedContent[normalizedPos]
+
+		if (originalChar === normalizedChar) {
+			originalIndex++
+			normalizedPos++
+		} else {
+			// Handle whitespace normalization differences
+			if (/\s/.test(originalChar)) {
+				originalIndex++
+				// Skip ahead in original until we find non-whitespace or match normalized
+				while (originalIndex < originalContent.length && /\s/.test(originalContent[originalIndex])) {
+					originalIndex++
+				}
+				if (normalizedPos < normalizedContent.length && /\s/.test(normalizedChar)) {
+					normalizedPos++
+				}
+			} else {
+				// Characters don't match, this shouldn't happen with proper normalization
+				originalIndex++
+				normalizedPos++
+			}
+		}
+	}
+
+	return originalIndex
+}
+
 /**
  * Streaming XML parser for Ghost suggestions that can process incomplete responses
  * and emit suggestions as soon as complete <change> blocks are available
@@ -265,7 +366,7 @@ export class GhostStreamingParser {
 		}> = []
 
 		for (const change of filteredChanges) {
-			let searchIndex = this.findBestMatch(modifiedContent, change.search)
+			let searchIndex = findBestMatch(modifiedContent, change.search)
 
 			if (searchIndex !== -1) {
 				// Check for overlapping changes before applying
@@ -387,107 +488,6 @@ export class GhostStreamingParser {
 
 		suggestions.sortGroups()
 		return suggestions
-	}
-
-	/**
-	 * Find the best match for search content in the document, handling whitespace differences and cursor markers
-	 * This is a simplified version of the method from GhostStrategy
-	 */
-	private findBestMatch(content: string, searchPattern: string): number {
-		// Validate inputs
-		if (!content || !searchPattern) {
-			return -1
-		}
-
-		// First try exact match
-		let index = content.indexOf(searchPattern)
-		if (index !== -1) {
-			return index
-		}
-
-		// Handle the case where search pattern has trailing whitespace that might not match exactly
-		if (searchPattern.endsWith("\n")) {
-			// Try matching without the trailing newline, then check if we can find it in context
-			const searchWithoutTrailingNewline = searchPattern.slice(0, -1)
-			index = content.indexOf(searchWithoutTrailingNewline)
-			if (index !== -1) {
-				// Check if the character after the match is a newline or end of string
-				const afterMatchIndex = index + searchWithoutTrailingNewline.length
-				if (afterMatchIndex >= content.length || content[afterMatchIndex] === "\n") {
-					return index
-				}
-			}
-		}
-
-		// Normalize whitespace for both content and search pattern
-		const normalizeWhitespace = (text: string): string => {
-			return text
-				.replace(/\r\n/g, "\n") // Normalize line endings
-				.replace(/\r/g, "\n") // Handle old Mac line endings
-				.replace(/\t/g, "    ") // Convert tabs to spaces
-				.replace(/[ \t]+$/gm, "") // Remove trailing whitespace from each line
-		}
-
-		const normalizedContent = normalizeWhitespace(content)
-		const normalizedSearch = normalizeWhitespace(searchPattern)
-
-		// Try normalized match
-		index = normalizedContent.indexOf(normalizedSearch)
-		if (index !== -1) {
-			// Map back to original content position
-			return this.mapNormalizedToOriginalIndex(content, normalizedContent, index)
-		}
-
-		// Try trimmed search (remove leading/trailing whitespace)
-		const trimmedSearch = searchPattern.trim()
-		if (trimmedSearch !== searchPattern) {
-			index = content.indexOf(trimmedSearch)
-			if (index !== -1) {
-				return index
-			}
-		}
-
-		return -1 // No match found
-	}
-
-	/**
-	 * Map an index from normalized content back to the original content
-	 */
-	private mapNormalizedToOriginalIndex(
-		originalContent: string,
-		normalizedContent: string,
-		normalizedIndex: number,
-	): number {
-		let originalIndex = 0
-		let normalizedPos = 0
-
-		while (normalizedPos < normalizedIndex && originalIndex < originalContent.length) {
-			const originalChar = originalContent[originalIndex]
-			const normalizedChar = normalizedContent[normalizedPos]
-
-			if (originalChar === normalizedChar) {
-				originalIndex++
-				normalizedPos++
-			} else {
-				// Handle whitespace normalization differences
-				if (/\s/.test(originalChar)) {
-					originalIndex++
-					// Skip ahead in original until we find non-whitespace or match normalized
-					while (originalIndex < originalContent.length && /\s/.test(originalContent[originalIndex])) {
-						originalIndex++
-					}
-					if (normalizedPos < normalizedContent.length && /\s/.test(normalizedChar)) {
-						normalizedPos++
-					}
-				} else {
-					// Characters don't match, this shouldn't happen with proper normalization
-					originalIndex++
-					normalizedPos++
-				}
-			}
-		}
-
-		return originalIndex
 	}
 
 	/**
