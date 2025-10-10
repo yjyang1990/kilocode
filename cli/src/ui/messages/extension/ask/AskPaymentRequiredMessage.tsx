@@ -3,17 +3,19 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display low credit warning with payment icon
  */
 export const AskPaymentRequiredMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	const icon = getMessageIcon("ask", "payment_required_prompt")
 
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor="yellow" paddingX={1} marginY={1}>
+		<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.warning} paddingX={1} marginY={1}>
 			<Box>
-				<Text color="yellow" bold>
+				<Text color={theme.semantic.warning} bold>
 					{icon} Low Credit Warning
 				</Text>
 			</Box>
@@ -25,14 +27,14 @@ export const AskPaymentRequiredMessage: React.FC<MessageComponentProps> = ({ mes
 			)}
 
 			<Box marginTop={1}>
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					Your account is running low on credits. Please add more credits to continue.
 				</Text>
 			</Box>
 
 			{message.isAnswered && (
 				<Box marginTop={1}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						✓ Answered
 					</Text>
 				</Box>

@@ -3,12 +3,15 @@ import { Box, Text } from "ink"
 import type { CliMessage } from "../../../types/cli.js"
 import { MarkdownText } from "../../components/MarkdownText.js"
 import { WelcomeMessage } from "./WelcomeMessage.js"
+import { useTheme } from "../../../state/hooks/useTheme.js"
 
 interface CliMessageRowProps {
 	message: CliMessage
 }
 
 export const CliMessageRow: React.FC<CliMessageRowProps> = ({ message }) => {
+	const theme = useTheme()
+
 	// Handle welcome message type specially
 	if (message.type === "welcome") {
 		return (
@@ -21,15 +24,15 @@ export const CliMessageRow: React.FC<CliMessageRowProps> = ({ message }) => {
 	const getColor = () => {
 		switch (message.type) {
 			case "user":
-				return "blue"
+				return theme.messages.user
 			case "assistant":
-				return "green"
+				return theme.messages.assistant
 			case "system":
-				return "gray"
+				return theme.messages.system
 			case "error":
-				return "red"
+				return theme.messages.error
 			default:
-				return "white"
+				return theme.ui.text.primary
 		}
 	}
 
@@ -61,7 +64,7 @@ export const CliMessageRow: React.FC<CliMessageRowProps> = ({ message }) => {
 				</Text>
 				<MarkdownText>{message.content}</MarkdownText>
 				{message.partial && (
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						{" "}
 						...
 					</Text>

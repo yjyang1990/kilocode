@@ -5,6 +5,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { CommandSuggestion, ArgumentSuggestion } from "../../services/autocomplete.js"
+import { useTheme } from "../../state/hooks/useTheme.js"
 
 interface AutocompleteMenuProps {
 	type: "command" | "argument" | "none"
@@ -43,6 +44,7 @@ interface SuggestionsMenuProps {
 }
 
 const SuggestionsMenu: React.FC<SuggestionsMenuProps> = ({ type, suggestions, selectedIndex }) => {
+	const theme = useTheme()
 	const VISIBLE_ITEMS = 5
 	const totalItems = suggestions.length
 
@@ -59,11 +61,11 @@ const SuggestionsMenu: React.FC<SuggestionsMenuProps> = ({ type, suggestions, se
 	const displaySuggestions = suggestions.slice(windowStart, windowEnd)
 
 	const title = type === "command" ? "Commands:" : "Arguments:"
-	const borderColor = type === "command" ? "gray" : "cyan"
+	const borderColor = type === "command" ? theme.ui.border.default : theme.ui.border.active
 
 	return (
 		<Box flexDirection="column" borderStyle="single" borderColor={borderColor} paddingX={1}>
-			<Text bold color="cyan">
+			<Text bold color={theme.semantic.info}>
 				{title}
 			</Text>
 			{displaySuggestions.map((suggestion, displayIndex) => {
@@ -82,7 +84,7 @@ const SuggestionsMenu: React.FC<SuggestionsMenuProps> = ({ type, suggestions, se
 				)
 			})}
 			<Box marginTop={1}>
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					↑↓ Navigate • Tab/Enter Select • Esc Cancel
 				</Text>
 			</Box>
@@ -97,19 +99,24 @@ interface SuggestionRowProps {
 }
 
 const SuggestionRow: React.FC<SuggestionRowProps> = ({ type, suggestion, isSelected }) => {
+	const theme = useTheme()
 	return (
 		<Box>
 			{isSelected && (
-				<Text color="green" bold>
+				<Text color={theme.semantic.success} bold>
 					{">"}{" "}
 				</Text>
 			)}
 			{!isSelected && <Text>{"  "}</Text>}
 
-			{type === "argument" && (suggestion as ArgumentSuggestion).loading && <Text color="yellow">⏳ </Text>}
-			{type === "argument" && (suggestion as ArgumentSuggestion).error && <Text color="red">❌ </Text>}
+			{type === "argument" && (suggestion as ArgumentSuggestion).loading && (
+				<Text color={theme.semantic.warning}>⏳ </Text>
+			)}
+			{type === "argument" && (suggestion as ArgumentSuggestion).error && (
+				<Text color={theme.semantic.error}>❌ </Text>
+			)}
 
-			<Text color={isSelected ? "green" : "white"} bold={isSelected}>
+			<Text color={isSelected ? theme.semantic.success : theme.ui.text.primary} bold={isSelected}>
 				{type === "command"
 					? `/${(suggestion as CommandSuggestion).command.name}`
 					: (suggestion as ArgumentSuggestion).value}
@@ -118,8 +125,8 @@ const SuggestionRow: React.FC<SuggestionRowProps> = ({ type, suggestion, isSelec
 			{((type === "command" && (suggestion as CommandSuggestion).command.description) ||
 				(type === "argument" && (suggestion as ArgumentSuggestion).description)) && (
 				<>
-					<Text color="gray"> - </Text>
-					<Text color={isSelected ? "white" : "gray"}>
+					<Text color={theme.ui.text.dimmed}> - </Text>
+					<Text color={isSelected ? theme.ui.text.primary : theme.ui.text.dimmed}>
 						{type === "command"
 							? (suggestion as CommandSuggestion).command.description
 							: (suggestion as ArgumentSuggestion).description}

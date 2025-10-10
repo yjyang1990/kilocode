@@ -54,6 +54,9 @@ export type { UseTaskStateReturn } from "./useTaskState.js"
 export { useConfig } from "./useConfig.js"
 export type { UseConfigReturn } from "./useConfig.js"
 
+// Theme hooks
+export { useTheme } from "./useTheme.js"
+
 // Approval hooks
 export { useApprovalHandler } from "./useApprovalHandler.js"
 export type { UseApprovalHandlerOptions, UseApprovalHandlerReturn } from "./useApprovalHandler.js"

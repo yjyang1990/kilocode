@@ -3,11 +3,13 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
 import { useApprovalEffect } from "../../../../state/hooks/useApprovalEffect.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display browser action launch request
  */
 export const AskBrowserActionLaunchMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	// Use centralized approval orchestration
 	useApprovalEffect(message)
 
@@ -25,20 +27,20 @@ export const AskBrowserActionLaunchMessage: React.FC<MessageComponentProps> = ({
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="yellow" bold>
+				<Text color={theme.semantic.warning} bold>
 					{icon} Browser Action Request
 				</Text>
 			</Box>
 
 			{url && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="cyan">URL: {url}</Text>
+					<Text color={theme.semantic.info}>URL: {url}</Text>
 				</Box>
 			)}
 
 			{message.isAnswered && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						✓ Answered
 					</Text>
 				</Box>

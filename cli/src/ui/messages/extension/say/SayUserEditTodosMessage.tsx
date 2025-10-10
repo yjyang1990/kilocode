@@ -3,17 +3,19 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { parseToolData } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display user manually edited todos
  */
 export const SayUserEditTodosMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	const toolData = parseToolData(message)
 
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor="cyan" paddingX={1} marginY={1}>
+		<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.info} paddingX={1} marginY={1}>
 			<Box>
-				<Text color="cyan" bold>
+				<Text color={theme.semantic.info} bold>
 					☐ User Edited Todos
 				</Text>
 			</Box>
@@ -23,7 +25,11 @@ export const SayUserEditTodosMessage: React.FC<MessageComponentProps> = ({ messa
 					{toolData.todos.map((todo, index) => {
 						const statusIcon = todo.status === "completed" ? "✓" : todo.status === "in_progress" ? "⋯" : "☐"
 						const statusColor =
-							todo.status === "completed" ? "green" : todo.status === "in_progress" ? "yellow" : "gray"
+							todo.status === "completed"
+								? theme.semantic.success
+								: todo.status === "in_progress"
+									? theme.actions.pending
+									: theme.ui.text.dimmed
 
 						return (
 							<Box key={index} marginTop={index > 0 ? 0 : 0}>

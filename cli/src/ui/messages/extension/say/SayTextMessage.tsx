@@ -3,11 +3,13 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon, getMessageColor } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display plain text messages with optional markdown formatting and image indicators
  */
 export const SayTextMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	const icon = getMessageIcon("say", "text")
 	const color = getMessageColor("say", "text")
 	const text = message.text || ""
@@ -28,7 +30,7 @@ export const SayTextMessage: React.FC<MessageComponentProps> = ({ message }) => 
 				<Text> </Text>
 				<MarkdownText>{text}</MarkdownText>
 				{message.partial && (
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						{" "}
 						...
 					</Text>
@@ -37,7 +39,7 @@ export const SayTextMessage: React.FC<MessageComponentProps> = ({ message }) => 
 
 			{message.images && message.images.length > 0 && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						📎 {message.images.length} image(s) attached
 					</Text>
 				</Box>

@@ -4,11 +4,13 @@ import type { ToolMessageProps } from "../types.js"
 import { getToolIcon } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
 import { logs } from "../../../../services/logs.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display todo list updates with status indicators
  */
 export const ToolUpdateTodoListMessage: React.FC<ToolMessageProps> = ({ toolData }) => {
+	const theme = useTheme()
 	const icon = getToolIcon("updateTodoList")
 
 	const getStatusIcon = (status: string) => {
@@ -26,19 +28,19 @@ export const ToolUpdateTodoListMessage: React.FC<ToolMessageProps> = ({ toolData
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "completed":
-				return "green"
+				return theme.semantic.success
 			case "in_progress":
-				return "yellow"
+				return theme.actions.pending
 			case "pending":
 			default:
-				return "gray"
+				return theme.ui.text.dimmed
 		}
 	}
 
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="blue" bold>
+				<Text color={theme.messages.user} bold>
 					{icon} Todo List Updated
 				</Text>
 			</Box>
@@ -47,7 +49,7 @@ export const ToolUpdateTodoListMessage: React.FC<ToolMessageProps> = ({ toolData
 				<Box
 					flexDirection="column"
 					borderStyle="single"
-					borderColor="gray"
+					borderColor={theme.ui.border.default}
 					paddingX={1}
 					marginTop={1}
 					marginLeft={2}>
@@ -64,7 +66,7 @@ export const ToolUpdateTodoListMessage: React.FC<ToolMessageProps> = ({ toolData
 			)}
 
 			<Box marginLeft={2} marginTop={1}>
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					Legend: ✓ Completed ⋯ In Progress ☐ Pending
 				</Text>
 			</Box>

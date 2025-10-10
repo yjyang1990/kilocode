@@ -30,6 +30,12 @@ export const modeAtom = atom((get) => {
 	return config.mode
 })
 
+// Derived atom for current theme
+export const themeAtom = atom((get) => {
+	const config = get(configAtom)
+	return config.theme || "dark"
+})
+
 // Action atom to load config from disk
 // Accepts optional mode parameter to override the loaded config's mode
 export const loadConfigAtom = atom(null, async (get, set, mode?: string) => {

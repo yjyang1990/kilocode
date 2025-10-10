@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "./types.js"
 import { parseToolData } from "./utils.js"
 import { ToolRouter } from "./tools/ToolRouter.js"
+import { useTheme } from "../../../state/hooks/useTheme.js"
 import {
 	SayTextMessage,
 	SayErrorMessage,
@@ -31,9 +32,10 @@ import {
  * Default component for unknown say message types
  */
 const DefaultSayMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	return (
 		<Box marginY={1}>
-			<Text color="green">{message.text || `Unknown say type: ${message.say}`}</Text>
+			<Text color={theme.semantic.success}>{message.text || `Unknown say type: ${message.say}`}</Text>
 		</Box>
 	)
 }

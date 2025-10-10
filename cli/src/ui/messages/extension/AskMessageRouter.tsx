@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "./types.js"
 import { parseToolData } from "./utils.js"
 import { ToolRouter } from "./tools/ToolRouter.js"
+import { useTheme } from "../../../state/hooks/useTheme.js"
 import {
 	AskToolMessage,
 	AskMistakeLimitMessage,
@@ -21,9 +22,10 @@ import {
  * Default component for unknown ask message types
  */
 const DefaultAskMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	return (
 		<Box marginY={1}>
-			<Text color="yellow">{message.text || `Unknown ask type: ${message.ask}`}</Text>
+			<Text color={theme.semantic.warning}>{message.text || `Unknown ask type: ${message.ask}`}</Text>
 		</Box>
 	)
 }

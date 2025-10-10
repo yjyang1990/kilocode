@@ -3,17 +3,19 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display bug report creation request
  */
 export const AskReportBugMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	const icon = getMessageIcon("ask", "report_bug")
 
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="yellow" bold>
+				<Text color={theme.semantic.warning} bold>
 					{icon} Bug Report Request
 				</Text>
 			</Box>
@@ -25,14 +27,14 @@ export const AskReportBugMessage: React.FC<MessageComponentProps> = ({ message }
 			)}
 
 			<Box marginLeft={2} marginTop={1}>
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					A GitHub issue will be created to report this bug.
 				</Text>
 			</Box>
 
 			{message.isAnswered && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						✓ Answered
 					</Text>
 				</Box>

@@ -2,18 +2,20 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { parseApiReqInfo } from "../utils.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display API request status (streaming/completed/failed/cancelled)
  */
 export const SayApiReqStartedMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	const apiInfo = parseApiReqInfo(message)
 
 	// Streaming state
 	if (message.partial) {
 		return (
 			<Box marginY={1}>
-				<Text color="cyan">⟳ API Request in progress...</Text>
+				<Text color={theme.semantic.info}>⟳ API Request in progress...</Text>
 			</Box>
 		)
 	}
@@ -23,12 +25,12 @@ export const SayApiReqStartedMessage: React.FC<MessageComponentProps> = ({ messa
 		return (
 			<Box flexDirection="column" marginY={1}>
 				<Box>
-					<Text color="red" bold>
+					<Text color={theme.semantic.error} bold>
 						✖ API Request failed
 					</Text>
 				</Box>
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="red">{apiInfo.streamingFailedMessage}</Text>
+					<Text color={theme.semantic.error}>{apiInfo.streamingFailedMessage}</Text>
 				</Box>
 			</Box>
 		)
@@ -39,12 +41,12 @@ export const SayApiReqStartedMessage: React.FC<MessageComponentProps> = ({ messa
 		return (
 			<Box flexDirection="column" marginY={1}>
 				<Box>
-					<Text color="yellow" bold>
+					<Text color={theme.semantic.warning} bold>
 						⚠ API Request cancelled
 					</Text>
 				</Box>
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						Reason: {apiInfo.cancelReason === "user_cancelled" ? "User cancelled" : apiInfo.cancelReason}
 					</Text>
 				</Box>
@@ -55,14 +57,14 @@ export const SayApiReqStartedMessage: React.FC<MessageComponentProps> = ({ messa
 	// Completed state
 	return (
 		<Box marginY={1}>
-			<Text color="green" bold>
+			<Text color={theme.semantic.success} bold>
 				✓ API Request
 			</Text>
 			{apiInfo?.cost !== undefined && (
 				<>
-					<Text color="cyan"> - Cost: ${apiInfo.cost.toFixed(4)}</Text>
+					<Text color={theme.semantic.info}> - Cost: ${apiInfo.cost.toFixed(4)}</Text>
 					{apiInfo.usageMissing && (
-						<Text color="gray" dimColor>
+						<Text color={theme.ui.text.dimmed} dimColor>
 							{" "}
 							(estimated)
 						</Text>

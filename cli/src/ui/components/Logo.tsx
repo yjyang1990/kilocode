@@ -1,5 +1,6 @@
 import React from "react"
 import { Box, Text } from "ink"
+import { useTheme } from "../../state/hooks/useTheme.js"
 
 export const ASCII_LOGO = `⣿⡿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⢿⣿
 ⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿
@@ -21,22 +22,22 @@ export const BIG_TEXT = ` █████   ████  ███  ███�
  █████ ░░████ █████ █████░░██████     ░░█████████ ░░██████ ░░████████░░██████
 ░░░░░   ░░░░ ░░░░░ ░░░░░  ░░░░░░       ░░░░░░░░░   ░░░░░░   ░░░░░░░░  ░░░░░░ `
 
-export const DEFAULT_BRAND_YELLOW = "#F7F864"
-
 interface LogoProps {
 	color?: string
 	showBigText?: boolean
 	alignment?: "left" | "center" | "right"
 }
 
-export const Logo: React.FC<LogoProps> = ({ color = DEFAULT_BRAND_YELLOW, showBigText = true, alignment = "left" }) => {
+export const Logo: React.FC<LogoProps> = ({ color, showBigText = true, alignment = "left" }) => {
+	const theme = useTheme()
+	const logoColor = color ?? theme.brand.primary
 	const justifyContent = alignment === "center" ? "center" : alignment === "right" ? "flex-end" : "flex-start"
 
 	return (
 		<Box flexDirection="row" alignItems="center" gap={4} justifyContent={justifyContent}>
 			<Box flexDirection="column">
 				{ASCII_LOGO.split("\n").map((line, index) => (
-					<Text key={index} color={color}>
+					<Text key={index} color={logoColor}>
 						{line}
 					</Text>
 				))}
@@ -44,7 +45,7 @@ export const Logo: React.FC<LogoProps> = ({ color = DEFAULT_BRAND_YELLOW, showBi
 			{showBigText && (
 				<Box flexDirection="column">
 					{BIG_TEXT.split("\n").map((line, index) => (
-						<Text key={index} color={color}>
+						<Text key={index} color={logoColor}>
 							{line}
 						</Text>
 					))}

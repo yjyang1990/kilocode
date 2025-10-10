@@ -3,11 +3,13 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon, parseMcpServerData } from "../utils.js"
 import { useApprovalEffect } from "../../../../state/hooks/useApprovalEffect.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display MCP server usage request (tool or resource access)
  */
 export const AskUseMcpServerMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	// Use centralized approval orchestration
 	useApprovalEffect(message)
 
@@ -17,7 +19,7 @@ export const AskUseMcpServerMessage: React.FC<MessageComponentProps> = ({ messag
 	if (!mcpData) {
 		return (
 			<Box marginY={1}>
-				<Text color="yellow" bold>
+				<Text color={theme.semantic.warning} bold>
 					{icon} MCP Server Request (invalid data)
 				</Text>
 			</Box>
@@ -30,30 +32,35 @@ export const AskUseMcpServerMessage: React.FC<MessageComponentProps> = ({ messag
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="yellow" bold>
+				<Text color={theme.semantic.warning} bold>
 					{icon} {title}
 				</Text>
 			</Box>
 
 			<Box marginLeft={2} marginTop={1}>
-				<Text color="cyan">Server: {mcpData.serverName}</Text>
+				<Text color={theme.semantic.info}>Server: {mcpData.serverName}</Text>
 			</Box>
 
 			{isToolUse && mcpData.toolName && (
 				<Box marginLeft={2}>
-					<Text color="white">Tool: {mcpData.toolName}</Text>
+					<Text color={theme.ui.text.primary}>Tool: {mcpData.toolName}</Text>
 				</Box>
 			)}
 
 			{!isToolUse && mcpData.uri && (
 				<Box marginLeft={2}>
-					<Text color="white">URI: {mcpData.uri}</Text>
+					<Text color={theme.ui.text.primary}>URI: {mcpData.uri}</Text>
 				</Box>
 			)}
 
 			{mcpData.arguments && (
-				<Box marginLeft={2} marginTop={1} borderStyle="single" borderColor="gray" paddingX={1}>
-					<Text color="gray" dimColor>
+				<Box
+					marginLeft={2}
+					marginTop={1}
+					borderStyle="single"
+					borderColor={theme.ui.border.default}
+					paddingX={1}>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						Arguments: {mcpData.arguments.substring(0, 100)}
 						{mcpData.arguments.length > 100 ? "..." : ""}
 					</Text>
@@ -62,7 +69,7 @@ export const AskUseMcpServerMessage: React.FC<MessageComponentProps> = ({ messag
 
 			{message.isAnswered && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						✓ Answered
 					</Text>
 				</Box>

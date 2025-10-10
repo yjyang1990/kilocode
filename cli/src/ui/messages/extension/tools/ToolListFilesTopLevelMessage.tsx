@@ -2,22 +2,24 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon, formatFilePath, truncateText } from "../utils.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display top-level file listing
  */
 export const ToolListFilesTopLevelMessage: React.FC<ToolMessageProps> = ({ toolData }) => {
+	const theme = useTheme()
 	const icon = getToolIcon("listFilesTopLevel")
 	const files = toolData.content ? toolData.content.split("\n").filter((line) => line.trim()) : []
 
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="yellow" bold>
+				<Text color={theme.actions.pending} bold>
 					{icon} List Files (Top Level): {formatFilePath(toolData.path || "")}
 				</Text>
 				{toolData.isOutsideWorkspace && (
-					<Text color="yellow" dimColor>
+					<Text color={theme.semantic.warning} dimColor>
 						{" "}
 						⚠ Outside workspace
 					</Text>
@@ -28,17 +30,17 @@ export const ToolListFilesTopLevelMessage: React.FC<ToolMessageProps> = ({ toolD
 				<Box
 					flexDirection="column"
 					borderStyle="single"
-					borderColor="gray"
+					borderColor={theme.ui.border.default}
 					paddingX={1}
 					marginTop={1}
 					marginLeft={2}>
 					{files.slice(0, 15).map((file, index) => (
-						<Text key={index} color="gray">
+						<Text key={index} color={theme.ui.text.dimmed}>
 							{truncateText(file, 80)}
 						</Text>
 					))}
 					{files.length > 15 && (
-						<Text color="gray" dimColor>
+						<Text color={theme.ui.text.dimmed} dimColor>
 							... ({files.length - 15} more items)
 						</Text>
 					)}
@@ -46,7 +48,7 @@ export const ToolListFilesTopLevelMessage: React.FC<ToolMessageProps> = ({ toolD
 			)}
 
 			<Box marginLeft={2} marginTop={1}>
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					Total: {files.length} items
 				</Text>
 			</Box>

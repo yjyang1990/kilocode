@@ -2,15 +2,17 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display subtask results in a badge-styled box
  */
 export const SaySubtaskResultMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	return (
-		<Box flexDirection="column" borderStyle="round" borderColor="cyan" paddingX={1} marginY={1}>
+		<Box flexDirection="column" borderStyle="round" borderColor={theme.semantic.info} paddingX={1} marginY={1}>
 			<Box>
-				<Text color="cyan" bold>
+				<Text color={theme.semantic.info} bold>
 					📋 Subtask Result
 				</Text>
 			</Box>

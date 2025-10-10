@@ -18,6 +18,7 @@ import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
 import { useFollowupHandler } from "../state/hooks/useFollowupHandler.js"
 import { useCIMode } from "../state/hooks/useCIMode.js"
 import useIsProcessingSubscription from "../state/hooks/useIsProcessingSubscription.js"
+import { useTheme } from "../state/hooks/useTheme.js"
 import { AppOptions } from "./App.js"
 import { logs } from "../services/logs.js"
 import { createWelcomeMessage } from "./utils/welcomeMessage.js"
@@ -34,6 +35,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	const { stdout } = useStdout()
 	const isProcessing = useAtomValue(isProcessingAtom)
 	const error = useAtomValue(errorAtom)
+	const theme = useTheme()
 
 	// Initialize CI mode configuration
 	const setCIMode = useSetAtom(setCIModeAtom)
@@ -154,14 +156,14 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			</Box>
 
 			{error && (
-				<Box borderStyle="single" borderColor="red" paddingX={1} marginY={1}>
-					<Text color="red">⚠ {error}</Text>
+				<Box borderStyle="single" borderColor={theme.semantic.error} paddingX={1} marginY={1}>
+					<Text color={theme.semantic.error}>⚠ {error}</Text>
 				</Box>
 			)}
 
 			{!options.ci && (
 				<>
-					{isProcessing && <Text color="gray">Thinking...</Text>}
+					{isProcessing && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}
 					<CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />
 					<StatusBar />
 				</>

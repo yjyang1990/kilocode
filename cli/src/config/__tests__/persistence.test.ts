@@ -96,6 +96,7 @@ describe("Config Persistence", () => {
 				version: "1.0.0",
 				mode: "architect",
 				telemetry: true,
+				theme: "dark",
 				provider: "test-provider",
 				providers: [
 					{

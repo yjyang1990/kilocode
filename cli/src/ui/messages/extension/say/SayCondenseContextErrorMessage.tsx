@@ -2,15 +2,17 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display context condensing errors
  */
 export const SayCondenseContextErrorMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor="red" paddingX={1} marginY={1}>
+		<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.error} paddingX={1} marginY={1}>
 			<Box>
-				<Text color="red" bold>
+				<Text color={theme.semantic.error} bold>
 					✖ Context Condensing Error
 				</Text>
 			</Box>

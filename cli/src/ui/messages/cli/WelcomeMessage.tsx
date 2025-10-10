@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import { Logo } from "../../components/Logo.js"
 import type { WelcomeMessageOptions } from "../../../types/cli.js"
 import { stdout } from "process"
+import { useTheme } from "../../../state/hooks/useTheme.js"
 
 interface WelcomeMessageProps {
 	options?: WelcomeMessageOptions | undefined
@@ -14,6 +15,7 @@ const DEFAULT_INSTRUCTIONS = [
 ]
 
 export const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ options = {} }) => {
+	const theme = useTheme()
 	const showInstructions = options.showInstructions !== false
 	const instructions = options.instructions || DEFAULT_INSTRUCTIONS
 	const contentHeight = 12 + (showInstructions ? instructions.length : 0)
@@ -28,7 +30,7 @@ export const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ options = {} }) 
 			{showInstructions && (
 				<Box flexDirection="column">
 					{instructions.map((instruction, index) => (
-						<Text key={index} color="gray">
+						<Text key={index} color={theme.ui.text.dimmed}>
 							{instruction}
 						</Text>
 					))}

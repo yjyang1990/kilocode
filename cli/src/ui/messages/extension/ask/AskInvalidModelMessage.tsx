@@ -3,17 +3,19 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display invalid model selection warning
  */
 export const AskInvalidModelMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	const icon = getMessageIcon("ask", "invalid_model")
 
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor="yellow" paddingX={1} marginY={1}>
+		<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.warning} paddingX={1} marginY={1}>
 			<Box>
-				<Text color="yellow" bold>
+				<Text color={theme.semantic.warning} bold>
 					{icon} Invalid Model Selection
 				</Text>
 			</Box>
@@ -25,14 +27,14 @@ export const AskInvalidModelMessage: React.FC<MessageComponentProps> = ({ messag
 			)}
 
 			<Box marginTop={1}>
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					The selected model is not available or invalid. Please choose a different model.
 				</Text>
 			</Box>
 
 			{message.isAnswered && (
 				<Box marginTop={1}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						✓ Answered
 					</Text>
 				</Box>

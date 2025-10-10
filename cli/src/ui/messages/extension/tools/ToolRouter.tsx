@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { useApprovalEffect } from "../../../../state/hooks/useApprovalEffect.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 import {
 	ToolEditedExistingFileMessage,
 	ToolInsertContentMessage,
@@ -30,6 +31,7 @@ import {
  * - This component only handles routing and rendering
  */
 export const ToolRouter: React.FC<ToolMessageProps> = ({ message, toolData }) => {
+	const theme = useTheme()
 	// Use centralized approval orchestration
 	// This handles all approval logic including auto-approval
 	useApprovalEffect(message)
@@ -90,7 +92,7 @@ export const ToolRouter: React.FC<ToolMessageProps> = ({ message, toolData }) =>
 		default:
 			return (
 				<Box marginY={1}>
-					<Text color="gray">⚙ Unknown tool: {toolData.tool}</Text>
+					<Text color={theme.ui.text.dimmed}>⚙ Unknown tool: {toolData.tool}</Text>
 				</Box>
 			)
 	}

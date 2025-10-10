@@ -9,6 +9,7 @@ import TextInput from "ink-text-input"
 import { useCommandInput } from "../../state/hooks/useCommandInput.js"
 import { useApprovalHandler } from "../../state/hooks/useApprovalHandler.js"
 import { useFollowupSuggestions } from "../../state/hooks/useFollowupSuggestions.js"
+import { useTheme } from "../../state/hooks/useTheme.js"
 import { AutocompleteMenu } from "./AutocompleteMenu.js"
 import { ApprovalMenu } from "./ApprovalMenu.js"
 import { FollowupSuggestionsMenu } from "./FollowupSuggestionsMenu.js"
@@ -24,6 +25,9 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 	placeholder = "Type a message or /command...",
 	disabled = false,
 }) => {
+	// Get theme colors
+	const theme = useTheme()
+
 	// Use the command input hook for autocomplete functionality
 	const {
 		inputValue,
@@ -238,8 +242,11 @@ export const CommandInput: React.FC<CommandInputProps> = ({
 	return (
 		<Box flexDirection="column">
 			{/* Input field */}
-			<Box borderStyle="single" borderColor={isApprovalPending ? "yellow" : "cyan"} paddingX={1}>
-				<Text color={isApprovalPending ? "yellow" : "cyan"} bold>
+			<Box
+				borderStyle="single"
+				borderColor={isApprovalPending ? theme.actions.pending : theme.ui.border.active}
+				paddingX={1}>
+				<Text color={isApprovalPending ? theme.actions.pending : theme.ui.border.active} bold>
 					{isApprovalPending ? "[!] " : "> "}
 				</Text>
 				<TextInput

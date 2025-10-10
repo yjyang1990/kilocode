@@ -2,21 +2,23 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon, formatFilePath, truncateText } from "../utils.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display search and replace operations
  */
 export const ToolSearchAndReplaceMessage: React.FC<ToolMessageProps> = ({ toolData }) => {
+	const theme = useTheme()
 	const icon = getToolIcon("searchAndReplace")
 
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="magenta" bold>
+				<Text color={theme.ui.text.highlight} bold>
 					{icon} Search & Replace: {formatFilePath(toolData.path || "")}
 				</Text>
 				{toolData.isProtected && (
-					<Text color="yellow" dimColor>
+					<Text color={theme.semantic.warning} dimColor>
 						{" "}
 						🔒 Protected
 					</Text>
@@ -27,7 +29,7 @@ export const ToolSearchAndReplaceMessage: React.FC<ToolMessageProps> = ({ toolDa
 				<Box
 					flexDirection="column"
 					borderStyle="single"
-					borderColor="gray"
+					borderColor={theme.ui.border.default}
 					paddingX={1}
 					marginTop={1}
 					marginLeft={2}>
@@ -36,12 +38,12 @@ export const ToolSearchAndReplaceMessage: React.FC<ToolMessageProps> = ({ toolDa
 						.slice(0, 10)
 						.map((line, index) => {
 							const color = line.startsWith("+")
-								? "green"
+								? theme.code.addition
 								: line.startsWith("-")
-									? "red"
+									? theme.code.deletion
 									: line.startsWith("@@")
-										? "cyan"
-										: "gray"
+										? theme.semantic.info
+										: theme.code.context
 							return (
 								<Text key={index} color={color}>
 									{truncateText(line, 80)}
@@ -49,7 +51,7 @@ export const ToolSearchAndReplaceMessage: React.FC<ToolMessageProps> = ({ toolDa
 							)
 						})}
 					{toolData.diff.split("\n").length > 10 && (
-						<Text color="gray" dimColor>
+						<Text color={theme.ui.text.dimmed} dimColor>
 							... ({toolData.diff.split("\n").length - 10} more lines)
 						</Text>
 					)}

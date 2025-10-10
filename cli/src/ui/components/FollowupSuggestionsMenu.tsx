@@ -6,6 +6,7 @@
 import React from "react"
 import { Box, Text } from "ink"
 import type { FollowupSuggestion } from "../../state/atoms/ui.js"
+import { useTheme } from "../../state/hooks/useTheme.js"
 
 interface FollowupSuggestionsMenuProps {
 	suggestions: FollowupSuggestion[]
@@ -18,20 +19,22 @@ export const FollowupSuggestionsMenu: React.FC<FollowupSuggestionsMenuProps> = (
 	selectedIndex,
 	visible,
 }) => {
+	const theme = useTheme()
+
 	if (!visible || suggestions.length === 0) {
 		return null
 	}
 
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor="yellow" paddingX={1}>
-			<Text bold color="yellow">
+		<Box flexDirection="column" borderStyle="single" borderColor={theme.actions.pending} paddingX={1}>
+			<Text bold color={theme.actions.pending}>
 				Suggestions:
 			</Text>
 			{suggestions.map((suggestion, index) => (
 				<SuggestionRow key={index} suggestion={suggestion} index={index} isSelected={index === selectedIndex} />
 			))}
 			<Box marginTop={1}>
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					↑↓ Navigate • Tab Fill • Enter Submit
 				</Text>
 			</Box>
@@ -46,23 +49,27 @@ interface SuggestionRowProps {
 }
 
 const SuggestionRow: React.FC<SuggestionRowProps> = ({ suggestion, index, isSelected }) => {
+	const theme = useTheme()
+
 	return (
 		<Box>
 			{isSelected && (
-				<Text color="yellow" bold>
+				<Text color={theme.actions.pending} bold>
 					{">"}{" "}
 				</Text>
 			)}
 			{!isSelected && <Text>{"  "}</Text>}
 
-			<Text color={isSelected ? "yellow" : "white"} bold={isSelected}>
+			<Text color={isSelected ? theme.actions.pending : theme.ui.text.primary} bold={isSelected}>
 				{index + 1}. {suggestion.answer}
 			</Text>
 
 			{suggestion.mode && (
 				<>
-					<Text color="gray"> - </Text>
-					<Text color={isSelected ? "white" : "gray"}>switch to {suggestion.mode}</Text>
+					<Text color={theme.ui.text.dimmed}> - </Text>
+					<Text color={isSelected ? theme.ui.text.primary : theme.ui.text.dimmed}>
+						switch to {suggestion.mode}
+					</Text>
 				</>
 			)}
 		</Box>

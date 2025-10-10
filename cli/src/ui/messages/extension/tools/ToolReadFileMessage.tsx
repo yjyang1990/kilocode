@@ -2,31 +2,33 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon, formatFilePath } from "../utils.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display file reading (single or batch)
  */
 export const ToolReadFileMessage: React.FC<ToolMessageProps> = ({ toolData }) => {
+	const theme = useTheme()
 	const icon = getToolIcon("readFile")
 	const isBatch = toolData.batchFiles && toolData.batchFiles.length > 0
 
 	if (isBatch) {
 		const totalFiles = toolData.batchFiles!.length + (toolData.additionalFileCount || 0)
 		return (
-			<Box flexDirection="column" borderStyle="single" borderColor="blue" paddingX={1} marginY={1}>
+			<Box flexDirection="column" borderStyle="single" borderColor={theme.messages.user} paddingX={1} marginY={1}>
 				<Box>
-					<Text color="blue" bold>
+					<Text color={theme.messages.user} bold>
 						{icon} Read Files ({totalFiles} files)
 					</Text>
 				</Box>
 				<Box flexDirection="column" marginTop={1}>
 					{toolData.batchFiles!.map((file, index) => (
-						<Text key={index} color="cyan">
+						<Text key={index} color={theme.semantic.info}>
 							- {formatFilePath(file.path)}
 						</Text>
 					))}
 					{toolData.additionalFileCount && toolData.additionalFileCount > 0 && (
-						<Text color="gray" dimColor>
+						<Text color={theme.ui.text.dimmed} dimColor>
 							... and {toolData.additionalFileCount} more files
 						</Text>
 					)}
@@ -38,14 +40,14 @@ export const ToolReadFileMessage: React.FC<ToolMessageProps> = ({ toolData }) =>
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="blue" bold>
+				<Text color={theme.messages.user} bold>
 					{icon} Read File
 				</Text>
 			</Box>
 			<Box marginLeft={2}>
-				<Text color="cyan">{formatFilePath(toolData.path || "")}</Text>
+				<Text color={theme.semantic.info}>{formatFilePath(toolData.path || "")}</Text>
 				{toolData.isOutsideWorkspace && (
-					<Text color="yellow" dimColor>
+					<Text color={theme.semantic.warning} dimColor>
 						{" "}
 						⚠ Outside workspace
 					</Text>
@@ -53,7 +55,7 @@ export const ToolReadFileMessage: React.FC<ToolMessageProps> = ({ toolData }) =>
 			</Box>
 			{toolData.reason && (
 				<Box marginLeft={2}>
-					<Text color="gray" dimColor>
+					<Text color={theme.ui.text.dimmed} dimColor>
 						Reason: {toolData.reason}
 					</Text>
 				</Box>

@@ -2,28 +2,30 @@ import React from "react"
 import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon, formatFilePath, truncateText } from "../utils.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display file edits with diff (handles both editedExistingFile and appliedDiff tool types)
  */
 export const ToolEditedExistingFileMessage: React.FC<ToolMessageProps> = ({ toolData }) => {
+	const theme = useTheme()
 	const icon = getToolIcon(toolData.tool)
 	const isBatch = toolData.batchDiffs && toolData.batchDiffs.length > 0
 
 	if (isBatch) {
 		return (
-			<Box flexDirection="column" borderStyle="single" borderColor="cyan" paddingX={1} marginY={1}>
+			<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.info} paddingX={1} marginY={1}>
 				<Box>
-					<Text color="cyan" bold>
+					<Text color={theme.semantic.info} bold>
 						{icon} Edit Files ({toolData.batchDiffs!.length} files)
 					</Text>
 				</Box>
 				<Box flexDirection="column" marginTop={1}>
 					{toolData.batchDiffs!.map((batchDiff: any, index: number) => (
 						<Box key={index} flexDirection="column" marginBottom={1}>
-							<Text color="cyan">{formatFilePath(batchDiff.path || "")}</Text>
+							<Text color={theme.semantic.info}>{formatFilePath(batchDiff.path || "")}</Text>
 							{batchDiff.isProtected && (
-								<Text color="yellow" dimColor>
+								<Text color={theme.semantic.warning} dimColor>
 									{" "}
 									🔒 Protected
 								</Text>
@@ -38,17 +40,17 @@ export const ToolEditedExistingFileMessage: React.FC<ToolMessageProps> = ({ tool
 	return (
 		<Box flexDirection="column" marginY={1}>
 			<Box>
-				<Text color="cyan" bold>
+				<Text color={theme.semantic.info} bold>
 					{icon} Edit File: {formatFilePath(toolData.path || "")}
 				</Text>
 				{toolData.isProtected && (
-					<Text color="yellow" dimColor>
+					<Text color={theme.semantic.warning} dimColor>
 						{" "}
 						🔒 Protected
 					</Text>
 				)}
 				{toolData.isOutsideWorkspace && (
-					<Text color="yellow" dimColor>
+					<Text color={theme.semantic.warning} dimColor>
 						{" "}
 						⚠ Outside workspace
 					</Text>
@@ -59,7 +61,7 @@ export const ToolEditedExistingFileMessage: React.FC<ToolMessageProps> = ({ tool
 				<Box
 					flexDirection="column"
 					borderStyle="single"
-					borderColor="gray"
+					borderColor={theme.ui.border.default}
 					paddingX={1}
 					marginTop={1}
 					marginLeft={2}>
@@ -68,12 +70,12 @@ export const ToolEditedExistingFileMessage: React.FC<ToolMessageProps> = ({ tool
 						.slice(0, 10)
 						.map((line, index) => {
 							const color = line.startsWith("+")
-								? "green"
+								? theme.code.addition
 								: line.startsWith("-")
-									? "red"
+									? theme.code.deletion
 									: line.startsWith("@@")
-										? "cyan"
-										: "gray"
+										? theme.semantic.info
+										: theme.code.context
 							return (
 								<Text key={index} color={color}>
 									{truncateText(line, 80)}
@@ -81,7 +83,7 @@ export const ToolEditedExistingFileMessage: React.FC<ToolMessageProps> = ({ tool
 							)
 						})}
 					{toolData.diff.split("\n").length > 10 && (
-						<Text color="gray" dimColor>
+						<Text color={theme.ui.text.dimmed} dimColor>
 							... ({toolData.diff.split("\n").length - 10} more lines)
 						</Text>
 					)}
@@ -90,7 +92,7 @@ export const ToolEditedExistingFileMessage: React.FC<ToolMessageProps> = ({ tool
 
 			{toolData.fastApplyResult && (
 				<Box marginLeft={2} marginTop={1}>
-					<Text color="green" dimColor>
+					<Text color={theme.semantic.success} dimColor>
 						✓ Fast apply
 					</Text>
 				</Box>

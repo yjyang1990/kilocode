@@ -3,30 +3,32 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { parseToolData, truncateText } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
+import { useTheme } from "../../../../state/hooks/useTheme.js"
 
 /**
  * Display user feedback with diff content
  */
 export const SayUserFeedbackDiffMessage: React.FC<MessageComponentProps> = ({ message }) => {
+	const theme = useTheme()
 	const toolData = parseToolData(message)
 
 	return (
-		<Box flexDirection="column" borderStyle="round" borderColor="blue" paddingX={1} marginY={1}>
+		<Box flexDirection="column" borderStyle="round" borderColor={theme.messages.user} paddingX={1} marginY={1}>
 			<Box>
-				<Text color="blue" bold>
+				<Text color={theme.messages.user} bold>
 					💬 User Feedback (with changes)
 				</Text>
 			</Box>
 
 			{toolData?.path && (
 				<Box marginTop={1}>
-					<Text color="cyan">File: {toolData.path}</Text>
+					<Text color={theme.semantic.info}>File: {toolData.path}</Text>
 				</Box>
 			)}
 
 			{toolData?.diff && (
-				<Box marginTop={1} borderStyle="single" borderColor="gray" paddingX={1}>
-					<Text color="white">{truncateText(toolData.diff, 300)}</Text>
+				<Box marginTop={1} borderStyle="single" borderColor={theme.ui.border.default} paddingX={1}>
+					<Text color={theme.ui.text.primary}>{truncateText(toolData.diff, 300)}</Text>
 				</Box>
 			)}
 

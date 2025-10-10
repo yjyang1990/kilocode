@@ -14,7 +14,8 @@ import {
 } from "../../state/atoms/index.js"
 import { useGitInfo } from "../../state/hooks/useGitInfo.js"
 import { useContextUsage } from "../../state/hooks/useContextUsage.js"
-import { getContextColor, formatContextUsage } from "../../utils/context.js"
+import { useTheme } from "../../state/hooks/useTheme.js"
+import { formatContextUsage } from "../../utils/context.js"
 import {
 	getCurrentModelId,
 	getModelsByProvider,
@@ -87,6 +88,9 @@ function getProjectName(cwd: string | null): string {
  * StatusBar component that displays current project status
  */
 export const StatusBar: React.FC = () => {
+	// Get theme
+	const theme = useTheme()
+
 	// Get data from atoms
 	const cwd = useAtomValue(cwdAtom)
 	const mode = useAtomValue(extensionModeAtom)
@@ -103,25 +107,36 @@ export const StatusBar: React.FC = () => {
 	// Prepare display values
 	const projectName = getProjectName(cwd)
 	const modelName = useMemo(() => getModelDisplayName(apiConfig, routerModels), [apiConfig, routerModels])
-	const contextColor = getContextColor(contextUsage.percentage)
+
+	// Get context color based on percentage using theme colors
+	const contextColor = useMemo(() => {
+		if (contextUsage.percentage >= 86) {
+			return theme.semantic.error
+		}
+		if (contextUsage.percentage >= 61) {
+			return theme.semantic.warning
+		}
+		return theme.semantic.success
+	}, [contextUsage.percentage, theme])
+
 	const contextText = formatContextUsage(contextUsage)
 
-	// Git status color (green if clean, yellow if dirty)
-	const gitStatusColor = gitInfo.isClean ? "green" : "yellow"
+	// Git status color (success if clean, warning if dirty)
+	const gitStatusColor = gitInfo.isClean ? theme.semantic.success : theme.semantic.warning
 
 	return (
-		<Box borderStyle="single" borderColor="gray" paddingX={1} justifyContent="space-between">
+		<Box borderStyle="single" borderColor={theme.ui.border.default} paddingX={1} justifyContent="space-between">
 			{/* Left side: Project and Git Branch */}
 			<Box>
 				{/* Project Name */}
-				<Text color="cyan" bold>
+				<Text color={theme.semantic.info} bold>
 					{projectName}
 				</Text>
 
 				{/* Git Branch */}
 				{gitInfo.isRepo && gitInfo.branch ? (
 					<>
-						<Text color="gray" dimColor>
+						<Text color={theme.ui.text.dimmed} dimColor>
 							{" / "}
 						</Text>
 						<Text color={gitStatusColor}>{gitInfo.branch}</Text>
@@ -132,18 +147,18 @@ export const StatusBar: React.FC = () => {
 			{/* Right side: Mode, Model, and Context */}
 			<Box>
 				{/* Mode */}
-				<Text color="magenta" bold>
+				<Text color={theme.ui.text.highlight} bold>
 					{mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "N/A"}
 				</Text>
 
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					{" | "}
 				</Text>
 
 				{/* Model */}
-				<Text color="blue">{modelName}</Text>
+				<Text color={theme.messages.user}>{modelName}</Text>
 
-				<Text color="gray" dimColor>
+				<Text color={theme.ui.text.dimmed} dimColor>
 					{" | "}
 				</Text>
 
