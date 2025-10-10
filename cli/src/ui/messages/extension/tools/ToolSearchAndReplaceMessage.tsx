@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon, formatFilePath, truncateText } from "../utils.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L3 } from "../../../utils/width.js"
 
 /**
  * Display search and replace operations
@@ -27,6 +28,7 @@ export const ToolSearchAndReplaceMessage: React.FC<ToolMessageProps> = ({ toolDa
 
 			{toolData.diff && (
 				<Box
+					width={BOX_L3}
 					flexDirection="column"
 					borderStyle="single"
 					borderColor={theme.ui.border.default}

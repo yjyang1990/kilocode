@@ -4,6 +4,7 @@ import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L1 } from "../../../utils/width.js"
 
 /**
  * Display mistake limit reached error with red error styling
@@ -13,7 +14,13 @@ export const AskMistakeLimitMessage: React.FC<MessageComponentProps> = ({ messag
 	const icon = getMessageIcon("ask", "mistake_limit_reached")
 
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.error} paddingX={1} marginY={1}>
+		<Box
+			width={BOX_L1}
+			flexDirection="column"
+			borderStyle="single"
+			borderColor={theme.semantic.error}
+			paddingX={1}
+			marginY={1}>
 			<Box>
 				<Text color={theme.semantic.error} bold>
 					{icon} Mistake Limit Reached

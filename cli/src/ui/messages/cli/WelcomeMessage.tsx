@@ -2,8 +2,8 @@ import React from "react"
 import { Box, Text } from "ink"
 import { Logo } from "../../components/Logo.js"
 import type { WelcomeMessageOptions } from "../../../types/cli.js"
-import { stdout } from "process"
 import { useTheme } from "../../../state/hooks/useTheme.js"
+import { stdout } from "process"
 
 interface WelcomeMessageProps {
 	options?: WelcomeMessageOptions | undefined

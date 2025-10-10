@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L1 } from "../../../utils/width.js"
 
 /**
  * Display AI reasoning/thinking process in a bordered box
@@ -10,7 +11,13 @@ import { useTheme } from "../../../../state/hooks/useTheme.js"
 export const SayReasoningMessage: React.FC<MessageComponentProps> = ({ message }) => {
 	const theme = useTheme()
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor={theme.ui.text.highlight} paddingX={1} marginY={1}>
+		<Box
+			width={BOX_L1}
+			flexDirection="column"
+			borderStyle="single"
+			borderColor={theme.ui.text.highlight}
+			paddingX={1}
+			marginY={1}>
 			<Box>
 				<Text color={theme.ui.text.highlight} bold>
 					💭 Reasoning

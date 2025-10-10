@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps } from "../types.js"
 import { parseToolData, getToolIcon } from "../utils.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L3 } from "../../../utils/width.js"
 
 /**
  * Display tool execution results
@@ -37,6 +38,7 @@ export const SayToolMessage: React.FC<MessageComponentProps> = ({ message }) => 
 
 			{toolData.content && (
 				<Box
+					width={BOX_L3}
 					marginLeft={2}
 					marginTop={1}
 					borderStyle="single"

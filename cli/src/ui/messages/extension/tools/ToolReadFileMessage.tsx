@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon, formatFilePath } from "../utils.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L1 } from "../../../utils/width.js"
 
 /**
  * Display file reading (single or batch)
@@ -15,7 +16,13 @@ export const ToolReadFileMessage: React.FC<ToolMessageProps> = ({ toolData }) =>
 	if (isBatch) {
 		const totalFiles = toolData.batchFiles!.length + (toolData.additionalFileCount || 0)
 		return (
-			<Box flexDirection="column" borderStyle="single" borderColor={theme.messages.user} paddingX={1} marginY={1}>
+			<Box
+				width={BOX_L1}
+				flexDirection="column"
+				borderStyle="single"
+				borderColor={theme.messages.user}
+				paddingX={1}
+				marginY={1}>
 				<Box>
 					<Text color={theme.messages.user} bold>
 						{icon} Read Files ({totalFiles} files)

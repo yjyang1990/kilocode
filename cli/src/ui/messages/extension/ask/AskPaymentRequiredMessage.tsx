@@ -4,6 +4,7 @@ import type { MessageComponentProps } from "../types.js"
 import { getMessageIcon } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L1 } from "../../../utils/width.js"
 
 /**
  * Display low credit warning with payment icon
@@ -13,7 +14,13 @@ export const AskPaymentRequiredMessage: React.FC<MessageComponentProps> = ({ mes
 	const icon = getMessageIcon("ask", "payment_required_prompt")
 
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.warning} paddingX={1} marginY={1}>
+		<Box
+			width={BOX_L1}
+			flexDirection="column"
+			borderStyle="single"
+			borderColor={theme.semantic.warning}
+			paddingX={1}
+			marginY={1}>
 			<Box>
 				<Text color={theme.semantic.warning} bold>
 					{icon} Low Credit Warning

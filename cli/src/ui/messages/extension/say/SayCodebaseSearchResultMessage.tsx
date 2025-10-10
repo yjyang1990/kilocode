@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { MessageComponentProps, CodebaseSearchResult } from "../types.js"
 import { getMessageIcon, parseMessageJson } from "../utils.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L1 } from "../../../utils/width.js"
 
 /**
  * Display codebase search results with scores
@@ -23,7 +24,13 @@ export const SayCodebaseSearchResultMessage: React.FC<MessageComponentProps> = (
 	}
 
 	return (
-		<Box flexDirection="column" borderStyle="single" borderColor={theme.semantic.info} paddingX={1} marginY={1}>
+		<Box
+			width={BOX_L1}
+			flexDirection="column"
+			borderStyle="single"
+			borderColor={theme.semantic.info}
+			paddingX={1}
+			marginY={1}>
 			<Box>
 				<Text color={theme.semantic.info} bold>
 					{icon} Codebase Search Results

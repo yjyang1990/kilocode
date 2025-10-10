@@ -3,6 +3,7 @@ import { Box, Text } from "ink"
 import type { ToolMessageProps } from "../types.js"
 import { getToolIcon, truncateText } from "../utils.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L3 } from "../../../utils/width.js"
 
 /**
  * Display new subtask creation
@@ -32,6 +33,7 @@ export const ToolNewTaskMessage: React.FC<ToolMessageProps> = ({ toolData }) => 
 
 			{toolData.content && (
 				<Box
+					width={BOX_L3}
 					flexDirection="column"
 					borderStyle="single"
 					borderColor={theme.ui.border.default}

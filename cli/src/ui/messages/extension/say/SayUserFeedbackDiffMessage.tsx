@@ -4,6 +4,7 @@ import type { MessageComponentProps } from "../types.js"
 import { parseToolData, truncateText } from "../utils.js"
 import { MarkdownText } from "../../../components/MarkdownText.js"
 import { useTheme } from "../../../../state/hooks/useTheme.js"
+import { BOX_L1 } from "../../../utils/width.js"
 
 /**
  * Display user feedback with diff content
@@ -13,7 +14,13 @@ export const SayUserFeedbackDiffMessage: React.FC<MessageComponentProps> = ({ me
 	const toolData = parseToolData(message)
 
 	return (
-		<Box flexDirection="column" borderStyle="round" borderColor={theme.messages.user} paddingX={1} marginY={1}>
+		<Box
+			width={BOX_L1}
+			flexDirection="column"
+			borderStyle="round"
+			borderColor={theme.messages.user}
+			paddingX={1}
+			marginY={1}>
 			<Box>
 				<Text color={theme.messages.user} bold>
 					💬 User Feedback (with changes)
@@ -27,7 +34,12 @@ export const SayUserFeedbackDiffMessage: React.FC<MessageComponentProps> = ({ me
 			)}
 
 			{toolData?.diff && (
-				<Box marginTop={1} borderStyle="single" borderColor={theme.ui.border.default} paddingX={1}>
+				<Box
+					width={BOX_L1}
+					marginTop={1}
+					borderStyle="single"
+					borderColor={theme.ui.border.default}
+					paddingX={1}>
 					<Text color={theme.ui.text.primary}>{truncateText(toolData.diff, 300)}</Text>
 				</Box>
 			)}
