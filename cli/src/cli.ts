@@ -1,3 +1,4 @@
+import { basename } from "node:path"
 import { render, Instance } from "ink"
 import React from "react"
 import { createStore } from "jotai"
@@ -47,6 +48,10 @@ export class CLI {
 
 		try {
 			logs.info("Initializing Kilo Code CLI...", "CLI")
+
+			// Set terminal title
+			const folderName = basename(this.options.workspace || process.cwd())
+			process.stdout.write(`\x1b]0;Kilo Code - ${folderName}\x07`)
 
 			// Create Jotai store
 			this.store = createStore()
