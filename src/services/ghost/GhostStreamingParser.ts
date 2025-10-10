@@ -69,6 +69,34 @@ function sanitizeXMLConservative(buffer: string): string {
 }
 
 /**
+ * Check if the response appears to be complete
+ */
+function isResponseComplete(buffer: string, completedChangesCount: number): boolean {
+	// Simple heuristic: if we haven't seen new content for a while and
+	// the buffer doesn't end with an incomplete tag, consider it complete
+	const trimmedBuffer = buffer.trim()
+
+	// Check if we have any incomplete <change> tags
+	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(trimmedBuffer)
+	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(trimmedBuffer)
+	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(trimmedBuffer)
+	const incompleteCDataMatch = /<!\[CDATA\[(?:(?!\]\]>)[\s\S])*$/i.test(trimmedBuffer)
+
+	// If we have incomplete tags, the response is not complete
+	if (incompleteChangeMatch || incompleteSearchMatch || incompleteReplaceMatch || incompleteCDataMatch) {
+		return false
+	}
+
+	// If the buffer is empty or only whitespace, consider it complete
+	if (trimmedBuffer.length === 0) {
+		return true
+	}
+
+	// If we have at least one complete change and no incomplete tags, likely complete
+	return completedChangesCount > 0
+}
+
+/**
  * Streaming XML parser for Ghost suggestions that can process incomplete responses
  * and emit suggestions as soon as complete <change> blocks are available
  */
@@ -119,7 +147,7 @@ export class GhostStreamingParser {
 		this.completedChanges.push(...newChanges)
 
 		// Check if the response appears complete
-		let isComplete = this.isResponseComplete(this.buffer, this.completedChanges.length)
+		let isComplete = isResponseComplete(this.buffer, this.completedChanges.length)
 
 		// Apply very conservative sanitization only when the stream is finished
 		// and we still have no completed changes but have content in the buffer
@@ -132,7 +160,7 @@ export class GhostStreamingParser {
 				if (sanitizedChanges.length > 0) {
 					this.completedChanges.push(...sanitizedChanges)
 					hasNewSuggestions = true
-					isComplete = this.isResponseComplete(this.buffer, this.completedChanges.length) // Re-check completion after sanitization
+					isComplete = isResponseComplete(this.buffer, this.completedChanges.length) // Re-check completion after sanitization
 				}
 			}
 		}
@@ -193,34 +221,6 @@ export class GhostStreamingParser {
 		}
 
 		return newChanges
-	}
-
-	/**
-	 * Check if the response appears to be complete
-	 */
-	private isResponseComplete(buffer: string, completedChangesCount: number): boolean {
-		// Simple heuristic: if we haven't seen new content for a while and
-		// the buffer doesn't end with an incomplete tag, consider it complete
-		const trimmedBuffer = buffer.trim()
-
-		// Check if we have any incomplete <change> tags
-		const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(trimmedBuffer)
-		const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(trimmedBuffer)
-		const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(trimmedBuffer)
-		const incompleteCDataMatch = /<!\[CDATA\[(?:(?!\]\]>)[\s\S])*$/i.test(trimmedBuffer)
-
-		// If we have incomplete tags, the response is not complete
-		if (incompleteChangeMatch || incompleteSearchMatch || incompleteReplaceMatch || incompleteCDataMatch) {
-			return false
-		}
-
-		// If the buffer is empty or only whitespace, consider it complete
-		if (trimmedBuffer.length === 0) {
-			return true
-		}
-
-		// If we have at least one complete change and no incomplete tags, likely complete
-		return completedChangesCount > 0
 	}
 
 	/**
