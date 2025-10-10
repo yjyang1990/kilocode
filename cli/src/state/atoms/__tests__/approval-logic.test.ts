@@ -342,7 +342,7 @@ describe("Auto Approval Logic", () => {
 			}
 			store.set(configAtom, config)
 
-			const message = createMockMessage("tool", JSON.stringify({ tool: "switch_mode" }))
+			const message = createMockMessage("tool", JSON.stringify({ tool: "switchMode" }))
 			store.set(setPendingApprovalAtom, message)
 
 			expect(store.get(shouldAutoApproveAtom)).toBe(true)
@@ -360,7 +360,7 @@ describe("Auto Approval Logic", () => {
 			}
 			store.set(configAtom, config)
 
-			const message = createMockMessage("tool", JSON.stringify({ tool: "new_task" }))
+			const message = createMockMessage("tool", JSON.stringify({ tool: "newTask" }))
 			store.set(setPendingApprovalAtom, message)
 
 			expect(store.get(shouldAutoApproveAtom)).toBe(true)

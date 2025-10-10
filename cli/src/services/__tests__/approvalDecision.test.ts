@@ -192,14 +192,14 @@ describe("approvalDecision", () => {
 
 		describe("tool requests - other operations", () => {
 			it("should auto-approve mode switching when config enabled", () => {
-				const message = createMessage("tool", JSON.stringify({ tool: "switch_mode" }))
+				const message = createMessage("tool", JSON.stringify({ tool: "switchMode" }))
 				const config = { ...createBaseConfig(), mode: { enabled: true } }
 				const decision = getApprovalDecision(message, config, false)
 				expect(decision.action).toBe("auto-approve")
 			})
 
 			it("should auto-approve subtasks when config enabled", () => {
-				const message = createMessage("tool", JSON.stringify({ tool: "new_task" }))
+				const message = createMessage("tool", JSON.stringify({ tool: "newTask" }))
 				const config = { ...createBaseConfig(), subtasks: { enabled: true } }
 				const decision = getApprovalDecision(message, config, false)
 				expect(decision.action).toBe("auto-approve")

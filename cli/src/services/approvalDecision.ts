@@ -115,7 +115,7 @@ function getToolApprovalDecision(
 		}
 
 		// Mode switching
-		if (tool === "switch_mode") {
+		if (tool === "switchMode") {
 			if (config.mode?.enabled) {
 				return { action: "auto-approve" }
 			}
@@ -123,7 +123,7 @@ function getToolApprovalDecision(
 		}
 
 		// Subtasks
-		if (tool === "new_task") {
+		if (tool === "newTask") {
 			if (config.subtasks?.enabled) {
 				return { action: "auto-approve" }
 			}

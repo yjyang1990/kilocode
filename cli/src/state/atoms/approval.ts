@@ -345,12 +345,12 @@ export const shouldAutoApproveAtom = atom<boolean>((get) => {
 				}
 
 				// Mode switching
-				if (tool === "switch_mode") {
+				if (tool === "switchMode") {
 					return get(autoApproveModeAtom)
 				}
 
 				// Subtasks
-				if (tool === "new_task") {
+				if (tool === "newTask") {
 					return get(autoApproveSubtasksAtom)
 				}
 
