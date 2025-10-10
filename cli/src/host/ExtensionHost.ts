@@ -32,12 +32,6 @@ export class ExtensionHost extends EventEmitter {
 		debug: typeof console.debug
 		info: typeof console.info
 	} | null = null
-	private originalStdout: {
-		write: typeof process.stdout.write
-	} | null = null
-	private originalStderr: {
-		write: typeof process.stderr.write
-	} | null = null
 	private lastWebviewLaunchTime = 0
 
 	constructor(options: ExtensionHostOptions) {
@@ -189,119 +183,32 @@ export class ExtensionHost extends EventEmitter {
 			info: console.info,
 		}
 
-		// Store original stdout/stderr write methods
-		this.originalStdout = {
-			write: process.stdout.write.bind(process.stdout),
-		}
-		this.originalStderr = {
-			write: process.stderr.write.bind(process.stderr),
-		}
-
 		// Override console methods to forward to LogsService ONLY (no console output)
 		// IMPORTANT: Use original console methods to avoid circular dependency
 		console.log = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			// Filter out extension logs that should be hidden
-			if (!this.shouldHideExtensionLog(message)) {
-				logs.info(message, "Extension")
-			}
+			logs.info(message, "Extension")
 		}
 
 		console.error = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			if (!this.shouldHideExtensionLog(message)) {
-				logs.error(message, "Extension")
-			}
+			logs.error(message, "Extension")
 		}
 
 		console.warn = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			if (!this.shouldHideExtensionLog(message)) {
-				logs.warn(message, "Extension")
-			}
+			logs.warn(message, "Extension")
 		}
 
 		console.debug = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			if (!this.shouldHideExtensionLog(message)) {
-				logs.debug(message, "Extension")
-			}
+			logs.debug(message, "Extension")
 		}
 
 		console.info = (...args: any[]) => {
 			const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-			if (!this.shouldHideExtensionLog(message)) {
-				logs.info(message, "Extension")
-			}
+			logs.info(message, "Extension")
 		}
-
-		// Intercept stdout/stderr to catch direct writes that bypass console
-		const extensionHost = this
-		const originalStdoutWrite = this.originalStdout!.write
-		const originalStderrWrite = this.originalStderr!.write
-
-		process.stdout.write = function (chunk: any, encoding?: any, callback?: any): boolean {
-			const message = chunk.toString()
-			// Only hide extension logs, allow everything else through
-			if (extensionHost.shouldHideExtensionLog(message)) {
-				// Hide the log by not writing to stdout, but still call callback
-				if (typeof encoding === "function") {
-					callback = encoding
-					encoding = undefined
-				}
-				if (callback) callback()
-				return true
-			} else {
-				// Allow non-extension logs to pass through normally
-				return originalStdoutWrite.call(this, chunk, encoding, callback)
-			}
-		}
-
-		process.stderr.write = function (chunk: any, encoding?: any, callback?: any): boolean {
-			const message = chunk.toString()
-			// Only hide extension logs, allow everything else through
-			if (extensionHost.shouldHideExtensionLog(message)) {
-				// Hide the log by not writing to stderr, but still call callback
-				if (typeof encoding === "function") {
-					callback = encoding
-					encoding = undefined
-				}
-				if (callback) callback()
-				return true
-			} else {
-				// Allow non-extension logs to pass through normally
-				return originalStderrWrite.call(this, chunk, encoding, callback)
-			}
-		}
-	}
-
-	/**
-	 * Determine if an extension log should be hidden from the user
-	 */
-	private shouldHideExtensionLog(message: string): boolean {
-		// Hide logs that match extension internal patterns
-		const hiddenPatterns = [
-			/^\[createTask\]/,
-			/^\[clearTask\]/,
-			/^\[Task#/,
-			/^\[e#/,
-			/^Fetched default model from/,
-			/^getCommitRangeForNewCompletion:/,
-			/Task#ask will block/,
-			/git = \d+\.\d+\.\d+/,
-			/initialized shadow repo/,
-			/checkpoint saved in/,
-			/starting checkpoint save/,
-			/creating shadow git repo/,
-			/initializing checkpoints service/,
-			/initializing shadow git/,
-			/Failed connecting to Ollama/,
-			/Error fetching Ollama models/,
-			/Error parsing Ollama models response/,
-			/KILOTEL/,
-		]
-
-		return hiddenPatterns.some((pattern) => pattern.test(message.trim()))
 	}
 
 	private restoreConsole(): void {
@@ -314,14 +221,9 @@ export class ExtensionHost extends EventEmitter {
 			this.originalConsole = null
 		}
 
-		if (this.originalStdout) {
-			process.stdout.write = this.originalStdout.write
-			this.originalStdout = null
-		}
-
-		if (this.originalStderr) {
-			process.stderr.write = this.originalStderr.write
-			this.originalStderr = null
+		// Clean up global console interception
+		if ((global as any).__interceptedConsole) {
+			delete (global as any).__interceptedConsole
 		}
 
 		logs.debug("Console methods and streams restored", "ExtensionHost")
@@ -338,17 +240,34 @@ export class ExtensionHost extends EventEmitter {
 			const { createRequire } = await import("module")
 			const require = createRequire(import.meta.url)
 
-			// Simple module interception for vscode only - all other dependencies should be available
+			// Get Module class for interception
 			const Module = await import("module")
 			const ModuleClass = Module.default as any
-			const originalResolveFilename = ModuleClass._resolveFilename
 
+			// Store original methods
+			const originalResolveFilename = ModuleClass._resolveFilename
+			const originalCompile = ModuleClass.prototype._compile
+
+			// Set up module resolution interception for vscode
 			ModuleClass._resolveFilename = function (request: string, parent: any, isMain: boolean, options?: any) {
 				if (request === "vscode") {
 					return "vscode-mock"
 				}
 				// Let all other modules (including events) resolve normally since we have dependencies
 				return originalResolveFilename.call(this, request, parent, isMain, options)
+			}
+
+			// Set up module compilation hook to inject console interception
+			// This ensures ALL modules (including dependencies) use our intercepted console
+			ModuleClass.prototype._compile = function (content: string, filename: string) {
+				// Inject console override at the top of every module
+				// This makes the intercepted console available to all code in the module
+				const modifiedContent = `
+					// Console interception injected by ExtensionHost
+					const console = global.__interceptedConsole || console;
+					${content}
+				`
+				return originalCompile.call(this, modifiedContent, filename)
 			}
 
 			// Set up the vscode module in require cache
@@ -362,16 +281,41 @@ export class ExtensionHost extends EventEmitter {
 				paths: [],
 			} as any
 
+			// Store the intercepted console in global for module injection
+			;(global as any).__interceptedConsole = {
+				log: (...args: any[]) => {
+					const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+					logs.info(message, "Extension")
+				},
+				error: (...args: any[]) => {
+					const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+					logs.error(message, "Extension")
+				},
+				warn: (...args: any[]) => {
+					const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+					logs.warn(message, "Extension")
+				},
+				debug: (...args: any[]) => {
+					const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+					logs.debug(message, "Extension")
+				},
+				info: (...args: any[]) => {
+					const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
+					logs.info(message, "Extension")
+				},
+			}
+
 			// Clear extension require cache to ensure fresh load
 			if (require.cache[extensionPath]) {
 				delete require.cache[extensionPath]
 			}
 
-			// Load the extension module
+			// Load the extension module (with console interception active)
 			this.extensionModule = require(extensionPath)
 
-			// Restore original resolve function
+			// Restore original methods
 			ModuleClass._resolveFilename = originalResolveFilename
+			ModuleClass.prototype._compile = originalCompile
 
 			if (!this.extensionModule) {
 				throw new Error("Extension module is null or undefined")
