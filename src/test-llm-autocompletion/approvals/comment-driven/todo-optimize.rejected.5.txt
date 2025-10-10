@@ -1,5 +1,0 @@
-for (let i = 0; i < input; i++) {
-  // Optimized using memoization for repeated calculations
-  const square = i * i;
-  result += square;
-}
