@@ -378,7 +378,7 @@ describe("Auto Approval Logic", () => {
 			}
 			store.set(configAtom, config)
 
-			const message = createMockMessage("tool", JSON.stringify({ tool: "update_todo_list" }))
+			const message = createMockMessage("tool", JSON.stringify({ tool: "updateTodoList" }))
 			store.set(setPendingApprovalAtom, message)
 
 			expect(store.get(shouldAutoApproveAtom)).toBe(true)

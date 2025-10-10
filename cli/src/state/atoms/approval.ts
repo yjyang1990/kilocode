@@ -355,7 +355,7 @@ export const shouldAutoApproveAtom = atom<boolean>((get) => {
 				}
 
 				// Todo list updates
-				if (tool === "update_todo_list") {
+				if (tool === "updateTodoList") {
 					return get(autoApproveTodoAtom)
 				}
 

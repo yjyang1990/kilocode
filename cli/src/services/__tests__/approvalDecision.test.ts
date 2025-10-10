@@ -206,7 +206,7 @@ describe("approvalDecision", () => {
 			})
 
 			it("should auto-approve todo updates when config enabled", () => {
-				const message = createMessage("tool", JSON.stringify({ tool: "update_todo_list" }))
+				const message = createMessage("tool", JSON.stringify({ tool: "updateTodoList" }))
 				const config = { ...createBaseConfig(), todo: { enabled: true } }
 				const decision = getApprovalDecision(message, config, false)
 				expect(decision.action).toBe("auto-approve")

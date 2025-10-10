@@ -131,7 +131,7 @@ function getToolApprovalDecision(
 		}
 
 		// Todo list updates
-		if (tool === "update_todo_list") {
+		if (tool === "updateTodoList") {
 			if (config.todo?.enabled) {
 				return { action: "auto-approve" }
 			}
