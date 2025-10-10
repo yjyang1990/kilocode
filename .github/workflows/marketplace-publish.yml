@@ -175,7 +175,7 @@ jobs:
                   -F "isHidden=false" \
                   https://plugins.jetbrains.com/plugin/uploadPlugin
 
-    publish-cli:
+    build-cli:
         runs-on: ubuntu-latest
         if: >
             ( github.event_name == 'pull_request' &&
