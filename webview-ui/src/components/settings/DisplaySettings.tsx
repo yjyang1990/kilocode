@@ -1,3 +1,4 @@
+// kilocode_change - new file
 import { HTMLAttributes, useMemo, useState } from "react"
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react"
@@ -9,6 +10,7 @@ import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
 import { TaskTimeline } from "../chat/TaskTimeline"
 import { generateSampleTimelineData } from "../../utils/timeline/mockData"
+import { Slider } from "../ui"
 
 type DisplaySettingsProps = HTMLAttributes<HTMLDivElement> & {
 	showTaskTimeline?: boolean
@@ -16,8 +18,13 @@ type DisplaySettingsProps = HTMLAttributes<HTMLDivElement> & {
 	ghostServiceSettings?: any
 	reasoningBlockCollapsed: boolean
 	setCachedStateField: SetCachedStateField<
-		"showTaskTimeline" | "ghostServiceSettings" | "reasoningBlockCollapsed" | "showTimestamps"
+		| "showTaskTimeline"
+		| "ghostServiceSettings"
+		| "reasoningBlockCollapsed"
+		| "hideCostBelowThreshold"
+		| "showTimestamps"
 	>
+	hideCostBelowThreshold?: number
 }
 
 export const DisplaySettings = ({
@@ -26,6 +33,7 @@ export const DisplaySettings = ({
 	ghostServiceSettings,
 	setCachedStateField,
 	reasoningBlockCollapsed,
+	hideCostBelowThreshold,
 	...props
 }: DisplaySettingsProps) => {
 	const { t } = useAppTranslation()
@@ -132,6 +140,37 @@ export const DisplaySettings = ({
 							<span className="text-vscode-descriptionForeground text-xs">
 								{t("settings:ghost.showGutterAnimation.preview")}
 							</span>
+						</div>
+					</div>
+				</div>
+			</Section>
+
+			<Section>
+				<div>
+					<div className="font-medium">{t("settings:display.costThreshold.label")}</div>
+					<div className="text-vscode-descriptionForeground text-sm mt-1">
+						{t("settings:display.costThreshold.description")}
+					</div>
+
+					<div className="mt-3">
+						<div className="flex items-center gap-2">
+							<Slider
+								min={0}
+								max={1}
+								step={0.01}
+								value={[hideCostBelowThreshold ?? 0]}
+								onValueChange={([value]) => setCachedStateField("hideCostBelowThreshold", value)}
+								data-testid="cost-threshold-slider"
+								className="flex-1"
+							/>
+							<span className="text-sm text-vscode-foreground min-w-[60px]">
+								${(hideCostBelowThreshold ?? 0).toFixed(2)}
+							</span>
+						</div>
+						<div className="text-xs text-vscode-descriptionForeground mt-1">
+							{t("settings:display.costThreshold.currentValue", {
+								value: (hideCostBelowThreshold ?? 0).toFixed(2),
+							})}
 						</div>
 					</div>
 				</div>

@@ -86,7 +86,7 @@ interface ChatRowProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface ChatRowContentProps extends Omit<ChatRowProps, "onHeightChange"> { }
+interface ChatRowContentProps extends Omit<ChatRowProps, "onHeightChange"> {}
 
 const ChatRow = memo(
 	(props: ChatRowProps) => {
@@ -169,6 +169,16 @@ export const ChatRowContent = ({
 
 		return [undefined, undefined, undefined]
 	}, [message.text, message.say])
+
+	// kilocode_change start: hide cost display check
+	const { hideCostBelowThreshold } = useExtensionState()
+	const shouldShowCost = useMemo(() => {
+		if (cost === undefined || cost === null || cost <= 0) return false
+		if (isExpanded) return true
+		const threshold = hideCostBelowThreshold ?? 0
+		return cost >= threshold
+	}, [cost, isExpanded, hideCostBelowThreshold])
+	// kilocode_change end: hide cost display check
 
 	// When resuming task, last wont be api_req_failed but a resume_task
 	// message, so api_req_started will show loading spinner. That's why we just
@@ -414,8 +424,8 @@ export const ChatRowContent = ({
 										: tool.lineNumber === 0
 											? t("chat:fileOperations.wantsToInsertAtEnd")
 											: t("chat:fileOperations.wantsToInsertWithLineNumber", {
-												lineNumber: tool.lineNumber,
-											})}
+													lineNumber: tool.lineNumber,
+												})}
 							</span>
 						</div>
 						<div className="pl-6">
@@ -572,8 +582,8 @@ export const ChatRowContent = ({
 										? t("chat:fileOperations.wantsToReadOutsideWorkspace")
 										: tool.additionalFileCount && tool.additionalFileCount > 0
 											? t("chat:fileOperations.wantsToReadAndXMore", {
-												count: tool.additionalFileCount,
-											})
+													count: tool.additionalFileCount,
+												})
 											: t("chat:fileOperations.wantsToRead")
 									: t("chat:fileOperations.didRead")}
 							</span>
@@ -1035,13 +1045,14 @@ export const ChatRowContent = ({
 					return (
 						<>
 							<div
-								className={`group text-sm transition-opacity ${isApiRequestInProgress ? "opacity-100" : "opacity-40 hover:opacity-100"
-									}`}
+								className={`group text-sm transition-opacity ${
+									isApiRequestInProgress ? "opacity-100" : "opacity-40 hover:opacity-100"
+								}`}
 								style={{
 									...headerStyle,
 									marginBottom:
 										((cost === null || cost === undefined) && apiRequestFailedMessage) ||
-											apiReqStreamingFailedMessage
+										apiReqStreamingFailedMessage
 											? 10
 											: 0,
 									justifyContent: "space-between",
@@ -1061,7 +1072,7 @@ export const ChatRowContent = ({
 								</div>
 								<div
 									className="text-xs text-vscode-dropdown-foreground border-vscode-dropdown-border/50 border px-1.5 py-0.5 rounded-lg"
-									style={{ opacity: cost !== null && cost !== undefined && cost > 0 ? 1 : 0 }}>
+									style={{ opacity: shouldShowCost ? 1 : 0 }}>
 									${Number(cost || 0)?.toFixed(4)}
 								</div>
 								{
@@ -1079,26 +1090,26 @@ export const ChatRowContent = ({
 							</div>
 							{(((cost === null || cost === undefined) && apiRequestFailedMessage) ||
 								apiReqStreamingFailedMessage) && (
-									<ErrorRow
-										type="api_failure"
-										message={apiRequestFailedMessage || apiReqStreamingFailedMessage || ""}
-										additionalContent={
-											apiRequestFailedMessage?.toLowerCase().includes("powershell") ? (
-												<>
-													<br />
-													<br />
-													{t("chat:powershell.issues")}{" "}
-													<a
-														href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
-														style={{ color: "inherit", textDecoration: "underline" }}>
-														troubleshooting guide
-													</a>
-													.
-												</>
-											) : undefined
-										}
-									/>
-								)}
+								<ErrorRow
+									type="api_failure"
+									message={apiRequestFailedMessage || apiReqStreamingFailedMessage || ""}
+									additionalContent={
+										apiRequestFailedMessage?.toLowerCase().includes("powershell") ? (
+											<>
+												<br />
+												<br />
+												{t("chat:powershell.issues")}{" "}
+												<a
+													href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
+													style={{ color: "inherit", textDecoration: "underline" }}>
+													troubleshooting guide
+												</a>
+												.
+											</>
+										) : undefined
+									}
+								/>
+							)}
 
 							{isExpanded && (
 								<div className="ml-6" style={{ marginTop: "10px" }}>
@@ -1264,7 +1275,7 @@ export const ChatRowContent = ({
 					)
 				// kilocode_change end
 				case "user_edit_todos":
-					return <UpdateTodoListToolBlock userEdited onChange={() => { }} />
+					return <UpdateTodoListToolBlock userEdited onChange={() => {}} />
 				case "tool" as any:
 					// Handle say tool messages
 					const sayTool = safeJsonParse<ClineSayTool>(message.text)
@@ -1484,17 +1495,6 @@ export const ChatRowContent = ({
 									onCancelAutoApproval={onFollowUpUnmount}
 									isAnswered={isFollowUpAnswered}
 								/>
-								{followUpData?.generateWithPrompt && (
-									<Trans
-										i18nKey="chat:followups.currentMcpMaxRequestsTriggered"
-										components={{
-											code: (
-												<code className="font-medium">{followUpData.generateWithPrompt}</code>
-											),
-										}}
-										values={{ model: followUpData.generateWithPrompt }}
-									/>
-								)}
 							</div>
 						</>
 					)
