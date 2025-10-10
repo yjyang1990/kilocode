@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.103.0
-
-### Minor Changes
+## [v4.103.0]
 
 - [#2528](https://github.com/Kilo-Org/kilocode/pull/2528) [`14d5060`](https://github.com/Kilo-Org/kilocode/commit/14d506025a9374f54409768629fc4ebd57f8f628) Thanks [@mcowger](https://github.com/mcowger)! - Add timestamps to Chat view.
 
