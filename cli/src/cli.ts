@@ -194,8 +194,8 @@ export class CLI {
 					logs.info("Exiting with success code", "CLI", { reason: exitReason })
 				} else {
 					// No exit reason set - this shouldn't happen in normal flow
-					exitCode = 0
-					logs.info("Exiting with default success code", "CLI")
+					exitCode = 1
+					logs.info("Exiting with default failure code", "CLI")
 				}
 			}
 
