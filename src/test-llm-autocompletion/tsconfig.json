@@ -11,7 +11,7 @@
 		"resolveJsonModule": true,
 		"allowImportingTsExtensions": true,
 		"noEmit": true,
-		"types": ["node", "vitest/globals"],
+		"types": ["node"],
 		"baseUrl": ".",
 		"paths": {
 			"vscode": ["./mock-vscode.ts"]
