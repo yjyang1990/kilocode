@@ -1180,11 +1180,12 @@ export class ClineProvider
 		this.webviewDisposables.push(messageDisposable)
 	}
 
+	/* kilocode_change start */
 	/**
 	 * Handle messages from CLI ExtensionHost
 	 * This method allows the CLI to send messages directly to the webviewMessageHandler
 	 */
-	public async handleMessage(message: WebviewMessage): Promise<void> {
+	public async handleCLIMessage(message: WebviewMessage): Promise<void> {
 		try {
 			await webviewMessageHandler(this, message, this.marketplaceManager)
 		} catch (error) {
@@ -1192,6 +1193,7 @@ export class ClineProvider
 			throw error
 		}
 	}
+	/* kilocode_change end */
 
 	/**
 	 * Handle switching to a new mode, including updating the associated API configuration

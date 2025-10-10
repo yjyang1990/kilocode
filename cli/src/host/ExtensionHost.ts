@@ -539,10 +539,10 @@ export class ExtensionHost extends EventEmitter {
 				// Find the registered webview provider
 				const webviewProvider = this.webviewProviders.get("kilo-code.SidebarProvider")
 
-				if (webviewProvider && typeof webviewProvider.handleMessage === "function") {
+				if (webviewProvider && typeof webviewProvider.handleCLIMessage === "function") {
 					try {
 						// Call the webview provider's message handler (which should call webviewMessageHandler)
-						await webviewProvider.handleMessage(message)
+						await webviewProvider.handleCLIMessage(message)
 						logs.debug(
 							`Successfully forwarded message to webview provider: ${message.type}`,
 							"ExtensionHost",
@@ -554,7 +554,7 @@ export class ExtensionHost extends EventEmitter {
 					}
 				} else {
 					logs.warn(
-						`No webview provider found or handleMessage not available for: ${message.type}`,
+						`No webview provider found or handleCLIMessage not available for: ${message.type}`,
 						"ExtensionHost",
 					)
 				}
