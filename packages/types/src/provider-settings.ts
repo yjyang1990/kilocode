@@ -37,6 +37,10 @@ import { toolUseStylesSchema } from "./kilocode/native-function-calling.js"
 
 export const DEFAULT_CONSECUTIVE_MISTAKE_LIMIT = 3
 
+export const SUPPORTED_AUTOCOMPLETE_PROVIDERS = ["mistral", "kilocode", "openrouter"] as const
+
+export type SupportedAutocompleteProvider = (typeof SUPPORTED_AUTOCOMPLETE_PROVIDERS)[number]
+
 /**
  * DynamicProvider
  *
