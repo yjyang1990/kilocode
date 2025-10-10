@@ -202,7 +202,7 @@ function mapNormalizedToOriginalIndex(
  * and emit suggestions as soon as complete <change> blocks are available
  */
 export class GhostStreamingParser {
-	private buffer: string = ""
+	public buffer: string = ""
 	private completedChanges: ParsedChange[] = []
 	private lastProcessedIndex: number = 0
 	private context: GhostSuggestionContext | null = null
@@ -488,13 +488,6 @@ export class GhostStreamingParser {
 
 		suggestions.sortGroups()
 		return suggestions
-	}
-
-	/**
-	 * Get the current buffer content (for debugging)
-	 */
-	public getBuffer(): string {
-		return this.buffer
 	}
 
 	/**

@@ -58,7 +58,7 @@ export class GhostStrategy {
 	 * Get the current buffer content from the streaming parser (for debugging)
 	 */
 	public getStreamingBuffer(): string {
-		return this.streamingParser.getBuffer()
+		return this.streamingParser.buffer
 	}
 
 	/**

@@ -246,11 +246,11 @@ function fibonacci(n: number): number {
 			const change = `<change><search><![CDATA[test]]></search><replace><![CDATA[replacement]]></replace></change>`
 
 			parser.processChunk(change)
-			expect(parser.getBuffer()).not.toBe("")
+			expect(parser.buffer).not.toBe("")
 			expect(parser.getCompletedChanges()).toHaveLength(1)
 
 			parser.reset()
-			expect(parser.getBuffer()).toBe("")
+			expect(parser.buffer).toBe("")
 			expect(parser.getCompletedChanges()).toHaveLength(0)
 		})
 	})
