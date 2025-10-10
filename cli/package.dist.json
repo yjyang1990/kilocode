@@ -1,5 +1,5 @@
 {
-	"name": "@kilo-code/cli",
+	"name": "@kilocode/cli",
 	"version": "1.0.0",
 	"description": "Terminal User Interface for Kilo Code",
 	"type": "module",

@@ -5,7 +5,7 @@ Terminal User Interface for Kilo Code
 ## Installation
 
 ```bash
-npm install -g @kilo-code/cli
+npm install -g @kilocode/cli
 ```
 
 ## Usage

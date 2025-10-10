@@ -34,8 +34,8 @@
 		"jetbrains:build": "turbo jetbrains:build",
 		"jetbrains:run": "turbo jetbrains:run",
 		"cli:build": "turbo run cli:build",
-		"cli:deps": "pnpm --filter @kilo-code/cli run deps:install",
-		"cli:run": "pnpm --filter @kilo-code/cli run start",
+		"cli:deps": "pnpm --filter @kilocode/cli run deps:install",
+		"cli:run": "pnpm --filter @kilocode/cli run start",
 		"docs:start": "pnpm --filter kilocode-docs start",
 		"docs:build": "pnpm --filter kilocode-docs build"
 	},
