@@ -8,6 +8,20 @@ Terminal User Interface for Kilo Code
 npm install -g @kilocode/cli
 ```
 
+Then, make sure you place your Kilo Code API token in the CLI config:
+
+```bash
+kilocode config # this opens up your editor
+```
+
+You can find your Kilo Code API token on your profile page at [app.kilocode.ai](https://app.kilocode.ai), and place it in the `kilocodeToken` field in the CLI config.
+
+## Known Issues
+
+### Outdated dependency warnings
+
+When installing Kilo Code CLI you'll be greeted by some scary looking dependency deprecation warnings. We're aware of the issue and will resolve it shortly.
+
 ## Usage
 
 ### Interactive Mode
