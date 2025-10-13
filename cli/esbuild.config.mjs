@@ -157,8 +157,6 @@ const __dirname = __dirname__(__filename);
 		"yaml",
 		"zod",
 	],
-	// Bundle workspace dependencies (@roo-code/*)
-	// These will be included in the bundle
 	sourcemap: false,
 	minify: false,
 	treeShaking: true,
