@@ -24,6 +24,18 @@
 		"start": {
 			"cache": false,
 			"dependsOn": ["build"]
+		},
+		"cli:bundle": {
+			"cache": false,
+			"outputs": ["dist/**"],
+			"inputs": ["src/**", "package.dist.json", "esbuild.config.mjs"],
+			"dependsOn": ["build", "deps:install"]
+		},
+		"deps:install": {
+			"cache": false,
+			"outputs": ["dist/node_modules/**"],
+			"inputs": ["package.dist.json"],
+			"dependsOn": ["build"]
 		}
 	}
 }
