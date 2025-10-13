@@ -136,7 +136,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		// cloudIsAuthenticated, // kilocode_change
 		messageQueue = [],
 		sendMessageOnEnter,
-		sendMessageOnEnter
 	} = useExtensionState()
 
 	const messagesRef = useRef(messages)

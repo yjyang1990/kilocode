@@ -34,7 +34,6 @@ export interface ExtensionStateContextType extends ExtensionState {
 	showTaskTimeline?: boolean // kilocode_change
 	sendMessageOnEnter?: boolean // kilocode_change New state property for Enter key behavior
 	setShowTaskTimeline: (value: boolean) => void // kilocode_change
-	sendMessageOnEnter?: boolean // kilocode_change
 	setSendMessageOnEnter: (value: boolean) => void // kilocode_change
 	showTimestamps?: boolean // kilocode_change
 	setShowTimestamps: (value: boolean) => void // kilocode_change
