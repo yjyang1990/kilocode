@@ -34,12 +34,16 @@ import { verifyFinishReason } from "./kilocode/verifyFinishReason"
 type OpenRouterProviderParams = {
 	order?: string[]
 	only?: string[]
-	ignore?: string[] // kilocode_change
 	allow_fallbacks?: boolean
 	data_collection?: "allow" | "deny"
 	sort?: "price" | "throughput" | "latency"
+	zdr?: boolean
 }
+
+import { safeJsonParse } from "../../shared/safeJsonParse"
+import { isAnyRecognizedKiloCodeError } from "../../shared/kilocode/errorUtils"
 // kilocode_change end
+
 import { handleOpenAIError } from "./utils/openai-error-handler"
 
 // Image generation types
@@ -106,8 +110,8 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 	protected endpoints: ModelRecord = {}
 
 	// kilocode_change start property
-	protected get providerName() {
-		return "OpenRouter"
+	protected get providerName(): "OpenRouter" | "KiloCode" {
+		return "OpenRouter" as const
 	}
 	// kilocode_change end
 
@@ -142,14 +146,20 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 					only: [this.options.openRouterSpecificProvider],
 					allow_fallbacks: false,
 					data_collection: this.options.openRouterProviderDataCollection,
+					zdr: this.options.openRouterZdr,
 				},
 			}
 		}
-		if (this.options.openRouterProviderDataCollection || this.options.openRouterProviderSort) {
+		if (
+			this.options.openRouterProviderDataCollection ||
+			this.options.openRouterProviderSort ||
+			this.options.openRouterZdr
+		) {
 			return {
 				provider: {
 					data_collection: this.options.openRouterProviderDataCollection,
 					sort: this.options.openRouterProviderSort,
+					zdr: this.options.openRouterZdr,
 				},
 			}
 		}
@@ -189,15 +199,13 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			openAiMessages = convertToR1Format([{ role: "user", content: systemPrompt }, ...messages])
 		}
 
-		// https://openrouter.ai/docs/features/prompt-caching
-		// TODO: Add a `promptCacheStratey` field to `ModelInfo`.
-		if (OPEN_ROUTER_PROMPT_CACHING_MODELS.has(modelId)) {
-			if (modelId.startsWith("google")) {
-				addGeminiCacheBreakpoints(systemPrompt, openAiMessages)
-			} else {
-				addAnthropicCacheBreakpoints(systemPrompt, openAiMessages)
-			}
+		// kilocode_change start
+		if (modelId.startsWith("google/gemini")) {
+			addGeminiCacheBreakpoints(systemPrompt, openAiMessages)
+		} else if (modelId.startsWith("anthropic/claude") || OPEN_ROUTER_PROMPT_CACHING_MODELS.has(modelId)) {
+			addAnthropicCacheBreakpoints(systemPrompt, openAiMessages)
 		}
+		// kilocode_change end
 
 		const transforms = (this.options.openRouterUseMiddleOutTransform ?? true) ? ["middle-out"] : undefined
 
@@ -222,10 +230,20 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 				this.customRequestOptions(metadata), // kilocode_change
 			)
 		} catch (error) {
+			// kilocode_change start
+			if (this.providerName == "KiloCode" && isAnyRecognizedKiloCodeError(error)) {
+				throw error
+			}
+			const rawError = safeJsonParse(error?.error?.metadata?.raw) as { error?: OpenAI.ErrorObject } | undefined
+			if (rawError?.error?.message) {
+				throw new Error(`${this.providerName} error: ${rawError.error.message}`)
+			}
+			// kilocode_change end
 			throw handleOpenAIError(error, this.providerName)
 		}
 
 		let lastUsage: CompletionUsage | undefined = undefined
+		let inferenceProvider: string | undefined // kilocode_change
 
 		try {
 			for await (const chunk of stream) {
@@ -235,6 +253,12 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 					console.error(`OpenRouter API Error: ${error?.code} - ${error?.message}`)
 					throw new Error(`OpenRouter API Error ${error?.code}: ${error?.message}`)
 				}
+
+				// kilocode_change start
+				if ("provider" in chunk && typeof chunk.provider === "string") {
+					inferenceProvider = chunk.provider
+				}
+				// kilocode_change end
 
 				verifyFinishReason(chunk.choices[0]) // kilocode_change
 				const delta = chunk.choices[0]?.delta
@@ -278,7 +302,10 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 				outputTokens: lastUsage.completion_tokens || 0,
 				cacheReadTokens: lastUsage.prompt_tokens_details?.cached_tokens,
 				reasoningTokens: lastUsage.completion_tokens_details?.reasoning_tokens,
-				totalCost: this.getTotalCost(lastUsage), // kilocode_change
+				// kilocode_change start
+				totalCost: this.getTotalCost(lastUsage),
+				inferenceProvider,
+				// kilocode_change end
 			}
 		}
 	}

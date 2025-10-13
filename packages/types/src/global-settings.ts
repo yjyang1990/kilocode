@@ -96,6 +96,8 @@ export const globalSettingsSchema = z.object({
 	browserViewportSize: z.string().optional(),
 	showAutoApproveMenu: z.boolean().optional(), // kilocode_change
 	showTaskTimeline: z.boolean().optional(), // kilocode_change
+	showTimestamps: z.boolean().optional(), // kilocode_change
+	hideCostBelowThreshold: z.number().min(0).optional(), // kilocode_change
 	localWorkflowToggles: z.record(z.string(), z.boolean()).optional(), // kilocode_change
 	globalWorkflowToggles: z.record(z.string(), z.boolean()).optional(), // kilocode_change
 	localRulesToggles: z.record(z.string(), z.boolean()).optional(), // kilocode_change
@@ -217,6 +219,7 @@ export const SECRET_STATE_KEYS = [
 	"codeIndexQdrantApiKey",
 	// kilocode_change start
 	"kilocodeToken",
+	"syntheticApiKey",
 	// kilocode_change end
 	"codebaseIndexOpenAiCompatibleApiKey",
 	"codebaseIndexGeminiApiKey",
@@ -229,6 +232,7 @@ export const SECRET_STATE_KEYS = [
 	"featherlessApiKey",
 	"ioIntelligenceApiKey",
 	"vercelAiGatewayApiKey",
+	"ovhCloudAiEndpointsApiKey", // kilocode_change
 ] as const
 
 // Global secrets that are part of GlobalSettings (not ProviderSettings)

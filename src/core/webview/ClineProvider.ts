@@ -1180,6 +1180,21 @@ export class ClineProvider
 		this.webviewDisposables.push(messageDisposable)
 	}
 
+	/* kilocode_change start */
+	/**
+	 * Handle messages from CLI ExtensionHost
+	 * This method allows the CLI to send messages directly to the webviewMessageHandler
+	 */
+	public async handleCLIMessage(message: WebviewMessage): Promise<void> {
+		try {
+			await webviewMessageHandler(this, message, this.marketplaceManager)
+		} catch (error) {
+			this.log(`Error handling CLI message: ${error instanceof Error ? error.message : String(error)}`)
+			throw error
+		}
+	}
+	/* kilocode_change end */
+
 	/**
 	 * Handle switching to a new mode, including updating the associated API configuration
 	 * @param newMode The mode to switch to
@@ -1866,6 +1881,8 @@ export class ClineProvider
 			language,
 			showAutoApproveMenu, // kilocode_change
 			showTaskTimeline, // kilocode_change
+			showTimestamps, // kilocode_change
+			hideCostBelowThreshold, // kilocode_change
 			maxReadFileLine,
 			maxImageFileSize,
 			maxTotalImageSize,
@@ -1952,10 +1969,13 @@ export class ClineProvider
 			uriScheme: vscode.env.uriScheme,
 			uiKind: vscode.UIKind[vscode.env.uiKind], // kilocode_change
 			kiloCodeWrapperProperties, // kilocode_change wrapper information
-			kilocodeDefaultModel: await getKilocodeDefaultModel(
-				apiConfiguration.kilocodeToken,
-				apiConfiguration.kilocodeOrganizationId,
-			),
+			kilocodeDefaultModel:
+				apiConfiguration.apiProvider === "kilocode"
+					? await getKilocodeDefaultModel(
+							apiConfiguration.kilocodeToken,
+							apiConfiguration.kilocodeOrganizationId,
+						)
+					: openRouterDefaultModelId,
 			currentTaskItem: this.getCurrentTask()?.taskId
 				? (taskHistory || []).find((item: HistoryItem) => item.id === this.getCurrentTask()?.taskId)
 				: undefined,
@@ -2017,6 +2037,8 @@ export class ClineProvider
 			showRooIgnoredFiles: showRooIgnoredFiles ?? false,
 			showAutoApproveMenu: showAutoApproveMenu ?? false, // kilocode_change
 			showTaskTimeline: showTaskTimeline ?? true, // kilocode_change
+			showTimestamps: showTimestamps ?? true, // kilocode_change
+			hideCostBelowThreshold, // kilocode_change
 			language, // kilocode_change
 			renderContext: this.renderContext,
 			maxReadFileLine: maxReadFileLine ?? -1,
@@ -2181,10 +2203,13 @@ export class ClineProvider
 		// Return the same structure as before.
 		return {
 			apiConfiguration: providerSettings,
-			kilocodeDefaultModel: await getKilocodeDefaultModel(
-				providerSettings.kilocodeToken,
-				providerSettings.kilocodeOrganizationId,
-			), // kilocode_change
+			kilocodeDefaultModel:
+				providerSettings.apiProvider === "kilocode"
+					? await getKilocodeDefaultModel(
+							providerSettings.kilocodeToken,
+							providerSettings.kilocodeOrganizationId,
+						)
+					: openRouterDefaultModelId, // kilocode_change
 			lastShownAnnouncementId: stateValues.lastShownAnnouncementId,
 			customInstructions: stateValues.customInstructions,
 			apiModelId: stateValues.apiModelId,
@@ -2267,6 +2292,8 @@ export class ClineProvider
 			showRooIgnoredFiles: stateValues.showRooIgnoredFiles ?? false,
 			showAutoApproveMenu: stateValues.showAutoApproveMenu ?? false, // kilocode_change
 			showTaskTimeline: stateValues.showTaskTimeline ?? true, // kilocode_change
+			showTimestamps: stateValues.showTimestamps ?? true, // kilocode_change
+			hideCostBelowThreshold: stateValues.hideCostBelowThreshold ?? 0, // kilocode_change
 			maxReadFileLine: stateValues.maxReadFileLine ?? -1,
 			maxImageFileSize: stateValues.maxImageFileSize ?? 5,
 			maxTotalImageSize: stateValues.maxTotalImageSize ?? 20,

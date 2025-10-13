@@ -242,6 +242,8 @@ export interface WebviewMessage {
 		| "getUsageData" // kilocode_change
 		| "usageDataResponse" // kilocode_change
 		| "showTaskTimeline" // kilocode_change
+		| "showTimestamps" // kilocode_change
+		| "hideCostBelowThreshold" // kilocode_change
 		| "toggleTaskFavorite" // kilocode_change
 		| "fixMermaidSyntax" // kilocode_change
 		| "mermaidFixResponse" // kilocode_change
