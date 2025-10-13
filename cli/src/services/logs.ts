@@ -200,6 +200,10 @@ export class LogsService {
 		}
 
 		try {
+			// Ensure directory exists before writing (synchronous to avoid race conditions)
+			const logDir = path.dirname(this.logFilePath)
+			fs.ensureDirSync(logDir)
+
 			const logLine = this.formatLogEntryForFile(entry) + "\n"
 			appendFileSync(this.logFilePath, logLine, "utf8")
 		} catch (error) {
