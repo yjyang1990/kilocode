@@ -11,6 +11,7 @@ import { setCIModeAtom } from "../state/atoms/ci.js"
 import { MessageDisplay } from "./messages/MessageDisplay.js"
 import { CommandInput } from "./components/CommandInput.js"
 import { StatusBar } from "./components/StatusBar.js"
+import { StatusIndicator } from "./components/StatusIndicator.js"
 import { initializeCommands } from "../commands/index.js"
 import { isCommandInput } from "../services/autocomplete.js"
 import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
@@ -163,7 +164,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 
 			{!options.ci && (
 				<>
-					{isProcessing && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}
+					<StatusIndicator disabled={false} />
 					<CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />
 					<StatusBar />
 				</>

@@ -115,7 +115,23 @@ export const cancelTaskAtom = atom(null, async (get, set) => {
 		type: "cancelTask",
 	}
 
-	await set(sendWebviewMessageAtom, message)
+	try {
+		await set(sendWebviewMessageAtom, message)
+	} catch (error) {
+		// Check if this is a task abortion error (expected when canceling)
+		const isTaskAbortError =
+			error instanceof Error &&
+			error.message &&
+			error.message.includes("task") &&
+			error.message.includes("aborted")
+
+		if (!isTaskAbortError) {
+			// Only log/throw unexpected errors
+			logs.error("Failed to cancel task", "actions", { error })
+			throw error
+		}
+		// Silently handle expected task abortion errors
+	}
 })
 
 /**

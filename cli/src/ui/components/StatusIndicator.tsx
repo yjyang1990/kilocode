@@ -1,0 +1,92 @@
+/**
+ * StatusIndicator - Displays current status and context-aware keyboard shortcuts
+ * Shows status text on the left (e.g., "Thinking...") and available hotkeys on the right
+ */
+
+import React, { useCallback, useEffect } from "react"
+import { Box, Text, useInput } from "ink"
+import { useHotkeys } from "../../state/hooks/useHotkeys.js"
+import { useWebviewMessage } from "../../state/hooks/useWebviewMessage.js"
+import { useTheme } from "../../state/hooks/useTheme.js"
+import { HotkeyBadge } from "./HotkeyBadge.js"
+import { useAtomValue } from "jotai"
+import { isProcessingAtom } from "../../state/atoms/ui.js"
+
+export interface StatusIndicatorProps {
+	/** Whether the indicator is disabled */
+	disabled?: boolean
+}
+
+/**
+ * Displays current status and available keyboard shortcuts
+ *
+ * Features:
+ * - Shows status text (e.g., "Thinking...") on the left when processing
+ * - Shows hotkey indicators on the right based on current context
+ * - Shows cancel hotkey when processing
+ * - Shows approval hotkeys when approval is pending
+ * - Shows navigation hotkeys when followup suggestions are visible
+ * - Shows general command hints when idle
+ * - Handles Ctrl+X / Cmd+X to cancel tasks
+ */
+export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = false }) => {
+	const theme = useTheme()
+	const { hotkeys, shouldShow, modifierKey } = useHotkeys()
+	const { cancelTask } = useWebviewMessage()
+	const isProcessing = useAtomValue(isProcessingAtom)
+
+	// Handle Ctrl+X / Cmd+X to cancel when processing
+	const handleCancel = useCallback(async () => {
+		if (isProcessing && !disabled) {
+			try {
+				await cancelTask()
+			} catch (error) {
+				// Silently handle task abortion errors as they're expected
+				const isTaskAbortError =
+					error instanceof Error &&
+					error.message &&
+					error.message.includes("task") &&
+					error.message.includes("aborted")
+
+				if (!isTaskAbortError) {
+					console.error("Failed to cancel task:", error)
+				}
+			}
+		}
+	}, [isProcessing, disabled, cancelTask])
+
+	// Listen for Ctrl+X / Cmd+X
+	useInput(
+		(input, key) => {
+			// Check for Ctrl+X (or Cmd+X on Mac)
+			if (key.ctrl && input === "x") {
+				handleCancel()
+			}
+		},
+		{ isActive: !disabled && isProcessing },
+	)
+
+	// Don't render if no hotkeys to show or disabled
+	if (!shouldShow || disabled) {
+		return null
+	}
+
+	return (
+		<Box borderStyle="single" borderColor={theme.ui.border.default} paddingX={1} justifyContent="space-between">
+			{/* Status text on the left */}
+			<Box>{isProcessing && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}</Box>
+
+			{/* Hotkeys on the right */}
+			<Box justifyContent="flex-end">
+				{hotkeys.map((hotkey, index) => (
+					<HotkeyBadge
+						key={`${hotkey.keys}-${index}`}
+						keys={hotkey.keys}
+						description={hotkey.description}
+						{...(hotkey.primary !== undefined && { primary: hotkey.primary })}
+					/>
+				))}
+			</Box>
+		</Box>
+	)
+}

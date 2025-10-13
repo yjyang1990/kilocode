@@ -1,0 +1,90 @@
+/**
+ * Hook for managing hotkey state and handlers
+ */
+
+import { useAtomValue } from "jotai"
+import { useMemo } from "react"
+import { isProcessingAtom, showFollowupSuggestionsAtom } from "../atoms/ui.js"
+import { useApprovalHandler } from "./useApprovalHandler.js"
+
+export interface Hotkey {
+	/** The key combination (e.g., "Ctrl+C", "Cmd+X") */
+	keys: string
+	/** Description of what the hotkey does */
+	description: string
+	/** Whether this is the primary/recommended action */
+	primary?: boolean
+}
+
+export interface UseHotkeysReturn {
+	/** List of currently available hotkeys */
+	hotkeys: Hotkey[]
+	/** Whether any hotkeys should be displayed */
+	shouldShow: boolean
+	/** The platform-specific modifier key (Cmd or Ctrl) */
+	modifierKey: string
+}
+
+/**
+ * Detects the platform and returns the appropriate modifier key
+ */
+function getModifierKey(): string {
+	const platform = process.platform
+	return platform === "darwin" ? "Cmd" : "Ctrl"
+}
+
+/**
+ * Hook to manage and display context-aware hotkeys
+ *
+ * Returns different hotkeys based on the current UI state:
+ * - When processing: Shows cancel hotkey
+ * - When approval pending: Shows approval hotkeys
+ * - When followup suggestions visible: Shows navigation hotkeys
+ * - When idle: Shows general command hotkeys
+ */
+export function useHotkeys(): UseHotkeysReturn {
+	const isProcessing = useAtomValue(isProcessingAtom)
+	const isFollowupVisible = useAtomValue(showFollowupSuggestionsAtom)
+	const { isApprovalPending } = useApprovalHandler()
+
+	const modifierKey = useMemo(() => getModifierKey(), [])
+
+	const hotkeys = useMemo((): Hotkey[] => {
+		// Priority 1: Approval mode hotkeys
+		if (isApprovalPending) {
+			return [
+				{ keys: "Y", description: "to approve", primary: true },
+				{ keys: "N", description: "to reject" },
+				{ keys: "Esc", description: "to cancel" },
+			]
+		}
+
+		// Priority 2: Processing state - show cancel
+		if (isProcessing) {
+			return [{ keys: `${modifierKey}+X`, description: "to cancel", primary: true }]
+		}
+
+		// Priority 3: Followup suggestions visible
+		if (isFollowupVisible) {
+			return [
+				{ keys: "↑↓", description: "to navigate" },
+				{ keys: "Tab", description: "to fill" },
+				{ keys: "Enter", description: "to submit", primary: true },
+			]
+		}
+
+		// Default: General command hints
+		return [
+			{ keys: "/help", description: "for commands" },
+			{ keys: "/mode", description: "to switch mode" },
+		]
+	}, [isApprovalPending, isProcessing, isFollowupVisible, modifierKey])
+
+	const shouldShow = hotkeys.length > 0
+
+	return {
+		hotkeys,
+		shouldShow,
+		modifierKey,
+	}
+}
