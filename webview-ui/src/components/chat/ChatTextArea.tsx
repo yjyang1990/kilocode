@@ -72,6 +72,7 @@ interface ChatTextAreaProps {
 	isEditMode?: boolean
 	onCancel?: () => void
 	sendMessageOnEnter?: boolean
+	sendMessageOnEnter?: boolean
 }
 
 export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
@@ -93,7 +94,7 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			modeShortcutText,
 			isEditMode = false,
 			onCancel,
-			sendMessageOnEnter = true
+			sendMessageOnEnter = true,
 		},
 		ref,
 	) => {
