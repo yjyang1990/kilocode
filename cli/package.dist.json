@@ -1,6 +1,6 @@
 {
 	"name": "@kilocode/cli",
-	"version": "0.0.1-alpha.1",
+	"version": "0.0.2-alpha.1",
 	"description": "Terminal User Interface for Kilo Code",
 	"type": "module",
 	"main": "index.js",
@@ -116,18 +116,20 @@
 		"node": ">=20.19.2"
 	},
 	"keywords": ["cli", "tui", "terminal", "ai", "assistant", "kilocode", "kilo", "ink"],
-	"author": "Kilo Code",
-	"license": "Apache-2.0",
+	"author": {
+		"name": "Kilo Code"
+	},
+	"homepage": "https://kilocode.ai/cli",
+	"bugs": {
+		"url": "https://github.com/Kilo-Org/kilocode/issues"
+	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kilo-org/kilocode.git",
+		"url": "git+https://github.com/Kilo-Org/kilocode.git",
 		"directory": "cli"
 	},
-	"bugs": {
-		"url": "https://github.com/kilo-org/kilocode/issues"
-	},
-	"homepage": "https://github.com/kilo-org/kilocode#readme",
+	"license": "Apache-2.0",
 	"publishConfig": {
-		"access": "restricted"
+		"access": "public"
 	}
 }
