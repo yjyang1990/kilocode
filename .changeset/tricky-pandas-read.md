@@ -2,4 +2,4 @@
 "kilo-code": minor
 ---
 
-Updates openai compatible parser to yield reasoning content correctly.
+Improved OpenAI compatible parser's ability to yield reasoning content
