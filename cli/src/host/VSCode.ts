@@ -1684,7 +1684,7 @@ export function createVSCodeAPIMock(extensionRootPath: string, workspacePath: st
 	// Environment mock with identity values
 	const env = {
 		appName: `wrapper|cli|cli|${Package.version}`,
-		appRoot: process.cwd(),
+		appRoot: import.meta.dirname,
 		language: "en",
 		machineId: identity?.machineId || "cli-machine-id",
 		sessionId: identity?.sessionId || "cli-session-id",
