@@ -199,19 +199,21 @@ export class OpenAiHandler extends BaseProvider implements SingleCompletionHandl
 					}
 				}
 
-				// Check for reasoning content in streaming response
-				// Some APIs use 'reasoning_content', others use 'reasoning'
+				// kilocode_change start: reasoning
 				const reasoningText =
-					("reasoning_content" in delta && delta.reasoning_content) ||
-					// @ts-ignore - reasoning field exists on some OpenAI-compatible models
-					("reasoning" in delta && delta.reasoning)
-
+					"reasoning_content" in delta && typeof delta.reasoning_content === "string"
+						? delta.reasoning_content
+						: "reasoning" in delta && typeof delta.reasoning === "string"
+							? delta.reasoning
+							: undefined
 				if (reasoningText) {
 					yield {
 						type: "reasoning",
-						text: reasoningText as string,
+						text: reasoningText,
 					}
 				}
+				// kilocode_change end
+
 				if (chunk.usage) {
 					lastUsage = chunk.usage
 				}
@@ -253,22 +255,15 @@ export class OpenAiHandler extends BaseProvider implements SingleCompletionHandl
 				throw handleOpenAIError(error, this.providerName)
 			}
 
+			// kilocode_change start: reasoning
 			const message = response.choices[0]?.message
-
 			if (message) {
-				// Yield reasoning content FIRST if present (before the main content)
-				// @ts-ignore - reasoning field exists on some OpenAI-compatible models
-				if (message.reasoning) {
-					// Yield reasoning content FIRST if present (before the main content)
-					// @ts-ignore - reasoning field exists on some OpenAI-compatible models
+				if ("reasoning" in message && typeof message.reasoning === "string") {
 					yield {
 						type: "reasoning",
-						// @ts-ignore
-						text: message.reasoning as string,
+						text: message.reasoning,
 					}
 				}
-
-				// Then yield the main content
 				if (message.content) {
 					yield {
 						type: "text",
@@ -276,6 +271,7 @@ export class OpenAiHandler extends BaseProvider implements SingleCompletionHandl
 					}
 				}
 			}
+			// kilocode_change end
 
 			yield this.processUsageMetrics(response.usage, modelInfo)
 		}
