@@ -1,5 +1,6 @@
 import esbuild from "esbuild"
 import { chmodSync, mkdirSync, copyFileSync } from "fs"
+import { rimrafSync } from "rimraf"
 
 // Function to copy post-build files
 function copyPostBuildFiles() {
@@ -23,6 +24,12 @@ function copyPostBuildFiles() {
 	}
 }
 
+function removeUnneededFiles() {
+	rimrafSync("dist/kilocode/webview-ui")
+	rimrafSync("dist/kilocode/assets")
+	console.log("✓ Unneeded files removed")
+}
+
 const afterBuildPlugin = {
 	name: "after-build",
 	setup(build) {
@@ -30,6 +37,7 @@ const afterBuildPlugin = {
 			if (result.errors.length > 0) return
 
 			copyPostBuildFiles()
+			removeUnneededFiles()
 			try {
 				chmodSync("dist/index.js", 0o755)
 				console.log("✓ dist/index.js made executable")
