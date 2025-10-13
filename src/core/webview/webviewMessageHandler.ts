@@ -1741,6 +1741,10 @@ export const webviewMessageHandler = async (
 			await provider.postStateToWebview()
 			break
 		case "sendMessageOnEnter":
+			await updateGlobalState("sendMessageOnEnter", message.bool ?? false)
+			await provider.postStateToWebview()
+			break
+		case "sendMessageOnEnter":
 			await updateGlobalState("sendMessageOnEnter", message.bool ?? true)
 			await provider.postStateToWebview()
 			break

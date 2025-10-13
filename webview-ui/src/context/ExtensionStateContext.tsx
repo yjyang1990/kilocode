@@ -32,6 +32,7 @@ import { ClineRulesToggles } from "@roo/cline-rules" // kilocode_change
 export interface ExtensionStateContextType extends ExtensionState {
 	historyPreviewCollapsed?: boolean
 	showTaskTimeline?: boolean // kilocode_change
+	sendMessageOnEnter?: boolean // kilocode_change New state property for Enter key behavior
 	setShowTaskTimeline: (value: boolean) => void // kilocode_change
 	sendMessageOnEnter?: boolean // kilocode_change
 	setSendMessageOnEnter: (value: boolean) => void // kilocode_change
