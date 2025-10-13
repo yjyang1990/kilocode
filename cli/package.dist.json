@@ -115,7 +115,7 @@
 	"engines": {
 		"node": ">=20.19.2"
 	},
-	"keywords": ["cli", "tui", "terminal", "ai", "assistant", "kilo-code", "ink"],
+	"keywords": ["cli", "tui", "terminal", "ai", "assistant", "kilocode", "kilo", "ink"],
 	"author": "Kilo Code",
 	"license": "Apache-2.0",
 	"repository": {
