@@ -39,25 +39,11 @@ export async function validateConfig(config: unknown): Promise<ValidationResult>
 			return { valid: false, errors }
 		}
 
-		// After schema validation, validate provider configurations
+		// After schema validation, validate business logic
 		if (config && typeof config === "object" && "providers" in config) {
 			const cliConfig = config as CLIConfig
-			const providerErrors: string[] = []
 
-			// Validate each provider configuration (allow empty for non-selected providers)
-			for (const provider of cliConfig.providers) {
-				const isSelected = provider.id === cliConfig.provider
-				const providerResult = validateProviderConfig(provider, isSelected)
-				if (!providerResult.valid && providerResult.errors) {
-					providerErrors.push(...providerResult.errors.map((err) => `Provider '${provider.id}': ${err}`))
-				}
-			}
-
-			if (providerErrors.length > 0) {
-				return { valid: false, errors: providerErrors }
-			}
-
-			// Validate the selected provider exists
+			// Validate the selected provider exists and has non-empty credentials
 			const selectedProviderResult = validateSelectedProvider(cliConfig)
 			if (!selectedProviderResult.valid) {
 				return selectedProviderResult
@@ -74,140 +60,89 @@ export async function validateConfig(config: unknown): Promise<ValidationResult>
 }
 
 /**
- * Minimum length for API keys and tokens
- */
-const MIN_API_KEY_LENGTH = 10
-
-/**
- * Validates that a string field is non-empty and meets minimum length requirements
- * @param value - The value to validate
- * @param fieldName - The name of the field for error messages
- * @param minLength - Minimum length requirement
- * @param allowEmpty - Whether to allow empty strings (for unconfigured providers)
- */
-function validateStringField(
-	value: unknown,
-	fieldName: string,
-	minLength: number = 1,
-	allowEmpty: boolean = true,
-): string | null {
-	if (typeof value !== "string") {
-		return `${fieldName} must be a string`
-	}
-	// Check if empty strings are allowed
-	if (value.length === 0) {
-		return allowEmpty ? null : `${fieldName} is required and cannot be empty`
-	}
-	// If not empty, check minimum length
-	if (value.length < minLength) {
-		return `${fieldName} must be at least ${minLength} characters long`
-	}
-	return null
-}
-
-/**
- * Validates provider-specific configuration based on provider type
+ * Validates provider-specific configuration based on provider type.
+ * Note: Most validations (required fields, types, minLength) are now handled by schema.json.
+ * This function validates business logic: selected providers must have non-empty required credentials.
+ *
  * @param provider - The provider configuration to validate
  * @param isSelected - Whether this is the currently selected provider (requires non-empty credentials)
  */
 export function validateProviderConfig(provider: ProviderConfig, isSelected: boolean = false): ValidationResult {
-	const errors: string[] = []
+	// Schema validation handles:
+	// - Provider type existence and validity (enum)
+	// - Field types (string, etc.)
+	// - Minimum lengths for API keys and tokens (when non-empty)
 
-	// Check provider type exists
-	if (!provider.provider) {
-		return {
-			valid: false,
-			errors: ["Provider type is required"],
-		}
+	// This function validates: selected providers must have non-empty required credentials
+	if (!isSelected) {
+		return { valid: true }
 	}
 
-	// Validate based on provider type
-	// For selected providers, empty credentials are not allowed
-	const allowEmpty = !isSelected
+	const errors: string[] = []
 
+	// Validate selected provider has non-empty required fields
 	switch (provider.provider) {
-		case "kilocode": {
-			const tokenError = validateStringField(
-				provider.kilocodeToken,
-				"kilocodeToken",
-				MIN_API_KEY_LENGTH,
-				allowEmpty,
-			)
-			if (tokenError) errors.push(tokenError)
-
-			const modelError = validateStringField(provider.kilocodeModel, "kilocodeModel", 1, allowEmpty)
-			if (modelError) errors.push(modelError)
+		case "kilocode":
+			if (!provider.kilocodeToken || provider.kilocodeToken.length === 0) {
+				errors.push("kilocodeToken is required and cannot be empty for selected provider")
+			}
+			if (!provider.kilocodeModel || provider.kilocodeModel.length === 0) {
+				errors.push("kilocodeModel is required and cannot be empty for selected provider")
+			}
 			break
-		}
 
-		case "anthropic": {
-			const keyError = validateStringField(provider.apiKey, "apiKey", MIN_API_KEY_LENGTH, allowEmpty)
-			if (keyError) errors.push(keyError)
-
-			const modelError = validateStringField(provider.apiModelId, "apiModelId", 1, allowEmpty)
-			if (modelError) errors.push(modelError)
+		case "anthropic":
+			if (!provider.apiKey || provider.apiKey.length === 0) {
+				errors.push("apiKey is required and cannot be empty for selected provider")
+			}
+			if (!provider.apiModelId || provider.apiModelId.length === 0) {
+				errors.push("apiModelId is required and cannot be empty for selected provider")
+			}
 			break
-		}
 
-		case "openai-native": {
-			const keyError = validateStringField(
-				provider.openAiNativeApiKey,
-				"openAiNativeApiKey",
-				MIN_API_KEY_LENGTH,
-				allowEmpty,
-			)
-			if (keyError) errors.push(keyError)
-
-			const modelError = validateStringField(provider.apiModelId, "apiModelId", 1, allowEmpty)
-			if (modelError) errors.push(modelError)
+		case "openai-native":
+			if (!provider.openAiNativeApiKey || provider.openAiNativeApiKey.length === 0) {
+				errors.push("openAiNativeApiKey is required and cannot be empty for selected provider")
+			}
+			if (!provider.apiModelId || provider.apiModelId.length === 0) {
+				errors.push("apiModelId is required and cannot be empty for selected provider")
+			}
 			break
-		}
 
-		case "openrouter": {
-			const keyError = validateStringField(
-				provider.openRouterApiKey,
-				"openRouterApiKey",
-				MIN_API_KEY_LENGTH,
-				allowEmpty,
-			)
-			if (keyError) errors.push(keyError)
-
-			const modelError = validateStringField(provider.openRouterModelId, "openRouterModelId", 1, allowEmpty)
-			if (modelError) errors.push(modelError)
+		case "openrouter":
+			if (!provider.openRouterApiKey || provider.openRouterApiKey.length === 0) {
+				errors.push("openRouterApiKey is required and cannot be empty for selected provider")
+			}
+			if (!provider.openRouterModelId || provider.openRouterModelId.length === 0) {
+				errors.push("openRouterModelId is required and cannot be empty for selected provider")
+			}
 			break
-		}
 
-		case "ollama": {
-			const urlError = validateStringField(provider.ollamaBaseUrl, "ollamaBaseUrl", 1, allowEmpty)
-			if (urlError) errors.push(urlError)
-
-			const modelError = validateStringField(provider.ollamaModelId, "ollamaModelId", 1, allowEmpty)
-			if (modelError) errors.push(modelError)
+		case "ollama":
+			if (!provider.ollamaBaseUrl || provider.ollamaBaseUrl.length === 0) {
+				errors.push("ollamaBaseUrl is required and cannot be empty for selected provider")
+			}
+			if (!provider.ollamaModelId || provider.ollamaModelId.length === 0) {
+				errors.push("ollamaModelId is required and cannot be empty for selected provider")
+			}
 			break
-		}
 
-		case "openai": {
-			const keyError = validateStringField(provider.openAiApiKey, "openAiApiKey", MIN_API_KEY_LENGTH, allowEmpty)
-			if (keyError) errors.push(keyError)
+		case "openai":
+			if (!provider.openAiApiKey || provider.openAiApiKey.length === 0) {
+				errors.push("openAiApiKey is required and cannot be empty for selected provider")
+			}
 			break
-		}
 
-		// Add more provider validations as needed
 		default:
-			// For other providers, just check if they have basic configuration
+			// For other providers, no additional validation needed
 			break
 	}
 
 	if (errors.length > 0) {
-		return {
-			valid: false,
-			errors,
-		}
+		return { valid: false, errors }
 	}
 
-	return {
-		valid: true,
-	}
+	return { valid: true }
 }
 
 /**

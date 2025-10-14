@@ -87,8 +87,11 @@ describe("Config Persistence", () => {
 
 	describe("loadConfig", () => {
 		it("should create default config if file doesn't exist", async () => {
-			const config = await loadConfig()
-			expect(config).toEqual(DEFAULT_CONFIG)
+			const result = await loadConfig()
+			expect(result.config).toEqual(DEFAULT_CONFIG)
+			// Default config has empty credentials, so validation should fail
+			expect(result.validation.valid).toBe(false)
+			expect(result.validation.errors).toBeDefined()
 		})
 
 		it("should load existing config from file", async () => {
@@ -110,8 +113,33 @@ describe("Config Persistence", () => {
 			}
 
 			await saveConfig(testConfig)
-			const loaded = await loadConfig()
-			expect(loaded).toEqual(testConfig)
+			const result = await loadConfig()
+			expect(result.config).toEqual(testConfig)
+			expect(result.validation.valid).toBe(true)
+		})
+
+		it("should return validation errors for invalid config", async () => {
+			const invalidConfig = {
+				...DEFAULT_CONFIG,
+				provider: "test-provider",
+				providers: [
+					{
+						id: "test-provider",
+						provider: "anthropic",
+						apiKey: "", // Empty API key should fail validation
+						apiModelId: "claude-3-5-sonnet-20241022",
+					},
+				],
+			}
+
+			// Write invalid config directly to file (bypassing saveConfig validation)
+			await ensureConfigDir()
+			await fs.writeFile(TEST_CONFIG_FILE, JSON.stringify(invalidConfig, null, 2))
+
+			const result = await loadConfig()
+			expect(result.validation.valid).toBe(false)
+			expect(result.validation.errors).toBeDefined()
+			expect(result.validation.errors!.length).toBeGreaterThan(0)
 		})
 	})
 

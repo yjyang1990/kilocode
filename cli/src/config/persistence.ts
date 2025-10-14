@@ -3,8 +3,16 @@ import * as path from "path"
 import { homedir } from "os"
 import type { CLIConfig, AutoApprovalConfig } from "./types.js"
 import { DEFAULT_CONFIG, DEFAULT_AUTO_APPROVAL } from "./defaults.js"
-import { validateConfig } from "./validation.js"
+import { validateConfig, type ValidationResult } from "./validation.js"
 import { logs } from "../services/logs.js"
+
+/**
+ * Result of loading config, includes both the config and validation status
+ */
+export interface ConfigLoadResult {
+	config: CLIConfig
+	validation: ValidationResult
+}
 
 export const CONFIG_DIR = path.join(homedir(), ".kilocode", "cli")
 export const CONFIG_FILE = path.join(CONFIG_DIR, "config.json")
@@ -39,6 +47,7 @@ export async function ensureConfigDir(): Promise<void> {
  * - Overwrites with values from source (user config) where they exist
  * - Recursively merges nested objects
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function deepMerge(target: any, source: any): any {
 	// Start with a copy of target to get all default keys
 	const result = { ...target }
@@ -86,10 +95,24 @@ function mergeWithDefaults(loadedConfig: Partial<CLIConfig>): CLIConfig {
 		merged.autoApproval = DEFAULT_AUTO_APPROVAL
 	}
 
+	// Special handling for providers array to merge each provider with defaults
+	if (loadedConfig.providers && Array.isArray(loadedConfig.providers)) {
+		merged.providers = loadedConfig.providers.map((loadedProvider) => {
+			// Find matching default provider by id
+			const defaultProvider = DEFAULT_CONFIG.providers.find((p) => p.id === loadedProvider.id)
+			if (defaultProvider) {
+				// Merge loaded provider with default to fill in missing fields
+				return deepMerge(defaultProvider, loadedProvider)
+			}
+			// If no matching default, return as-is (will be validated later)
+			return loadedProvider
+		})
+	}
+
 	return merged
 }
 
-export async function loadConfig(): Promise<CLIConfig> {
+export async function loadConfig(): Promise<ConfigLoadResult> {
 	try {
 		await ensureConfigDir()
 
@@ -97,9 +120,17 @@ export async function loadConfig(): Promise<CLIConfig> {
 		try {
 			await fs.access(configFile)
 		} catch {
-			// File doesn't exist, create default
-			await saveConfig(DEFAULT_CONFIG)
-			return DEFAULT_CONFIG
+			// File doesn't exist, write default config directly without validation
+			// (DEFAULT_CONFIG may have empty credentials which is ok for initial setup)
+			await fs.writeFile(configFile, JSON.stringify(DEFAULT_CONFIG, null, 2))
+			logs.debug("Created default config file", "ConfigPersistence")
+
+			// Validate the default config
+			const validation = await validateConfig(DEFAULT_CONFIG)
+			return {
+				config: DEFAULT_CONFIG,
+				validation,
+			}
 		}
 
 		// Read and parse config
@@ -113,17 +144,25 @@ export async function loadConfig(): Promise<CLIConfig> {
 		const validation = await validateConfig(config)
 		if (!validation.valid) {
 			logs.error("Invalid config file", "ConfigPersistence", { errors: validation.errors })
-			throw new Error(`Invalid config: ${validation.errors?.join(", ")}`)
+			// Return config with validation errors instead of throwing
+			return {
+				config,
+				validation,
+			}
 		}
 
 		// Save the merged config back to ensure all defaults are persisted
+		// Only save if validation passed
 		await saveConfig(config)
 
-		return config as CLIConfig
+		return {
+			config: config as CLIConfig,
+			validation,
+		}
 	} catch (error) {
+		// For errors (e.g., file read errors, JSON parse errors), log and throw
 		logs.error("Failed to load config", "ConfigPersistence", { error })
-		// Return default config on error
-		return DEFAULT_CONFIG
+		throw error
 	}
 }
 

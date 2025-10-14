@@ -8,7 +8,7 @@ import { Box, Text, useInput } from "ink"
 import { useAtomValue, useSetAtom } from "jotai"
 import { isStreamingAtom, errorAtom, addMessageAtom } from "../state/atoms/ui.js"
 import { setCIModeAtom } from "../state/atoms/ci.js"
-import { configValidAtom } from "../state/atoms/config.js"
+import { configValidationAtom } from "../state/atoms/config.js"
 import { MessageDisplay } from "./messages/MessageDisplay.js"
 import { CommandInput } from "./components/CommandInput.js"
 import { StatusBar } from "./components/StatusBar.js"
@@ -36,7 +36,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	const isStreaming = useAtomValue(isStreamingAtom)
 	const error = useAtomValue(errorAtom)
 	const theme = useTheme()
-	const configValidation = useAtomValue(configValidAtom)
+	const configValidation = useAtomValue(configValidationAtom)
 
 	// Initialize CI mode configuration
 	const setCIMode = useSetAtom(setCIModeAtom)
@@ -139,7 +139,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			welcomeShownRef.current = true
 			addMessage(
 				createWelcomeMessage({
-					clearScreen: !options.ci || !configValidation.valid,
+					clearScreen: !options.ci && configValidation.valid,
 					showInstructions: !options.ci || !options.prompt,
 					instructions: createConfigErrorInstructions(configValidation),
 				}),
