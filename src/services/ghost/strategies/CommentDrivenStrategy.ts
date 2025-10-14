@@ -1,4 +1,3 @@
-import type { TextDocument } from "vscode"
 import { GhostSuggestionContext } from "../types"
 import { PromptStrategy } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
