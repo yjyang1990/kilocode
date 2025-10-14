@@ -99,8 +99,8 @@ export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 
 	const routerModels = useRouterModels({
 		openRouterBaseUrl: apiConfiguration?.openRouterBaseUrl,
-		openRouterApiKey: apiConfiguration?.apiKey, // kilocode_change
-		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId, // kilocode_change
+		openRouterApiKey: apiConfiguration?.apiKey,
+		kilocodeOrganizationId: apiConfiguration?.kilocodeOrganizationId,
 		geminiApiKey: apiConfiguration?.geminiApiKey,
 		googleGeminiBaseUrl: apiConfiguration?.googleGeminiBaseUrl,
 	})

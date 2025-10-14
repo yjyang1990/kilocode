@@ -795,15 +795,9 @@ export const webviewMessageHandler = async (
 		case "requestRouterModels":
 			const { apiConfiguration } = await provider.getState()
 
-			console.debug("[webviewMessageHandler] requestRouterModels", {
-				hasOpenRouterKey: !!apiConfiguration.openRouterApiKey,
-				hasGeminiKey: !!apiConfiguration.geminiApiKey,
-				hasKilocodeToken: !!apiConfiguration.kilocodeToken,
-			})
-
 			const routerModels: Record<RouterName, ModelRecord> = {
 				openrouter: {},
-				gemini: {},
+				gemini: {}, // kilocode_change
 				"vercel-ai-gateway": {},
 				huggingface: {},
 				litellm: {},
@@ -841,6 +835,7 @@ export const webviewMessageHandler = async (
 					key: "openrouter",
 					options: { provider: "openrouter", apiKey: openRouterApiKey, baseUrl: openRouterBaseUrl },
 				},
+				// kilocode_change start
 				{
 					key: "gemini",
 					options: {
@@ -849,6 +844,7 @@ export const webviewMessageHandler = async (
 						baseUrl: apiConfiguration.googleGeminiBaseUrl,
 					},
 				},
+				// kilocode_change end
 				{
 					key: "requesty",
 					options: {

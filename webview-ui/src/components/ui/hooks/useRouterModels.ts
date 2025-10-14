@@ -5,7 +5,7 @@ import { ExtensionMessage } from "@roo/ExtensionMessage"
 
 import { vscode } from "@src/utils/vscode"
 
-const getRouterModels = async (queryKey: RouterModelsQueryKey) =>
+const getRouterModels = async () =>
 	new Promise<RouterModels>((resolve, reject) => {
 		const cleanup = () => {
 			window.removeEventListener("message", handler)
@@ -32,7 +32,6 @@ const getRouterModels = async (queryKey: RouterModelsQueryKey) =>
 		}
 
 		window.addEventListener("message", handler)
-		console.debug("[useRouterModels] posting requestRouterModels", queryKey)
 		vscode.postMessage({ type: "requestRouterModels" })
 	})
 
@@ -51,5 +50,5 @@ type RouterModelsQueryKey = {
 }
 
 export const useRouterModels = (queryKey: RouterModelsQueryKey) =>
-	useQuery({ queryKey: ["routerModels", queryKey], queryFn: () => getRouterModels(queryKey) })
+	useQuery({ queryKey: ["routerModels", queryKey], queryFn: () => getRouterModels() })
 // kilocode_change end

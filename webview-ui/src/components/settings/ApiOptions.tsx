@@ -618,6 +618,7 @@ const ApiOptions = ({
 			)}
 
 			{selectedProvider === "gemini" && (
+				// kilocode_change: added props
 				<Gemini
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
