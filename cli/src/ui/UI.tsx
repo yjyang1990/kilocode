@@ -80,7 +80,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			// Small delay for cleanup and final message display
 			setTimeout(() => {
 				onExit()
-			}, 100)
+			}, 500)
 		}
 	}, [shouldExit, exitReason, options.ci, onExit])
 
@@ -139,7 +139,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			welcomeShownRef.current = true
 			addMessage(
 				createWelcomeMessage({
-					clearScreen: !options.ci,
+					clearScreen: !options.ci || !configValidation.valid,
 					showInstructions: !options.ci || !options.prompt,
 					instructions: createConfigErrorInstructions(configValidation),
 				}),
@@ -153,8 +153,8 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			logs.error("Invalid configuration", "UI", { errors: configValidation.errors })
 			// Give time for the welcome message to render
 			setTimeout(() => {
-				process.exit(1)
-			}, 100)
+				onExit()
+			}, 500)
 		}
 	}, [configValidation])
 
