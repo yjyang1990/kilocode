@@ -1,3 +1,4 @@
+import type { TextDocument } from "vscode"
 import { GhostSuggestionContext } from "../types"
 import { PromptStrategy } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
@@ -153,7 +154,7 @@ export class CommentDrivenStrategy implements PromptStrategy {
 		}
 	}
 
-	private extractComment(document: any, currentLine: number): string {
+	private extractComment(document: TextDocument, currentLine: number): string {
 		let comment = ""
 
 		// Get the comment (could be multi-line)
