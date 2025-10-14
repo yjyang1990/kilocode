@@ -11,6 +11,7 @@ import { useTheme } from "../../state/hooks/useTheme.js"
 import { HotkeyBadge } from "./HotkeyBadge.js"
 import { useAtomValue } from "jotai"
 import { isProcessingAtom } from "../../state/atoms/ui.js"
+import { hasResumeTaskAtom } from "../../state/atoms/extension.js"
 
 export interface StatusIndicatorProps {
 	/** Whether the indicator is disabled */
@@ -32,8 +33,9 @@ export interface StatusIndicatorProps {
 export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = false }) => {
 	const theme = useTheme()
 	const { hotkeys, shouldShow, modifierKey } = useHotkeys()
-	const { cancelTask } = useWebviewMessage()
+	const { cancelTask, resumeTask } = useWebviewMessage()
 	const isProcessing = useAtomValue(isProcessingAtom)
+	const hasResumeTask = useAtomValue(hasResumeTaskAtom)
 
 	// Handle Ctrl+X / Cmd+X to cancel when processing
 	const handleCancel = useCallback(async () => {
@@ -55,7 +57,18 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = fal
 		}
 	}, [isProcessing, disabled, cancelTask])
 
-	// Listen for Ctrl+X / Cmd+X
+	// Handle Ctrl+R / Cmd+R to resume task
+	const handleResume = useCallback(async () => {
+		if (hasResumeTask && !disabled) {
+			try {
+				await resumeTask()
+			} catch (error) {
+				console.error("Failed to resume task:", error)
+			}
+		}
+	}, [hasResumeTask, disabled, resumeTask])
+
+	// Listen for Ctrl+X / Cmd+X to cancel
 	useInput(
 		(input, key) => {
 			// Check for Ctrl+X (or Cmd+X on Mac)
@@ -66,6 +79,17 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = fal
 		{ isActive: !disabled && isProcessing },
 	)
 
+	// Listen for Ctrl+R / Cmd+R to resume
+	useInput(
+		(input, key) => {
+			// Check for Ctrl+R (or Cmd+R on Mac)
+			if (key.ctrl && input === "r") {
+				handleResume()
+			}
+		},
+		{ isActive: !disabled && hasResumeTask },
+	)
+
 	// Don't render if no hotkeys to show or disabled
 	if (!shouldShow || disabled) {
 		return null
@@ -74,7 +98,10 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = fal
 	return (
 		<Box borderStyle="single" borderColor={theme.ui.border.default} paddingX={1} justifyContent="space-between">
 			{/* Status text on the left */}
-			<Box>{isProcessing && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}</Box>
+			<Box>
+				{isProcessing && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}
+				{hasResumeTask && <Text color={theme.ui.text.dimmed}>Task ready to resume</Text>}
+			</Box>
 
 			{/* Hotkeys on the right */}
 			<Box justifyContent="flex-end">

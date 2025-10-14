@@ -135,6 +135,19 @@ export const cancelTaskAtom = atom(null, async (get, set) => {
 })
 
 /**
+ * Action atom to resume a task
+ */
+export const resumeTaskAtom = atom(null, async (get, set) => {
+	const message: WebviewMessage = {
+		type: "askResponse",
+		askResponse: "messageResponse",
+		text: "",
+	}
+
+	await set(sendWebviewMessageAtom, message)
+})
+
+/**
  * Action atom to switch modes
  */
 export const switchModeAtom = atom(null, async (get, set, mode: string) => {

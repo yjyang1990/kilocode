@@ -6,6 +6,7 @@ import { useAtomValue } from "jotai"
 import { useMemo } from "react"
 import { isProcessingAtom, showFollowupSuggestionsAtom } from "../atoms/ui.js"
 import { useApprovalHandler } from "./useApprovalHandler.js"
+import { hasResumeTaskAtom } from "../atoms/extension.js"
 
 export interface Hotkey {
 	/** The key combination (e.g., "Ctrl+C", "Cmd+X") */
@@ -45,31 +46,37 @@ function getModifierKey(): string {
 export function useHotkeys(): UseHotkeysReturn {
 	const isProcessing = useAtomValue(isProcessingAtom)
 	const isFollowupVisible = useAtomValue(showFollowupSuggestionsAtom)
+	const hasResumeTask = useAtomValue(hasResumeTaskAtom)
 	const { isApprovalPending } = useApprovalHandler()
 
 	const modifierKey = useMemo(() => getModifierKey(), [])
 
 	const hotkeys = useMemo((): Hotkey[] => {
-		// Priority 1: Approval mode hotkeys
+		// Priority 1: Resume task hotkey
+		if (hasResumeTask) {
+			return [{ keys: `${modifierKey}+R`, description: "to resume" }]
+		}
+
+		// Priority 2: Approval mode hotkeys
 		if (isApprovalPending) {
 			return [
-				{ keys: "Y", description: "to approve", primary: true },
+				{ keys: "Y", description: "to approve" },
 				{ keys: "N", description: "to reject" },
 				{ keys: "Esc", description: "to cancel" },
 			]
 		}
 
-		// Priority 2: Processing state - show cancel
+		// Priority 3: Processing state - show cancel
 		if (isProcessing) {
-			return [{ keys: `${modifierKey}+X`, description: "to cancel", primary: true }]
+			return [{ keys: `${modifierKey}+X`, description: "to cancel" }]
 		}
 
-		// Priority 3: Followup suggestions visible
+		// Priority 4: Followup suggestions visible
 		if (isFollowupVisible) {
 			return [
 				{ keys: "↑↓", description: "to navigate" },
 				{ keys: "Tab", description: "to fill" },
-				{ keys: "Enter", description: "to submit", primary: true },
+				{ keys: "Enter", description: "to submit" },
 			]
 		}
 
@@ -78,7 +85,7 @@ export function useHotkeys(): UseHotkeysReturn {
 			{ keys: "/help", description: "for commands" },
 			{ keys: "/mode", description: "to switch mode" },
 		]
-	}, [isApprovalPending, isProcessing, isFollowupVisible, modifierKey])
+	}, [hasResumeTask, isApprovalPending, isProcessing, isFollowupVisible, modifierKey])
 
 	const shouldShow = hotkeys.length > 0
 

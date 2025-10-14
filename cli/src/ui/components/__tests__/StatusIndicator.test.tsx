@@ -9,11 +9,14 @@ import { Provider as JotaiProvider } from "jotai"
 import { createStore } from "jotai"
 import { StatusIndicator } from "../StatusIndicator.js"
 import { isProcessingAtom, showFollowupSuggestionsAtom } from "../../../state/atoms/ui.js"
+import { chatMessagesAtom, hasResumeTaskAtom } from "../../../state/atoms/extension.js"
+import type { ExtensionChatMessage } from "../../../types/messages.js"
 
 // Mock the hooks
 vi.mock("../../../state/hooks/useWebviewMessage.js", () => ({
 	useWebviewMessage: () => ({
 		cancelTask: vi.fn(),
+		resumeTask: vi.fn(),
 	}),
 }))
 
@@ -91,5 +94,47 @@ describe("StatusIndicator", () => {
 
 		const output = lastFrame()
 		expect(output).not.toContain("Thinking...")
+	})
+
+	it("should show resume task status and hotkey when resume_task is pending", () => {
+		const resumeMessage: ExtensionChatMessage = {
+			type: "ask",
+			ask: "resume_task",
+			ts: Date.now(),
+			text: "",
+		}
+		store.set(chatMessagesAtom, [resumeMessage])
+
+		const { lastFrame } = render(
+			<JotaiProvider store={store}>
+				<StatusIndicator disabled={false} />
+			</JotaiProvider>,
+		)
+
+		const output = lastFrame()
+		expect(output).toContain("Task ready to resume")
+		expect(output).toContain("to resume")
+		// Should show either Ctrl+R or Cmd+R depending on platform
+		expect(output).toMatch(/(?:Ctrl|Cmd)\+R/)
+		expect(output).toContain("to terminate")
+	})
+
+	it("should show resume task status for resume_completed_task", () => {
+		const resumeMessage: ExtensionChatMessage = {
+			type: "ask",
+			ask: "resume_completed_task",
+			ts: Date.now(),
+			text: "",
+		}
+		store.set(chatMessagesAtom, [resumeMessage])
+
+		const { lastFrame } = render(
+			<JotaiProvider store={store}>
+				<StatusIndicator disabled={false} />
+			</JotaiProvider>,
+		)
+
+		const output = lastFrame()
+		expect(output).toContain("Task ready to resume")
 	})
 })
