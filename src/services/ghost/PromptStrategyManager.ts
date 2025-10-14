@@ -66,8 +66,7 @@ export class PromptStrategyManager {
 	} {
 		const strategy = this.selectStrategy(context)
 
-		const systemPrompt = strategy.getSystemInstructions()
-		const userPrompt = strategy.getUserPrompt(context)
+		const { systemPrompt, userPrompt } = strategy.getPrompts(context)
 
 		if (this.debug) {
 			console.log("[PromptStrategyManager] Prompt built:", {

@@ -63,4 +63,14 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 
 		return prompt
 	}
+
+	getPrompts(context: GhostSuggestionContext): {
+		systemPrompt: string
+		userPrompt: string
+	} {
+		return {
+			systemPrompt: this.getSystemInstructions(),
+			userPrompt: this.getUserPrompt(context),
+		}
+	}
 }

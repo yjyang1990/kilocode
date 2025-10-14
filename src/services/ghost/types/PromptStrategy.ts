@@ -26,4 +26,14 @@ export interface PromptStrategy {
 	 * @returns The user prompt
 	 */
 	getUserPrompt(context: GhostSuggestionContext): string
+
+	/**
+	 * Generates both system and user prompts
+	 * @param context The suggestion context
+	 * @returns Object containing both prompts
+	 */
+	getPrompts(context: GhostSuggestionContext): {
+		systemPrompt: string
+		userPrompt: string
+	}
 }
