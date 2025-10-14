@@ -13,7 +13,6 @@ import type { RouterName, ModelRecord } from "../../../shared/api"
 import { fileExistsAtPath } from "../../../utils/fs"
 
 import { getOpenRouterModels } from "./openrouter"
-import { getGeminiModels } from "./gemini"
 import { getVercelAiGatewayModels } from "./vercel-ai-gateway"
 import { getRequestyModels } from "./requesty"
 import { getGlamaModels } from "./glama"
@@ -27,6 +26,7 @@ import { getIOIntelligenceModels } from "./io-intelligence"
 // kilocode_change start
 import { getOvhCloudAiEndpointsModels } from "./ovhcloud"
 import { getChutesModels } from "./chutes"
+import { getGeminiModels } from "./gemini"
 // kilocode_change end
 
 import { getDeepInfraModels } from "./deepinfra"
@@ -70,12 +70,6 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 
 	try {
 		switch (provider) {
-			case "gemini":
-				models = await getGeminiModels({
-					apiKey: options.apiKey,
-					baseUrl: options.baseUrl,
-				})
-				break
 			case "openrouter":
 				// kilocode_change start: base url and bearer token
 				models = await getOpenRouterModels({
@@ -112,6 +106,12 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 				break
 			case "chutes":
 				models = await getChutesModels(options.apiKey)
+				break
+			case "gemini":
+				models = await getGeminiModels({
+					apiKey: options.apiKey,
+					baseUrl: options.baseUrl,
+				})
 				break
 			// kilocode_change end
 			case "ollama":
