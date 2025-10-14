@@ -56,7 +56,7 @@ describe("Config Persistence - Merge with Defaults", () => {
 				{
 					id: "default",
 					provider: "kilocode",
-					kilocodeToken: "",
+					kilocodeToken: "valid-token-1234567890",
 					kilocodeModel: "anthropic/claude-sonnet-4",
 				},
 			],
@@ -81,7 +81,7 @@ describe("Config Persistence - Merge with Defaults", () => {
 				{
 					id: "default",
 					provider: "kilocode",
-					kilocodeToken: "",
+					kilocodeToken: "valid-token-1234567890",
 					kilocodeModel: "anthropic/claude-sonnet-4",
 				},
 			],
@@ -119,7 +119,7 @@ describe("Config Persistence - Merge with Defaults", () => {
 				{
 					id: "default",
 					provider: "kilocode",
-					kilocodeToken: "test-token",
+					kilocodeToken: "test-token-1234567890",
 					kilocodeModel: "anthropic/claude-sonnet-4",
 				},
 			],
@@ -162,7 +162,7 @@ describe("Config Persistence - Merge with Defaults", () => {
 				{
 					id: "default",
 					provider: "kilocode",
-					kilocodeToken: "",
+					kilocodeToken: "valid-token-1234567890",
 					kilocodeModel: "anthropic/claude-sonnet-4",
 				},
 			],
@@ -193,7 +193,7 @@ describe("Config Persistence - Merge with Defaults", () => {
 				{
 					id: "default",
 					provider: "kilocode",
-					kilocodeToken: "",
+					kilocodeToken: "valid-token-1234567890",
 					kilocodeModel: "anthropic/claude-sonnet-4",
 				},
 			],

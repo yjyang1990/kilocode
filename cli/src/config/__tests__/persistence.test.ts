@@ -102,7 +102,7 @@ describe("Config Persistence", () => {
 					{
 						id: "test-provider",
 						provider: "anthropic",
-						apiKey: "test-key",
+						apiKey: "test-key-1234567890",
 						apiModelId: "claude-3-5-sonnet-20241022",
 					},
 				],
@@ -126,7 +126,7 @@ describe("Config Persistence", () => {
 					{
 						id: "test",
 						provider: "kilocode",
-						kilocodeToken: "test-token",
+						kilocodeToken: "test-token-1234567890",
 						kilocodeModel: "test-model",
 					},
 				],
@@ -139,7 +139,18 @@ describe("Config Persistence", () => {
 		})
 
 		it("should format JSON with proper indentation", async () => {
-			await saveConfig(DEFAULT_CONFIG)
+			const validConfig: CLIConfig = {
+				...DEFAULT_CONFIG,
+				providers: [
+					{
+						id: "default",
+						provider: "kilocode",
+						kilocodeToken: "valid-token-1234567890",
+						kilocodeModel: "anthropic/claude-sonnet-4.5",
+					},
+				],
+			}
+			await saveConfig(validConfig)
 			const content = await fs.readFile(TEST_CONFIG_FILE, "utf-8")
 			expect(content).toContain("\n")
 			expect(content).toContain("  ")
@@ -153,7 +164,18 @@ describe("Config Persistence", () => {
 		})
 
 		it("should return true if config exists", async () => {
-			await saveConfig(DEFAULT_CONFIG)
+			const validConfig: CLIConfig = {
+				...DEFAULT_CONFIG,
+				providers: [
+					{
+						id: "default",
+						provider: "kilocode",
+						kilocodeToken: "valid-token-1234567890",
+						kilocodeModel: "anthropic/claude-sonnet-4.5",
+					},
+				],
+			}
+			await saveConfig(validConfig)
 			const exists = await configExists()
 			expect(exists).toBe(true)
 		})

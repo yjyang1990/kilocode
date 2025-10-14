@@ -35,15 +35,21 @@ export async function ensureConfigDir(): Promise<void> {
 /**
  * Deep merge two objects, with source taking precedence
  * Used to fill in missing config keys with defaults
+ * - Starts with all keys from target (defaults)
+ * - Overwrites with values from source (user config) where they exist
+ * - Recursively merges nested objects
  */
 function deepMerge(target: any, source: any): any {
+	// Start with a copy of target to get all default keys
 	const result = { ...target }
 
+	// Iterate over source keys to override defaults
 	for (const key in source) {
 		const sourceValue = source[key]
 		const targetValue = result[key]
 
 		if (sourceValue !== undefined) {
+			// If both are objects (not arrays), merge recursively
 			if (
 				typeof sourceValue === "object" &&
 				sourceValue !== null &&
@@ -52,8 +58,10 @@ function deepMerge(target: any, source: any): any {
 				targetValue !== null &&
 				!Array.isArray(targetValue)
 			) {
+				// Recursively merge nested objects
 				result[key] = deepMerge(targetValue, sourceValue)
 			} else {
+				// Otherwise, source value takes precedence
 				result[key] = sourceValue
 			}
 		}
@@ -66,11 +74,16 @@ function deepMerge(target: any, source: any): any {
  * Merge loaded config with defaults to fill in missing keys
  */
 function mergeWithDefaults(loadedConfig: Partial<CLIConfig>): CLIConfig {
+	// Merge defaults with loaded config - loaded config takes precedence
+	// deepMerge(target, source) where source overrides target
 	const merged = deepMerge(DEFAULT_CONFIG, loadedConfig) as CLIConfig
 
 	// Special handling for autoApproval to ensure all nested keys have defaults
-	if (merged.autoApproval) {
-		merged.autoApproval = deepMerge(DEFAULT_AUTO_APPROVAL, merged.autoApproval) as AutoApprovalConfig
+	// while preserving user values
+	if (loadedConfig.autoApproval) {
+		merged.autoApproval = deepMerge(DEFAULT_AUTO_APPROVAL, loadedConfig.autoApproval) as AutoApprovalConfig
+	} else {
+		merged.autoApproval = DEFAULT_AUTO_APPROVAL
 	}
 
 	return merged
@@ -133,7 +146,7 @@ export async function saveConfig(config: CLIConfig): Promise<void> {
 	}
 }
 
-export async function getConfigPath(): Promise<string> {
+export function getConfigPath(): string {
 	return configFile
 }
 

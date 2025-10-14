@@ -3,6 +3,7 @@ import type { CLIConfig, ProviderConfig } from "../../config/types.js"
 import { DEFAULT_CONFIG } from "../../config/defaults.js"
 import { loadConfig, saveConfig } from "../../config/persistence.js"
 import { mapConfigToExtensionState } from "../../config/mapper.js"
+import { validateConfig } from "../../config/validation.js"
 import { logs } from "../../services/logs.js"
 import { getTelemetryService } from "../../services/telemetry/index.js"
 
@@ -34,6 +35,12 @@ export const modeAtom = atom((get) => {
 export const themeAtom = atom((get) => {
 	const config = get(configAtom)
 	return config.theme || "dark"
+})
+
+// Derived atom for general configuration validation
+export const configValidAtom = atom(async (get) => {
+	const config = get(configAtom)
+	return await validateConfig(config)
 })
 
 // Action atom to load config from disk
