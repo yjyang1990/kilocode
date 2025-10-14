@@ -95,11 +95,11 @@ function isResponseComplete(buffer: string, completedChangesCount: number): bool
 	return completedChangesCount > 0
 }
 
-/*
+/**
  * Find the best match for search content in the document, handling whitespace differences and cursor markers
  * This is a simplified version of the method from GhostStrategy
  */
-function findBestMatch(content: string, searchPattern: string): number {
+export function findBestMatch(content: string, searchPattern: string): number {
 	// Validate inputs
 	if (!content || !searchPattern) {
 		return -1

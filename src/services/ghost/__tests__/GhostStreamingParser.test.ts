@@ -1,4 +1,4 @@
-import { GhostStreamingParser } from "../GhostStreamingParser"
+import { GhostStreamingParser, findBestMatch } from "../GhostStreamingParser"
 import { GhostSuggestionContext } from "../types"
 
 // Mock vscode module
@@ -260,8 +260,7 @@ function fibonacci(n: number): number {
 			const content = "function test() {\n\treturn true;\n}"
 			const search = "return true;"
 
-			// Access private method through any cast for testing
-			const index = (parser as any).findBestMatch(content, search)
+			const index = findBestMatch(content, search)
 			expect(index).toBeGreaterThan(-1)
 		})
 
@@ -269,7 +268,7 @@ function fibonacci(n: number): number {
 			const content = "function test() {\n\treturn true;\n}"
 			const search = "function test() {\n    return true;\n}" // Different indentation
 
-			const index = (parser as any).findBestMatch(content, search)
+			const index = findBestMatch(content, search)
 			expect(index).toBeGreaterThan(-1)
 		})
 
@@ -277,7 +276,7 @@ function fibonacci(n: number): number {
 			const content = "function test() {\n\treturn true;\n}"
 			const search = "nonexistent code"
 
-			const index = (parser as any).findBestMatch(content, search)
+			const index = findBestMatch(content, search)
 			expect(index).toBe(-1)
 		})
 	})
