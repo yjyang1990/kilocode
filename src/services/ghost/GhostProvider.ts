@@ -58,7 +58,6 @@ export class GhostProvider {
 	private ignoreController?: Promise<RooIgnoreController>
 
 	private constructor(context: vscode.ExtensionContext, cline: ClineProvider) {
-		this.context = context
 		this.cline = cline
 
 		// Register Internal Components

@@ -203,7 +203,7 @@ describe("Ghost Streaming Integration", () => {
 			// Reset should clear state
 			strategy.resetStreamingParser()
 			expect(strategy.getStreamingBuffer()).toBe("")
-			expect(strategy.getStreamingCompletedChanges()).toHaveLength(0)
+			expect((strategy as any).streamingParser.getCompletedChanges()).toHaveLength(0)
 		})
 
 		it("should handle malformed streaming data gracefully", async () => {
