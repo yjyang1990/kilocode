@@ -138,10 +138,12 @@ export const getModelsByProvider = ({
 		}
 		case "gemini": {
 			return {
+				// kilocode_change start
 				models:
 					routerModels.gemini && Object.keys(routerModels.gemini).length > 0
 						? routerModels.gemini
 						: geminiModels,
+				// kilocode_change end
 				defaultModel: geminiDefaultModelId,
 			}
 		}

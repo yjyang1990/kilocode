@@ -8,6 +8,7 @@ import {
 	deepSeekModels,
 	moonshotModels,
 	// kilocode_change start
+	// geminiModels,
 	geminiCliModels,
 	// kilocode_change end
 	mistralModels,
@@ -35,6 +36,7 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	doubao: doubaoModels,
 	moonshot: moonshotModels,
 	// kilocode_change start
+	// gemini: geminiModels,
 	"gemini-cli": geminiCliModels,
 	// kilocode_change end
 	mistral: mistralModels,

@@ -9,9 +9,17 @@ import {
 } from "@google/genai"
 import type { JWTInput } from "google-auth-library"
 
-import { type ModelInfo, geminiDefaultModelId, geminiModels } from "@roo-code/types"
+import {
+	type ModelInfo,
+	// type GeminiModelId, // kilocode_change
+	geminiDefaultModelId,
+	geminiModels,
+} from "@roo-code/types"
 
-import type { ApiHandlerOptions, ModelRecord } from "../../shared/api"
+import type {
+	ApiHandlerOptions,
+	ModelRecord, // kilocode_change
+} from "../../shared/api"
 import { safeJsonParse } from "../../shared/safeJsonParse"
 
 import { convertAnthropicContentToGemini, convertAnthropicMessageToGemini } from "../transform/gemini-format"
@@ -22,7 +30,7 @@ import { getModelParams } from "../transform/model-params"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
 import { BaseProvider } from "./base-provider"
 import { throwMaxCompletionTokensReachedError } from "./kilocode/verifyFinishReason"
-import { getGeminiModels } from "./fetchers/gemini"
+import { getGeminiModels } from "./fetchers/gemini" // kilocode_change
 
 type GeminiHandlerOptions = ApiHandlerOptions & {
 	isVertex?: boolean
@@ -32,16 +40,19 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 	protected options: ApiHandlerOptions
 
 	private client: GoogleGenAI
+
+	// kilocode_change start
 	private models: ModelRecord = { ...geminiModels }
 	private modelsLoaded = false
 	private modelsLoading?: Promise<void>
 	private readonly isVertex: boolean
+	// kilocode_change end
 
 	constructor({ isVertex, ...options }: GeminiHandlerOptions) {
 		super()
 
 		this.options = options
-		this.isVertex = !!isVertex
+		this.isVertex = !!isVertex // kilocode_change
 
 		const project = this.options.vertexProjectId ?? "not-provided"
 		const location = this.options.vertexRegion ?? "not-provided"
@@ -68,6 +79,7 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 					: new GoogleGenAI({ apiKey })
 	}
 
+	// kilocode_change start
 	private async ensureModelsLoaded() {
 		if (this.isVertex) {
 			return
@@ -86,6 +98,7 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 
 		await this.modelsLoading
 	}
+	// kilocode_change end
 
 	private async loadModels() {
 		try {
@@ -104,7 +117,7 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 		messages: Anthropic.Messages.MessageParam[],
 		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
-		await this.ensureModelsLoaded()
+		await this.ensureModelsLoaded() // kilocode_change
 		const { id: model, info, reasoning: thinkingConfig, maxTokens } = this.getModel()
 
 		const contents = messages.map(convertAnthropicMessageToGemini)
@@ -209,13 +222,14 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 	}
 
 	override getModel() {
+		// kilocode_change start: dynamic loading
 		const requestedId = this.options.apiModelId
 		const availableModels = this.models
 		const staticModels = geminiModels as Record<string, ModelInfo>
 
-		let id = requestedId && requestedId in availableModels ? requestedId : geminiDefaultModelId
+		const id = requestedId && requestedId in availableModels ? requestedId : geminiDefaultModelId
 
-		let info: ModelInfo =
+		const info: ModelInfo =
 			availableModels[id] ??
 			staticModels[id] ??
 			availableModels[geminiDefaultModelId] ??
@@ -226,6 +240,7 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 		const apiModelId = id.endsWith(":thinking") ? id.replace(":thinking", "") : id
 
 		return { id: apiModelId, info, ...params }
+		// kilocode_change end
 	}
 
 	private extractGroundingSources(groundingMetadata?: GroundingMetadata): GroundingSource[] {
@@ -264,7 +279,7 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 
 	async completePrompt(prompt: string): Promise<string> {
 		try {
-			await this.ensureModelsLoaded()
+			await this.ensureModelsLoaded() // kilocode_change
 			const { id: model } = this.getModel()
 
 			const tools: GenerateContentConfig["tools"] = []
@@ -310,7 +325,7 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 
 	override async countTokens(content: Array<Anthropic.Messages.ContentBlockParam>): Promise<number> {
 		try {
-			await this.ensureModelsLoaded()
+			await this.ensureModelsLoaded() // kilocode_change
 			const { id: model } = this.getModel()
 
 			const response = await this.client.models.countTokens({
