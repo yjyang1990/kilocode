@@ -12,14 +12,14 @@ export class CommentDrivenStrategy implements PromptStrategy {
 
 		const currentLine = context.document.lineAt(context.range.start.line).text
 
-		const isComment = isCommentLine(currentLine, context.document.languageId)
-
-		if (!isComment && currentLine.trim() === "" && context.range.start.line > 0) {
+		if (isCommentLine(currentLine, context.document.languageId)) {
+			return true
+		} else if (currentLine.trim() === "" && context.range.start.line > 0) {
 			const previousLine = context.document.lineAt(context.range.start.line - 1).text.trim()
 			return isCommentLine(previousLine, context.document.languageId)
+		} else {
+			return false
 		}
-
-		return isComment
 	}
 
 	getSystemInstructions(): string {
