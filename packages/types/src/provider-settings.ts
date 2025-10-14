@@ -44,7 +44,6 @@ export const DEFAULT_CONSECUTIVE_MISTAKE_LIMIT = 3
 
 export const dynamicProviders = [
 	"openrouter",
-	"gemini",
 	"vercel-ai-gateway",
 	"huggingface",
 	"litellm",
@@ -52,6 +51,7 @@ export const dynamicProviders = [
 	"kilocode-openrouter",
 	"ovhcloud",
 	"chutes",
+	"gemini",
 	// kilocode_change end
 	"deepinfra",
 	"io-intelligence",
