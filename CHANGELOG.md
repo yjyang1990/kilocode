@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.104.0
-
-### Minor Changes
+## [v4.104.0]
 
 - [#2673](https://github.com/Kilo-Org/kilocode/pull/2673) [`cf1aca2`](https://github.com/Kilo-Org/kilocode/commit/cf1aca2fb6c0f16414d42737a4ebf90357f5a796) Thanks [@mcowger](https://github.com/mcowger)! - Update Gemini provider to support dynamic model retrieval.
 
