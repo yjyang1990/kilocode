@@ -5,12 +5,10 @@ import { PromptStrategyManager } from "./PromptStrategyManager"
 export class GhostStrategy {
 	private streamingParser: GhostStreamingParser
 	private strategyManager: PromptStrategyManager
-	private debug: boolean
 
 	constructor(options?: { debug: boolean }) {
 		this.streamingParser = new GhostStreamingParser()
 		this.strategyManager = new PromptStrategyManager(options)
-		this.debug = options?.debug ?? false
 	}
 
 	/**
@@ -19,10 +17,7 @@ export class GhostStrategy {
 	 * @returns Object containing systemPrompt and userPrompt
 	 */
 	getPrompts(context: GhostSuggestionContext): { systemPrompt: string; userPrompt: string } {
-		const { systemPrompt, userPrompt, strategy } = this.strategyManager.buildPrompt(context)
-		if (this.debug) {
-			console.log(`[GhostStrategy] Using strategy: ${strategy.name}`)
-		}
+		const { systemPrompt, userPrompt } = this.strategyManager.buildPrompt(context)
 		return { systemPrompt, userPrompt }
 	}
 
