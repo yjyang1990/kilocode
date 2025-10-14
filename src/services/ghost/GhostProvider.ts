@@ -671,7 +671,6 @@ export class GhostProvider {
 	}
 
 	private startProcessing() {
-		this.cursorAnimation.wait()
 		this.isProcessing = true
 		this.updateGlobalContext()
 	}
