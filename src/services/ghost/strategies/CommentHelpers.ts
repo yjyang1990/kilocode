@@ -25,6 +25,17 @@ export function isCommentLine(line: string, languageId: string): boolean {
 		/^'''/, // Python docstring alternative
 	]
 
+	// Language-specific exclusions
+	if (languageId === "css" || languageId === "scss" || languageId === "less") {
+		// CSS only supports /* */ comments, not //
+		return /^(\/\*|\*)/.test(trimmed)
+	}
+
+	if (languageId === "html" || languageId === "xml") {
+		// HTML/XML only supports <!-- --> comments
+		return /^<!--/.test(trimmed)
+	}
+
 	// Check single-line patterns
 	if (singleLinePatterns.some((pattern) => pattern.test(trimmed))) {
 		// Make sure it contains meaningful text (not just comment syntax)
@@ -37,26 +48,7 @@ export function isCommentLine(line: string, languageId: string): boolean {
 		return true
 	}
 
-	// Language-specific checks
-	switch (languageId) {
-		case "python":
-			return /^#/.test(trimmed) || /^("""|''')/.test(trimmed)
-		case "javascript":
-		case "typescript":
-		case "javascriptreact":
-		case "typescriptreact":
-			return /^(\/\/|\/\*|\*)/.test(trimmed)
-		case "html":
-		case "xml":
-			return /^<!--/.test(trimmed)
-		case "css":
-		case "scss":
-		case "less":
-			return /^(\/\*|\*)/.test(trimmed)
-		default:
-			// Default to common patterns
-			return /^(\/\/|#|\/\*|\*)/.test(trimmed)
-	}
+	return false
 }
 
 export function extractComment(document: TextDocument, currentLine: number): string {
@@ -115,20 +107,32 @@ export function extractComment(document: TextDocument, currentLine: number): str
 export function cleanComment(comment: string, languageId: string): string {
 	const lines = comment.split("\n")
 	const cleaned = lines.map((line) => {
-		// Remove common comment prefixes
-		return line
+		let cleaned = line.trim()
+
+		// Remove common comment prefixes (order matters)
+		cleaned = cleaned
 			.replace(/^\/\/\s*/, "") // //
 			.replace(/^\/\*\s*/, "") // /*
-			.replace(/^\*\s*/, "") // *
-			.replace(/\*\/\s*$/, "") // */
+			.replace(/^\*\s+/, "") // * with required space after
 			.replace(/^#\s*/, "") // #
 			.replace(/^--\s*/, "") // --
 			.replace(/^;\s*/, "") // ;
 			.replace(/^%\s*/, "") // %
 			.replace(/^'\s*/, "") // '
 			.replace(/^<!--\s*/, "") // <!--
-			.replace(/-->\s*$/, "") // -->
-			.trim()
+
+		// Remove trailing comment syntax and everything after the last occurrence
+		const lastCommentEnd = cleaned.lastIndexOf("*/")
+		if (lastCommentEnd !== -1) {
+			cleaned = cleaned.substring(0, lastCommentEnd).trim()
+		}
+
+		const lastHtmlCommentEnd = cleaned.lastIndexOf("-->")
+		if (lastHtmlCommentEnd !== -1) {
+			cleaned = cleaned.substring(0, lastHtmlCommentEnd).trim()
+		}
+
+		return cleaned.trim()
 	})
 
 	return cleaned.filter((line) => line.length > 0).join("\n")

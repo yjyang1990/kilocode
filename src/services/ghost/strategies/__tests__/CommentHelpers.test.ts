@@ -180,8 +180,8 @@ describe("CommentHelpers", () => {
 		})
 
 		describe("Python docstrings", () => {
-			test("should extract Python docstring", () => {
-				const doc = createDocument('"""\nDocstring\n"""\ndef foo():', "python")
+			test("should extract Python docstring markers", () => {
+				const doc = createDocument('"""\n"""\n"""\ndef foo():', "python")
 				const result = extractComment(doc, 0)
 				expect(result).toBe('"""\n"""\n"""')
 			})
@@ -303,7 +303,7 @@ describe("CommentHelpers", () => {
 				expect(cleanComment("//     comment", "javascript")).toBe("comment")
 			})
 
-			test("should NOT remove block comment end from middle of line", () => {
+			test("should remove trailing block comment end and text after it", () => {
 				expect(cleanComment("/* start */ middle */ end", "javascript")).toBe("start */ middle")
 			})
 		})
