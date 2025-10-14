@@ -85,7 +85,6 @@ interface ChatRowProps {
 	onSuggestionClick?: (suggestion: SuggestionItem, event?: React.MouseEvent) => void
 	onBatchFileResponse?: (response: { [key: string]: boolean }) => void
 	highlighted?: boolean // kilocode_change: Add highlighted prop
-	onChatReset?: () => void // kilocode_change
 	enableCheckpoints?: boolean // kilocode_change
 	onFollowUpUnmount?: () => void
 	isFollowUpAnswered?: boolean
@@ -147,7 +146,6 @@ export const ChatRowContent = ({
 	onSuggestionClick,
 	onFollowUpUnmount,
 	onBatchFileResponse,
-	onChatReset, // kilocode_change
 	enableCheckpoints, // kilocode_change
 	isFollowUpAnswered,
 	editable,
