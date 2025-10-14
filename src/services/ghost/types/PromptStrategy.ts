@@ -14,20 +14,6 @@ export interface PromptStrategy {
 	canHandle(context: GhostSuggestionContext): boolean
 
 	/**
-	 * Generates system instructions for the AI model
-	 * @param customInstructions Optional custom instructions to append
-	 * @returns The complete system prompt
-	 */
-	getSystemInstructions(customInstructions?: string): string
-
-	/**
-	 * Generates the user prompt with context
-	 * @param context The suggestion context
-	 * @returns The user prompt
-	 */
-	getUserPrompt(context: GhostSuggestionContext): string
-
-	/**
 	 * Generates both system and user prompts
 	 * @param context The suggestion context
 	 * @returns Object containing both prompts
