@@ -253,7 +253,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			routerModels: {
 				deepinfra: mockModels,
 				openrouter: mockModels,
-				gemini: mockModels,
+				gemini: mockModels, // kilocode_change
 				requesty: mockModels,
 				glama: mockModels,
 				unbound: mockModels,
@@ -353,7 +353,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			routerModels: {
 				deepinfra: mockModels,
 				openrouter: mockModels,
-				gemini: mockModels,
+				gemini: mockModels, // kilocode_change
 				requesty: mockModels,
 				glama: mockModels,
 				unbound: mockModels,
@@ -383,7 +383,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 		// Mock some providers to succeed and others to fail
 		mockGetModels
 			.mockResolvedValueOnce(mockModels) // openrouter
-			.mockResolvedValueOnce(mockModels) // gemini
+			.mockResolvedValueOnce(mockModels) // kilocode_change: gemini
 			.mockRejectedValueOnce(new Error("Requesty API error")) // requesty
 			.mockResolvedValueOnce(mockModels) // glama
 			.mockRejectedValueOnce(new Error("Unbound API error")) // unbound
@@ -405,7 +405,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			routerModels: {
 				deepinfra: mockModels,
 				openrouter: mockModels,
-				gemini: mockModels,
+				gemini: mockModels, // kilocode_change
 				requesty: {},
 				glama: mockModels,
 				unbound: {},
@@ -457,7 +457,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 		// Mock providers to fail with different error types
 		mockGetModels
 			.mockRejectedValueOnce(new Error("Structured error message")) // openrouter
-			.mockRejectedValueOnce(new Error("Gemini API error")) // gemini
+			.mockRejectedValueOnce(new Error("Gemini API error")) // // kilocode_change: gemini
 			.mockRejectedValueOnce(new Error("Requesty API error")) // requesty
 			.mockRejectedValueOnce(new Error("Glama API error")) // glama
 			.mockRejectedValueOnce(new Error("Unbound API error")) // unbound
@@ -481,12 +481,14 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			values: { provider: "openrouter" },
 		})
 
+		// kilocode_change start
 		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
 			type: "singleRouterModelFetchResponse",
 			success: false,
 			error: "Gemini API error",
 			values: { provider: "gemini" },
 		})
+		// kilocode_change end
 
 		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
 			type: "singleRouterModelFetchResponse",
@@ -516,7 +518,6 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			error: "Chutes API error",
 			values: { provider: "chutes" },
 		})
-		// kilocode_change end
 
 		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
 			type: "singleRouterModelFetchResponse",
@@ -531,6 +532,7 @@ describe("webviewMessageHandler - requestRouterModels", () => {
 			error: "Vercel AI Gateway error",
 			values: { provider: "vercel-ai-gateway" },
 		})
+		// kilocode_change end
 
 		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
 			type: "singleRouterModelFetchResponse",

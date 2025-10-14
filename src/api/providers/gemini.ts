@@ -98,7 +98,6 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 
 		await this.modelsLoading
 	}
-	// kilocode_change end
 
 	private async loadModels() {
 		try {
@@ -111,6 +110,7 @@ export class GeminiHandler extends BaseProvider implements SingleCompletionHandl
 			this.models = { ...geminiModels }
 		}
 	}
+	// kilocode_change end
 
 	async *createMessage(
 		systemInstruction: string,

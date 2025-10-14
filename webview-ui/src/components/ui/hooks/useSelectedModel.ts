@@ -257,12 +257,14 @@ function getSelectedModel({
 			const info = vertexModels[id as keyof typeof vertexModels]
 			return { id, info }
 		}
+		// kilocode_change start
 		case "gemini": {
 			const id = apiConfiguration.apiModelId ?? geminiDefaultModelId
 			const remoteInfo = routerModels.gemini?.[id]
 			const staticInfo = geminiModels[id as keyof typeof geminiModels]
 			return { id, info: remoteInfo ?? staticInfo }
 		}
+		// kilocode_change end
 		case "deepseek": {
 			const id = apiConfiguration.apiModelId ?? deepSeekDefaultModelId
 			const info = deepSeekModels[id as keyof typeof deepSeekModels]

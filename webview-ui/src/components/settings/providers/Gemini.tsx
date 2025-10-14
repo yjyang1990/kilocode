@@ -56,7 +56,7 @@ export const Gemini = ({
 		[setApiConfigurationField],
 	)
 
-	const allowList = organizationAllowList ?? { allowAll: true, providers: {} }
+	const allowList = organizationAllowList ?? { allowAll: true, providers: {} } // kilocode_change
 
 	return (
 		<>
