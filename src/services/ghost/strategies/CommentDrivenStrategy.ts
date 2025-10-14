@@ -66,25 +66,24 @@ export class CommentDrivenStrategy implements PromptStrategy {
 			return "No context available for comment-driven generation."
 		}
 
-		const currentLine = context.range.start.line
-		const document = context.document
-		const language = document.languageId
+		const language = context.document.languageId
+		const comment = cleanComment(extractComment(context.document, context.range.start.line), language)
 
-		const comment = cleanComment(extractComment(document, currentLine), language)
+		let prompt = `## Comment-Driven Development
+- Language: ${language}
+- Comment to Implement:
+\`\`\`
+${comment}
+\`\`\`
 
-		let prompt = `## Comment-Driven Development\n`
-		prompt += `- Language: ${language}\n`
-		prompt += `- Comment to Implement:\n\`\`\`\n${comment}\n\`\`\`\n\n`
+## Full Code
+${formatDocumentWithCursor(context.document, context.range)}
 
-		prompt += "## Full Code\n"
-		prompt += formatDocumentWithCursor(context.document, context.range)
-		prompt += "\n\n"
-
-		prompt += `## Instructions\n`
-		prompt += `Generate code that implements the functionality described in the comment.\n`
-		prompt += `The code should be placed at the cursor position (${CURSOR_MARKER}).\n`
-		prompt += `Focus on implementing exactly what the comment describes.\n`
-
+## Instructions
+Generate code that implements the functionality described in the comment.
+The code should be placed at the cursor position (${CURSOR_MARKER}).
+Focus on implementing exactly what the comment describes.
+`
 		return prompt
 	}
 }
