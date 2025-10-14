@@ -27,7 +27,7 @@ export class CommentDrivenStrategy implements PromptStrategy {
 		return isComment && !context.userInput // User input takes precedence
 	}
 
-	getSystemInstructions(customInstructions?: string): string {
+	getSystemInstructions(): string {
 		return (
 			getBaseSystemInstructions() +
 			`You are an expert code generation assistant that implements code based on comments.

@@ -12,7 +12,7 @@ export class AutoTriggerStrategy implements PromptStrategy {
 		return !!context.document
 	}
 
-	getSystemInstructions(customInstructions?: string): string {
+	getSystemInstructions(): string {
 		return (
 			getBaseSystemInstructions() +
 			`Task: Subtle Auto-Completion
