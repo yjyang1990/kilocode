@@ -1,3 +1,5 @@
+// kilocode_change - file added
+
 import { GoogleGenAI } from "@google/genai"
 
 import { type ModelInfo, geminiDefaultModelId, geminiModels } from "@roo-code/types"
