@@ -68,10 +68,9 @@ export class CommentDrivenStrategy implements PromptStrategy {
 
 		const currentLine = context.range.start.line
 		const document = context.document
-
-		const comment = cleanComment(extractComment(document, currentLine), document.languageId)
-
 		const language = document.languageId
+
+		const comment = cleanComment(extractComment(document, currentLine), language)
 
 		let prompt = `## Comment-Driven Development\n`
 		prompt += `- Language: ${language}\n`
