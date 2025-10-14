@@ -1579,6 +1579,7 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								zIndex: 2,
 								paddingLeft: "8px",
 								paddingRight: "8px",
+								paddingBottom: isEditMode ? "10px" : "0",
 							}}
 							ref={containerRef}
 							// kilocode_change end
