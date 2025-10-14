@@ -2,6 +2,7 @@ import { GhostSuggestionContext } from "../types"
 import { PromptStrategy } from "../types/PromptStrategy"
 import { CURSOR_MARKER } from "../ghostConstants"
 import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
+import { isCommentLine, extractComment, cleanComment } from "./CommentHelpers"
 
 export class AutoTriggerStrategy implements PromptStrategy {
 	name = "Auto Trigger"
