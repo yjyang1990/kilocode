@@ -1,3 +1,5 @@
+import { TextDocument } from "vscode"
+
 /**
  * Checks if a line is a comment based on language
  */
