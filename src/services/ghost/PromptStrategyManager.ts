@@ -3,7 +3,6 @@ import { PromptStrategy } from "./types/PromptStrategy"
 
 // Import all strategies
 import { UserRequestStrategy } from "./strategies/UserRequestStrategy"
-import { CommentDrivenStrategy } from "./strategies/CommentDrivenStrategy"
 import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
 
 /**
@@ -20,7 +19,7 @@ export class PromptStrategyManager {
 		this.overrideStrategy = options?.overrideStrategy
 
 		// Register all strategies in priority order
-		this.strategies = [new UserRequestStrategy(), new CommentDrivenStrategy()]
+		this.strategies = [new UserRequestStrategy()]
 		this.autoTriggerStrategy = new AutoTriggerStrategy()
 	}
 
