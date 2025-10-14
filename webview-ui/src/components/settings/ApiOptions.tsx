@@ -303,10 +303,6 @@ const ApiOptions = ({
 	}, [apiConfiguration, routerModels, organizationAllowList, setErrorMessage])
 
 	const selectedProviderModels = useMemo(() => {
-		if (selectedProvider === "gemini") {
-			return []
-		}
-
 		const models = MODELS_BY_PROVIDER[selectedProvider]
 		if (!models) return []
 
