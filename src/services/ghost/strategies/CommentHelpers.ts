@@ -6,7 +6,6 @@ import { TextDocument } from "vscode"
 export function isCommentLine(line: string, languageId: string): boolean {
 	const trimmed = line.trim()
 
-	// Common single-line comment patterns
 	const singleLinePatterns = [
 		/^\/\//, // JavaScript, TypeScript, C++, Java, etc.
 		/^#/, // Python, Ruby, Shell, etc.
@@ -16,7 +15,6 @@ export function isCommentLine(line: string, languageId: string): boolean {
 		/^'/, // VB
 	]
 
-	// Multi-line comment patterns
 	const multiLinePatterns = [
 		/^\/\*/, // C-style
 		/^\*/, // Inside C-style block
@@ -25,17 +23,12 @@ export function isCommentLine(line: string, languageId: string): boolean {
 		/^'''/, // Python docstring alternative
 	]
 
-	// Check all patterns - be permissive and recognize anything that looks like a comment
-	// Even if technically invalid for the language (e.g., // in CSS could be from embedded JS)
-
-	// Check single-line patterns
 	if (singleLinePatterns.some((pattern) => pattern.test(trimmed))) {
 		// Make sure it contains meaningful text (not just comment syntax)
 		const withoutCommentSyntax = trimmed.replace(/^(\/\/|#|--|;|%|')\s*/, "")
 		return withoutCommentSyntax.length > 0
 	}
 
-	// Check multi-line patterns
 	if (multiLinePatterns.some((pattern) => pattern.test(trimmed))) {
 		return true
 	}
