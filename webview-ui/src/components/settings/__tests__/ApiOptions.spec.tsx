@@ -9,6 +9,15 @@ import { ExtensionStateContextProvider } from "@src/context/ExtensionStateContex
 
 import ApiOptions, { ApiOptionsProps } from "../ApiOptions"
 
+// Mock @roo-code/types constants
+vi.mock("@roo-code/types", async () => {
+	const actual = await vi.importActual("@roo-code/types")
+	return {
+		...actual,
+		SUPPORTED_AUTOCOMPLETE_PROVIDERS: ["mistral", "kilocode", "openrouter"],
+	}
+})
+
 // Mock VSCode components
 vi.mock("@vscode/webview-ui-toolkit/react", () => ({
 	VSCodeTextField: ({ children, value, onBlur }: any) => (
