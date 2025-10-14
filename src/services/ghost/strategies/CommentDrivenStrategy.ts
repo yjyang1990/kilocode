@@ -71,8 +71,7 @@ export class CommentDrivenStrategy implements PromptStrategy {
 		const currentLine = context.range.start.line
 		const document = context.document
 
-		// Extract the comment and surrounding context
-		const { comment, contextBefore, contextAfter } = this.extractCommentContext(document, currentLine)
+		const comment = this.extractComment(document, currentLine)
 
 		const language = document.languageId
 
@@ -154,16 +153,8 @@ export class CommentDrivenStrategy implements PromptStrategy {
 		}
 	}
 
-	/**
-	 * Extracts the comment and surrounding context
-	 */
-	private extractCommentContext(
-		document: any,
-		currentLine: number,
-	): { comment: string; contextBefore: string; contextAfter: string } {
+	private extractComment(document: any, currentLine: number): string {
 		let comment = ""
-		let contextBefore = ""
-		let contextAfter = ""
 
 		// Get the comment (could be multi-line)
 		let commentStartLine = currentLine
@@ -209,27 +200,7 @@ export class CommentDrivenStrategy implements PromptStrategy {
 			}
 		}
 
-		// Get context before the comment (up to 10 lines)
-		const contextStartLine = Math.max(0, commentStartLine - 10)
-		for (let i = contextStartLine; i < commentStartLine; i++) {
-			contextBefore += document.lineAt(i).text + "\n"
-		}
-
-		// Get context after the comment (up to 5 lines)
-		const contextEndLine = Math.min(document.lineCount - 1, commentEndLine + 5)
-		for (let i = commentEndLine + 1; i <= contextEndLine; i++) {
-			const lineText = document.lineAt(i).text
-			// Stop if we hit non-empty code
-			if (lineText.trim() && !this.isCommentLine(lineText.trim(), document.languageId)) {
-				contextAfter += lineText + "\n"
-			}
-		}
-
-		return {
-			comment: this.cleanComment(comment, document.languageId),
-			contextBefore: contextBefore.trim(),
-			contextAfter: contextAfter.trim(),
-		}
+		return this.cleanComment(comment, document.languageId)
 	}
 
 	/**
