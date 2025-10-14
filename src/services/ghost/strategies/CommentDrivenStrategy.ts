@@ -76,12 +76,9 @@ export class CommentDrivenStrategy implements PromptStrategy {
 		prompt += `- Language: ${language}\n`
 		prompt += `- Comment to Implement:\n\`\`\`\n${comment}\n\`\`\`\n\n`
 
-		// Add the full document with cursor marker
-		if (context.document) {
-			prompt += "## Full Code\n"
-			prompt += formatDocumentWithCursor(context.document, context.range)
-			prompt += "\n\n"
-		}
+		prompt += "## Full Code\n"
+		prompt += formatDocumentWithCursor(context.document, context.range)
+		prompt += "\n\n"
 
 		prompt += `## Instructions\n`
 		prompt += `Generate code that implements the functionality described in the comment.\n`
