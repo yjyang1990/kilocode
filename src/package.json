@@ -3,7 +3,7 @@
 	"displayName": "%extension.displayName%",
 	"description": "%extension.description%",
 	"publisher": "kilocode",
-	"version": "4.99.2",
+	"version": "4.103.1",
 	"icon": "assets/icons/logo-outline-black.png",
 	"galleryBanner": {
 		"color": "#FFFFFF",
@@ -33,7 +33,7 @@
 		"Testing"
 	],
 	"keywords": [
-		"cline",
+		"kilo",
 		"claude",
 		"dev",
 		"mcp",
@@ -46,9 +46,7 @@
 		"ai",
 		"llama",
 		"Kilo Code",
-		"kilocode",
-		"roo code",
-		"roocode"
+		"kilocode"
 	],
 	"activationEvents": [
 		"onLanguage",
@@ -114,8 +112,7 @@
 					"id": "kilo-code-ActivityBar",
 					"title": "%views.activitybar.title%",
 					"icon": "assets/icons/kilo.png",
-					"darkIcon": "assets/icons/kilo-dark.png",
-					"when": "isMac"
+					"darkIcon": "assets/icons/kilo-dark.png"
 				}
 			]
 		},
@@ -124,7 +121,9 @@
 				{
 					"type": "webview",
 					"id": "kilo-code.SidebarProvider",
-					"name": "%views.sidebar.name%"
+					"name": "%views.sidebar.name%",
+					"icon": "assets/icons/kilo.png",
+					"darkIcon": "assets/icons/kilo-dark.png"
 				}
 			]
 		},
@@ -461,16 +460,6 @@
 				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.hasSuggestions"
 			},
 			{
-				"command": "kilo-code.ghost.goToNextSuggestion",
-				"key": "down",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.hasSuggestions"
-			},
-			{
-				"command": "kilo-code.ghost.goToPreviousSuggestion",
-				"key": "up",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.hasSuggestions"
-			},
-			{
 				"command": "kilo-code.ghost.promptCodeSuggestion",
 				"key": "ctrl+i",
 				"mac": "cmd+i",
@@ -606,7 +595,7 @@
 					"type": "number",
 					"default": 600,
 					"minimum": 0,
-					"maximum": 3600,
+					"maximum": 86400,
 					"description": "%settings.apiRequestTimeout.description%"
 				},
 				"kilo-code.newTaskRequireTodos": {
