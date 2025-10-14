@@ -10,7 +10,7 @@ import { useWebviewMessage } from "../../state/hooks/useWebviewMessage.js"
 import { useTheme } from "../../state/hooks/useTheme.js"
 import { HotkeyBadge } from "./HotkeyBadge.js"
 import { useAtomValue } from "jotai"
-import { isProcessingAtom } from "../../state/atoms/ui.js"
+import { isStreamingAtom } from "../../state/atoms/ui.js"
 import { hasResumeTaskAtom } from "../../state/atoms/extension.js"
 
 export interface StatusIndicatorProps {
@@ -34,12 +34,12 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = fal
 	const theme = useTheme()
 	const { hotkeys, shouldShow, modifierKey } = useHotkeys()
 	const { cancelTask, resumeTask } = useWebviewMessage()
-	const isProcessing = useAtomValue(isProcessingAtom)
+	const isStreaming = useAtomValue(isStreamingAtom)
 	const hasResumeTask = useAtomValue(hasResumeTaskAtom)
 
-	// Handle Ctrl+X / Cmd+X to cancel when processing
+	// Handle Ctrl+X / Cmd+X to cancel when streaming
 	const handleCancel = useCallback(async () => {
-		if (isProcessing && !disabled) {
+		if (isStreaming && !disabled) {
 			try {
 				await cancelTask()
 			} catch (error) {
@@ -55,7 +55,7 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = fal
 				}
 			}
 		}
-	}, [isProcessing, disabled, cancelTask])
+	}, [isStreaming, disabled, cancelTask])
 
 	// Handle Ctrl+R / Cmd+R to resume task
 	const handleResume = useCallback(async () => {
@@ -76,7 +76,7 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = fal
 				handleCancel()
 			}
 		},
-		{ isActive: !disabled && isProcessing },
+		{ isActive: !disabled && isStreaming },
 	)
 
 	// Listen for Ctrl+R / Cmd+R to resume
@@ -99,7 +99,7 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ disabled = fal
 		<Box borderStyle="single" borderColor={theme.ui.border.default} paddingX={1} justifyContent="space-between">
 			{/* Status text on the left */}
 			<Box>
-				{isProcessing && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}
+				{isStreaming && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}
 				{hasResumeTask && <Text color={theme.ui.text.dimmed}>Task ready to resume</Text>}
 			</Box>
 

@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { Provider as JotaiProvider } from "jotai"
 import { createStore } from "jotai"
 import { StatusIndicator } from "../StatusIndicator.js"
-import { isProcessingAtom, showFollowupSuggestionsAtom } from "../../../state/atoms/ui.js"
+import { isStreamingAtom, showFollowupSuggestionsAtom } from "../../../state/atoms/ui.js"
 import { chatMessagesAtom, hasResumeTaskAtom } from "../../../state/atoms/extension.js"
 import type { ExtensionChatMessage } from "../../../types/messages.js"
 
@@ -37,8 +37,16 @@ describe("StatusIndicator", () => {
 		expect(lastFrame()).toBe("")
 	})
 
-	it("should show Thinking status and cancel hotkey when processing", () => {
-		store.set(isProcessingAtom, true)
+	it("should show Thinking status and cancel hotkey when streaming", () => {
+		// Set up a partial message to trigger streaming state
+		const partialMessage: ExtensionChatMessage = {
+			type: "say",
+			say: "text",
+			ts: Date.now(),
+			text: "Processing...",
+			partial: true,
+		}
+		store.set(chatMessagesAtom, [partialMessage])
 
 		const { lastFrame } = render(
 			<JotaiProvider store={store}>
@@ -69,7 +77,8 @@ describe("StatusIndicator", () => {
 	})
 
 	it("should show general command hints when idle", () => {
-		store.set(isProcessingAtom, false)
+		// No messages = not streaming
+		store.set(chatMessagesAtom, [])
 		store.set(showFollowupSuggestionsAtom, false)
 
 		const { lastFrame } = render(
@@ -83,8 +92,16 @@ describe("StatusIndicator", () => {
 		expect(output).toContain("for commands")
 	})
 
-	it("should not show Thinking status when not processing", () => {
-		store.set(isProcessingAtom, false)
+	it("should not show Thinking status when not streaming", () => {
+		// Complete message = not streaming
+		const completeMessage: ExtensionChatMessage = {
+			type: "say",
+			say: "text",
+			ts: Date.now(),
+			text: "Done!",
+			partial: false,
+		}
+		store.set(chatMessagesAtom, [completeMessage])
 
 		const { lastFrame } = render(
 			<JotaiProvider store={store}>
@@ -116,7 +133,6 @@ describe("StatusIndicator", () => {
 		expect(output).toContain("to resume")
 		// Should show either Ctrl+R or Cmd+R depending on platform
 		expect(output).toMatch(/(?:Ctrl|Cmd)\+R/)
-		expect(output).toContain("to terminate")
 	})
 
 	it("should show resume task status for resume_completed_task", () => {

@@ -4,7 +4,7 @@
 
 import { useAtomValue } from "jotai"
 import { useMemo } from "react"
-import { isProcessingAtom, showFollowupSuggestionsAtom } from "../atoms/ui.js"
+import { isStreamingAtom, showFollowupSuggestionsAtom } from "../atoms/ui.js"
 import { useApprovalHandler } from "./useApprovalHandler.js"
 import { hasResumeTaskAtom } from "../atoms/extension.js"
 
@@ -38,13 +38,13 @@ function getModifierKey(): string {
  * Hook to manage and display context-aware hotkeys
  *
  * Returns different hotkeys based on the current UI state:
- * - When processing: Shows cancel hotkey
+ * - When streaming: Shows cancel hotkey
  * - When approval pending: Shows approval hotkeys
  * - When followup suggestions visible: Shows navigation hotkeys
  * - When idle: Shows general command hotkeys
  */
 export function useHotkeys(): UseHotkeysReturn {
-	const isProcessing = useAtomValue(isProcessingAtom)
+	const isStreaming = useAtomValue(isStreamingAtom)
 	const isFollowupVisible = useAtomValue(showFollowupSuggestionsAtom)
 	const hasResumeTask = useAtomValue(hasResumeTaskAtom)
 	const { isApprovalPending } = useApprovalHandler()
@@ -66,8 +66,8 @@ export function useHotkeys(): UseHotkeysReturn {
 			]
 		}
 
-		// Priority 3: Processing state - show cancel
-		if (isProcessing) {
+		// Priority 3: Streaming state - show cancel
+		if (isStreaming) {
 			return [{ keys: `${modifierKey}+X`, description: "to cancel" }]
 		}
 
@@ -85,7 +85,7 @@ export function useHotkeys(): UseHotkeysReturn {
 			{ keys: "/help", description: "for commands" },
 			{ keys: "/mode", description: "to switch mode" },
 		]
-	}, [hasResumeTask, isApprovalPending, isProcessing, isFollowupVisible, modifierKey])
+	}, [hasResumeTask, isApprovalPending, isStreaming, isFollowupVisible, modifierKey])
 
 	const shouldShow = hotkeys.length > 0
 
