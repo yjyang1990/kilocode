@@ -10,17 +10,13 @@ export class CommentDrivenStrategy implements PromptStrategy {
 	canHandle(context: GhostSuggestionContext): boolean {
 		if (!context.document || !context.range) return false
 
-		// Get the current line
 		const currentLine = context.document.lineAt(context.range.start.line).text
-		const trimmedLine = currentLine.trim()
 
-		// Check if the current or previous line contains a comment
-		const isComment = isCommentLine(trimmedLine, context.document.languageId)
+		const isComment = isCommentLine(currentLine, context.document.languageId)
 
-		// Also check the previous line if current line is empty
-		if (!isComment && trimmedLine === "" && context.range.start.line > 0) {
-			const prevLine = context.document.lineAt(context.range.start.line - 1).text.trim()
-			return isCommentLine(prevLine, context.document.languageId)
+		if (!isComment && currentLine.trim() === "" && context.range.start.line > 0) {
+			const previousLine = context.document.lineAt(context.range.start.line - 1).text.trim()
+			return isCommentLine(previousLine, context.document.languageId)
 		}
 
 		return isComment && !context.userInput // User input takes precedence
