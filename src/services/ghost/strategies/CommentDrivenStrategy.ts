@@ -19,7 +19,7 @@ export class CommentDrivenStrategy implements PromptStrategy {
 			return isCommentLine(previousLine, context.document.languageId)
 		}
 
-		return isComment && !context.userInput // User input takes precedence
+		return isComment
 	}
 
 	getSystemInstructions(): string {
