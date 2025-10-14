@@ -71,7 +71,7 @@ export class CommentDrivenStrategy implements PromptStrategy {
 		const currentLine = context.range.start.line
 		const document = context.document
 
-		const comment = this.extractComment(document, currentLine)
+		const comment = this.cleanComment(this.extractComment(document, currentLine), document.languageId)
 
 		const language = document.languageId
 
@@ -200,7 +200,7 @@ export class CommentDrivenStrategy implements PromptStrategy {
 			}
 		}
 
-		return this.cleanComment(comment, document.languageId)
+		return comment
 	}
 
 	/**
