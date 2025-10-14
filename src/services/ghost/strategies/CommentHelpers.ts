@@ -25,16 +25,8 @@ export function isCommentLine(line: string, languageId: string): boolean {
 		/^'''/, // Python docstring alternative
 	]
 
-	// Language-specific exclusions
-	if (languageId === "css" || languageId === "scss" || languageId === "less") {
-		// CSS only supports /* */ comments, not //
-		return /^(\/\*|\*)/.test(trimmed)
-	}
-
-	if (languageId === "html" || languageId === "xml") {
-		// HTML/XML only supports <!-- --> comments
-		return /^<!--/.test(trimmed)
-	}
+	// Check all patterns - be permissive and recognize anything that looks like a comment
+	// Even if technically invalid for the language (e.g., // in CSS could be from embedded JS)
 
 	// Check single-line patterns
 	if (singleLinePatterns.some((pattern) => pattern.test(trimmed))) {

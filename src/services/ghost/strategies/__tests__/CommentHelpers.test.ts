@@ -71,8 +71,9 @@ describe("CommentHelpers", () => {
 				expect(isCommentLine("* comment", "scss")).toBe(true)
 			})
 
-			test("should not recognize single-line comments in CSS", () => {
-				expect(isCommentLine("// not a comment", "css")).toBe(false)
+			test("should recognize single-line comments even in CSS (permissive)", () => {
+				// Permissive: recognize // even in CSS (could be from preprocessor or embedded JS)
+				expect(isCommentLine("// not a comment", "css")).toBe(true)
 			})
 		})
 
