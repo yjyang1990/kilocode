@@ -168,10 +168,10 @@ describe("GeminiHandler", () => {
 	describe("getModel", () => {
 		it("should return correct model info", () => {
 			const modelInfo = handler.getModel()
-			expect(modelInfo.id).toBe(geminiDefaultModelId)
+			expect(modelInfo.id).toBe(GEMINI_20_FLASH_THINKING_NAME)
 			expect(modelInfo.info).toBeDefined()
 			expect(modelInfo.info.maxTokens).toBe(8192)
-			expect(modelInfo.info.contextWindow).toBe(1_048_576)
+			expect(modelInfo.info.contextWindow).toBe(32_767)
 		})
 
 		it("should return default model if invalid model specified", () => {
