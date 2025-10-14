@@ -14,7 +14,7 @@ import {
 	fireworksModels,
 	// kilocode_change start
 	syntheticModels,
-	geminiModels,
+	// geminiModels,
 	// kilocode_change end
 	groqModels,
 	ioIntelligenceModels,
@@ -704,8 +704,10 @@ export const MODELS_BY_PROVIDER: Record<
 		ProviderName,
 		| "fake-ai"
 		| "human-relay"
-		//"gemini" | // kilocode_change
-		| "gemini-cli" // kilocode_change
+		// kilocode_change start
+		| "gemini"
+		| "gemini-cli"
+		// kilocode_change end
 		| "lmstudio"
 		| "openai"
 		| "ollama"
@@ -755,11 +757,11 @@ export const MODELS_BY_PROVIDER: Record<
 		label: "Synthetic",
 		models: Object.keys(syntheticModels),
 	},
-	gemini: {
-		id: "gemini",
-		label: "Google Gemini",
-		models: Object.keys(geminiModels),
-	},
+	//gemini: {
+	//	id: "gemini",
+	//	label: "Google Gemini",
+	//	models: Object.keys(geminiModels),
+	//},
 	// kilocode_change end
 	groq: { id: "groq", label: "Groq", models: Object.keys(groqModels) },
 	"io-intelligence": {
