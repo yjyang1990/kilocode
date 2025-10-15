@@ -2,18 +2,7 @@ import { useEffect, useState } from "react"
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { telemetryClient } from "../utils/TelemetryClient"
 import { TelemetryEventName } from "@roo-code/types"
-
-function getMemoryPercentage() {
-	if ("memory" in performance && typeof performance.memory === "object") {
-		const memory = performance.memory as {
-			totalJSHeapSize: number
-			usedJSHeapSize: number
-			jsHeapSizeLimit: number
-		}
-		return Math.floor((100 * memory.totalJSHeapSize) / memory.jsHeapSizeLimit)
-	}
-	return 0
-}
+import { getMemoryPercentage } from "./helpers"
 
 const warningThreshold = 90
 
@@ -28,7 +17,7 @@ function reportWarning() {
 	}
 }
 
-export const MemoryWarning = () => {
+export const MemoryWarningBanner = () => {
 	const { t } = useAppTranslation()
 	const [enable, setEnabled] = useState(true)
 	const [memoryPercentage, setMemoryPercentage] = useState(getMemoryPercentage())
@@ -43,7 +32,7 @@ export const MemoryWarning = () => {
 				reportWarning()
 			}
 			setMemoryPercentage(percentage)
-		}, 1000)
+		}, 10_000)
 		return () => clearInterval(handle)
 	}, [])
 
@@ -62,7 +51,7 @@ export const MemoryWarning = () => {
 					<span className="flex-1 font-semibold">
 						{t("kilocode:memoryWarning.message", { percentage: memoryPercentage })}
 					</span>
-					<button className="codicon codicon-close" onClick={() => setEnabled(false)}></button>
+					<button className="codicon codicon-close cursor-pointer" onClick={() => setEnabled(false)}></button>
 				</div>
 			</div>
 		)

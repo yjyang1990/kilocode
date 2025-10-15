@@ -31,7 +31,7 @@ import { useAddNonInteractiveClickListener } from "./components/ui/hooks/useNonI
 import { TooltipProvider } from "./components/ui/tooltip"
 import { STANDARD_TOOLTIP_DELAY } from "./components/ui/standard-tooltip"
 import { useKiloIdentity } from "./utils/kilocode/useKiloIdentity"
-import { MemoryWarning } from "./kilocode/MemoryWarning"
+import { MemoryWarningBanner } from "./kilocode/MemoryWarningBanner"
 
 type Tab = "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "account" | "cloud" | "profile" // kilocode_change: add "profile"
 
@@ -280,8 +280,8 @@ const App = () => {
 		<WelcomeView />
 	) : (
 		<>
-			{/* kilocode_change: add MemoryWarning */}
-			<MemoryWarning />
+			{/* kilocode_change: add MemoryWarningBanner */}
+			<MemoryWarningBanner />
 			{tab === "modes" && <ModesView onDone={() => switchTab("chat")} />}
 			{tab === "mcp" && <McpView onDone={() => switchTab("chat")} />}
 			{tab === "history" && <HistoryView onDone={() => switchTab("chat")} />}

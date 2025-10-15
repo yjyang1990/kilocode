@@ -17,6 +17,7 @@ import { Button } from "@/components/ui"
 
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
+import { getMemoryPercentage } from "@/kilocode/helpers"
 
 type AboutProps = HTMLAttributes<HTMLDivElement> & {
 	telemetrySetting: TelemetrySetting
@@ -108,9 +109,10 @@ export const About = ({ telemetrySetting, setTelemetrySetting, className, ...pro
 						<div className="flex flex-wrap items-center gap-2 mt-2">
 							<Button
 								variant="destructive"
-								onClick={() =>
+								onClick={() => {
 									setKiloCodeBloat([...kiloCodeBloat, new Array<number>(20_000_000).fill(0)])
-								}>
+									console.debug(`Memory percentage: ${getMemoryPercentage()}`)
+								}}>
 								Development: Allocate memory
 							</Button>
 						</div>
