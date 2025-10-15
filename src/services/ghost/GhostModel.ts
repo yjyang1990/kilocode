@@ -1,4 +1,4 @@
-import { AUTOCOMPLETE_PROVIDER_MODELS, modelIdKeysByProvider } from "@roo-code/types"
+import { AUTOCOMPLETE_PROVIDER_MODELS, modelIdKeysByProvider, ProviderSettingsEntry } from "@roo-code/types"
 import { ApiHandler, buildApiHandler } from "../../api"
 import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManager"
 import { OpenRouterHandler } from "../../api/providers"
@@ -34,26 +34,7 @@ export class GhostModel {
 				(x): x is typeof x & { apiProvider: string } => x?.apiProvider === provider,
 			)
 			if (selectedProfile) {
-				const profile = await providerSettingsManager.getProfile({
-					id: selectedProfile.id,
-				})
-
-				this.apiHandler = buildApiHandler({
-					...profile,
-					[modelIdKeysByProvider[provider]]: AUTOCOMPLETE_PROVIDER_MODELS[provider],
-				})
-
-				if (this.apiHandler instanceof OpenRouterHandler) {
-					await this.apiHandler.fetchModel()
-				}
-
-				const handler = this.apiHandler as any
-				if (handler.providerName && typeof handler.providerName === "string") {
-					this.providerDisplayName = handler.providerName
-				} else {
-					this.providerDisplayName = "Unknown Provider"
-				}
-
+				this.loadProfile(providerSettingsManager, selectedProfile, provider)
 				this.loaded = true
 				return true
 			}
@@ -61,6 +42,32 @@ export class GhostModel {
 
 		this.loaded = false
 		return false
+	}
+
+	public async loadProfile(
+		providerSettingsManager: ProviderSettingsManager,
+		selectedProfile: ProviderSettingsEntry,
+		provider: keyof typeof AUTOCOMPLETE_PROVIDER_MODELS,
+	): Promise<void> {
+		const profile = await providerSettingsManager.getProfile({
+			id: selectedProfile.id,
+		})
+
+		this.apiHandler = buildApiHandler({
+			...profile,
+			[modelIdKeysByProvider[provider]]: AUTOCOMPLETE_PROVIDER_MODELS[provider],
+		})
+
+		if (this.apiHandler instanceof OpenRouterHandler) {
+			await this.apiHandler.fetchModel()
+		}
+
+		const handler = this.apiHandler as any
+		if (handler.providerName && typeof handler.providerName === "string") {
+			this.providerDisplayName = handler.providerName
+		} else {
+			this.providerDisplayName = "Unknown Provider"
+		}
 	}
 
 	/**
