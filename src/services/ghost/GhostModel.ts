@@ -6,7 +6,6 @@ import { ApiStreamChunk } from "../../api/transform/stream"
 
 export class GhostModel {
 	private apiHandler: ApiHandler | null = null
-	private providerDisplayName: string | null = null
 	public loaded = false
 
 	constructor(apiHandler: ApiHandler | null = null) {
@@ -17,7 +16,6 @@ export class GhostModel {
 	}
 	private cleanup(): void {
 		this.apiHandler = null
-		this.providerDisplayName = null
 		this.loaded = false
 	}
 
@@ -60,13 +58,6 @@ export class GhostModel {
 
 		if (this.apiHandler instanceof OpenRouterHandler) {
 			await this.apiHandler.fetchModel()
-		}
-
-		const handler = this.apiHandler as any
-		if (handler.providerName && typeof handler.providerName === "string") {
-			this.providerDisplayName = handler.providerName
-		} else {
-			this.providerDisplayName = "Unknown Provider"
 		}
 	}
 
@@ -130,14 +121,20 @@ export class GhostModel {
 	}
 
 	public getModelName(): string | null {
-		if (!this.apiHandler) {
-			return null
-		}
+		if (!this.apiHandler) return null
+
 		return this.apiHandler.getModel().id ?? "unknown"
 	}
 
 	public getProviderDisplayName(): string | null {
-		return this.providerDisplayName
+		if (!this.apiHandler) return null
+
+		const handler = this.apiHandler as any
+		if (handler.providerName && typeof handler.providerName === "string") {
+			return handler.providerName
+		} else {
+			return "unknown"
+		}
 	}
 
 	public hasValidCredentials(): boolean {
