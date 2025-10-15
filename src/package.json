@@ -495,7 +495,7 @@
 				"mac": "cmd+i",
 				"win": "ctrl+i",
 				"linux": "ctrl+i",
-				"when": "editorTextFocus && editorHasSelection"
+				"when": "editorTextFocus"
 			},
 			{
 				"command": "kilo-code.toggleAutoApprove",
