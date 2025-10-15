@@ -68,12 +68,6 @@ export class GhostStatusBar {
 		if (this.enabled) this.render()
 	}
 
-	// TODO: Bring back paused state in the future
-	// private renderPaused() {
-	// 	this.statusBar.text = t("kilocode:ghost.statusBar.disabled")
-	// 	this.statusBar.tooltip = t("kilocode:ghost.statusBar.tooltip.disabled")
-	// }
-
 	private renderTokenError() {
 		this.statusBar.text = t("kilocode:ghost.statusBar.warning")
 		this.statusBar.tooltip = t("kilocode:ghost.statusBar.tooltip.tokenError")
