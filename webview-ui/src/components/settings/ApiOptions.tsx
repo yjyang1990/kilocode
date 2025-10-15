@@ -8,7 +8,7 @@ import {
 	type ProviderName,
 	type ProviderSettings,
 	DEFAULT_CONSECUTIVE_MISTAKE_LIMIT,
-	SUPPORTED_AUTOCOMPLETE_PROVIDERS,
+	AUTOCOMPLETE_PROVIDER_MODELS,
 	openRouterDefaultModelId,
 	requestyDefaultModelId,
 	glamaDefaultModelId,
@@ -496,12 +496,12 @@ const ApiOptions = ({
 				/>
 			</div>
 
-			{!(SUPPORTED_AUTOCOMPLETE_PROVIDERS as readonly string[]).includes(selectedProvider) && (
+			{!Object.keys(AUTOCOMPLETE_PROVIDER_MODELS).includes(selectedProvider) && (
 				<div className="flex items-start gap-2 p-2 rounded bg-vscode-inputValidation-warningBackground border border-vscode-inputValidation-warningBorder">
 					<span className="codicon codicon-warning text-vscode-inputValidation-warningForeground mt-0.5"></span>
 					<div className="text-sm text-vscode-inputValidation-warningForeground">
 						{t("settings:providers.autocompleteNotSupported", {
-							providers: SUPPORTED_AUTOCOMPLETE_PROVIDERS.join(", "),
+							providers: Object.keys(AUTOCOMPLETE_PROVIDER_MODELS).join(", "),
 						})}
 					</div>
 				</div>
