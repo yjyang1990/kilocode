@@ -6,7 +6,7 @@ import { ApiStreamChunk } from "../../api/transform/stream"
 
 export class GhostModel {
 	private apiHandler: ApiHandler | null = null
-	private provider: string | null = null
+	private providerDisplayName: string | null = null
 	public loaded = false
 
 	constructor(apiHandler: ApiHandler | null = null) {
@@ -37,7 +37,7 @@ export class GhostModel {
 					...profile,
 					...modelDefinition,
 				})
-				this.provider = provider
+				this.providerDisplayName = this.extractProviderName()
 
 				break
 			}
@@ -117,58 +117,20 @@ export class GhostModel {
 	}
 
 	public getProviderDisplayName(): string | null {
-		if (!this.provider) {
-			return null
-		}
-		return this.formatProviderName(this.provider)
+		return this.providerDisplayName
 	}
 
-	private formatProviderName(provider: string): string {
-		const providerDisplayNames: Record<string, string> = {
-			anthropic: "Anthropic",
-			openai: "OpenAI",
-			"openai-native": "OpenAI",
-			openrouter: "OpenRouter",
-			bedrock: "AWS Bedrock",
-			vertex: "Google Vertex AI",
-			ollama: "Ollama",
-			lmstudio: "LM Studio",
-			gemini: "Google Gemini",
-			"gemini-cli": "Google Gemini CLI",
-			deepseek: "DeepSeek",
-			doubao: "Doubao",
-			"qwen-code": "Qwen Code",
-			moonshot: "Moonshot",
-			"vscode-lm": "VS Code LM",
-			mistral: "Mistral AI",
-			unbound: "Unbound",
-			requesty: "Requesty",
-			"human-relay": "Human Relay",
-			"fake-ai": "Fake AI",
-			xai: "xAI",
-			groq: "Groq",
-			deepinfra: "DeepInfra",
-			huggingface: "Hugging Face",
-			chutes: "Chutes",
-			litellm: "LiteLLM",
-			cerebras: "Cerebras",
-			sambanova: "SambaNova",
-			zai: "ZAI",
-			fireworks: "Fireworks AI",
-			synthetic: "Synthetic",
-			"io-intelligence": "IO Intelligence",
-			roo: "Roo",
-			featherless: "Featherless",
-			"vercel-ai-gateway": "Vercel AI Gateway",
-			ovhcloud: "OVHcloud",
-			kilocode: "Kilo Code",
-			"kilocode-openrouter": "Kilo Code (OpenRouter)",
-			"virtual-quota-fallback": "Virtual Quota Fallback",
-			glama: "Glama",
-			"claude-code": "Claude Code",
+	private extractProviderName(): string | null {
+		if (!this.apiHandler) {
+			return null
 		}
 
-		return providerDisplayNames[provider] || provider
+		const handler = this.apiHandler as any
+		if (handler.providerName && typeof handler.providerName === "string") {
+			return handler.providerName
+		}
+
+		return "Unknown Provider"
 	}
 
 	public hasValidCredentials(): boolean {
