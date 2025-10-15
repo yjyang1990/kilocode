@@ -18,16 +18,18 @@ export class GhostModel {
 	public async reload(providerSettingsManager: ProviderSettingsManager) {
 		const profiles = await providerSettingsManager.listConfig()
 		const supportedProviders = Object.keys(AUTOCOMPLETE_PROVIDER_MODELS)
-		const validProfiles = profiles
-			.filter(
-				(x): x is typeof x & { apiProvider: string } =>
-					!!x.apiProvider && x.apiProvider in AUTOCOMPLETE_PROVIDER_MODELS,
-			)
-			.sort((a, b) => {
-				return supportedProviders.indexOf(a.apiProvider) - supportedProviders.indexOf(b.apiProvider)
-			})
 
-		const selectedProfile = validProfiles[0] || null
+		let selectedProfile = null
+		for (const provider of supportedProviders) {
+			const profile = profiles.find(
+				(x): x is typeof x & { apiProvider: string } => !!x.apiProvider && x.apiProvider === provider,
+			)
+			if (profile) {
+				selectedProfile = profile
+				break
+			}
+		}
+
 		if (selectedProfile) {
 			const profile = await providerSettingsManager.getProfile({
 				id: selectedProfile.id,
