@@ -89,4 +89,49 @@ describe("GhostModel", () => {
 			expect(model.hasValidCredentials()).toBe(false)
 		})
 	})
+
+	describe("getProviderDisplayName", () => {
+		it("returns null when no provider is loaded", () => {
+			const model = new GhostModel()
+			expect(model.getProviderDisplayName()).toBeNull()
+		})
+
+		it("returns formatted provider name when provider is loaded", async () => {
+			const supportedProviders = Object.keys(AUTOCOMPLETE_PROVIDER_MODELS)
+			const profiles = [{ id: "1", name: "profile1", apiProvider: supportedProviders[0] }] as any
+
+			vi.mocked(mockProviderSettingsManager.listConfig).mockResolvedValue(profiles)
+			vi.mocked(mockProviderSettingsManager.getProfile).mockResolvedValue({
+				id: "1",
+				name: "profile1",
+				apiProvider: supportedProviders[0],
+				mistralApiKey: "test-key",
+			} as any)
+
+			const model = new GhostModel()
+			await model.reload(mockProviderSettingsManager)
+
+			const providerName = model.getProviderDisplayName()
+			expect(providerName).toBeTruthy()
+			expect(typeof providerName).toBe("string")
+			expect(providerName).not.toBe(supportedProviders[0])
+		})
+
+		it("formats known provider names correctly", async () => {
+			const profiles = [{ id: "1", name: "profile1", apiProvider: "mistral" }] as any
+
+			vi.mocked(mockProviderSettingsManager.listConfig).mockResolvedValue(profiles)
+			vi.mocked(mockProviderSettingsManager.getProfile).mockResolvedValue({
+				id: "1",
+				name: "profile1",
+				apiProvider: "mistral",
+				mistralApiKey: "test-key",
+			} as any)
+
+			const model = new GhostModel()
+			await model.reload(mockProviderSettingsManager)
+
+			expect(model.getProviderDisplayName()).toBe("Mistral AI")
+		})
+	})
 })

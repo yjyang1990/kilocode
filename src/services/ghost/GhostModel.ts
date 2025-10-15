@@ -6,6 +6,7 @@ import { ApiStreamChunk } from "../../api/transform/stream"
 
 export class GhostModel {
 	private apiHandler: ApiHandler | null = null
+	private provider: string | null = null
 	public loaded = false
 
 	constructor(apiHandler: ApiHandler | null = null) {
@@ -36,6 +37,7 @@ export class GhostModel {
 					...profile,
 					...modelDefinition,
 				})
+				this.provider = provider
 
 				break
 			}
@@ -111,8 +113,62 @@ export class GhostModel {
 		if (!this.apiHandler) {
 			return null
 		}
-		// Extract model name from API handler
 		return this.apiHandler.getModel().id ?? "unknown"
+	}
+
+	public getProviderDisplayName(): string | null {
+		if (!this.provider) {
+			return null
+		}
+		return this.formatProviderName(this.provider)
+	}
+
+	private formatProviderName(provider: string): string {
+		const providerDisplayNames: Record<string, string> = {
+			anthropic: "Anthropic",
+			openai: "OpenAI",
+			"openai-native": "OpenAI",
+			openrouter: "OpenRouter",
+			bedrock: "AWS Bedrock",
+			vertex: "Google Vertex AI",
+			ollama: "Ollama",
+			lmstudio: "LM Studio",
+			gemini: "Google Gemini",
+			"gemini-cli": "Google Gemini CLI",
+			deepseek: "DeepSeek",
+			doubao: "Doubao",
+			"qwen-code": "Qwen Code",
+			moonshot: "Moonshot",
+			"vscode-lm": "VS Code LM",
+			mistral: "Mistral AI",
+			unbound: "Unbound",
+			requesty: "Requesty",
+			"human-relay": "Human Relay",
+			"fake-ai": "Fake AI",
+			xai: "xAI",
+			groq: "Groq",
+			deepinfra: "DeepInfra",
+			huggingface: "Hugging Face",
+			chutes: "Chutes",
+			litellm: "LiteLLM",
+			cerebras: "Cerebras",
+			sambanova: "SambaNova",
+			zai: "ZAI",
+			fireworks: "Fireworks AI",
+			synthetic: "Synthetic",
+			"io-intelligence": "IO Intelligence",
+			roo: "Roo",
+			featherless: "Featherless",
+			"vercel-ai-gateway": "Vercel AI Gateway",
+			ovhcloud: "OVHcloud",
+			kilocode: "Kilo Code",
+			"kilocode-openrouter": "Kilo Code (OpenRouter)",
+			"virtual-quota-fallback": "Virtual Quota Fallback",
+			glama: "Glama",
+			"claude-code": "Claude Code",
+		}
+
+		return providerDisplayNames[provider] || provider
 	}
 
 	public hasValidCredentials(): boolean {

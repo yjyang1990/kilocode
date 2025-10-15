@@ -586,6 +586,7 @@ export class GhostProvider {
 		this.statusBar = new GhostStatusBar({
 			enabled: false,
 			model: "loading...",
+			provider: "loading...",
 			hasValidToken: false,
 			totalSessionCost: 0,
 			lastCompletionCost: 0,
@@ -597,6 +598,13 @@ export class GhostProvider {
 			return "loading..."
 		}
 		return this.model.getModelName() ?? "unknown"
+	}
+
+	private getCurrentProviderName(): string {
+		if (!this.model.loaded) {
+			return "loading..."
+		}
+		return this.model.getProviderDisplayName() ?? "unknown"
 	}
 
 	private hasValidApiToken(): boolean {
@@ -617,6 +625,7 @@ export class GhostProvider {
 		this.statusBar?.update({
 			enabled: this.settings?.enableAutoTrigger,
 			model: this.getCurrentModelName(),
+			provider: this.getCurrentProviderName(),
 			hasValidToken: this.hasValidApiToken(),
 			totalSessionCost: this.sessionCost,
 			lastCompletionCost: this.lastCompletionCost,
