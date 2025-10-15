@@ -14,7 +14,7 @@
 		"lowBalance": "Your Kilo Code balance is low"
 	},
 	"memoryWarning": {
-		"message": "Memory usage is {{percentage}}%. Please restart your IDE to free up resources and improve performance."
+		"message": "Memory usage at {{percentage}}%! Restart your IDE immediately to prevent crashes!"
 	},
 	"pagination": {
 		"previous": "Previous",

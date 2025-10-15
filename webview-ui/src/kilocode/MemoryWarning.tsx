@@ -28,11 +28,24 @@ export const MemoryWarning = () => {
 
 	return (
 		memoryPercentage >= threshold && (
-			<div className="flex items-center gap-2 px-4 py-2 mb-2 text-sm rounded bg-vscode-inputValidation-warningBackground border border-vscode-inputValidation-warningBorder">
-				<span className="codicon codicon-warning text-vscode-editorWarning-foreground" />
-				<span className="text-vscode-foreground">
-					{t("kilocode:memoryWarning.message", { percentage: memoryPercentage })}
-				</span>
+			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] mx-4 max-w-2xl w-full">
+				<div
+					className="flex items-center gap-3 px-6 py-4 text-base rounded-lg shadow-lg border-2"
+					style={{
+						backgroundColor: "var(--vscode-inputValidation-errorBackground, rgba(255, 0, 0, 0.1))",
+						borderColor: "var(--vscode-inputValidation-errorBorder, #ff0000)",
+						color: "var(--vscode-errorForeground, #ff0000)",
+					}}>
+					<span
+						className="codicon codicon-warning text-2xl flex-shrink-0"
+						style={{
+							color: "var(--vscode-errorForeground, #ff0000)",
+						}}
+					/>
+					<span className="font-semibold flex-1">
+						{t("kilocode:memoryWarning.message", { percentage: memoryPercentage })}
+					</span>
+				</div>
 			</div>
 		)
 	)
