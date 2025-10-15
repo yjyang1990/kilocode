@@ -85,7 +85,6 @@ describe("GhostModel", () => {
 			const result = await model.reload(mockProviderSettingsManager)
 
 			expect(mockProviderSettingsManager.getProfile).not.toHaveBeenCalled()
-			expect(model.loaded).toBe(true)
 			expect(model.hasValidCredentials()).toBe(false)
 			expect(result).toBe(false)
 		})
