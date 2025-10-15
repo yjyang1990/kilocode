@@ -38,7 +38,7 @@ export class GhostModel {
 			}
 		}
 
-		this.loaded = false
+		this.loaded = true // we loaded, and found nothing, but we do not wish to reload
 		return false
 	}
 
