@@ -1,4 +1,9 @@
-import { AUTOCOMPLETE_PROVIDER_MODELS, modelIdKeysByProvider, ProviderSettingsEntry } from "@roo-code/types"
+import {
+	AUTOCOMPLETE_PROVIDER_MODELS,
+	defaultProviderUsabilityChecker,
+	modelIdKeysByProvider,
+	ProviderSettingsEntry,
+} from "@roo-code/types"
 import { ApiHandler, buildApiHandler } from "../../api"
 import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManager"
 import { OpenRouterHandler } from "../../api/providers"
@@ -27,11 +32,18 @@ export class GhostModel {
 
 		this.cleanup()
 
+		// Check providers in order, but skip unusable ones (e.g., kilocode with zero balance)
 		for (const provider of supportedProviders) {
 			const selectedProfile = profiles.find(
 				(x): x is typeof x & { apiProvider: string } => x?.apiProvider === provider,
 			)
 			if (selectedProfile) {
+				// Check if the provider is usable (e.g., kilocode balance > 0)
+				const isUsable = await defaultProviderUsabilityChecker(provider, providerSettingsManager)
+				if (!isUsable) {
+					continue // Skip to next provider if not usable
+				}
+
 				this.loadProfile(providerSettingsManager, selectedProfile, provider)
 				this.loaded = true
 				return true

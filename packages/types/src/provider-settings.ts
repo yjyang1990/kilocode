@@ -169,6 +169,77 @@ export const AUTOCOMPLETE_PROVIDER_MODELS = {
 	openrouter: "mistralai/codestral-2508",
 } as const satisfies Record<Extract<ProviderName, "mistral" | "kilocode" | "openrouter">, string>
 
+export type AutocompleteProviderKey = keyof typeof AUTOCOMPLETE_PROVIDER_MODELS
+
+export type ProviderUsabilityChecker = (
+	provider: AutocompleteProviderKey,
+	providerSettingsManager: any,
+) => Promise<boolean>
+
+export const defaultProviderUsabilityChecker: ProviderUsabilityChecker = async (provider, providerSettingsManager) => {
+	if (provider === "kilocode") {
+		// Check if kilocode balance is greater than zero
+		try {
+			const profiles = await providerSettingsManager.listConfig()
+			const kilocodeProfile = profiles.find((p: any) => p.apiProvider === "kilocode")
+
+			if (!kilocodeProfile) {
+				return false
+			}
+
+			const profile = await providerSettingsManager.getProfile({ id: kilocodeProfile.id })
+			const kilocodeToken = profile.kilocodeToken
+
+			if (!kilocodeToken) {
+				return false
+			}
+
+			// Simple function to get base URI from token (copied from token.ts)
+			const getKiloBaseUriFromToken = (kilocodeToken?: string) => {
+				if (kilocodeToken) {
+					try {
+						const parts = kilocodeToken.split(".")
+						if (parts.length < 2) return "https://api.kilocode.ai"
+						const payload_string = parts[1]
+						if (!payload_string) return "https://api.kilocode.ai"
+						const payload_json =
+							typeof atob !== "undefined"
+								? atob(payload_string)
+								: Buffer.from(payload_string, "base64").toString()
+						const payload = JSON.parse(payload_json)
+						if (payload.env === "development") return "http://localhost:3000"
+					} catch (_error) {
+						console.warn("Failed to get base URL from Kilo Code token")
+					}
+				}
+				return "https://api.kilocode.ai"
+			}
+
+			const baseUrl = getKiloBaseUriFromToken(kilocodeToken)
+
+			const response = await fetch(`${baseUrl}/api/profile/balance`, {
+				headers: {
+					Authorization: `Bearer ${kilocodeToken}`,
+				},
+			})
+
+			if (!response.ok) {
+				return false
+			}
+
+			const data = await response.json()
+			const balance = data.data?.balance ?? 0
+			return balance > 0
+		} catch (error) {
+			console.error("Error checking kilocode balance:", error)
+			return false
+		}
+	}
+
+	// For all other providers, assume they are usable
+	return true
+}
+
 /**
  * ProviderSettingsEntry
  */
