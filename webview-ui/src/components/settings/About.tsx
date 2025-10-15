@@ -1,4 +1,7 @@
-import { HTMLAttributes } from "react"
+import {
+	HTMLAttributes,
+	useState, // kilocode_change
+} from "react"
 import { useAppTranslation } from "@/i18n/TranslationContext"
 import { Trans } from "react-i18next"
 import { Info, Download, Upload, TriangleAlert } from "lucide-react"
