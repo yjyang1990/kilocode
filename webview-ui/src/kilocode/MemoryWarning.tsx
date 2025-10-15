@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { useAppTranslation } from "@/i18n/TranslationContext"
+import { telemetryClient } from "../utils/TelemetryClient"
+import { TelemetryEventName } from "@roo-code/types"
 
 function getMemoryPercentage() {
 	if ("memory" in performance && typeof performance.memory === "object") {
@@ -13,9 +15,18 @@ function getMemoryPercentage() {
 	return 0
 }
 
-const warningThreshold = 80
+const warningThreshold = 90
 
-const resetThreshold = 50
+const resetCloseButtonThreshold = 50
+
+let warningReported = false
+
+function reportWarning() {
+	if (!warningReported) {
+		warningReported = true
+		telemetryClient.capture(TelemetryEventName.MEMORY_WARNING_SHOWN)
+	}
+}
 
 export const MemoryWarning = () => {
 	const { t } = useAppTranslation()
@@ -25,8 +36,11 @@ export const MemoryWarning = () => {
 	useEffect(() => {
 		const handle = setInterval(() => {
 			const percentage = getMemoryPercentage()
-			if (percentage < resetThreshold) {
+			if (percentage < resetCloseButtonThreshold) {
 				setEnabled(true)
+			}
+			if (percentage >= warningThreshold) {
+				reportWarning()
 			}
 			setMemoryPercentage(percentage)
 		}, 1000)
