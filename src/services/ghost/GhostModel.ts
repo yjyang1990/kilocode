@@ -19,14 +19,11 @@ export class GhostModel {
 		const profiles = await providerSettingsManager.listConfig()
 		const supportedProviders = Object.keys(AUTOCOMPLETE_PROVIDER_MODELS)
 		const validProfiles = profiles
-			.filter((x) => x.apiProvider && x.apiProvider in AUTOCOMPLETE_PROVIDER_MODELS)
+			.filter(
+				(x): x is typeof x & { apiProvider: string } =>
+					!!x.apiProvider && x.apiProvider in AUTOCOMPLETE_PROVIDER_MODELS,
+			)
 			.sort((a, b) => {
-				if (!a.apiProvider) {
-					return 1
-				}
-				if (!b.apiProvider) {
-					return -1
-				}
 				return supportedProviders.indexOf(a.apiProvider) - supportedProviders.indexOf(b.apiProvider)
 			})
 
