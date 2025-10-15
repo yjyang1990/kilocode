@@ -1,10 +1,9 @@
 # Roo Code Changelog
 
-## 3.28.17
+## [3.28.17] - 2025-10-15
 
-### Patch Changes
-
--   - Add support for Claude Haiku 4.5 model (thanks @daniel-lxs!)
+- Add support for Claude Haiku 4.5 model (thanks @daniel-lxs!)
+- Fix: Update zh-TW run command title translation (thanks @PeterDaveHello!)
 
 ## [3.28.16] - 2025-10-09
 
