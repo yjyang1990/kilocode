@@ -6,31 +6,36 @@ import { TextDocument } from "vscode"
 export function isCommentLine(line: string, languageId: string): boolean {
 	const trimmed = line.trim()
 
-	const singleLinePatterns = [
-		/^\/\//, // JavaScript, TypeScript, C++, Java, etc.
-		/^#/, // Python, Ruby, Shell, etc.
-		/^--/, // SQL, Haskell, Lua
-		/^;/, // Assembly, Lisp
-		/^%/, // MATLAB, LaTeX
-		/^'/, // VB
+	const patterns = [
+		// Structural patterns - exact matches, no content required
+		{ pattern: /^\/\*$/, requiresContent: false }, // C-style block start
+		{ pattern: /^<!--$/, requiresContent: false }, // HTML comment start
+		{ pattern: /^"""$/, requiresContent: false }, // Python docstring
+		{ pattern: /^'''$/, requiresContent: false }, // Python docstring alternative
+		// Multi-line patterns - content required
+		{ pattern: /^\/\*/, requiresContent: true }, // C-style
+		{ pattern: /^\*/, requiresContent: true }, // Inside C-style block
+		{ pattern: /^<!--/, requiresContent: true }, // HTML, XML
+		{ pattern: /^"""/, requiresContent: true }, // Python docstring
+		{ pattern: /^'''/, requiresContent: true }, // Python docstring alternative
+		// Single-line patterns - content required
+		{ pattern: /^\/\//, requiresContent: true }, // JavaScript, TypeScript, C++, Java, etc.
+		{ pattern: /^#/, requiresContent: true }, // Python, Ruby, Shell, etc.
+		{ pattern: /^--/, requiresContent: true }, // SQL, Haskell, Lua
+		{ pattern: /^;/, requiresContent: true }, // Assembly, Lisp
+		{ pattern: /^%/, requiresContent: true }, // MATLAB, LaTeX
+		{ pattern: /^'/, requiresContent: true }, // VB
 	]
 
-	const multiLinePatterns = [
-		/^\/\*/, // C-style
-		/^\*/, // Inside C-style block
-		/^<!--/, // HTML, XML
-		/^"""/, // Python docstring
-		/^'''/, // Python docstring alternative
-	]
-
-	if (singleLinePatterns.some((pattern) => pattern.test(trimmed))) {
-		// Make sure it contains meaningful text (not just comment syntax)
-		const withoutCommentSyntax = trimmed.replace(/^(\/\/|#|--|;|%|')\s*/, "")
-		return withoutCommentSyntax.length > 0
-	}
-
-	if (multiLinePatterns.some((pattern) => pattern.test(trimmed))) {
-		return true
+	for (const { pattern, requiresContent } of patterns) {
+		const match = trimmed.match(pattern)
+		if (match) {
+			if (!requiresContent) {
+				return true
+			}
+			const withoutSyntax = trimmed.slice(match[0].length).trim()
+			return withoutSyntax.length > 0
+		}
 	}
 
 	return false

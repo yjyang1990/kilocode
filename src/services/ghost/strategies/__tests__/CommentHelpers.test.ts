@@ -14,12 +14,23 @@ describe("CommentHelpers", () => {
 				expect(isCommentLine("#   ", "python")).toBe(false)
 			})
 
-			test("should accept multi-line comment with only syntax", () => {
+			test("should accept structural multi-line comment markers", () => {
 				expect(isCommentLine("/*", "javascript")).toBe(true)
+				expect(isCommentLine("<!--", "html")).toBe(true)
 			})
 
-			test("should accept asterisk-only line (inside block comment)", () => {
-				expect(isCommentLine("*", "javascript")).toBe(true)
+			test("should reject asterisk-only line (inside block comment)", () => {
+				expect(isCommentLine("*", "javascript")).toBe(false)
+			})
+
+			test("should accept multi-line comment with content", () => {
+				expect(isCommentLine("/* content", "javascript")).toBe(true)
+				expect(isCommentLine("* content", "javascript")).toBe(true)
+				expect(isCommentLine("<!-- content", "html")).toBe(true)
+			})
+
+			test("should reject non-structural multi-line with only whitespace", () => {
+				expect(isCommentLine("*   ", "javascript")).toBe(false)
 			})
 		})
 
@@ -48,9 +59,11 @@ describe("CommentHelpers", () => {
 				expect(isCommentLine("# comment", "python")).toBe(true)
 			})
 
-			test("should recognize docstring start", () => {
+			test("should recognize docstring markers", () => {
 				expect(isCommentLine('"""', "python")).toBe(true)
 				expect(isCommentLine("'''", "python")).toBe(true)
+				expect(isCommentLine('""" docstring', "python")).toBe(true)
+				expect(isCommentLine("''' docstring", "python")).toBe(true)
 			})
 
 			test("should handle empty hash comment", () => {
@@ -59,9 +72,9 @@ describe("CommentHelpers", () => {
 		})
 
 		describe("HTML/XML comments", () => {
-			test("should recognize HTML comment start", () => {
-				expect(isCommentLine("<!-- comment", "html")).toBe(true)
+			test("should recognize HTML comment markers", () => {
 				expect(isCommentLine("<!--", "xml")).toBe(true)
+				expect(isCommentLine("<!-- comment", "html")).toBe(true)
 			})
 		})
 
