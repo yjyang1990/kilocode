@@ -82,11 +82,31 @@ describe("GhostModel", () => {
 			vi.mocked(mockProviderSettingsManager.listConfig).mockResolvedValue([])
 
 			const model = new GhostModel()
-			await model.reload(mockProviderSettingsManager)
+			const result = await model.reload(mockProviderSettingsManager)
 
 			expect(mockProviderSettingsManager.getProfile).not.toHaveBeenCalled()
 			expect(model.loaded).toBe(true)
 			expect(model.hasValidCredentials()).toBe(false)
+			expect(result).toBe(false)
+		})
+
+		it("returns true when profile found", async () => {
+			const supportedProviders = Object.keys(AUTOCOMPLETE_PROVIDER_MODELS)
+			const profiles = [{ id: "1", name: "profile1", apiProvider: supportedProviders[0] }] as any
+
+			vi.mocked(mockProviderSettingsManager.listConfig).mockResolvedValue(profiles)
+			vi.mocked(mockProviderSettingsManager.getProfile).mockResolvedValue({
+				id: "1",
+				name: "profile1",
+				apiProvider: supportedProviders[0],
+				mistralApiKey: "test-key",
+			} as any)
+
+			const model = new GhostModel()
+			const result = await model.reload(mockProviderSettingsManager)
+
+			expect(result).toBe(true)
+			expect(model.loaded).toBe(true)
 		})
 	})
 

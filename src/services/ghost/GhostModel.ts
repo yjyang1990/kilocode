@@ -15,39 +15,46 @@ export class GhostModel {
 			this.loaded = true
 		}
 	}
+	private cleanup(): void {
+		this.apiHandler = null
+		this.providerDisplayName = null
+		this.loaded = false
+	}
 
-	public async reload(providerSettingsManager: ProviderSettingsManager) {
+	public async reload(providerSettingsManager: ProviderSettingsManager): Promise<boolean> {
 		const profiles = await providerSettingsManager.listConfig()
-		const supportedProviders = Object.keys(
-			AUTOCOMPLETE_PROVIDER_MODELS,
-		) as (keyof typeof AUTOCOMPLETE_PROVIDER_MODELS)[]
+		const supportedProviders = Object.keys(AUTOCOMPLETE_PROVIDER_MODELS) as Array<
+			keyof typeof AUTOCOMPLETE_PROVIDER_MODELS
+		>
+
+		this.cleanup()
 
 		for (const provider of supportedProviders) {
 			const selectedProfile = profiles.find(
-				(x): x is typeof x & { apiProvider: string } => !!x.apiProvider && x.apiProvider === provider,
+				(x): x is typeof x & { apiProvider: string } => x?.apiProvider === provider,
 			)
 			if (selectedProfile) {
 				const profile = await providerSettingsManager.getProfile({
 					id: selectedProfile.id,
 				})
-				const modelDefinition = {
-					[modelIdKeysByProvider[provider]]: AUTOCOMPLETE_PROVIDER_MODELS[provider],
-				}
+
 				this.apiHandler = buildApiHandler({
 					...profile,
-					...modelDefinition,
+					[modelIdKeysByProvider[provider]]: AUTOCOMPLETE_PROVIDER_MODELS[provider],
 				})
-				this.providerDisplayName = this.extractProviderName()
 
-				break
+				if (this.apiHandler instanceof OpenRouterHandler) {
+					await this.apiHandler.fetchModel()
+				}
+
+				this.providerDisplayName = this.extractProviderName()
+				this.loaded = true
+				return true
 			}
 		}
 
-		if (this.apiHandler instanceof OpenRouterHandler) {
-			await this.apiHandler.fetchModel()
-		}
-
-		this.loaded = true
+		this.loaded = false
+		return false
 	}
 
 	/**
