@@ -47,7 +47,13 @@ export class GhostModel {
 					await this.apiHandler.fetchModel()
 				}
 
-				this.providerDisplayName = this.extractProviderName()
+				const handler = this.apiHandler as any
+				if (handler.providerName && typeof handler.providerName === "string") {
+					this.providerDisplayName = handler.providerName
+				} else {
+					this.providerDisplayName = "Unknown Provider"
+				}
+
 				this.loaded = true
 				return true
 			}
@@ -125,19 +131,6 @@ export class GhostModel {
 
 	public getProviderDisplayName(): string | null {
 		return this.providerDisplayName
-	}
-
-	private extractProviderName(): string | null {
-		if (!this.apiHandler) {
-			return null
-		}
-
-		const handler = this.apiHandler as any
-		if (handler.providerName && typeof handler.providerName === "string") {
-			return handler.providerName
-		}
-
-		return "Unknown Provider"
 	}
 
 	public hasValidCredentials(): boolean {
