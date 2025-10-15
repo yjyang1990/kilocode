@@ -1,6 +1,6 @@
 {
 	"name": "@kilocode/cli",
-	"version": "0.0.2-alpha.2",
+	"version": "0.0.3-alpha.2",
 	"description": "Terminal User Interface for Kilo Code",
 	"type": "module",
 	"main": "dist/index.js",
@@ -22,7 +22,8 @@
 		"logs:clear": "rimraf ~/.kilocode/cli/logs/* && touch ~/.kilocode/cli/logs/cli.txt",
 		"clean:kilocode": "npx del-cli ./dist/kilocode --force && npx mkdirp ./dist/kilocode",
 		"copy:kilocode": "npx cpy '../bin-unpacked/extension/**' './dist/kilocode' --parents",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"changeset:version": "jq --arg version \"$(jq -r '.version' package.json)\" '.version = $version' package.dist.json > tmp.json && mv tmp.json package.dist.json && prettier --write package.dist.json"
 	},
 	"dependencies": {
 		"@anthropic-ai/bedrock-sdk": "^0.22.0",
