@@ -1,4 +1,4 @@
-import { AUTOCOMPLETE_PROVIDER_MODELS } from "@roo-code/types"
+import { AUTOCOMPLETE_PROVIDER_MODELS, modelIdKeysByProvider } from "@roo-code/types"
 import { ApiHandler, buildApiHandler } from "../../api"
 import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManager"
 import { OpenRouterHandler } from "../../api/providers"
@@ -32,20 +32,10 @@ export class GhostModel {
 			const profile = await providerSettingsManager.getProfile({
 				id: selectedProfile.id,
 			})
-			const profileProvider = profile.apiProvider
-			let modelDefinition = {}
-			if (profileProvider === "kilocode") {
-				modelDefinition = {
-					kilocodeModel: AUTOCOMPLETE_PROVIDER_MODELS.kilocode,
-				}
-			} else if (profileProvider === "openrouter") {
-				modelDefinition = {
-					openRouterModelId: AUTOCOMPLETE_PROVIDER_MODELS.openrouter,
-				}
-			} else if (profileProvider === "mistral") {
-				modelDefinition = {
-					apiModelId: AUTOCOMPLETE_PROVIDER_MODELS.mistral,
-				}
+			const profileProvider = profile.apiProvider as keyof typeof AUTOCOMPLETE_PROVIDER_MODELS
+			const modelIdKey = modelIdKeysByProvider[profileProvider]
+			const modelDefinition = {
+				[modelIdKey]: AUTOCOMPLETE_PROVIDER_MODELS[profileProvider],
 			}
 			this.apiHandler = buildApiHandler({
 				...profile,
