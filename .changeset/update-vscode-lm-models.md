@@ -1,5 +1,5 @@
 ---
-"@roo-code/types": patch
+"kilo-code": patch
 ---
 
 Update VS Code Language Model API provider metadata to reflect current model limits:
