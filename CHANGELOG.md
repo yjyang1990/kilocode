@@ -1,5 +1,11 @@
 # Roo Code Changelog
 
+## 3.28.17
+
+### Patch Changes
+
+-   - Add support for Claude Haiku 4.5 model (thanks @daniel-lxs!)
+
 ## [3.28.16] - 2025-10-09
 
 ![3.28.16 Release - Expanded Context Window](/releases/3.28.16-release.png)
