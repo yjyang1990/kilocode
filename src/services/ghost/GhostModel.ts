@@ -17,32 +17,28 @@ export class GhostModel {
 
 	public async reload(providerSettingsManager: ProviderSettingsManager) {
 		const profiles = await providerSettingsManager.listConfig()
-		const supportedProviders = Object.keys(AUTOCOMPLETE_PROVIDER_MODELS)
+		const supportedProviders = Object.keys(
+			AUTOCOMPLETE_PROVIDER_MODELS,
+		) as (keyof typeof AUTOCOMPLETE_PROVIDER_MODELS)[]
 
-		let selectedProfile = null
 		for (const provider of supportedProviders) {
-			const profile = profiles.find(
+			const selectedProfile = profiles.find(
 				(x): x is typeof x & { apiProvider: string } => !!x.apiProvider && x.apiProvider === provider,
 			)
-			if (profile) {
-				selectedProfile = profile
+			if (selectedProfile) {
+				const profile = await providerSettingsManager.getProfile({
+					id: selectedProfile.id,
+				})
+				const modelDefinition = {
+					[modelIdKeysByProvider[provider]]: AUTOCOMPLETE_PROVIDER_MODELS[provider],
+				}
+				this.apiHandler = buildApiHandler({
+					...profile,
+					...modelDefinition,
+				})
+
 				break
 			}
-		}
-
-		if (selectedProfile) {
-			const profile = await providerSettingsManager.getProfile({
-				id: selectedProfile.id,
-			})
-			const profileProvider = profile.apiProvider as keyof typeof AUTOCOMPLETE_PROVIDER_MODELS
-			const modelIdKey = modelIdKeysByProvider[profileProvider]
-			const modelDefinition = {
-				[modelIdKey]: AUTOCOMPLETE_PROVIDER_MODELS[profileProvider],
-			}
-			this.apiHandler = buildApiHandler({
-				...profile,
-				...modelDefinition,
-			})
 		}
 
 		if (this.apiHandler instanceof OpenRouterHandler) {
