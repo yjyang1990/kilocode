@@ -662,7 +662,7 @@ async function checkpointSaveAndMark(task: Task) {
 		return
 	}
 	try {
-		// kilocode_change: order changed
+		// kilocode_change: order changed to prevent second execution while still awaiting the save
 		task.currentStreamingDidCheckpoint = true
 		await task.checkpointSave(true)
 	} catch (error) {
