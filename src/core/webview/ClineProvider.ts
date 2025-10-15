@@ -673,7 +673,6 @@ export class ClineProvider
 		command: CodeActionId,
 		promptType: CodeActionName,
 		params: Record<string, string | any[]>,
-		shouldFocus: boolean = false,
 	): Promise<void> {
 		// Capture telemetry for code action usage
 		TelemetryService.instance.captureCodeActionUsed(promptType)
@@ -691,7 +690,7 @@ export class ClineProvider
 
 		if (command === "addToContext" || command === "addToContextAndFocus") {
 			await visibleProvider.postMessageToWebview({ type: "invoke", invoke: "setChatBoxMessage", text: prompt })
-			if (shouldFocus) {
+			if (command === "addToContextAndFocus") {
 				await vscode.commands.executeCommand("kilo-code.focusChatInput")
 			}
 			return
