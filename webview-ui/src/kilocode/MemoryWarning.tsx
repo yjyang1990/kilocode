@@ -36,7 +36,7 @@ export const MemoryWarning = () => {
 	return (
 		enable &&
 		memoryPercentage >= warningThreshold && (
-			<div className="fixed z-[9999] left-4 top-4 right-4">
+			<div className="fixed z-[9999] left-2 top-2 right-2">
 				<div
 					className="flex items-center gap-3 p-4 text-lg rounded shadow-lg border"
 					style={{
@@ -45,7 +45,7 @@ export const MemoryWarning = () => {
 						color: "var(--vscode-errorForeground, #ff0000)",
 					}}>
 					<span className="codicon codicon-warning" />
-					<span className="font-semibold">
+					<span className="flex-1 font-semibold">
 						{t("kilocode:memoryWarning.message", { percentage: memoryPercentage })}
 					</span>
 					<button className="codicon codicon-close" onClick={() => setEnabled(false)}></button>
