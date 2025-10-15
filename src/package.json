@@ -204,6 +204,11 @@
 				"category": "%configuration.title%"
 			},
 			{
+				"command": "kilo-code.addToContextAndFocus",
+				"title": "Add to Context and Focus",
+				"category": "%configuration.title%"
+			},
+			{
 				"command": "kilo-code.newTask",
 				"title": "%command.newTask.title%",
 				"category": "%configuration.title%"
@@ -460,12 +465,6 @@
 				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.hasSuggestions"
 			},
 			{
-				"command": "kilo-code.ghost.promptCodeSuggestion",
-				"key": "ctrl+i",
-				"mac": "cmd+i",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableQuickInlineTaskKeybinding && !github.copilot.completions.enabled"
-			},
-			{
 				"command": "kilo-code.ghost.generateSuggestions",
 				"key": "ctrl+l",
 				"mac": "cmd+l",
@@ -478,12 +477,6 @@
 				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableSmartInlineTaskKeybinding && github.copilot.completions.enabled"
 			},
 			{
-				"command": "kilo-code.ghost.showIncompatibilityExtensionPopup",
-				"key": "ctrl+i",
-				"mac": "cmd+i",
-				"when": "editorTextFocus && !editorTabMovesFocus && !inSnippetMode && kilocode.ghost.enableQuickInlineTaskKeybinding && github.copilot.completions.enabled"
-			},
-			{
 				"command": "kilo-code.generateTerminalCommand",
 				"key": "ctrl+shift+g",
 				"mac": "cmd+shift+g"
@@ -494,6 +487,14 @@
 				"mac": "cmd+y",
 				"win": "ctrl+y",
 				"linux": "ctrl+y",
+				"when": "editorTextFocus && editorHasSelection"
+			},
+			{
+				"command": "kilo-code.addToContextAndFocus",
+				"key": "ctrl+i",
+				"mac": "cmd+i",
+				"win": "ctrl+i",
+				"linux": "ctrl+i",
 				"when": "editorTextFocus && editorHasSelection"
 			},
 			{

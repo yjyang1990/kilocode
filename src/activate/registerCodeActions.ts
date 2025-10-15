@@ -11,9 +11,15 @@ export const registerCodeActions = (context: vscode.ExtensionContext) => {
 	registerCodeAction(context, "fixCode", "FIX")
 	registerCodeAction(context, "improveCode", "IMPROVE")
 	registerCodeAction(context, "addToContext", "ADD_TO_CONTEXT")
+	registerCodeAction(context, "addToContextAndFocus", "ADD_TO_CONTEXT", true)
 }
 
-const registerCodeAction = (context: vscode.ExtensionContext, command: CodeActionId, promptType: CodeActionName) => {
+const registerCodeAction = (
+	context: vscode.ExtensionContext,
+	command: CodeActionId,
+	promptType: CodeActionName,
+	shouldFocus: boolean = false,
+) => {
 	let userInput: string | undefined
 
 	context.subscriptions.push(
@@ -47,7 +53,7 @@ const registerCodeAction = (context: vscode.ExtensionContext, command: CodeActio
 				...(userInput ? { userInput } : {}),
 			}
 
-			await ClineProvider.handleCodeAction(command, promptType, params)
+			await ClineProvider.handleCodeAction(command, promptType, params, shouldFocus)
 		}),
 	)
 }
