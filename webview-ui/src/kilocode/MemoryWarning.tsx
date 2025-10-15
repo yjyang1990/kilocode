@@ -13,21 +13,29 @@ function getMemoryPercentage() {
 	return 0
 }
 
-const threshold = 10
+const warningThreshold = 10
+
+const resetThreshold = 50
 
 export const MemoryWarning = () => {
 	const { t } = useAppTranslation()
+	const [enable, setEnabled] = useState(true)
 	const [memoryPercentage, setMemoryPercentage] = useState(getMemoryPercentage())
 
 	useEffect(() => {
 		const handle = setInterval(() => {
-			setMemoryPercentage(getMemoryPercentage())
+			const percentage = getMemoryPercentage()
+			if (percentage < resetThreshold) {
+				setEnabled(true)
+			}
+			setMemoryPercentage(percentage)
 		}, 1000)
 		return () => clearInterval(handle)
 	}, [])
 
 	return (
-		memoryPercentage >= threshold && (
+		enable &&
+		memoryPercentage >= warningThreshold && (
 			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] mx-4 max-w-2xl w-full">
 				<div
 					className="flex items-center gap-3 px-6 py-4 text-base rounded-lg shadow-lg border-2"
