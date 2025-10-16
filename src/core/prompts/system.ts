@@ -104,7 +104,7 @@ ${markdownFormattingSection()}
 ${getSharedToolUseSection(toolUseStyle /*kilocode_change*/)}
 
 ${
-	toolUseStyle === "xml" // kilocode_change
+	toolUseStyle !== "json" // kilocode_change
 		? getToolDescriptionsForMode(
 				mode,
 				cwd,

@@ -22,8 +22,8 @@ export const ToolUseControl: React.FC<ToolUseControlProps> = ({ toolStyle, onCha
 				<label className="block font-medium mb-1">Tool Call Style</label>
 				<VSCodeDropdown value={toolStyle} onChange={handleToolStyleChange}>
 					<VSCodeOption value="">(default)</VSCodeOption>
-					<VSCodeOption value="xml">XML</VSCodeOption>
-					<VSCodeOption value="json">JSON (experimental)</VSCodeOption>
+					<VSCodeOption value={toolUseStylesSchema.Enum.xml}>XML</VSCodeOption>
+					<VSCodeOption value={toolUseStylesSchema.Enum.json}>JSON (experimental)</VSCodeOption>
 				</VSCodeDropdown>
 				<div className="text-vscode-descriptionForeground text-sm mt-1">
 					Choose how tool calls are formatted in the system prompt. JSON is currently experimental and mostly

@@ -7,6 +7,7 @@ import {
 	OPENROUTER_DEFAULT_PROVIDER_NAME,
 	OPEN_ROUTER_PROMPT_CACHING_MODELS,
 	DEEP_SEEK_DEFAULT_TEMPERATURE,
+	getActiveToolUseStyle,
 } from "@roo-code/types"
 
 import type { ApiHandlerOptions, ModelRecord } from "../../shared/api"
@@ -283,7 +284,7 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 				}
 
 				// Handle native tool calls when toolStyle is "json"
-				yield* processNativeToolCallsFromDelta(delta, this.options.toolStyle)
+				yield* processNativeToolCallsFromDelta(delta, getActiveToolUseStyle(this.options))
 				// kilocode_change end
 
 				if (delta?.content) {

@@ -72,6 +72,7 @@
 import OpenAI from "openai"
 import type { ApiHandlerCreateMessageMetadata } from "../../index"
 import type { ApiStreamNativeToolCallsChunk } from "../../transform/kilocode/api-stream-native-tool-calls-chunk"
+import { getActiveToolUseStyle, ProviderSettings, ToolUseStyle } from "@roo-code/types"
 
 /**
  * Adds native tool call parameters to OpenAI chat completion params when toolStyle is "json"
@@ -83,14 +84,14 @@ import type { ApiStreamNativeToolCallsChunk } from "../../transform/kilocode/api
  */
 export function addNativeToolCallsToParams<T extends OpenAI.Chat.ChatCompletionCreateParams>(
 	params: T,
-	options: { toolStyle?: "xml" | "json" },
+	options: ProviderSettings,
 	metadata?: ApiHandlerCreateMessageMetadata,
 ): T {
 	// Set parallel_tool_calls to false to ensure sequential tool execution
 	params.parallel_tool_calls = false
 
 	// When toolStyle is "json" and allowedTools exist, add them to params
-	if (options.toolStyle === "json" && metadata?.allowedTools) {
+	if (getActiveToolUseStyle(options) === "json" && metadata?.allowedTools) {
 		params.tools = metadata.allowedTools
 		params.tool_choice = "required" as const
 	}
@@ -107,7 +108,7 @@ export function addNativeToolCallsToParams<T extends OpenAI.Chat.ChatCompletionC
  */
 export function* processNativeToolCallsFromDelta(
 	delta: OpenAI.Chat.Completions.ChatCompletionChunk.Choice.Delta | undefined,
-	toolStyle: "xml" | "json" | undefined,
+	toolStyle: ToolUseStyle | undefined,
 ): Generator<ApiStreamNativeToolCallsChunk, void, undefined> {
 	// Check if delta contains tool calls
 	if (delta && delta.tool_calls && delta.tool_calls.length > 0) {

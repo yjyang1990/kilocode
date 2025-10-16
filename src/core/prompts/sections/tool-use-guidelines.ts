@@ -38,7 +38,7 @@ export function getToolUseGuidelinesSection(
 	guidelinesList.push(
 		`${itemNumber++}. If multiple actions are needed, use one tool at a time per message to accomplish the task iteratively, with each tool use being informed by the result of the previous tool use. Do not assume the outcome of any tool use. Each step must be informed by the previous step's result.`,
 	)
-	if (toolUseStyle === "xml") {
+	if (toolUseStyle !== "json") {
 		// kilocode_change
 		guidelinesList.push(`${itemNumber++}. Formulate your tool use using the XML format specified for each tool.`)
 	}

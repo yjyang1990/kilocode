@@ -35,6 +35,7 @@ import {
 	isInteractiveAsk,
 	isResumableAsk,
 	QueuedMessage,
+	getActiveToolUseStyle, // kilocode_change
 } from "@roo-code/types"
 import { TelemetryService } from "@roo-code/telemetry"
 import { CloudService, BridgeOrchestrator } from "@roo-code/cloud"
@@ -2650,7 +2651,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				undefined, // todoList
 				this.api.getModel().id,
 				// kilocode_change start
-				apiConfiguration?.toolStyle || "xml",
+				getActiveToolUseStyle(apiConfiguration),
 				state,
 				// kilocode_change end
 			)
@@ -2918,7 +2919,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 
 		// kilocode_change start
 		// Add allowed tools for JSON tool style
-		if (apiConfiguration?.toolStyle === "json" && mode) {
+		if (getActiveToolUseStyle(apiConfiguration) === "json" && mode) {
 			try {
 				const provider = this.providerRef.deref()
 				const providerState = await provider?.getState()
