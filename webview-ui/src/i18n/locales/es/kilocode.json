@@ -93,6 +93,10 @@
 				},
 				"provider": "Proveedor de Generador de Comandos de Terminal"
 			}
+		},
+		"toolCallStyle": {
+			"title": "Estilo de Llamada de Herramientas",
+			"description": "Elige cómo se formatean las llamadas de herramientas en el prompt del sistema. JSON es actualmente experimental y está destinado principalmente a usuarios interesados en contribuir a su desarrollo."
 		}
 	},
 	"chat": {
