@@ -22,7 +22,6 @@ const registerCodeAction = (context: vscode.ExtensionContext, command: CodeActio
 			// Handle both code action and direct command cases.
 			let filePath: string
 			let selectedText: string
-			let fullContent: string
 			let startLine: number | undefined
 			let endLine: number | undefined
 			let diagnostics: any[] | undefined
@@ -30,9 +29,6 @@ const registerCodeAction = (context: vscode.ExtensionContext, command: CodeActio
 			if (args.length > 1) {
 				// Called from code action.
 				;[filePath, selectedText, startLine, endLine, diagnostics] = args
-				// For code action calls, get full content from active editor
-				const editor = vscode.window.activeTextEditor
-				fullContent = editor?.document.getText() ?? ""
 			} else {
 				// Called directly from command palette.
 				const context = EditorUtils.getEditorContext()
@@ -41,11 +37,11 @@ const registerCodeAction = (context: vscode.ExtensionContext, command: CodeActio
 					return
 				}
 
-				;({ filePath, selectedText, startLine, endLine, fullContent, diagnostics } = context)
+				;({ filePath, selectedText, startLine, endLine, diagnostics } = context)
 			}
 
 			const params = {
-				...{ filePath, selectedText, fullContent },
+				...{ filePath, selectedText },
 				...(startLine !== undefined ? { startLine: startLine.toString() } : {}),
 				...(endLine !== undefined ? { endLine: endLine.toString() } : {}),
 				...(diagnostics ? { diagnostics } : {}),

@@ -42,8 +42,6 @@ export interface EditorContext {
 	startLine: number
 	/** The ending line number of the selected text (1-based). */
 	endLine: number
-	/** The full content of the current file. */
-	fullContent: string
 	/** Optional list of diagnostics associated with the effective range. */
 	diagnostics?: DiagnosticData[]
 }
@@ -202,7 +200,6 @@ export class EditorUtils {
 				selectedText: effectiveRange.text,
 				startLine: effectiveRange.range.start.line + 1, // Convert to 1-based line numbers
 				endLine: effectiveRange.range.end.line + 1, // Convert to 1-based line numbers
-				fullContent: document.getText(),
 				...(diagnostics.length > 0 ? { diagnostics } : {}),
 			}
 		} catch (error) {

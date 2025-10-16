@@ -96,12 +96,6 @@ Output only the summary of the conversation so far, without any additional comme
 		template: `Explain the following code from file path \${filePath}:\${startLine}-\${endLine}
 \${userInput}
 
-Full file content for context:
-\`\`\`
-\${fullContent}
-\`\`\`
-
-Selected code to explain:
 \`\`\`
 \${selectedText}
 \`\`\`
@@ -116,12 +110,6 @@ Please provide a clear and concise explanation of what this code does, including
 \${diagnosticText}
 \${userInput}
 
-Full file content for context:
-\`\`\`
-\${fullContent}
-\`\`\`
-
-Selected code to fix:
 \`\`\`
 \${selectedText}
 \`\`\`
@@ -136,12 +124,6 @@ Please:
 		template: `Improve the following code from file path \${filePath}:\${startLine}-\${endLine}
 \${userInput}
 
-Full file content for context:
-\`\`\`
-\${fullContent}
-\`\`\`
-
-Selected code to improve:
 \`\`\`
 \${selectedText}
 \`\`\`

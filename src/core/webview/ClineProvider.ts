@@ -689,7 +689,29 @@ export class ClineProvider
 		const prompt = supportPrompt.create(promptType, params, customSupportPrompts)
 
 		if (command === "addToContext" || command === "addToContextAndFocus") {
-			await visibleProvider.postMessageToWebview({ type: "invoke", invoke: "setChatBoxMessage", text: prompt })
+			let messageText = prompt
+
+			// For addToContextAndFocus, manually include full file content
+			if (command === "addToContextAndFocus") {
+				const editor = vscode.window.activeTextEditor
+				if (editor) {
+					const fullContent = editor.document.getText()
+					const filePath = params.filePath as string
+					// Format matches parseMentions output for file mentions
+					messageText = `'${filePath}' (see below for file content)
+${prompt}
+
+<file_content path="${filePath}">
+${fullContent}
+</file_content>`
+				}
+			}
+
+			await visibleProvider.postMessageToWebview({
+				type: "invoke",
+				invoke: "setChatBoxMessage",
+				text: messageText,
+			})
 			if (command === "addToContextAndFocus") {
 				await vscode.commands.executeCommand("kilo-code.focusChatInput")
 			}
