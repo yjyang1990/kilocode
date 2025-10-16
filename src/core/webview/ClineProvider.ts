@@ -698,12 +698,18 @@ export class ClineProvider
 					const fullContent = editor.document.getText()
 					const filePath = params.filePath as string
 					// Format matches parseMentions output for file mentions
-					messageText = `'${filePath}' (see below for file content)
-${prompt}
+					messageText = `
+For context, we are working within this file:
 
+'${filePath}' (see below for file content)
 <file_content path="${filePath}">
 ${fullContent}
-</file_content>`
+</file_content>
+
+Heed this prompt:
+
+${prompt}
+`
 				}
 			}
 
