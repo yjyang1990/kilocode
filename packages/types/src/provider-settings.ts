@@ -29,7 +29,7 @@ import {
 	xaiModels,
 	internationalZAiModels,
 } from "./providers/index.js"
-import { toolUseStylesSchema } from "./native-function-calling.js" // kilocode_change
+import { toolUseStylesSchema } from "./kilocode/native-function-calling.js" // kilocode_change
 
 /**
  * constants

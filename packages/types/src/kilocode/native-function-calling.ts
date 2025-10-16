@@ -1,7 +1,7 @@
 // kilocode_change - file added
 
 import { z } from "zod"
-import { getModelId, ProviderSettings } from "./provider-settings.js"
+import { getModelId, ProviderSettings } from "../provider-settings.js"
 
 export const toolUseStyles = ["xml", "json"] as const
 
