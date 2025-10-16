@@ -10,12 +10,10 @@ import { nativeTools } from "."
 export function getAllowedJSONToolsForMode(
 	mode: Mode,
 	codeIndexManager?: CodeIndexManager,
-	customModes?: ModeConfig[],
-	experiments?: Record<string, boolean>,
-	settings?: Record<string, any>,
 	clineProviderState?: ClineProviderState,
+	supportsImages?: boolean,
 ): OpenAI.Chat.ChatCompletionTool[] {
-	const config = getModeConfig(mode, customModes)
+	const config = getModeConfig(mode, clineProviderState?.customModes)
 
 	const tools = new Set<string>()
 
@@ -29,10 +27,10 @@ export function getAllowedJSONToolsForMode(
 					isToolAllowedForMode(
 						tool as ToolName,
 						mode,
-						customModes ?? [],
+						clineProviderState?.customModes ?? [],
 						undefined,
 						undefined,
-						experiments ?? {},
+						clineProviderState?.experiments ?? {},
 					)
 				) {
 					tools.add(tool)
@@ -61,18 +59,22 @@ export function getAllowedJSONToolsForMode(
 	}
 
 	// Conditionally exclude update_todo_list if disabled in settings
-	if (settings?.todoListEnabled === false) {
+	if (clineProviderState?.apiConfiguration?.todoListEnabled === false) {
 		tools.delete("update_todo_list")
 	}
 
 	// Conditionally exclude generate_image if experiment is not enabled
-	if (!experiments?.imageGeneration) {
+	if (!clineProviderState?.experiments?.imageGeneration) {
 		tools.delete("generate_image")
 	}
 
 	// Conditionally exclude run_slash_command if experiment is not enabled
-	if (!experiments?.runSlashCommand) {
+	if (!clineProviderState?.experiments?.runSlashCommand) {
 		tools.delete("run_slash_command")
+	}
+
+	if (!clineProviderState?.browserToolEnabled || !supportsImages) {
+		tools.delete("browser_action")
 	}
 
 	// Create a map of tool names to native tool definitions for quick lookup
