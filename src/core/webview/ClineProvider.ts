@@ -151,6 +151,7 @@ export class ClineProvider
 	private taskCreationCallback: (task: Task) => void
 	private taskEventListeners: WeakMap<Task, Array<() => void>> = new WeakMap()
 	private currentWorkspacePath: string | undefined
+	private creditsStatusBar?: any // Reference to CreditsStatusBar to notify of organization changes
 
 	private recentTasksCache?: string[]
 	private balanceHandlers: Array<(data: BalanceDataResponsePayload) => void> = []
@@ -1253,6 +1254,10 @@ export class ClineProvider
 
 	// Provider Profile Management
 
+	public setCreditsStatusBar(creditsStatusBar: any): void {
+		this.creditsStatusBar = creditsStatusBar
+	}
+
 	getProviderProfileEntries(): ProviderSettingsEntry[] {
 		return this.contextProxy.getValues().listApiConfigMeta || []
 	}
@@ -1271,6 +1276,9 @@ export class ClineProvider
 		activate: boolean = true,
 	): Promise<string | undefined> {
 		try {
+			const oldOrgId = this.contextProxy.getProviderSettings().kilocodeOrganizationId
+			const newOrgId = providerSettings.kilocodeOrganizationId
+
 			// TODO: Do we need to be calling `activateProfile`? It's not
 			// clear to me what the source of truth should be; in some cases
 			// we rely on the `ContextProxy`'s data store and in other cases
@@ -1297,6 +1305,14 @@ export class ClineProvider
 					this.providerSettingsManager.setModeConfig(mode, id),
 					this.contextProxy.setProviderSettings(providerSettings),
 				])
+
+				// Check if organization ID changed and notify CreditsStatusBar
+				if (oldOrgId !== newOrgId && this.creditsStatusBar) {
+					this.log(
+						`[upsertProviderProfile] Organization ID changed from ${oldOrgId} to ${newOrgId}, notifying CreditsStatusBar`,
+					)
+					await this.creditsStatusBar.clearAndRefresh()
+				}
 
 				// Change the provider for the current task.
 				// TODO: We should rename `buildApiHandler` for clarity (e.g. `getProviderClient`).

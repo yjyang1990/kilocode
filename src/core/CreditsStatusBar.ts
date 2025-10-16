@@ -56,6 +56,19 @@ export class CreditsStatusBar implements vscode.Disposable {
 		}
 	}
 
+	private clearBalanceState(): void {
+		this.lastSuccessfulBalance = undefined
+		this.lastSuccessfulTimestamp = undefined
+		this.previousBalance = undefined
+		this.previousBalanceTimestamp = undefined
+		this.lastConsumptionRate = undefined
+	}
+
+	public async clearAndRefresh(): Promise<void> {
+		this.clearBalanceState()
+		await this.refresh()
+	}
+
 	async refresh(): Promise<void> {
 		if (this.isRefreshing) {
 			return // Prevent concurrent refreshes

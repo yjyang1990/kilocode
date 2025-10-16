@@ -242,6 +242,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const creditsStatusBar = new CreditsStatusBar(context, provider)
 	await creditsStatusBar.initialize()
 	context.subscriptions.push(creditsStatusBar)
+	provider.setCreditsStatusBar(creditsStatusBar) // Set the credits status bar reference in the provider so it can notify on organization changes
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(ClineProvider.sideBarId, provider, {
