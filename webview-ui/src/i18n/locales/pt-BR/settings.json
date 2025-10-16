@@ -230,7 +230,6 @@
 		"description": "Salve diferentes configurações de API para alternar rapidamente entre provedores e configurações.",
 		"apiProvider": "Provedor de API",
 		"model": "Modelo",
-		"autocompleteNotSupported": "⚠️ O preenchimento automático só é compatível com os seguintes provedores: {{providers}}",
 		"nameEmpty": "O nome não pode estar vazio",
 		"nameExists": "Já existe um perfil com este nome",
 		"deleteProfile": "Excluir perfil",

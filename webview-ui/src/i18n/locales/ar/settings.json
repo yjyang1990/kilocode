@@ -239,7 +239,6 @@
 		"description": "احفظ إعدادات متعددة للتبديل السريع بين مزوّدين ونماذج.",
 		"apiProvider": "مزود API",
 		"model": "النموذج",
-		"autocompleteNotSupported": "⚠️ الإكمال التلقائي مدعوم فقط مع المزودين التاليين: {{providers}}",
 		"nameEmpty": "الاسم ما يصير فاضي",
 		"nameExists": "الاسم مستخدم مسبقًا",
 		"deleteProfile": "حذف الملف",

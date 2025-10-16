@@ -230,7 +230,6 @@
 		"description": "Sla verschillende API-configuraties op om snel te wisselen tussen providers en instellingen.",
 		"apiProvider": "API-provider",
 		"model": "Model",
-		"autocompleteNotSupported": "⚠️ Automatisch aanvullen wordt alleen ondersteund met de volgende providers: {{providers}}",
 		"nameEmpty": "Naam mag niet leeg zijn",
 		"nameExists": "Er bestaat al een profiel met deze naam",
 		"deleteProfile": "Profiel verwijderen",

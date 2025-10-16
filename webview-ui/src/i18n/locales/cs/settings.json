@@ -239,7 +239,6 @@
 		"description": "Uložte si různé konfigurace API pro rychlé přepínání mezi poskytovateli a nastaveními.",
 		"apiProvider": "Poskytovatel API",
 		"model": "Model",
-		"autocompleteNotSupported": "⚠️ Automatické dokončování je podporováno pouze s následujícími poskytovateli: {{providers}}",
 		"nameEmpty": "Jméno nemůže být prázdné",
 		"nameExists": "Profil s tímto názvem již existuje",
 		"deleteProfile": "Smazat profil",

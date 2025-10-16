@@ -230,7 +230,6 @@
 		"description": "Zapisz różne konfiguracje API, aby szybko przełączać się między dostawcami i ustawieniami.",
 		"apiProvider": "Dostawca API",
 		"model": "Model",
-		"autocompleteNotSupported": "⚠️ Autouzupełnianie jest obsługiwane tylko z następującymi dostawcami: {{providers}}",
 		"nameEmpty": "Nazwa nie może być pusta",
 		"nameExists": "Profil o tej nazwie już istnieje",
 		"deleteProfile": "Usuń profil",
