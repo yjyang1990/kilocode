@@ -1,6 +1,7 @@
 import React, { useCallback } from "react"
 import { VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
 import { ToolUseStyle, toolUseStylesSchema } from "@roo-code/types"
+import { useAppTranslation } from "@/i18n/TranslationContext"
 
 interface ToolUseControlProps {
 	toolStyle?: ToolUseStyle
@@ -15,19 +16,19 @@ export const ToolUseControl: React.FC<ToolUseControlProps> = ({ toolStyle, onCha
 		},
 		[onChange],
 	)
+	const { t } = useAppTranslation()
 
 	return (
 		<div className="flex flex-col gap-1">
 			<div>
-				<label className="block font-medium mb-1">Tool Call Style</label>
+				<label className="block font-medium mb-1">{t("kilocode:toolCallStyle.title")}</label>
 				<VSCodeDropdown value={toolStyle} onChange={handleToolStyleChange} className="w-full">
 					<VSCodeOption value="">(default)</VSCodeOption>
 					<VSCodeOption value={toolUseStylesSchema.Enum.xml}>XML</VSCodeOption>
 					<VSCodeOption value={toolUseStylesSchema.Enum.json}>JSON (experimental)</VSCodeOption>
 				</VSCodeDropdown>
 				<div className="text-vscode-descriptionForeground text-sm mt-1">
-					Choose how tool calls are formatted in the system prompt. JSON is currently experimental and mostly
-					intended for users interested in contributing to its development.
+					{t("kilocode:toolCallStyle.description")}
 				</div>
 			</div>
 		</div>
