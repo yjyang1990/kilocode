@@ -3,7 +3,6 @@ import { PromptStrategy } from "./types/PromptStrategy"
 
 // Import all strategies
 import { UserRequestStrategy } from "./strategies/UserRequestStrategy"
-
 import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
 
 /**
