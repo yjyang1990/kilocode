@@ -11,11 +11,9 @@ export class PromptStrategyManager {
 	private strategies: PromptStrategy[]
 	private autoTriggerStrategy: AutoTriggerStrategy
 	private debug: boolean
-	private overrideStrategy?: string
 
-	constructor(options?: { debug?: boolean; overrideStrategy?: string }) {
+	constructor(options?: { debug?: boolean }) {
 		this.debug = options?.debug ?? false
-		this.overrideStrategy = options?.overrideStrategy
 
 		// Register all strategies in priority order
 		this.strategies = []
@@ -28,17 +26,6 @@ export class PromptStrategyManager {
 	 * @returns The selected strategy
 	 */
 	selectStrategy(context: GhostSuggestionContext): PromptStrategy {
-		// If an override strategy is specified, use that
-		if (this.overrideStrategy) {
-			const overrideStrat = this.strategies.find((s) => s.name === this.overrideStrategy)
-			if (overrideStrat) {
-				if (this.debug) {
-					console.log(`[PromptStrategyManager] Using override strategy: ${overrideStrat.name}`)
-				}
-				return overrideStrat
-			}
-		}
-
 		const strategy = this.strategies.find((s) => s.canHandle(context)) ?? this.autoTriggerStrategy
 
 		if (this.debug) {
