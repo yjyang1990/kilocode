@@ -118,7 +118,12 @@ export class GhostProvider {
 		if (!this.settings) {
 			return
 		}
-		await ContextProxy.instance?.setValues?.({ ghostServiceSettings: this.settings })
+		const settingsWithModelInfo = {
+			...this.settings,
+			provider: this.getCurrentProviderName(),
+			model: this.getCurrentModelName(),
+		}
+		await ContextProxy.instance?.setValues?.({ ghostServiceSettings: settingsWithModelInfo })
 		await this.cline.postStateToWebview()
 	}
 
@@ -128,6 +133,7 @@ export class GhostProvider {
 		this.cursorAnimation.updateSettings(this.settings || undefined)
 		await this.updateGlobalContext()
 		this.updateStatusBar()
+		await this.saveSettings()
 	}
 
 	public async disable() {
