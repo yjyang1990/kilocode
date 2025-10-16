@@ -54,3 +54,31 @@ export function getKiloBaseUriFromToken(kilocodeToken?: string) {
 	}
 	return "https://api.kilocode.ai"
 }
+
+/**
+ * Check if the Kilocode account has a positive balance
+ * @param kilocodeToken - The Kilocode JWT token
+ * @returns Promise<boolean> - True if balance > 0, false otherwise
+ */
+export async function checkKilocodeBalance(kilocodeToken: string): Promise<boolean> {
+	try {
+		const baseUrl = getKiloBaseUriFromToken(kilocodeToken)
+
+		const response = await fetch(`${baseUrl}/api/profile/balance`, {
+			headers: {
+				Authorization: `Bearer ${kilocodeToken}`,
+			},
+		})
+
+		if (!response.ok) {
+			return false
+		}
+
+		const data = await response.json()
+		const balance = data.data?.balance ?? 0
+		return balance > 0
+	} catch (error) {
+		console.error("Error checking kilocode balance:", error)
+		return false
+	}
+}
