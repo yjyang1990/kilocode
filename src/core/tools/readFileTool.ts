@@ -92,8 +92,8 @@ export async function readFileTool(
 	const legacyPath: string | undefined = block.params.path
 	const legacyStartLineStr: string | undefined = block.params.start_line
 	const legacyEndLineStr: string | undefined = block.params.end_line
-	// Native JSON format from OpenAI-style tool calls
-	const nativeFiles: any[] | undefined = (block.params as any).files
+
+	const nativeFiles: any[] | undefined = (block.params as any).files // kilocode_change: Native JSON format from OpenAI-style tool calls
 
 	// Check if the current model supports images at the beginning
 	const modelInfo = cline.api.getModel().info
