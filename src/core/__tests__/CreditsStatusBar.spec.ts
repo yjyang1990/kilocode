@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import * as vscode from "vscode"
-import { CreditsStatusBar } from "../CreditsStatusBar"
+import { CreditsStatusBar } from "../kilocode/CreditsStatusBar"
 import { ClineProvider } from "../webview/ClineProvider"
 import { BalanceDataResponsePayload } from "../../shared/WebviewMessage"
 

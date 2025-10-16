@@ -1,6 +1,6 @@
 import * as vscode from "vscode"
-import { ClineProvider } from "./webview/ClineProvider"
-import { BalanceDataResponsePayload } from "../shared/WebviewMessage"
+import { ClineProvider } from "../webview/ClineProvider"
+import { BalanceDataResponsePayload } from "../../shared/WebviewMessage"
 
 export class CreditsStatusBar implements vscode.Disposable {
 	private statusBarItem: vscode.StatusBarItem
@@ -137,7 +137,7 @@ export class CreditsStatusBar implements vscode.Disposable {
 			this.previousBalance = currentBalance
 			this.previousBalanceTimestamp = this.lastSuccessfulTimestamp
 
-			this.statusBarItem.text = `$(credit-card) Kilocode: $${this.formatBalance(currentBalance)} ${consumptionRate}`
+			this.statusBarItem.text = `$(credit-card) Kilo Code: $${this.formatBalance(currentBalance)} ${consumptionRate}`
 
 			this.statusBarItem.backgroundColor = undefined
 		}
