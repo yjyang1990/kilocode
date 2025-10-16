@@ -111,6 +111,18 @@ const sidebars: SidebarsConfig = {
 		},
 		{
 			type: "category",
+			label: "Kilo for Enterprise",
+			items: [
+				"enterprise/getting-started",
+				"enterprise/roles-permissions",
+				"enterprise/dashboard",
+				"enterprise/team-management",
+				"enterprise/billing",
+				"enterprise/analytics",
+			],
+		},
+		{
+			type: "category",
 			label: "Advanced Usage",
 			items: [
 				"advanced-usage/prompt-engineering",
