@@ -490,13 +490,13 @@
 				"mac": "cmd+i",
 				"win": "ctrl+i",
 				"linux": "ctrl+i",
-				"when": "editorTextFocus && !github.copilot.completions.enabled"
+				"when": "editorTextFocus && !github.copilot.completions.enabled && kilocode.ghost.enableQuickInlineTaskKeybinding"
 			},
 			{
 				"command": "kilo-code.ghost.showIncompatibilityExtensionPopup",
 				"key": "ctrl+i",
 				"mac": "cmd+i",
-				"when": "editorTextFocus && github.copilot.completions.enabled"
+				"when": "editorTextFocus && github.copilot.completions.enabled && kilocode.ghost.enableQuickInlineTaskKeybinding"
 			},
 			{
 				"command": "kilo-code.toggleAutoApprove",
