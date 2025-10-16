@@ -721,9 +721,7 @@ ${prompt}
 				invoke: "setChatBoxMessage",
 				text: messageText,
 			})
-			if (command === "addToContextAndFocus") {
-				await vscode.commands.executeCommand("kilo-code.focusChatInput")
-			}
+			await vscode.commands.executeCommand("kilo-code.focusChatInput")
 			return
 		}
 		// kilocode_change end
