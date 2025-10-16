@@ -6,12 +6,6 @@ import { isCommentLine, extractComment, cleanComment } from "./CommentHelpers"
 export class AutoTriggerStrategy {
 	name = "Auto Trigger"
 
-	canHandle(context: GhostSuggestionContext): boolean {
-		// This is the fallback strategy, so it can handle anything
-		// But we check for basic requirements
-		return !!context.document
-	}
-
 	shouldTreatAsComment(context: GhostSuggestionContext): boolean {
 		if (!context.document || !context.range) return false
 
