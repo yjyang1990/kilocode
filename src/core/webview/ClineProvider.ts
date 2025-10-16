@@ -53,6 +53,7 @@ import type { ExtensionMessage, ExtensionState, MarketplaceInstalledMetadata } f
 import { Mode, defaultModeSlug, getModeBySlug } from "../../shared/modes"
 import { experimentDefault } from "../../shared/experiments"
 import { formatLanguage } from "../../shared/language"
+// kilocode_change: add BalanceDataResponsePayload
 import { WebviewMessage, BalanceDataResponsePayload } from "../../shared/WebviewMessage"
 import { EMBEDDING_MODEL_PROFILES } from "../../shared/embeddingModels"
 import { ProfileValidator } from "../../shared/ProfileValidator"
@@ -151,10 +152,10 @@ export class ClineProvider
 	private taskCreationCallback: (task: Task) => void
 	private taskEventListeners: WeakMap<Task, Array<() => void>> = new WeakMap()
 	private currentWorkspacePath: string | undefined
-	private creditsStatusBar?: any // Reference to CreditsStatusBar to notify of organization changes
+	private creditsStatusBar?: any // kilocode_change
 
 	private recentTasksCache?: string[]
-	private balanceHandlers: Array<(data: BalanceDataResponsePayload) => void> = []
+	private balanceHandlers: Array<(data: BalanceDataResponsePayload) => void> = [] // kilocode_change
 	private pendingOperations: Map<string, PendingEditOperation> = new Map()
 	private static readonly PENDING_OPERATION_TIMEOUT_MS = 30000 // 30 seconds
 
@@ -1254,9 +1255,11 @@ export class ClineProvider
 
 	// Provider Profile Management
 
+	// kilocode_change start
 	public setCreditsStatusBar(creditsStatusBar: any): void {
 		this.creditsStatusBar = creditsStatusBar
 	}
+	// kilocode_change end
 
 	getProviderProfileEntries(): ProviderSettingsEntry[] {
 		return this.contextProxy.getValues().listApiConfigMeta || []
@@ -1276,8 +1279,10 @@ export class ClineProvider
 		activate: boolean = true,
 	): Promise<string | undefined> {
 		try {
+			// kilocode_change start
 			const oldOrgId = this.contextProxy.getProviderSettings().kilocodeOrganizationId
 			const newOrgId = providerSettings.kilocodeOrganizationId
+			// kilocode_change end
 
 			// TODO: Do we need to be calling `activateProfile`? It's not
 			// clear to me what the source of truth should be; in some cases
@@ -1306,13 +1311,14 @@ export class ClineProvider
 					this.contextProxy.setProviderSettings(providerSettings),
 				])
 
-				// Check if organization ID changed and notify CreditsStatusBar
+				// kilocode_change start
 				if (oldOrgId !== newOrgId && this.creditsStatusBar) {
 					this.log(
 						`[upsertProviderProfile] Organization ID changed from ${oldOrgId} to ${newOrgId}, notifying CreditsStatusBar`,
 					)
 					await this.creditsStatusBar.clearAndRefresh()
 				}
+				// kilocode_change end
 
 				// Change the provider for the current task.
 				// TODO: We should rename `buildApiHandler` for clarity (e.g. `getProviderClient`).
@@ -3253,11 +3259,6 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	public getTaskHistory(): HistoryItem[] {
 		return this.getGlobalState("taskHistory") || []
 	}
-	// kilocode_change end
-
-	public get cwd() {
-		return this.currentWorkspacePath || getWorkspacePath()
-	}
 
 	/**
 	 * Register a balance data handler that will be called when balance data is fetched
@@ -3346,6 +3347,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 			return result
 		}
+	}
+	// kilocode_change end
+
+	public get cwd() {
+		return this.currentWorkspacePath || getWorkspacePath()
 	}
 
 	/**

@@ -238,11 +238,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Finish initializing the provider.
 	TelemetryService.instance.setProvider(provider)
 
+	// kilocode_change start
 	// Initialize credits status bar
 	const creditsStatusBar = new CreditsStatusBar(context, provider)
 	await creditsStatusBar.initialize()
 	context.subscriptions.push(creditsStatusBar)
 	provider.setCreditsStatusBar(creditsStatusBar) // Set the credits status bar reference in the provider so it can notify on organization changes
+	// kilocode_change end
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(ClineProvider.sideBarId, provider, {

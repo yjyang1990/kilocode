@@ -414,9 +414,6 @@ export interface ProfileDataResponsePayload {
 
 export interface BalanceData {
 	balance: number
-	currency?: string // e.g. "USD"
-	asOf?: string // optional ISO timestamp
-	organizationId?: string
 }
 
 export interface BalanceDataResponsePayload {

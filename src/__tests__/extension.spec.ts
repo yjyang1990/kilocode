@@ -3,14 +3,17 @@
 import { join } from "node:path"
 import { tmpdir } from "node:os"
 
+// kilocode_change start
 import type * as vscode from "vscode"
 import type { AuthState } from "@roo-code/types"
+// kilocode_change end
 
 vi.mock("vscode", () => ({
 	window: {
 		createOutputChannel: vi.fn().mockReturnValue({
 			appendLine: vi.fn(),
 		}),
+		// kilocode_change start
 		createStatusBarItem: vi.fn().mockReturnValue({
 			show: vi.fn(),
 			hide: vi.fn(),
@@ -18,6 +21,7 @@ vi.mock("vscode", () => ({
 			title: "",
 			text: "",
 		}),
+		// kilocode_change end
 		registerWebviewViewProvider: vi.fn(),
 		registerUriHandler: vi.fn(),
 		tabGroups: {
@@ -74,10 +78,12 @@ vi.mock("vscode", () => ({
 		language: "en",
 		appName: "Visual Studio Code",
 	},
+	// kilocode_change start
 	StatusBarAlignment: {
 		Left: 1,
 		Right: 2,
 	},
+	// kilocode_change end
 	ExtensionMode: {
 		Production: 1,
 	},
@@ -92,6 +98,7 @@ vi.mock("vscode", () => ({
 		isSingleLine: vi.fn().mockReturnValue(true),
 	})),
 	Uri: {
+		// kilocode_change start
 		joinPath: vi.fn().mockImplementation((base, ...segments) => {
 			const parts = [typeof base === "string" ? base : base.path, ...segments]
 			const path = parts.join("/")
@@ -101,6 +108,7 @@ vi.mock("vscode", () => ({
 				toString: () => path,
 			}
 		}),
+		// kilocode_change end
 		parse: vi.fn().mockImplementation((uri) => ({
 			toString: () => uri,
 			path: uri,
@@ -120,6 +128,7 @@ vi.mock("vscode", () => ({
 		fire: vi.fn(),
 		dispose: vi.fn(),
 	})),
+	// kilocode_change start
 	Disposable: class {
 		private callback?: () => void
 
@@ -131,6 +140,7 @@ vi.mock("vscode", () => ({
 			this.callback?.()
 		}
 	},
+	// kilocode_change end
 }))
 
 vi.mock("@dotenvx/dotenvx", () => ({
@@ -318,8 +328,10 @@ describe("extension.ts", () => {
 		vi.clearAllMocks()
 		mockBridgeOrchestratorDisconnect.mockClear()
 
+		// kilocode_change start
 		const storageRoot = join(tmpdir(), "kilocode-test-storage")
 		const storagePath = join(storageRoot, "global")
+		// kilocode_change end
 
 		mockContext = {
 			extensionPath: "/test/path",
@@ -327,6 +339,7 @@ describe("extension.ts", () => {
 				get: vi.fn().mockReturnValue(undefined),
 				update: vi.fn(),
 			},
+			// kilocode_change start
 			workspaceState: {
 				get: vi.fn().mockReturnValue(undefined),
 				update: vi.fn().mockResolvedValue(undefined),
@@ -342,6 +355,7 @@ describe("extension.ts", () => {
 				scheme: "file",
 				toString: () => storagePath,
 			} as unknown as vscode.Uri,
+			// kilocode_change end
 			subscriptions: [],
 		} as unknown as vscode.ExtensionContext
 
