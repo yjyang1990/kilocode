@@ -4,8 +4,6 @@ import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyH
 import { isCommentLine, extractComment, cleanComment } from "./CommentHelpers"
 
 export class AutoTriggerStrategy {
-	name = "Auto Trigger"
-
 	shouldTreatAsComment(context: GhostSuggestionContext): boolean {
 		if (!context.document || !context.range) return false
 
