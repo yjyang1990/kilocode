@@ -5,12 +5,13 @@ import { kiloLanguages } from "./kiloLanguages.js"
  * CodeAction
  */
 
+export const kiloCodeActionIds = ["addToContextAndFocus"] as const // kilocode_change
 export const codeActionIds = [
+	...kiloCodeActionIds, // kilocode_change
 	"explainCode",
 	"fixCode",
 	"improveCode",
 	"addToContext",
-	"addToContextAndFocus",
 	"newTask",
 ] as const
 
