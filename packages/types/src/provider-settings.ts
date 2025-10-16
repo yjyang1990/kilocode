@@ -171,9 +171,14 @@ export const AUTOCOMPLETE_PROVIDER_MODELS = {
 
 export type AutocompleteProviderKey = keyof typeof AUTOCOMPLETE_PROVIDER_MODELS
 
+interface ProviderSettingsManager {
+	listConfig(): Promise<ProviderSettingsEntry[]>
+	getProfile(params: { id: string }): Promise<ProviderSettings>
+}
+
 export type ProviderUsabilityChecker = (
 	provider: AutocompleteProviderKey,
-	providerSettingsManager: any,
+	providerSettingsManager: ProviderSettingsManager,
 ) => Promise<boolean>
 
 export const defaultProviderUsabilityChecker: ProviderUsabilityChecker = async (provider, providerSettingsManager) => {
@@ -181,7 +186,7 @@ export const defaultProviderUsabilityChecker: ProviderUsabilityChecker = async (
 		// Check if kilocode balance is greater than zero
 		try {
 			const profiles = await providerSettingsManager.listConfig()
-			const kilocodeProfile = profiles.find((p: any) => p.apiProvider === "kilocode")
+			const kilocodeProfile = profiles.find((p) => p.apiProvider === "kilocode")
 
 			if (!kilocodeProfile) {
 				return false
