@@ -229,34 +229,6 @@ export class GhostProvider {
 		await this.render()
 	}
 
-	public async promptCodeSuggestion() {
-		if (!this.enabled) {
-			return
-		}
-
-		this.taskId = crypto.randomUUID()
-		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_QUICK_TASK, {
-			taskId: this.taskId,
-		})
-
-		const userInput = await vscode.window.showInputBox({
-			prompt: t("kilocode:ghost.input.title"),
-			placeHolder: t("kilocode:ghost.input.placeholder"),
-		})
-		if (!userInput) {
-			return
-		}
-
-		const editor = vscode.window.activeTextEditor
-		if (!editor) {
-			return
-		}
-
-		const document = editor.document
-		const range = editor.selection.isEmpty ? undefined : editor.selection
-		await this.provideCodeSuggestions({ document, range, userInput })
-	}
-
 	private async hasAccess(document: vscode.TextDocument) {
 		return document.isUntitled || (await this.initializeIgnoreController()).validateAccess(document.fileName)
 	}
