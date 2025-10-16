@@ -231,7 +231,8 @@
 			},
 			"keybindingNotFound": "niet gevonden",
 			"noModelConfigured": "Geen geschikt autocomplete-model gevonden. Configureer een provider in de API-instellingen.",
-			"model": "Model"
+			"model": "Model",
+			"provider": "Provider"
 		}
 	},
 	"virtualProvider": {

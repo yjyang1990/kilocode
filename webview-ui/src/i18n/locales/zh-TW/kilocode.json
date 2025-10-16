@@ -226,7 +226,8 @@
 			},
 			"keybindingNotFound": "未找到",
 			"noModelConfigured": "找不到合適的自動完成模型。請在 API 設定中配置提供者。",
-			"model": "模型"
+			"model": "模型",
+			"provider": "Provider"
 		}
 	},
 	"virtualProvider": {

@@ -187,10 +187,12 @@ export const GhostServiceSettingsView = ({
 							{provider && model ? (
 								<>
 									<div className="text-vscode-descriptionForeground">
-										<span className="font-medium">Provider:</span> {provider}
+										<span className="font-medium">{t("kilocode:ghost.settings.provider")}:</span>{" "}
+										{provider}
 									</div>
 									<div className="text-vscode-descriptionForeground">
-										<span className="font-medium">Model:</span> {model}
+										<span className="font-medium">{t("kilocode:ghost.settings.model")}:</span>{" "}
+										{model}
 									</div>
 								</>
 							) : (

@@ -224,7 +224,8 @@
 			},
 			"keybindingNotFound": "bulunamadı",
 			"noModelConfigured": "Uygun otomatik tamamlama modeli bulunamadı. Lütfen API ayarlarında bir sağlayıcı yapılandır.",
-			"model": "Model"
+			"model": "Model",
+			"provider": "Sağlayıcı"
 		}
 	},
 	"virtualProvider": {

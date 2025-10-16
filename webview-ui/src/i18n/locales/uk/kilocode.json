@@ -231,7 +231,8 @@
 			},
 			"keybindingNotFound": "не знайдено",
 			"noModelConfigured": "Не знайдено відповідної моделі автодоповнення. Налаштуй провайдера в налаштуваннях API.",
-			"model": "Модель"
+			"model": "Модель",
+			"provider": "Провайдер"
 		}
 	},
 	"virtualProvider": {

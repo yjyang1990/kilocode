@@ -231,7 +231,8 @@
 			},
 			"keybindingNotFound": "ไม่พบ",
 			"noModelConfigured": "ไม่พบโมเดลเติมข้อความอัตโนมัติที่เหมาะสม กรุณาตั้งค่าผู้ให้บริการในการตั้งค่า API",
-			"model": "โมเดล"
+			"model": "โมเดล",
+			"provider": "ผู้ให้บริการ"
 		}
 	},
 	"virtualProvider": {

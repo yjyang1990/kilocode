@@ -209,6 +209,7 @@
 		"settings": {
 			"triggers": "Auslöser",
 			"model": "Modell",
+			"provider": "Provider",
 			"enableAutoTrigger": {
 				"label": "Pausieren zum Vervollständigen",
 				"description": "Wenn aktiviert, löst Kilo Code automatisch Autocomplete aus, wenn du aufhörst zu tippen. Dies kann für schnelle Korrekturen und Vorschläge nützlich sein."

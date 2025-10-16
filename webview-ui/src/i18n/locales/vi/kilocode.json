@@ -227,7 +227,8 @@
 			},
 			"keybindingNotFound": "không tìm thấy",
 			"noModelConfigured": "Không tìm thấy mô hình tự động hoàn thành phù hợp. Vui lòng cấu hình nhà cung cấp trong cài đặt API.",
-			"model": "Mô hình"
+			"model": "Mô hình",
+			"provider": "Nhà cung cấp"
 		}
 	},
 	"virtualProvider": {

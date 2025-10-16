@@ -220,7 +220,8 @@
 			},
 			"keybindingNotFound": "no trobat",
 			"noModelConfigured": "No s'ha trobat cap model d'autocompletat adequat. Configura un proveïdor a la configuració de l'API.",
-			"model": "Model"
+			"model": "Model",
+			"provider": "Proveïdor"
 		}
 	},
 	"virtualProvider": {

@@ -231,7 +231,8 @@
 			},
 			"keybindingNotFound": "未找到",
 			"noModelConfigured": "未找到合适的自动补全模型。请在 API 设置中配置提供商。",
-			"model": "模型"
+			"model": "模型",
+			"provider": "Provider"
 		}
 	},
 	"virtualProvider": {

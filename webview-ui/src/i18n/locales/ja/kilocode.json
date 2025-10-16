@@ -231,7 +231,8 @@
 			},
 			"keybindingNotFound": "見つかりません",
 			"noModelConfigured": "適切なオートコンプリートモデルが見つかりませんでした。API設定でプロバイダーを設定してください。",
-			"model": "モデル"
+			"model": "モデル",
+			"provider": "プロバイダー"
 		}
 	},
 	"virtualProvider": {

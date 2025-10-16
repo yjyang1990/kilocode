@@ -252,9 +252,9 @@ describe("GhostServiceSettingsView", () => {
 			},
 		})
 
-		expect(screen.getByText(/Provider:/)).toBeInTheDocument()
+		expect(screen.getByText(/kilocode:ghost.settings.provider/)).toBeInTheDocument()
 		expect(screen.getByText(/openrouter/)).toBeInTheDocument()
-		expect(screen.getByText(/Model:/)).toBeInTheDocument()
+		expect(screen.getAllByText(/kilocode:ghost.settings.model/).length).toBeGreaterThan(0)
 		expect(screen.getByText(/openai\/gpt-4o-mini/)).toBeInTheDocument()
 	})
 

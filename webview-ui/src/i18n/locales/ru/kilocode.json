@@ -227,7 +227,8 @@
 			},
 			"keybindingNotFound": "не найдено",
 			"noModelConfigured": "Подходящая модель автодополнения не найдена. Настрой провайдера в настройках API.",
-			"model": "Модель"
+			"model": "Модель",
+			"provider": "Провайдер"
 		}
 	},
 	"virtualProvider": {

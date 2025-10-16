@@ -220,6 +220,7 @@
 		"settings": {
 			"triggers": "Triggers",
 			"model": "Model",
+			"provider": "Provider",
 			"enableAutoTrigger": {
 				"label": "Pause to Complete",
 				"description": "When enabled, Kilo Code will automatically trigger Autocomplete when you pause typing. This can be useful for quick fixes and suggestions."

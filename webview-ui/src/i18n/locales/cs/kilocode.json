@@ -231,7 +231,8 @@
 			},
 			"keybindingNotFound": "nenalezeno",
 			"noModelConfigured": "Nebyl nalezen žádný vhodný model pro automatické dokončování. Nakonfiguruj prosím poskytovatele v nastavení API.",
-			"model": "Model"
+			"model": "Model",
+			"provider": "Poskytovatel"
 		}
 	},
 	"virtualProvider": {

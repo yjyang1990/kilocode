@@ -224,7 +224,8 @@
 			},
 			"keybindingNotFound": "nie znaleziono",
 			"noModelConfigured": "Nie znaleziono odpowiedniego modelu autouzupełniania. Skonfiguruj dostawcę w ustawieniach API.",
-			"model": "Model"
+			"model": "Model",
+			"provider": "Dostawca"
 		}
 	},
 	"virtualProvider": {

@@ -220,7 +220,8 @@
 			},
 			"keybindingNotFound": "नहीं मिला",
 			"noModelConfigured": "कोई उपयुक्त ऑटोकम्पलीट मॉडल नहीं मिला। कृपया API सेटिंग्स में एक प्रदाता कॉन्फ़िगर करें।",
-			"model": "मॉडल"
+			"model": "मॉडल",
+			"provider": "प्रदाता"
 		}
 	},
 	"virtualProvider": {

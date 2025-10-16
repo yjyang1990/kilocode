@@ -226,7 +226,8 @@
 			},
 			"keybindingNotFound": "غير موجود",
 			"noModelConfigured": "لم يتم العثور على نموذج إكمال تلقائي مناسب. يرجى تكوين مزود في إعدادات API.",
-			"model": "النموذج"
+			"model": "النموذج",
+			"provider": "المزود"
 		}
 	},
 	"virtualProvider": {

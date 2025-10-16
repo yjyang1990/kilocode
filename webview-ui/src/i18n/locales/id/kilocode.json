@@ -220,7 +220,8 @@
 			},
 			"keybindingNotFound": "tidak ditemukan",
 			"noModelConfigured": "Tidak ditemukan model autocomplete yang sesuai. Silakan konfigurasi penyedia di pengaturan API.",
-			"model": "Model"
+			"model": "Model",
+			"provider": "Penyedia"
 		}
 	},
 	"virtualProvider": {
