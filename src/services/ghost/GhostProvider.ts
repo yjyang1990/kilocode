@@ -3,7 +3,7 @@ import * as vscode from "vscode"
 import { t } from "../../i18n"
 import { GhostDocumentStore } from "./GhostDocumentStore"
 import { GhostStreamingParser } from "./GhostStreamingParser"
-import { PromptStrategyManager } from "./PromptStrategyManager"
+import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
 import { GhostModel } from "./GhostModel"
 import { GhostWorkspaceEdit } from "./GhostWorkspaceEdit"
 import { GhostDecorations } from "./GhostDecorations"
@@ -29,7 +29,7 @@ export class GhostProvider {
 	private documentStore: GhostDocumentStore
 	private model: GhostModel
 	private streamingParser: GhostStreamingParser
-	private strategyManager: PromptStrategyManager
+	private autoTriggerStrategy: AutoTriggerStrategy
 	private workspaceEdit: GhostWorkspaceEdit
 	private suggestions: GhostSuggestionsState = new GhostSuggestionsState()
 	private cline: ClineProvider
@@ -66,7 +66,7 @@ export class GhostProvider {
 		this.decorations = new GhostDecorations()
 		this.documentStore = new GhostDocumentStore()
 		this.streamingParser = new GhostStreamingParser()
-		this.strategyManager = new PromptStrategyManager({ debug: true })
+		this.autoTriggerStrategy = new AutoTriggerStrategy()
 		this.workspaceEdit = new GhostWorkspaceEdit()
 		this.providerSettingsManager = new ProviderSettingsManager(context)
 		this.model = new GhostModel()
@@ -264,7 +264,7 @@ export class GhostProvider {
 		this.isRequestCancelled = false
 
 		const context = await this.ghostContext.generate(initialContext)
-		const { systemPrompt, userPrompt } = this.strategyManager.buildPrompt(context)
+		const { systemPrompt, userPrompt } = this.autoTriggerStrategy.getPrompts(context)
 		if (this.isRequestCancelled) {
 			return
 		}
