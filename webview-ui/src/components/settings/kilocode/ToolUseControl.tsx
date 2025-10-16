@@ -20,7 +20,7 @@ export const ToolUseControl: React.FC<ToolUseControlProps> = ({ toolStyle, onCha
 		<div className="flex flex-col gap-1">
 			<div>
 				<label className="block font-medium mb-1">Tool Call Style</label>
-				<VSCodeDropdown value={toolStyle} onChange={handleToolStyleChange}>
+				<VSCodeDropdown value={toolStyle} onChange={handleToolStyleChange} className="w-full">
 					<VSCodeOption value="">(default)</VSCodeOption>
 					<VSCodeOption value={toolUseStylesSchema.Enum.xml}>XML</VSCodeOption>
 					<VSCodeOption value={toolUseStylesSchema.Enum.json}>JSON (experimental)</VSCodeOption>
