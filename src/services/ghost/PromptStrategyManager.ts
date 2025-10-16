@@ -8,15 +8,12 @@ import { AutoTriggerStrategy } from "./strategies/AutoTriggerStrategy"
  * Manages prompt strategies and selects the appropriate one based on context
  */
 export class PromptStrategyManager {
-	private strategies: PromptStrategy[]
 	private autoTriggerStrategy: AutoTriggerStrategy
 	private debug: boolean
 
 	constructor(options?: { debug?: boolean }) {
 		this.debug = options?.debug ?? false
 
-		// Register all strategies in priority order
-		this.strategies = []
 		this.autoTriggerStrategy = new AutoTriggerStrategy()
 	}
 
@@ -26,17 +23,11 @@ export class PromptStrategyManager {
 	 * @returns The selected strategy
 	 */
 	selectStrategy(context: GhostSuggestionContext): PromptStrategy {
-		const strategy = this.strategies.find((s) => s.canHandle(context)) ?? this.autoTriggerStrategy
-
-		if (this.debug) {
-			console.log(`[PromptStrategyManager] Selected strategy: ${strategy.name}`)
-		}
-
-		return strategy
+		return this.autoTriggerStrategy
 	}
 
 	getAvailableStrategies(): string[] {
-		return [...this.strategies.map((s) => s.name), this.autoTriggerStrategy.name]
+		return [this.autoTriggerStrategy.name]
 	}
 
 	/**
@@ -49,9 +40,9 @@ export class PromptStrategyManager {
 		userPrompt: string
 		strategy: PromptStrategy
 	} {
-		const strategy = this.selectStrategy(context)
+		const strategy = this.autoTriggerStrategy
 
-		const { systemPrompt, userPrompt } = strategy.getPrompts(context)
+		const { systemPrompt, userPrompt } = this.autoTriggerStrategy.getPrompts(context)
 
 		if (this.debug) {
 			console.log("[PromptStrategyManager] Prompt built:", {
