@@ -100,11 +100,11 @@
 					"label": "Configuration de l'API"
 				}
 			}
-		},
-		"toolCallStyle": {
-			"title": "Style d'Appel d'Outil",
-			"description": "Choisissez comment les appels d'outils sont formatés dans le prompt système. JSON est actuellement expérimental et principalement destiné aux utilisateurs intéressés à contribuer à son développement."
 		}
+	},
+	"toolCallStyle": {
+		"title": "Style d'Appel d'Outil",
+		"description": "Choisissez comment les appels d'outils sont formatés dans le prompt système. JSON est actuellement expérimental et principalement destiné aux utilisateurs intéressés à contribuer à son développement."
 	},
 	"chat": {
 		"condense": {

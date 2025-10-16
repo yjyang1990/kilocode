@@ -84,10 +84,6 @@
 			"testTitle": "Kilo Code",
 			"testMessage": "To jest testowe powiadomienie z Kilo Code."
 		},
-		"toolCallStyle": {
-			"title": "Styl Wywołań Narzędzi",
-			"description": "Wybierz sposób formatowania wywołań narzędzi w prompcie systemowym. JSON jest obecnie eksperymentalny i przeznaczony głównie dla użytkowników zainteresowanych wkładem w jego rozwój."
-		},
 		"terminal": {
 			"commandGenerator": {
 				"provider": "Dostawca Generatora Poleceń Terminala",
@@ -98,6 +94,10 @@
 				}
 			}
 		}
+	},
+	"toolCallStyle": {
+		"title": "Styl Wywołań Narzędzi",
+		"description": "Wybierz sposób formatowania wywołań narzędzi w prompcie systemowym. JSON jest obecnie eksperymentalny i przeznaczony głównie dla użytkowników zainteresowanych wkładem w jego rozwój."
 	},
 	"chat": {
 		"condense": {
