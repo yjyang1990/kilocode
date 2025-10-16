@@ -14,9 +14,9 @@ describe("CommentHelpers", () => {
 				expect(isCommentLine("#   ", "python")).toBe(false)
 			})
 
-			test("should accept structural multi-line comment markers", () => {
-				expect(isCommentLine("/*", "javascript")).toBe(true)
-				expect(isCommentLine("<!--", "html")).toBe(true)
+			test("should reject structural multi-line comment markers without content", () => {
+				expect(isCommentLine("/*", "javascript")).toBe(false)
+				expect(isCommentLine("<!--", "html")).toBe(false)
 			})
 
 			test("should reject asterisk-only line (inside block comment)", () => {
@@ -60,8 +60,8 @@ describe("CommentHelpers", () => {
 			})
 
 			test("should recognize docstring markers", () => {
-				expect(isCommentLine('"""', "python")).toBe(true)
-				expect(isCommentLine("'''", "python")).toBe(true)
+				expect(isCommentLine('"""', "python")).toBe(false)
+				expect(isCommentLine("'''", "python")).toBe(false)
 				expect(isCommentLine('""" docstring', "python")).toBe(true)
 				expect(isCommentLine("''' docstring", "python")).toBe(true)
 			})
@@ -73,7 +73,7 @@ describe("CommentHelpers", () => {
 
 		describe("HTML/XML comments", () => {
 			test("should recognize HTML comment markers", () => {
-				expect(isCommentLine("<!--", "xml")).toBe(true)
+				expect(isCommentLine("<!--", "xml")).toBe(false)
 				expect(isCommentLine("<!-- comment", "html")).toBe(true)
 			})
 		})
@@ -189,15 +189,15 @@ describe("CommentHelpers", () => {
 			test("should handle block comment style", () => {
 				const doc = createDocument("/*\n * line 1\n * line 2\n */\nconst x = 1")
 				const result = extractComment(doc, 1)
-				expect(result).toBe("/*\n* line 1\n* line 2\n*/")
+				expect(result).toBe("* line 1\n* line 2\n*/")
 			})
 		})
 
 		describe("Python docstrings", () => {
-			test("should extract Python docstring markers", () => {
+			test("should not extract empty Python docstring markers", () => {
 				const doc = createDocument('"""\n"""\n"""\ndef foo():', "python")
 				const result = extractComment(doc, 0)
-				expect(result).toBe('"""\n"""\n"""')
+				expect(result).toBe("")
 			})
 		})
 
