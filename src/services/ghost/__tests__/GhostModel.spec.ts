@@ -156,6 +156,13 @@ describe("GhostModel", () => {
 						json: async () => ({ data: { balance: 0 } }),
 					} as any
 				}
+				// For OpenRouter models endpoint
+				if (url.includes("/models")) {
+					return {
+						ok: true,
+						json: async () => ({ data: [] }),
+					} as any
+				}
 				// For other URLs, return a basic response
 				return {
 					ok: true,
@@ -205,6 +212,13 @@ describe("GhostModel", () => {
 					return {
 						ok: true,
 						json: async () => ({ data: { balance: 10.5 } }),
+					} as any
+				}
+				// For OpenRouter models endpoint
+				if (url.includes("/models")) {
+					return {
+						ok: true,
+						json: async () => ({ data: [] }),
 					} as any
 				}
 				// For other URLs, return a basic response
@@ -257,6 +271,13 @@ describe("GhostModel", () => {
 					return {
 						ok: false,
 						status: 401,
+					} as any
+				}
+				// For OpenRouter models endpoint
+				if (url.includes("/models")) {
+					return {
+						ok: true,
+						json: async () => ({ data: [] }),
 					} as any
 				}
 				// For other URLs, return a basic response
