@@ -697,12 +697,11 @@ export class ClineProvider
 		if (command === "addToContextAndFocus") {
 			let messageText = prompt
 
-			// For addToContextAndFocus, manually include full file content
 			const editor = vscode.window.activeTextEditor
 			if (editor) {
 				const fullContent = editor.document.getText()
 				const filePath = params.filePath as string
-				// Format matches parseMentions output for file mentions
+
 				messageText = `
 For context, we are working within this file:
 
