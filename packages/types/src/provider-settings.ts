@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { modelInfoSchema, reasoningEffortWithMinimalSchema, verbosityLevelsSchema, serviceTierSchema } from "./model.js"
-import { checkKilocodeBalance } from "./kilocode.js"
+import { checkKilocodeBalance } from "./kilocode/kilocode.js"
 import { codebaseIndexProviderSchema } from "./codebase-index.js"
 import {
 	anthropicModels,
