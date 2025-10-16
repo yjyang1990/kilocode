@@ -1,21 +1,7 @@
 import { type ToolName, toolNames } from "@roo-code/types"
 import { TextContent, ToolUse, ToolParamName, toolParamNames } from "../../shared/tools"
 import { AssistantMessageContent } from "./parseAssistantMessage"
-
-// kilocode_change start
-/**
- * Represents a native tool call from OpenAI-compatible APIs
- */
-interface NativeToolCall {
-	index?: number // OpenAI uses index to track across streaming deltas
-	id?: string // Only present in first delta
-	type?: string
-	function?: {
-		name: string
-		arguments: string // JSON string (may be partial during streaming)
-	}
-}
-// kilocode_change end
+import { NativeToolCall, parseDoubleEncodedParams } from "./kilocode/native-tool-call"
 
 /**
  * Parser for assistant messages. Maintains state between chunks
@@ -32,6 +18,7 @@ export class AssistantMessageParser {
 	private readonly MAX_ACCUMULATOR_SIZE = 1024 * 1024 // 1MB limit
 	private readonly MAX_PARAM_LENGTH = 1024 * 100 // 100KB per parameter limit
 
+	// kilocode_change start
 	// State for accumulating native tool calls
 	private nativeToolCallsAccumulator: Map<string, NativeToolCall> = new Map()
 	private processedNativeToolCallIds: Set<string> = new Set()
@@ -39,6 +26,7 @@ export class AssistantMessageParser {
 	private nativeToolCallIndexToId: Map<number, string> = new Map()
 
 	private accumulator = ""
+	// kilocode_change end
 
 	/**
 	 * Initialize a new AssistantMessageParser instance.
@@ -59,9 +47,12 @@ export class AssistantMessageParser {
 		this.currentParamName = undefined
 		this.currentParamValueStartIndex = 0
 		this.accumulator = ""
+
+		// kilocode_change start
 		this.nativeToolCallsAccumulator.clear()
 		this.processedNativeToolCallIds.clear()
 		this.nativeToolCallIndexToId.clear()
+		// kilocode_change end
 	}
 
 	/**
@@ -74,56 +65,6 @@ export class AssistantMessageParser {
 	}
 
 	// kilocode_change start
-	/**
-	 * Recursively parse any string values that appear to be JSON-encoded.
-	 * This handles cases where the model double-encodes parameters.
-	 *
-	 * @param obj - The object to process
-	 * @returns The object with any double-encoded strings parsed
-	 */
-	private parseDoubleEncodedParams(obj: any): any {
-		if (obj === null || obj === undefined) {
-			return obj
-		}
-
-		// If it's a string that looks like JSON, try to parse it
-		if (typeof obj === "string") {
-			const trimmed = obj.trim()
-			if (
-				(trimmed.startsWith("{") && trimmed.endsWith("}")) ||
-				(trimmed.startsWith("[") && trimmed.endsWith("]"))
-			) {
-				try {
-					const parsed = JSON.parse(obj)
-					// Recursively process the parsed value in case it has more double-encoding
-					// console.debug("[AssistantMessageParser] Parsed double-encoded JSON:", JSON.stringify(parsed))
-					return this.parseDoubleEncodedParams(parsed)
-				} catch {
-					// Not valid JSON, return as-is
-					return obj
-				}
-			}
-			return obj
-		}
-
-		// If it's an array, recursively process each element
-		if (Array.isArray(obj)) {
-			return obj.map((item) => this.parseDoubleEncodedParams(item))
-		}
-
-		// If it's an object, recursively process each property
-		if (typeof obj === "object") {
-			const result: Record<string, any> = {}
-			for (const [key, value] of Object.entries(obj)) {
-				result[key] = this.parseDoubleEncodedParams(value)
-			}
-			return result
-		}
-
-		// Primitive types (number, boolean, etc.) return as-is
-		return obj
-	}
-
 	/**
 	 * Process native OpenAI-format tool calls and convert them to internal ToolUse format.
 	 * This handles tool calls that come from OpenAI-compatible APIs in their native format
@@ -222,7 +163,7 @@ export class AssistantMessageParser {
 					parsedArgs = JSON.parse(accumulatedCall.function!.arguments)
 
 					// Fix any double-encoded parameters
-					parsedArgs = this.parseDoubleEncodedParams(parsedArgs)
+					parsedArgs = parseDoubleEncodedParams(parsedArgs)
 
 					isComplete = true
 				}

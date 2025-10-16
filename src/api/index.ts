@@ -1,5 +1,5 @@
 import { Anthropic } from "@anthropic-ai/sdk"
-import OpenAI from "openai"
+import OpenAI from "openai" // kilocode_change
 
 import type { ProviderSettings, ModelInfo } from "@roo-code/types"
 

@@ -15,13 +15,13 @@ import { Mode, modes, defaultModeSlug, getModeBySlug, getGroupName, getModeSelec
 import { DiffStrategy } from "../../shared/tools"
 import { formatLanguage } from "../../shared/language"
 import { isEmpty } from "../../utils/object"
-import { ToolUseStyle } from "../../../packages/types/src"
+import { ToolUseStyle } from "../../../packages/types/src" // kilocode_change
 import { McpHub } from "../../services/mcp/McpHub"
 import { CodeIndexManager } from "../../services/code-index/manager"
 
 import { PromptVariables, loadSystemPromptFile } from "./sections/custom-system-prompt"
 
-import { getXMLToolDescriptionsForMode } from "./tools"
+import { getToolDescriptionsForMode } from "./tools"
 import {
 	getRulesSection,
 	getSystemInfoSection,
@@ -89,7 +89,7 @@ async function generatePrompt(
 	const shouldIncludeMcp = hasMcpGroup && hasMcpServers
 
 	const [modesSection, mcpServersSection] = await Promise.all([
-		getModesSection(context, toolUseStyle),
+		getModesSection(context, toolUseStyle /*kilocode_change*/),
 		shouldIncludeMcp
 			? getMcpServersSection(mcpHub, effectiveDiffStrategy, enableMcpServerCreation)
 			: Promise.resolve(""),
@@ -97,16 +97,15 @@ async function generatePrompt(
 
 	const codeIndexManager = CodeIndexManager.getInstance(context, cwd)
 
-	const basePrompt = `
-${roleDefinition}
+	const basePrompt = `${roleDefinition}
 
 ${markdownFormattingSection()}
 
-${getSharedToolUseSection(toolUseStyle)}
+${getSharedToolUseSection(toolUseStyle /*kilocode_change*/)}
 
 ${
-	toolUseStyle === "xml"
-		? getXMLToolDescriptionsForMode(
+	toolUseStyle === "xml" // kilocode_change
+		? getToolDescriptionsForMode(
 				mode,
 				cwd,
 				supportsComputerUse,
@@ -120,13 +119,12 @@ ${
 				settings,
 				enableMcpServerCreation,
 				modelId,
-				toolUseStyle,
 				clineProviderState, // kilocode_change
 			)
 		: ""
 }
 
-${getToolUseGuidelinesSection(codeIndexManager, toolUseStyle)}
+${getToolUseGuidelinesSection(codeIndexManager, toolUseStyle /*kilocode_change*/)}
 
 ${mcpServersSection}
 
@@ -171,7 +169,7 @@ export const SYSTEM_PROMPT = async (
 	settings?: SystemPromptSettings,
 	todoList?: TodoItem[],
 	modelId?: string,
-	toolUseStyle?: ToolUseStyle,
+	toolUseStyle?: ToolUseStyle, // kilocode_change
 	clineProviderState?: ClineProviderState, // kilocode_change
 ): Promise<string> => {
 	if (!context) {
@@ -248,7 +246,7 @@ ${customInstructions}`
 		settings,
 		todoList,
 		modelId,
-		toolUseStyle,
+		toolUseStyle, // kilocode_change
 		clineProviderState, // kilocode_change
 	)
 }

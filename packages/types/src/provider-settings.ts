@@ -1,12 +1,6 @@
 import { z } from "zod"
 
-import {
-	modelInfoSchema,
-	reasoningEffortWithMinimalSchema,
-	verbosityLevelsSchema,
-	serviceTierSchema,
-	toolUseStylesSchema,
-} from "./model.js"
+import { modelInfoSchema, reasoningEffortWithMinimalSchema, verbosityLevelsSchema, serviceTierSchema } from "./model.js"
 import { codebaseIndexProviderSchema } from "./codebase-index.js"
 import {
 	anthropicModels,
@@ -35,6 +29,7 @@ import {
 	xaiModels,
 	internationalZAiModels,
 } from "./providers/index.js"
+import { toolUseStylesSchema } from "./native-function-calling.js" // kilocode_change
 
 /**
  * constants

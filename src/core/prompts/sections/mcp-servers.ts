@@ -1,12 +1,12 @@
 import { DiffStrategy } from "../../../shared/tools"
 import { McpHub } from "../../../services/mcp/McpHub"
-import type { ToolUseStyle } from "@roo-code/types"
+import type { ToolUseStyle } from "@roo-code/types" // kilocode_change
 
 export async function getMcpServersSection(
 	mcpHub?: McpHub,
 	diffStrategy?: DiffStrategy,
 	enableMcpServerCreation?: boolean,
-	toolUseStyle?: ToolUseStyle,
+	toolUseStyle?: ToolUseStyle, // kilocode_change
 ): Promise<string> {
 	if (!mcpHub) {
 		return ""
@@ -75,6 +75,7 @@ ${connectedServers}`
 
 The user may ask you something along the lines of "add a tool" that does some function, in other words to create an MCP server that provides tools and resources that may connect to external APIs for example. If they do, you should obtain detailed instructions on this topic using the fetch_instructions tool, 
 `
+	// kilocode_change: toolUseStyle
 	if (toolUseStyle === "xml") {
 		descSection += `like this:
 <fetch_instructions>

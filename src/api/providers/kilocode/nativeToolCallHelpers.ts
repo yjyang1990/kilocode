@@ -71,7 +71,7 @@
 
 import OpenAI from "openai"
 import type { ApiHandlerCreateMessageMetadata } from "../../index"
-import type { ApiStreamNativeToolCallsChunk } from "../../transform/stream"
+import type { ApiStreamNativeToolCallsChunk } from "../../transform/kilocode/api-stream-native-tool-calls-chunk"
 
 /**
  * Adds native tool call parameters to OpenAI chat completion params when toolStyle is "json"

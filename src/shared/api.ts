@@ -7,6 +7,7 @@ import {
 	CLAUDE_CODE_DEFAULT_MAX_OUTPUT_TOKENS,
 	isDynamicProvider,
 	isLocalProvider,
+	ToolUseStyle, // kilocode_change
 } from "@roo-code/types"
 
 // ApiHandlerOptions
@@ -28,7 +29,7 @@ export type ApiHandlerOptions = Omit<ProviderSettings, "apiProvider"> & {
 	 * Tool style for formatting tool calls - either "xml" (legacy) or "json" (modern).
 	 * When set to "json", tools will be passed as native OpenAI tool format.
 	 */
-	toolStyle?: "xml" | "json" // kilocode_change
+	toolStyle?: ToolUseStyle // kilocode_change
 }
 
 // RouterName

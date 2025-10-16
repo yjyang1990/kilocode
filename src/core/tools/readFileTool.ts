@@ -128,6 +128,7 @@ export async function readFileTool(
 
 	const fileEntries: FileEntry[] = []
 
+	// kilocode_change start
 	// Handle native JSON format first (from OpenAI-style tool calls)
 	if (nativeFiles && Array.isArray(nativeFiles)) {
 		for (const file of nativeFiles) {
@@ -152,6 +153,7 @@ export async function readFileTool(
 			}
 			fileEntries.push(fileEntry)
 		}
+		// kilocode_change end
 	} else if (argsXmlTag) {
 		// Parse file entries from XML (new multi-file format)
 		try {

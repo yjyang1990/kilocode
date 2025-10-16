@@ -1,15 +1,16 @@
 import React, { useCallback } from "react"
 import { VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
+import { ToolUseStyle } from "@roo-code/types"
 
 interface ToolUseControlProps {
-	toolStyle?: "xml" | "json"
-	onChange: (field: "toolStyle", value: "xml" | "json") => void
+	toolStyle?: ToolUseStyle
+	onChange: (field: "toolStyle", value: ToolUseStyle) => void
 }
 
 export const ToolUseControl: React.FC<ToolUseControlProps> = ({ toolStyle = "xml", onChange }) => {
 	const handleToolStyleChange = useCallback(
 		(e: any) => {
-			const value = e.target.value as "xml" | "json"
+			const value = e.target.value as ToolUseStyle
 			onChange("toolStyle", value)
 		},
 		[onChange],

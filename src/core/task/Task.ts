@@ -77,7 +77,7 @@ import { getWorkspacePath } from "../../utils/path"
 // prompts
 import { formatResponse } from "../prompts/responses"
 import { SYSTEM_PROMPT } from "../prompts/system"
-import { getAllowedJSONToolsForMode } from "../prompts/tools"
+import { getAllowedJSONToolsForMode } from "../prompts/tools/native-tools/getAllowedJSONToolsForMode" // kilocode_change
 
 // core modules
 import { ToolRepetitionDetector } from "../tools/ToolRepetitionDetector"
@@ -2621,9 +2621,6 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				throw new Error("Provider not available")
 			}
 
-			// Get the tool use style from apiConfiguration
-			const toolUseStyle = apiConfiguration?.toolStyle || "xml"
-
 			return SYSTEM_PROMPT(
 				provider.context,
 				this.cwd,
@@ -2652,8 +2649,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				},
 				undefined, // todoList
 				this.api.getModel().id,
-				toolUseStyle, // toolUseStyle parameter
-				state, // clineProviderState parameter
+				// kilocode_change start
+				apiConfiguration?.toolStyle || "xml",
+				state,
+				// kilocode_change end
 			)
 		})()
 	}
@@ -2917,6 +2916,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 			// kilocode_change end
 		}
 
+		// kilocode_change start
 		// Add allowed tools for JSON tool style
 		if (apiConfiguration?.toolStyle === "json" && mode) {
 			try {
@@ -2938,6 +2938,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				// Continue without allowedTools - will fall back to default behavior
 			}
 		}
+		// kilocode_change end
 
 		// Reset skip flag after applying (it only affects the immediate next call)
 		if (this.skipPrevResponseIdOnce) {
