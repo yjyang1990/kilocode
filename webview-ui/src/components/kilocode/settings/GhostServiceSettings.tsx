@@ -195,8 +195,7 @@ export const GhostServiceSettingsView = ({
 								</>
 							) : (
 								<div className="text-vscode-errorForeground">
-									No suitable autocomplete model found. Please configure a provider in the API
-									settings.
+									{t("kilocode:ghost.settings.noModelConfigured")}
 								</div>
 							)}
 						</div>

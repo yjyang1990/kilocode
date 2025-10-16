@@ -267,9 +267,7 @@ describe("GhostServiceSettingsView", () => {
 			},
 		})
 
-		expect(
-			screen.getByText(/No suitable autocomplete model found. Please configure a provider in the API settings./),
-		).toBeInTheDocument()
+		expect(screen.getByText(/kilocode:ghost.settings.noModelConfigured/)).toBeInTheDocument()
 	})
 
 	it("displays error message when only provider is missing", () => {
@@ -281,9 +279,7 @@ describe("GhostServiceSettingsView", () => {
 			},
 		})
 
-		expect(
-			screen.getByText(/No suitable autocomplete model found. Please configure a provider in the API settings./),
-		).toBeInTheDocument()
+		expect(screen.getByText(/kilocode:ghost.settings.noModelConfigured/)).toBeInTheDocument()
 	})
 
 	it("displays error message when only model is missing", () => {
@@ -295,8 +291,6 @@ describe("GhostServiceSettingsView", () => {
 			},
 		})
 
-		expect(
-			screen.getByText(/No suitable autocomplete model found. Please configure a provider in the API settings./),
-		).toBeInTheDocument()
+		expect(screen.getByText(/kilocode:ghost.settings.noModelConfigured/)).toBeInTheDocument()
 	})
 })
