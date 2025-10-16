@@ -87,13 +87,11 @@ export function addNativeToolCallsToParams<T extends OpenAI.Chat.ChatCompletionC
 	options: ProviderSettings,
 	metadata?: ApiHandlerCreateMessageMetadata,
 ): T {
-	// Set parallel_tool_calls to false to ensure sequential tool execution
-	params.parallel_tool_calls = false
-
 	// When toolStyle is "json" and allowedTools exist, add them to params
 	if (getActiveToolUseStyle(options) === "json" && metadata?.allowedTools) {
 		params.tools = metadata.allowedTools
 		params.tool_choice = "required" as const
+		params.parallel_tool_calls = false
 	}
 
 	return params
