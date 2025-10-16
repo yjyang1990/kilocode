@@ -688,17 +688,22 @@ export class ClineProvider
 		// TODO: Improve type safety for promptType.
 		const prompt = supportPrompt.create(promptType, params, customSupportPrompts)
 
-		if (command === "addToContext" || command === "addToContextAndFocus") {
+		if (command === "addToContext") {
+			await visibleProvider.postMessageToWebview({ type: "invoke", invoke: "setChatBoxMessage", text: prompt })
+			return
+		}
+
+		//kilocode_change start
+		if (command === "addToContextAndFocus") {
 			let messageText = prompt
 
 			// For addToContextAndFocus, manually include full file content
-			if (command === "addToContextAndFocus") {
-				const editor = vscode.window.activeTextEditor
-				if (editor) {
-					const fullContent = editor.document.getText()
-					const filePath = params.filePath as string
-					// Format matches parseMentions output for file mentions
-					messageText = `
+			const editor = vscode.window.activeTextEditor
+			if (editor) {
+				const fullContent = editor.document.getText()
+				const filePath = params.filePath as string
+				// Format matches parseMentions output for file mentions
+				messageText = `
 For context, we are working within this file:
 
 '${filePath}' (see below for file content)
@@ -710,7 +715,6 @@ Heed this prompt:
 
 ${prompt}
 `
-				}
 			}
 
 			await visibleProvider.postMessageToWebview({
@@ -723,6 +727,7 @@ ${prompt}
 			}
 			return
 		}
+		// kilocode_change end
 
 		await visibleProvider.createTask(prompt)
 	}
