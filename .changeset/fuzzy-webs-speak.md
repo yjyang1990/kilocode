@@ -2,7 +2,7 @@
 "kilo-code": minor
 ---
 
-Preliminary support for native tool calling (a.k.a native function calling) was added.
+(also thanks to @NaccOll for paving the way) - Preliminary support for native tool calling (a.k.a native function calling) was added.
 
 This feature is currently experimental and mostly intended for users interested in contributing to its development.
 It is so far only supported when using OpenRouter or Kilo Code providers. There are possible issues including, but not limited to:
