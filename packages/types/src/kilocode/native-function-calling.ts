@@ -1,5 +1,3 @@
-// kilocode_change - file added
-
 import { z } from "zod"
 import { getModelId, ProviderSettings } from "../provider-settings.js"
 

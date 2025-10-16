@@ -24,9 +24,9 @@ export class AssistantMessageParser {
 	private processedNativeToolCallIds: Set<string> = new Set()
 	// Map index to id for tracking across streaming deltas
 	private nativeToolCallIndexToId: Map<number, string> = new Map()
+	// kilocode_change end
 
 	private accumulator = ""
-	// kilocode_change end
 
 	/**
 	 * Initialize a new AssistantMessageParser instance.
