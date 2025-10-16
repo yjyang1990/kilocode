@@ -1,6 +1,7 @@
 import * as vscode from "vscode"
 import { ClineProvider } from "../webview/ClineProvider"
 import { BalanceDataResponsePayload } from "../../shared/WebviewMessage"
+import { t } from "../../i18n"
 
 export class CreditsStatusBar implements vscode.Disposable {
 	private statusBarItem: vscode.StatusBarItem
@@ -102,8 +103,8 @@ export class CreditsStatusBar implements vscode.Disposable {
 
 		// Handle loading state
 		if (payload.isLoading) {
-			this.statusBarItem.text = "$(sync~spin) Kilocode: Loading..."
-			this.statusBarItem.tooltip = "Click to refresh"
+			this.statusBarItem.text = `$(sync~spin) Kilo Code: ${t("kilocode:creditsstatusbar:loading")}`
+			this.statusBarItem.tooltip = t("kilocode:creditsstatusbar:clickToRefresh")
 			this.statusBarItem.backgroundColor = undefined
 			this.statusBarItem.show()
 			return
@@ -128,7 +129,7 @@ export class CreditsStatusBar implements vscode.Disposable {
 				ratePerMin = balanceDiff / (timeDiffMs / 1000 / 60)
 
 				if (ratePerMin > 0) {
-					consumptionRate = `@ $${this.formatBalance(ratePerMin)}/min`
+					consumptionRate = `@ $${this.formatBalance(ratePerMin)}/${t("kilocode:creditsstatusbar:minute")}`
 					console.debug(`[CreditsStatusBar] Showing consumption rate: ${consumptionRate}`)
 				}
 			}
