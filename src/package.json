@@ -284,11 +284,6 @@
 				"category": "%configuration.title%"
 			},
 			{
-				"command": "kilo-code.ghost.promptCodeSuggestion",
-				"title": "%ghost.commands.promptCodeSuggestion%",
-				"category": "%configuration.title%"
-			},
-			{
 				"command": "kilo-code.ghost.goToNextSuggestion",
 				"title": "%ghost.commands.goToNextSuggestion%",
 				"category": "%configuration.title%"
