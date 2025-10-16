@@ -38,11 +38,8 @@ export class GhostModel {
 				(x): x is typeof x & { apiProvider: string } => x?.apiProvider === provider,
 			)
 			if (selectedProfile) {
-				// Check if the provider is usable (e.g., kilocode balance > 0)
 				const isUsable = await defaultProviderUsabilityChecker(provider, providerSettingsManager)
-				if (!isUsable) {
-					continue // Skip to next provider if not usable
-				}
+				if (!isUsable) continue
 
 				this.loadProfile(providerSettingsManager, selectedProfile, provider)
 				this.loaded = true
