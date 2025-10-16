@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 import { modelInfoSchema, reasoningEffortWithMinimalSchema, verbosityLevelsSchema, serviceTierSchema } from "./model.js"
+import { checkKilocodeBalance } from "./kilocode-utils.js"
 import { codebaseIndexProviderSchema } from "./codebase-index.js"
 import {
 	anthropicModels,
@@ -183,7 +184,6 @@ export type ProviderUsabilityChecker = (
 
 export const defaultProviderUsabilityChecker: ProviderUsabilityChecker = async (provider, providerSettingsManager) => {
 	if (provider === "kilocode") {
-		// Check if kilocode balance is greater than zero
 		try {
 			const profiles = await providerSettingsManager.listConfig()
 			const kilocodeProfile = profiles.find((p) => p.apiProvider === "kilocode")
@@ -199,42 +199,7 @@ export const defaultProviderUsabilityChecker: ProviderUsabilityChecker = async (
 				return false
 			}
 
-			// Simple function to get base URI from token (copied from token.ts)
-			const getKiloBaseUriFromToken = (kilocodeToken?: string) => {
-				if (kilocodeToken) {
-					try {
-						const parts = kilocodeToken.split(".")
-						if (parts.length < 2) return "https://api.kilocode.ai"
-						const payload_string = parts[1]
-						if (!payload_string) return "https://api.kilocode.ai"
-						const payload_json =
-							typeof atob !== "undefined"
-								? atob(payload_string)
-								: Buffer.from(payload_string, "base64").toString()
-						const payload = JSON.parse(payload_json)
-						if (payload.env === "development") return "http://localhost:3000"
-					} catch (_error) {
-						console.warn("Failed to get base URL from Kilo Code token")
-					}
-				}
-				return "https://api.kilocode.ai"
-			}
-
-			const baseUrl = getKiloBaseUriFromToken(kilocodeToken)
-
-			const response = await fetch(`${baseUrl}/api/profile/balance`, {
-				headers: {
-					Authorization: `Bearer ${kilocodeToken}`,
-				},
-			})
-
-			if (!response.ok) {
-				return false
-			}
-
-			const data = await response.json()
-			const balance = data.data?.balance ?? 0
-			return balance > 0
+			return await checkKilocodeBalance(kilocodeToken)
 		} catch (error) {
 			console.error("Error checking kilocode balance:", error)
 			return false
