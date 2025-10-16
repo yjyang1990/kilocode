@@ -6,7 +6,6 @@ import { LLMClient } from "./llm-client.js"
 import { StrategyTester } from "./strategy-tester.js"
 import { testCases, getCategories, TestCase } from "./test-cases.js"
 import { checkApproval } from "./approvals.js"
-import { PromptStrategyManager } from "../services/ghost/PromptStrategyManager.js"
 
 interface TestResult {
 	testCase: TestCase
@@ -92,7 +91,7 @@ export class TestRunner {
 	}
 
 	async runAllTests(): Promise<void> {
-		console.log("\n🚀 Starting PromptStrategyManager LLM Tests\n")
+		console.log("\n🚀 Starting AutoTrigger Strategy LLM Tests\n")
 		console.log("Provider:", this.llmClient["provider"])
 		console.log("Model:", this.llmClient["model"])
 		if (this.skipApproval) {
