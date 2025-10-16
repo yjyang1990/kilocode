@@ -1,7 +1,6 @@
 import React from "react"
 import { Box, Text, useStdout } from "ink"
 import { useTheme } from "../../state/hooks/useTheme.js"
-import { logs } from "../../services/logs.js"
 
 export const ASCII_LOGO = `⣿⡿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⢿⣿
 ⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿
