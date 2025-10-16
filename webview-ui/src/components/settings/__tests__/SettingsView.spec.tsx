@@ -8,15 +8,6 @@ import SettingsView from "../SettingsView"
 
 vi.mock("@src/utils/vscode", () => ({ vscode: { postMessage: vi.fn() } }))
 
-// Mock @roo-code/types constants
-vi.mock("@roo-code/types", async () => {
-	const actual = await vi.importActual("@roo-code/types")
-	return {
-		...actual,
-		SUPPORTED_AUTOCOMPLETE_PROVIDERS: ["mistral", "kilocode", "openrouter"],
-	}
-})
-
 // kilocode_change start
 // Mock the validate functions to prevent validation errors
 vi.mock("@src/utils/validate", () => ({
