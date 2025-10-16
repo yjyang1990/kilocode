@@ -29,7 +29,7 @@ describe("PromptStrategyManager", () => {
 			expect(systemPrompt).toContain("CRITICAL OUTPUT FORMAT")
 		})
 
-		it("should select UserRequestStrategy when user input is provided", () => {
+		it("should always select AutoTriggerStrategy regardless of user input", () => {
 			const mockDocument = {
 				languageId: "typescript",
 				getText: () => "const x = 1;",
@@ -45,9 +45,11 @@ describe("PromptStrategyManager", () => {
 
 			const { systemPrompt, userPrompt, strategy } = manager.buildPrompt(context)
 
-			expect(strategy.name).toBe("User Request")
-			expect(systemPrompt).toContain("Execute User's Explicit Request")
-			expect(userPrompt).toContain("Add a function to calculate sum")
+			expect(strategy.name).toBe("Auto Trigger")
+			expect(systemPrompt).toBeDefined()
+			expect(userPrompt).toBeDefined()
+			// AutoTriggerStrategy focuses on autocomplete rather than user requests
+			expect(userPrompt).toContain("## Full Code")
 		})
 	})
 
@@ -94,7 +96,7 @@ describe("PromptStrategyManager", () => {
 						document: mockDocument,
 						userInput: "Add type annotation",
 					},
-					expectedStrategy: "User Request",
+					expectedStrategy: "Auto Trigger",
 				},
 				{
 					context: {
