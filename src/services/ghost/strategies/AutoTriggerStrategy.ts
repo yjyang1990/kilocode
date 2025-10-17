@@ -1,4 +1,4 @@
-import { GhostSuggestionContext } from "../types"
+import { GhostSuggestionContext, extractPrefix } from "../types"
 import { CURSOR_MARKER } from "../ghostConstants"
 import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyHelpers"
 import { isCommentLine, extractComment, cleanComment } from "./CommentHelpers"
@@ -22,15 +22,7 @@ export class AutoTriggerStrategy {
 		systemPrompt: string
 		userPrompt: string
 	} {
-		// Extract prefix (all lines up to cursor) from context for shouldTreatAsComment
-		let prefix = ""
-		if (context.document && context.range) {
-			const lines: string[] = []
-			for (let i = 0; i <= context.range.start.line; i++) {
-				lines.push(context.document.lineAt(i).text)
-			}
-			prefix = lines.join("\n")
-		}
+		const prefix = extractPrefix(context)
 		const languageId = context.document?.languageId || ""
 
 		if (this.shouldTreatAsComment(prefix, languageId)) {
