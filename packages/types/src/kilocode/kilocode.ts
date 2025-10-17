@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { ProviderSettings, ProviderSettingsEntry } from "../provider-settings.js"
 
 export const ghostServiceSettingsSchema = z
 	.object({
@@ -81,4 +82,49 @@ export async function checkKilocodeBalance(kilocodeToken: string): Promise<boole
 		console.error("Error checking kilocode balance:", error)
 		return false
 	}
+}
+
+export const AUTOCOMPLETE_PROVIDER_MODELS = {
+	mistral: "codestral-latest",
+	kilocode: "mistralai/codestral-2508",
+	openrouter: "mistralai/codestral-2508",
+} as const
+export type AutocompleteProviderKey = keyof typeof AUTOCOMPLETE_PROVIDER_MODELS
+
+interface ProviderSettingsManager {
+	listConfig(): Promise<ProviderSettingsEntry[]>
+	getProfile(params: { id: string }): Promise<ProviderSettings>
+}
+
+export type ProviderUsabilityChecker = (
+	provider: AutocompleteProviderKey,
+	providerSettingsManager: ProviderSettingsManager,
+) => Promise<boolean>
+
+export const defaultProviderUsabilityChecker: ProviderUsabilityChecker = async (provider, providerSettingsManager) => {
+	if (provider === "kilocode") {
+		try {
+			const profiles = await providerSettingsManager.listConfig()
+			const kilocodeProfile = profiles.find((p) => p.apiProvider === "kilocode")
+
+			if (!kilocodeProfile) {
+				return false
+			}
+
+			const profile = await providerSettingsManager.getProfile({ id: kilocodeProfile.id })
+			const kilocodeToken = profile.kilocodeToken
+
+			if (!kilocodeToken) {
+				return false
+			}
+
+			return await checkKilocodeBalance(kilocodeToken)
+		} catch (error) {
+			console.error("Error checking kilocode balance:", error)
+			return false
+		}
+	}
+
+	// For all other providers, assume they are usable
+	return true
 }
