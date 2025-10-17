@@ -71,7 +71,7 @@ The official Kilo Code provider for accessing Kilo Code's managed AI services.
 **Required Fields**:
 
 - `kilocodeToken` (password): Your Kilo Code authentication token
-- `kilocodeModel` (text): The model to use (default: `anthropic/claude-sonnet-4`)
+- `kilocodeModel` (text): The model to use (default: `anthropic/claude-sonnet-4.5`)
 
 **Optional Fields**:
 
@@ -89,7 +89,7 @@ The official Kilo Code provider for accessing Kilo Code's managed AI services.
 }
 ```
 
-**Default Model**: `anthropic/claude-sonnet-4`
+**Default Model**: `anthropic/claude-sonnet-4.5`
 
 ---
 
@@ -102,7 +102,7 @@ Direct integration with Anthropic's Claude API.
 **Required Fields**:
 
 - `apiKey` (password): Your Anthropic API key
-- `apiModelId` (text): The Claude model to use (default: `claude-3-5-sonnet-20241022`)
+- `apiModelId` (text): The Claude model to use (default: `claude-sonnet-4.5`)
 
 **Optional Fields**:
 
@@ -115,12 +115,12 @@ Direct integration with Anthropic's Claude API.
 	"id": "default",
 	"provider": "anthropic",
 	"apiKey": "sk-ant-...",
-	"apiModelId": "claude-3-5-sonnet-20241022",
+	"apiModelId": "claude-sonnet-4.5",
 	"anthropicBaseUrl": ""
 }
 ```
 
-**Default Model**: `claude-3-5-sonnet-20241022`
+**Default Model**: `claude-sonnet-4.5`
 
 **Notes**:
 
@@ -138,7 +138,7 @@ Native OpenAI API integration.
 **Required Fields**:
 
 - `openAiNativeApiKey` (password): Your OpenAI API key
-- `apiModelId` (text): The OpenAI model to use (default: `gpt-4o`)
+- `apiModelId` (text): The OpenAI model to use (default: `gpt-5-chat-latest`)
 
 **Optional Fields**:
 
@@ -151,12 +151,12 @@ Native OpenAI API integration.
 	"id": "default",
 	"provider": "openai-native",
 	"openAiNativeApiKey": "sk-...",
-	"apiModelId": "gpt-4o",
+	"apiModelId": "gpt-5-chat-latest",
 	"openAiNativeBaseUrl": ""
 }
 ```
 
-**Default Model**: `gpt-4o`
+**Default Model**: `gpt-5-chat-latest`
 
 **Notes**:
 
@@ -212,7 +212,7 @@ AWS Bedrock for accessing foundation models on AWS infrastructure.
 - `awsAccessKey` (password): Your AWS access key ID
 - `awsSecretKey` (password): Your AWS secret access key
 - `awsRegion` (text): AWS region (default: `us-east-1`)
-- `apiModelId` (text): The model to use (default: `anthropic.claude-3-5-sonnet-20241022-v2:0`)
+- `apiModelId` (text): The model to use (default: `anthropic.claude-sonnet-4.5-20250929-v1:0`)
 
 **Optional Fields**:
 
@@ -228,13 +228,13 @@ AWS Bedrock for accessing foundation models on AWS infrastructure.
 	"awsAccessKey": "AKIA...",
 	"awsSecretKey": "...",
 	"awsRegion": "us-east-1",
-	"apiModelId": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+	"apiModelId": "anthropic.claude-sonnet-4.5-20250929-v1:0",
 	"awsSessionToken": "",
 	"awsUseCrossRegionInference": false
 }
 ```
 
-**Default Model**: `anthropic.claude-3-5-sonnet-20241022-v2:0`
+**Default Model**: `anthropic.claude-sonnet-4.5-20250929-v1:0`
 
 **Notes**:
 
@@ -253,7 +253,7 @@ Google's Gemini AI models via direct API access.
 **Required Fields**:
 
 - `geminiApiKey` (password): Your Google AI API key
-- `apiModelId` (text): The model to use (default: `gemini-1.5-pro-latest`)
+- `apiModelId` (text): The model to use (default: `gemini-2.5-flash-preview-04-17`)
 
 **Optional Fields**:
 
@@ -266,12 +266,12 @@ Google's Gemini AI models via direct API access.
 	"id": "default",
 	"provider": "gemini",
 	"geminiApiKey": "AIza...",
-	"apiModelId": "gemini-1.5-pro-latest",
+	"apiModelId": "gemini-2.5-flash-preview-04-17",
 	"googleGeminiBaseUrl": ""
 }
 ```
 
-**Default Model**: `gemini-1.5-pro-latest`
+**Default Model**: `gemini-2.5-flash-preview-04-17`
 
 **Notes**:
 
@@ -290,7 +290,7 @@ Google Cloud Vertex AI for enterprise-grade AI deployment.
 
 - `vertexProjectId` (text): Your Google Cloud project ID
 - `vertexRegion` (text): Google Cloud region (default: `us-central1`)
-- `apiModelId` (text): The model to use (default: `claude-3-5-sonnet@20241022`)
+- `apiModelId` (text): The model to use (default: `claude-4.5-sonnet`)
 
 **Authentication** (choose one):
 
@@ -305,13 +305,13 @@ Google Cloud Vertex AI for enterprise-grade AI deployment.
 	"provider": "vertex",
 	"vertexProjectId": "my-project-123",
 	"vertexRegion": "us-central1",
-	"apiModelId": "claude-3-5-sonnet@20241022",
+	"apiModelId": "claude-4.5-sonnet",
 	"vertexJsonCredentials": "{...}",
 	"vertexKeyFile": ""
 }
 ```
 
-**Default Model**: `claude-3-5-sonnet@20241022`
+**Default Model**: `claude-4.5-sonnet`
 
 **Notes**:
 
@@ -330,7 +330,7 @@ Local Claude Code CLI integration.
 **Required Fields**:
 
 - `claudeCodePath` (text): Path to the Claude Code executable
-- `apiModelId` (text): The model to use (default: `claude-3-5-sonnet-20241022`)
+- `apiModelId` (text): The model to use (default: `claude-sonnet-4-5`)
 - `claudeCodeMaxOutputTokens` (text): Maximum output tokens (default: `8000`)
 
 **Example Configuration**:
@@ -340,12 +340,12 @@ Local Claude Code CLI integration.
 	"id": "default",
 	"provider": "claude-code",
 	"claudeCodePath": "/usr/local/bin/claude-code",
-	"apiModelId": "claude-3-5-sonnet-20241022",
+	"apiModelId": "claude-sonnet-4-5",
 	"claudeCodeMaxOutputTokens": "8000"
 }
 ```
 
-**Default Model**: `claude-3-5-sonnet-20241022`
+**Default Model**: `claude-sonnet-4-5`
 
 **Notes**:
 
@@ -363,7 +363,7 @@ Mistral AI's language models.
 **Required Fields**:
 
 - `mistralApiKey` (password): Your Mistral API key
-- `apiModelId` (text): The model to use (default: `mistral-large-latest`)
+- `apiModelId` (text): The model to use (default: `magistral-medium-latest`)
 
 **Optional Fields**:
 
@@ -376,12 +376,12 @@ Mistral AI's language models.
 	"id": "default",
 	"provider": "mistral",
 	"mistralApiKey": "...",
-	"apiModelId": "mistral-large-latest",
+	"apiModelId": "magistral-medium-latest",
 	"mistralCodestralUrl": ""
 }
 ```
 
-**Default Model**: `mistral-large-latest`
+**Default Model**: `magistral-medium-latest`
 
 **Notes**:
 
@@ -399,7 +399,7 @@ Groq's ultra-fast LPU inference.
 **Required Fields**:
 
 - `groqApiKey` (password): Your Groq API key
-- `apiModelId` (text): The model to use (default: `llama-3.1-70b-versatile`)
+- `apiModelId` (text): The model to use (default: `llama-3.3-70b-versatile`)
 
 **Example Configuration**:
 
@@ -408,11 +408,11 @@ Groq's ultra-fast LPU inference.
 	"id": "default",
 	"provider": "groq",
 	"groqApiKey": "gsk_...",
-	"apiModelId": "llama-3.1-70b-versatile"
+	"apiModelId": "llama-3.3-70b-versatile"
 }
 ```
 
-**Default Model**: `llama-3.1-70b-versatile`
+**Default Model**: `llama-3.3-70b-versatile`
 
 **Notes**:
 
@@ -462,7 +462,7 @@ xAI's Grok models.
 **Required Fields**:
 
 - `xaiApiKey` (password): Your xAI API key
-- `apiModelId` (text): The model to use (default: `grok-beta`)
+- `apiModelId` (text): The model to use (default: `grok-code-fast-1`)
 
 **Example Configuration**:
 
@@ -471,11 +471,11 @@ xAI's Grok models.
 	"id": "default",
 	"provider": "xai",
 	"xaiApiKey": "...",
-	"apiModelId": "grok-beta"
+	"apiModelId": "grok-code-fast-1"
 }
 ```
 
-**Default Model**: `grok-beta`
+**Default Model**: `grok-code-fast-1`
 
 **Notes**:
 
@@ -493,7 +493,7 @@ Cerebras AI inference platform.
 **Required Fields**:
 
 - `cerebrasApiKey` (password): Your Cerebras API key
-- `apiModelId` (text): The model to use (default: `llama3.1-8b`)
+- `apiModelId` (text): The model to use (default: `qwen-3-coder-480b-free`)
 
 **Example Configuration**:
 
@@ -502,11 +502,11 @@ Cerebras AI inference platform.
 	"id": "default",
 	"provider": "cerebras",
 	"cerebrasApiKey": "...",
-	"apiModelId": "llama3.1-8b"
+	"apiModelId": "qwen-3-coder-480b-free"
 }
 ```
 
-**Default Model**: `llama3.1-8b`
+**Default Model**: `qwen-3-coder-480b-free`
 
 **Notes**:
 
@@ -764,7 +764,7 @@ Moonshot AI platform.
 
 - `moonshotBaseUrl` (text): Moonshot API base URL (default: `https://api.moonshot.ai/v1`)
 - `moonshotApiKey` (password): Your Moonshot API key
-- `apiModelId` (text): The model to use (default: `moonshot-v1-8k`)
+- `apiModelId` (text): The model to use (default: `kimi-k2-0711-preview`)
 
 **Example Configuration**:
 
@@ -774,11 +774,11 @@ Moonshot AI platform.
 	"provider": "moonshot",
 	"moonshotBaseUrl": "https://api.moonshot.ai/v1",
 	"moonshotApiKey": "...",
-	"apiModelId": "moonshot-v1-8k"
+	"apiModelId": "kimi-k2-0711-preview"
 }
 ```
 
-**Default Model**: `moonshot-v1-8k`
+**Default Model**: `kimi-k2-0711-preview`
 
 ---
 
@@ -791,7 +791,7 @@ Doubao AI platform.
 **Required Fields**:
 
 - `doubaoApiKey` (password): Your Doubao API key
-- `apiModelId` (text): The model to use (default: `ep-20241022-******`)
+- `apiModelId` (text): The model to use (default: `doubao-seed-1-6-250615`)
 
 **Example Configuration**:
 
@@ -800,11 +800,11 @@ Doubao AI platform.
 	"id": "default",
 	"provider": "doubao",
 	"doubaoApiKey": "...",
-	"apiModelId": "ep-20241022-******"
+	"apiModelId": "doubao-seed-1-6-250615"
 }
 ```
 
-**Default Model**: `ep-20241022-******`
+**Default Model**: `doubao-seed-1-6-250615`
 
 ---
 
@@ -817,7 +817,7 @@ Chutes AI platform.
 **Required Fields**:
 
 - `chutesApiKey` (password): Your Chutes API key
-- `apiModelId` (text): The model to use (default: `gpt-4o`)
+- `apiModelId` (text): The model to use (default: `deepseek-ai/DeepSeek-R1-0528`)
 
 **Example Configuration**:
 
@@ -826,11 +826,11 @@ Chutes AI platform.
 	"id": "default",
 	"provider": "chutes",
 	"chutesApiKey": "...",
-	"apiModelId": "gpt-4o"
+	"apiModelId": "deepseek-ai/DeepSeek-R1-0528"
 }
 ```
 
-**Default Model**: `gpt-4o`
+**Default Model**: `deepseek-ai/DeepSeek-R1-0528`
 
 ---
 
@@ -869,7 +869,7 @@ Fireworks AI platform.
 **Required Fields**:
 
 - `fireworksApiKey` (password): Your Fireworks API key
-- `apiModelId` (text): The model to use (default: `accounts/fireworks/models/llama-v3p1-70b-instruct`)
+- `apiModelId` (text): The model to use (default: `accounts/fireworks/models/kimi-k2-instruct-0905`)
 
 **Example Configuration**:
 
@@ -878,11 +878,11 @@ Fireworks AI platform.
 	"id": "default",
 	"provider": "fireworks",
 	"fireworksApiKey": "...",
-	"apiModelId": "accounts/fireworks/models/llama-v3p1-70b-instruct"
+	"apiModelId": "accounts/fireworks/models/kimi-k2-instruct-0905"
 }
 ```
 
-**Default Model**: `accounts/fireworks/models/llama-v3p1-70b-instruct`
+**Default Model**: `accounts/fireworks/models/kimi-k2-instruct-0905`
 
 **Notes**:
 
@@ -900,7 +900,7 @@ Featherless AI platform.
 **Required Fields**:
 
 - `featherlessApiKey` (password): Your Featherless API key
-- `apiModelId` (text): The model to use (default: `meta-llama/Llama-3.1-70B-Instruct`)
+- `apiModelId` (text): The model to use (default: `deepseek-ai/DeepSeek-V3-0324`)
 
 **Example Configuration**:
 
@@ -909,11 +909,11 @@ Featherless AI platform.
 	"id": "default",
 	"provider": "featherless",
 	"featherlessApiKey": "...",
-	"apiModelId": "meta-llama/Llama-3.1-70B-Instruct"
+	"apiModelId": "deepseek-ai/DeepSeek-V3-0324"
 }
 ```
 
-**Default Model**: `meta-llama/Llama-3.1-70B-Instruct`
+**Default Model**: `deepseek-ai/DeepSeek-V3-0324`
 
 ---
 
@@ -983,7 +983,7 @@ Qwen Code AI models.
 **Required Fields**:
 
 - `qwenCodeOauthPath` (text): Path to OAuth credentials file (default: `~/.qwen/oauth_creds.json`)
-- `apiModelId` (text): The model to use (default: `qwen-coder-plus-latest`)
+- `apiModelId` (text): The model to use (default: `qwen3-coder-plus`)
 
 **Example Configuration**:
 
@@ -992,11 +992,11 @@ Qwen Code AI models.
 	"id": "default",
 	"provider": "qwen-code",
 	"qwenCodeOauthPath": "~/.qwen/oauth_creds.json",
-	"apiModelId": "qwen-coder-plus-latest"
+	"apiModelId": "qwen3-coder-plus"
 }
 ```
 
-**Default Model**: `qwen-coder-plus-latest`
+**Default Model**: `qwen3-coder-plus`
 
 **Notes**:
 
@@ -1015,7 +1015,7 @@ Gemini CLI integration.
 
 - `geminiCliOAuthPath` (text): Path to OAuth credentials file (default: `~/.gemini/oauth_creds.json`)
 - `geminiCliProjectId` (text): Google Cloud project ID
-- `apiModelId` (text): The model to use (default: `gemini-1.5-pro-latest`)
+- `apiModelId` (text): The model to use (default: `gemini-2.5-flash-preview-04-17`)
 
 **Example Configuration**:
 
@@ -1025,11 +1025,11 @@ Gemini CLI integration.
 	"provider": "gemini-cli",
 	"geminiCliOAuthPath": "~/.gemini/oauth_creds.json",
 	"geminiCliProjectId": "my-project-123",
-	"apiModelId": "gemini-1.5-pro-latest"
+	"apiModelId": "gemini-2.5-flash-preview-04-17"
 }
 ```
 
-**Default Model**: `gemini-1.5-pro-latest`
+**Default Model**: `gemini-2.5-flash-preview-04-17`
 
 **Notes**:
 
@@ -1042,13 +1042,40 @@ Gemini CLI integration.
 
 ZAI AI platform.
 
-**Description**: Access AI models through the ZAI platform.
+**Description**: Access AI models through the ZAI platform with support for both international and China-based API endpoints.
 
 **Required Fields**:
 
 - `zaiApiKey` (password): Your ZAI API key
 - `zaiApiLine` (text): API line identifier (default: `international_coding`)
-- `apiModelId` (text): The model to use (default: `gpt-4o`)
+- `apiModelId` (text): The model to use (default: `glm-4.6`)
+
+**Available API Lines**:
+
+The `zaiApiLine` parameter determines which API endpoint and region to use:
+
+- `international_coding` (default): International Coding Plan
+
+    - Base URL: `https://api.z.ai/api/coding/paas/v4`
+    - Region: International
+    - Optimized for coding tasks
+
+- `international`: International Standard
+
+    - Base URL: `https://api.z.ai/api/paas/v4`
+    - Region: International
+    - General-purpose API
+
+- `china_coding`: China Coding Plan
+
+    - Base URL: `https://open.bigmodel.cn/api/coding/paas/v4`
+    - Region: China
+    - Optimized for coding tasks
+
+- `china`: China Standard
+    - Base URL: `https://open.bigmodel.cn/api/paas/v4`
+    - Region: China
+    - General-purpose API
 
 **Example Configuration**:
 
@@ -1063,6 +1090,12 @@ ZAI AI platform.
 ```
 
 **Default Model**: `glm-4.6`
+
+**Notes**:
+
+- Choose the API line based on your geographic location and use case
+- Coding-optimized lines provide better performance for code generation tasks
+- China-based lines may offer better latency for users in mainland China
 
 ---
 
@@ -1131,7 +1164,7 @@ Roo AI platform.
 
 **Required Fields**:
 
-- `apiModelId` (text): Model identifier (default: `gpt-4o`)
+- `apiModelId` (text): Model identifier (default: `deepseek-ai/DeepSeek-R1-0528`)
 
 **Example Configuration**:
 
@@ -1139,11 +1172,11 @@ Roo AI platform.
 {
 	"id": "default",
 	"provider": "roo",
-	"apiModelId": "gpt-4o"
+	"apiModelId": "deepseek-ai/DeepSeek-R1-0528"
 }
 ```
 
-**Default Model**: `gpt-4o`
+**Default Model**: `deepseek-ai/DeepSeek-R1-0528`
 
 **Notes**:
 
