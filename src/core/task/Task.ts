@@ -2944,10 +2944,8 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				const allowedTools = getAllowedJSONToolsForMode(
 					mode,
 					undefined, // codeIndexManager is private, not accessible here
-					providerState?.customModes,
-					providerState?.experiments,
-					providerState?.apiConfiguration,
-					providerState, // Pass full providerState for Fast Apply checking
+					providerState,
+					this.api?.getModel()?.info?.supportsImages,
 				)
 
 				metadata.allowedTools = allowedTools
