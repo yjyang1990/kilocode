@@ -6,12 +6,12 @@ import { isCommentLine, extractComment, cleanComment } from "./CommentHelpers"
 export class AutoTriggerStrategy {
 	shouldTreatAsComment(prefix: string, languageId: string): boolean {
 		const lines = prefix.split("\n")
-		const currentLine = lines[lines.length - 1] || ""
-		const previousLine = lines.length > 1 ? lines[lines.length - 2] : ""
+		const currentLine = lines[lines.length - 1].trim() || ""
+		const previousLine = lines.length > 1 ? lines[lines.length - 2].trim() : ""
 
 		if (isCommentLine(currentLine, languageId)) {
 			return true
-		} else if (currentLine.trim() === "" && previousLine.trim()) {
+		} else if (currentLine === "" && previousLine) {
 			return isCommentLine(previousLine, languageId)
 		} else {
 			return false
