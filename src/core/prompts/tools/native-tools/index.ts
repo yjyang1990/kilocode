@@ -18,8 +18,10 @@ import searchFiles from "./search_files"
 import switchMode from "./switch_mode"
 import updateTodoList from "./update_todo_list"
 import writeToFile from "./write_to_file"
+import { apply_diff_single_file } from "./apply_diff"
 
 export const nativeTools = [
+	apply_diff_single_file,
 	askFollowupQuestion,
 	attemptCompletion,
 	browserAction,
