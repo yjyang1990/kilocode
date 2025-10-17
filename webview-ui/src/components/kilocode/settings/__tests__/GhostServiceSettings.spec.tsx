@@ -16,7 +16,6 @@ vi.mock("react-i18next", () => ({
 	},
 }))
 
-
 vi.mock("@/i18n/TranslationContext", () => ({
 	useAppTranslation: () => ({
 		t: (key: string) => key,
@@ -78,6 +77,8 @@ const defaultGhostServiceSettings: GhostServiceSettings = {
 	autoTriggerDelay: 3,
 	enableQuickInlineTaskKeybinding: false,
 	enableSmartInlineTaskKeybinding: false,
+	provider: "openrouter",
+	model: "openai/gpt-4o-mini",
 }
 
 const renderComponent = (props = {}) => {
@@ -117,7 +118,6 @@ describe("GhostServiceSettingsView", () => {
 		expect(screen.getByText(/kilocode:ghost.settings.triggers/)).toBeInTheDocument()
 		expect(screen.getByText(/kilocode:ghost.settings.enableAutoTrigger.label/)).toBeInTheDocument()
 	})
-
 
 	it("toggles auto trigger checkbox correctly", () => {
 		const setCachedStateField = vi.fn()
@@ -228,7 +228,7 @@ describe("GhostServiceSettingsView", () => {
 		expect(setCachedStateField).toHaveBeenCalledWith(
 			"ghostServiceSettings",
 			expect.objectContaining({
-				autoTriggerDelay: 5,
+				autoTriggerDelay: 500,
 			}),
 		)
 	})
@@ -241,5 +241,56 @@ describe("GhostServiceSettingsView", () => {
 
 		// We should have multiple description divs for the different settings
 		expect(descriptionDivs.length).toBeGreaterThan(2)
+	})
+
+	it("displays provider and model information when available", () => {
+		renderComponent({
+			ghostServiceSettings: {
+				...defaultGhostServiceSettings,
+				provider: "openrouter",
+				model: "openai/gpt-4o-mini",
+			},
+		})
+
+		expect(screen.getByText(/kilocode:ghost.settings.provider/)).toBeInTheDocument()
+		expect(screen.getByText(/openrouter/)).toBeInTheDocument()
+		expect(screen.getAllByText(/kilocode:ghost.settings.model/).length).toBeGreaterThan(0)
+		expect(screen.getByText(/openai\/gpt-4o-mini/)).toBeInTheDocument()
+	})
+
+	it("displays error message when provider and model are not configured", () => {
+		renderComponent({
+			ghostServiceSettings: {
+				...defaultGhostServiceSettings,
+				provider: undefined,
+				model: undefined,
+			},
+		})
+
+		expect(screen.getByText(/kilocode:ghost.settings.noModelConfigured/)).toBeInTheDocument()
+	})
+
+	it("displays error message when only provider is missing", () => {
+		renderComponent({
+			ghostServiceSettings: {
+				...defaultGhostServiceSettings,
+				provider: undefined,
+				model: "openai/gpt-4o-mini",
+			},
+		})
+
+		expect(screen.getByText(/kilocode:ghost.settings.noModelConfigured/)).toBeInTheDocument()
+	})
+
+	it("displays error message when only model is missing", () => {
+		renderComponent({
+			ghostServiceSettings: {
+				...defaultGhostServiceSettings,
+				provider: "openrouter",
+				model: undefined,
+			},
+		})
+
+		expect(screen.getByText(/kilocode:ghost.settings.noModelConfigured/)).toBeInTheDocument()
 	})
 })

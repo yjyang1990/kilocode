@@ -69,6 +69,7 @@ const sidebars: SidebarsConfig = {
 								"providers/openai",
 								"providers/openai-compatible",
 								"providers/openrouter",
+								"providers/ovhcloud", // kilocode_change
 								"providers/requesty",
 								"providers/unbound",
 								"providers/v0",
@@ -142,6 +143,7 @@ const sidebars: SidebarsConfig = {
 						"features/footgun-prompting",
 					],
 				},
+				"features/auto-launch-configuration",
 				"features/experimental/experimental-features",
 			],
 		},

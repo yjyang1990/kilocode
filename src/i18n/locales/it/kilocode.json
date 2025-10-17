@@ -73,6 +73,7 @@
 				"tokenError": "Deve essere impostato un token valido per usare Autocomplete",
 				"lastCompletion": "Ultimo suggerimento:",
 				"sessionTotal": "Costo totale della sessione:",
+				"provider": "Provider:",
 				"model": "Modello:"
 			},
 			"cost": {
@@ -98,7 +99,6 @@
 			"cancelSuggestions": "Annulla Modifiche Suggerite",
 			"applyCurrentSuggestion": "Applica Modifica Suggerita Corrente",
 			"applyAllSuggestions": "Applica Tutte le Modifiche Suggerite",
-			"promptCodeSuggestion": "Attività Rapida",
 			"category": "Kilo Code"
 		},
 		"codeAction": {

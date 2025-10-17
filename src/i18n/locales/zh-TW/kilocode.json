@@ -73,6 +73,7 @@
 				"tokenError": "必須設定有效 Token 才能使用 Autocomplete",
 				"lastCompletion": "最後建議:",
 				"sessionTotal": "工作階段總費用:",
+				"provider": "提供者:",
 				"model": "模型:"
 			},
 			"cost": {
@@ -98,7 +99,6 @@
 			"cancelSuggestions": "取消建議編輯",
 			"applyCurrentSuggestion": "套用目前建議編輯",
 			"applyAllSuggestions": "套用所有建議編輯",
-			"promptCodeSuggestion": "快速工作",
 			"category": "Kilo Code"
 		},
 		"codeAction": {

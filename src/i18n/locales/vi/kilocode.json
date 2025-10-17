@@ -73,6 +73,7 @@
 				"tokenError": "Phải đặt token hợp lệ để sử dụng Autocomplete",
 				"lastCompletion": "Gợi ý cuối cùng:",
 				"sessionTotal": "Tổng chi phí phiên:",
+				"provider": "Nhà cung cấp:",
 				"model": "Mô hình:"
 			},
 			"cost": {
@@ -98,7 +99,6 @@
 			"cancelSuggestions": "Hủy Các Chỉnh Sửa Được Đề Xuất",
 			"applyCurrentSuggestion": "Áp Dụng Chỉnh Sửa Được Đề Xuất Hiện Tại",
 			"applyAllSuggestions": "Áp Dụng Tất Cả Các Chỉnh Sửa Được Đề Xuất",
-			"promptCodeSuggestion": "Tác Vụ Nhanh",
 			"category": "Kilo Code"
 		},
 		"codeAction": {

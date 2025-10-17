@@ -73,6 +73,7 @@
 				"tokenError": "S'ha d'establir un token vàlid per utilitzar Autocomplete",
 				"lastCompletion": "Últim suggeriment:",
 				"sessionTotal": "Cost total de la sessió:",
+				"provider": "Proveïdor:",
 				"model": "Model:"
 			},
 			"cost": {
@@ -98,7 +99,6 @@
 			"cancelSuggestions": "Cancel·lar Edicions Suggerides",
 			"applyCurrentSuggestion": "Aplicar Edició Suggerida Actual",
 			"applyAllSuggestions": "Aplicar Totes les Edicions Suggerides",
-			"promptCodeSuggestion": "Tasca Ràpida",
 			"category": "Kilo Code"
 		},
 		"codeAction": {
