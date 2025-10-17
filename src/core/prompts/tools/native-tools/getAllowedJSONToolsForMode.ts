@@ -6,7 +6,7 @@ import OpenAI from "openai"
 import { ALWAYS_AVAILABLE_TOOLS, TOOL_GROUPS } from "../../../../shared/tools"
 import { isFastApplyAvailable } from "../../../tools/editFileTool"
 import { nativeTools } from "."
-import { apply_diff_single_file } from "./apply_diff"
+import { apply_diff_multi_file, apply_diff_single_file } from "./apply_diff"
 
 export function getAllowedJSONToolsForMode(
 	mode: Mode,
@@ -91,7 +91,7 @@ export function getAllowedJSONToolsForMode(
 	// This allows the user to maintain their experiment options without having to
 	// Change their tool calling style.
 	if (isMultiFileApplyDiffEnabled) {
-		nativeToolsMap.set("apply_diff", apply_diff_single_file)
+		nativeToolsMap.set("apply_diff", apply_diff_multi_file)
 	} else {
 		nativeToolsMap.set("apply_diff", apply_diff_single_file)
 	}
