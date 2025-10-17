@@ -172,7 +172,8 @@ describe("checkKilocodeBalance", () => {
 		await checkKilocodeBalance(mockToken)
 
 		const fetchCall = vi.mocked(global.fetch).mock.calls[0]
-		const headers = (fetchCall[1] as RequestInit)?.headers as Record<string, string>
+		expect(fetchCall).toBeDefined()
+		const headers = (fetchCall![1] as RequestInit)?.headers as Record<string, string>
 
 		expect(headers).toHaveProperty("Authorization")
 		expect(headers).not.toHaveProperty("X-KiloCode-OrganizationId")
