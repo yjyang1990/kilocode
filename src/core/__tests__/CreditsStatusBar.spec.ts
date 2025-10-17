@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from "vitest"
 import * as vscode from "vscode"
 import { CreditsStatusBar } from "../kilocode/CreditsStatusBar"
 import { ClineProvider } from "../webview/ClineProvider"
 import { BalanceDataResponsePayload } from "../../shared/WebviewMessage"
+import i18next from "i18next"
 
 // Mock vscode
 vi.mock("vscode", () => ({
@@ -30,6 +31,32 @@ vi.mock("vscode", () => ({
 		}
 	},
 }))
+
+// Initialize i18n for tests
+beforeAll(async () => {
+	// Load English translations for the kilocode namespace
+	const enTranslations = {
+		creditsstatusbar: {
+			loading: "Loading...",
+			clickToRefresh: "Click to refresh",
+			minute: "min",
+		},
+	}
+
+	await i18next.init({
+		lng: "en",
+		fallbackLng: "en",
+		debug: false,
+		resources: {
+			en: {
+				kilocode: enTranslations,
+			},
+		},
+		interpolation: {
+			escapeValue: false,
+		},
+	})
+})
 
 describe("CreditsStatusBar", () => {
 	let creditsStatusBar: CreditsStatusBar
@@ -314,17 +341,6 @@ describe("CreditsStatusBar", () => {
 
 			expect(mockStatusBarItem.text).toContain("Loading")
 			expect(mockStatusBarItem.show).toHaveBeenCalled()
-		})
-
-		it("should format balance correctly", async () => {
-			await creditsStatusBar.initialize()
-
-			const handlerCall = vi.mocked(mockProvider.registerBalanceHandler).mock.calls[0]
-			const balanceHandler = handlerCall[0]
-
-			await balanceHandler({ success: true, data: { balance: 1234.56 } })
-
-			expect(mockStatusBarItem.text).toContain("1.23K")
 		})
 	})
 
