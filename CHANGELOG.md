@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.107.0
-
-### Minor Changes
+## [v4.107.0]
 
 - [#2549](https://github.com/Kilo-Org/kilocode/pull/2549) [`4327563`](https://github.com/Kilo-Org/kilocode/commit/4327563ea315eaca0907286f02f03facf42a837c) Thanks [@mcowger](https://github.com/mcowger)! - Add Kilocode Credits Status Bar Item
 
