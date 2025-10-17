@@ -59,16 +59,23 @@ export function getKiloBaseUriFromToken(kilocodeToken?: string) {
 /**
  * Check if the Kilocode account has a positive balance
  * @param kilocodeToken - The Kilocode JWT token
+ * @param kilocodeOrganizationId - Optional organization ID to include in headers
  * @returns Promise<boolean> - True if balance > 0, false otherwise
  */
-export async function checkKilocodeBalance(kilocodeToken: string): Promise<boolean> {
+export async function checkKilocodeBalance(kilocodeToken: string, kilocodeOrganizationId?: string): Promise<boolean> {
 	try {
 		const baseUrl = getKiloBaseUriFromToken(kilocodeToken)
 
+		const headers: Record<string, string> = {
+			Authorization: `Bearer ${kilocodeToken}`,
+		}
+
+		if (kilocodeOrganizationId) {
+			headers["X-KiloCode-OrganizationId"] = kilocodeOrganizationId
+		}
+
 		const response = await fetch(`${baseUrl}/api/profile/balance`, {
-			headers: {
-				Authorization: `Bearer ${kilocodeToken}`,
-			},
+			headers,
 		})
 
 		if (!response.ok) {
@@ -113,12 +120,13 @@ export const defaultProviderUsabilityChecker: ProviderUsabilityChecker = async (
 
 			const profile = await providerSettingsManager.getProfile({ id: kilocodeProfile.id })
 			const kilocodeToken = profile.kilocodeToken
+			const kilocodeOrgId = profile.kilocodeOrganizationId
 
 			if (!kilocodeToken) {
 				return false
 			}
 
-			return await checkKilocodeBalance(kilocodeToken)
+			return await checkKilocodeBalance(kilocodeToken, kilocodeOrgId)
 		} catch (error) {
 			console.error("Error checking kilocode balance:", error)
 			return false
