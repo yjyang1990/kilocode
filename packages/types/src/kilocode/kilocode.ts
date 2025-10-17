@@ -75,7 +75,7 @@ export async function checkKilocodeBalance(kilocodeToken: string): Promise<boole
 		}
 
 		const data = await response.json()
-		const balance = data.data?.balance ?? 0
+		const balance = data.balance ?? 0
 		return balance > 0
 	} catch (error) {
 		console.error("Error checking kilocode balance:", error)
