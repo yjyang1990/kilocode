@@ -168,8 +168,7 @@ export const AUTOCOMPLETE_PROVIDER_MODELS = {
 	mistral: "codestral-latest",
 	kilocode: "mistralai/codestral-2508",
 	openrouter: "mistralai/codestral-2508",
-} as const satisfies Record<Extract<ProviderName, "mistral" | "kilocode" | "openrouter">, string>
-
+} as const
 export type AutocompleteProviderKey = keyof typeof AUTOCOMPLETE_PROVIDER_MODELS
 
 interface ProviderSettingsManager {
