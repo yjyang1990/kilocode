@@ -4,17 +4,15 @@ import { formatDocumentWithCursor, getBaseSystemInstructions } from "./StrategyH
 import { isCommentLine, extractComment, cleanComment } from "./CommentHelpers"
 
 export class AutoTriggerStrategy {
-	shouldTreatAsComment(context: GhostSuggestionContext): boolean {
-		if (!context.document || !context.range) return false
+	shouldTreatAsComment(prefix: string, languageId: string): boolean {
+		const lines = prefix.split("\n")
+		const currentLine = lines[lines.length - 1] || ""
+		const previousLine = lines.length > 1 ? lines[lines.length - 2] : ""
 
-		const currentLine = context.document.lineAt(context.range.start.line).text
-		const previousLine =
-			context.range.start.line > 0 && context.document.lineAt(context.range.start.line - 1).text.trim()
-
-		if (isCommentLine(currentLine, context.document.languageId)) {
+		if (isCommentLine(currentLine, languageId)) {
 			return true
-		} else if (currentLine.trim() === "" && previousLine) {
-			return isCommentLine(previousLine, context.document.languageId)
+		} else if (currentLine.trim() === "" && previousLine.trim()) {
+			return isCommentLine(previousLine, languageId)
 		} else {
 			return false
 		}
@@ -24,7 +22,18 @@ export class AutoTriggerStrategy {
 		systemPrompt: string
 		userPrompt: string
 	} {
-		if (this.shouldTreatAsComment(context)) {
+		// Extract prefix (all lines up to cursor) from context for shouldTreatAsComment
+		let prefix = ""
+		if (context.document && context.range) {
+			const lines: string[] = []
+			for (let i = 0; i <= context.range.start.line; i++) {
+				lines.push(context.document.lineAt(i).text)
+			}
+			prefix = lines.join("\n")
+		}
+		const languageId = context.document?.languageId || ""
+
+		if (this.shouldTreatAsComment(prefix, languageId)) {
 			return {
 				systemPrompt: this.getCommentsSystemInstructions(),
 				userPrompt: this.getCommentsUserPrompt(context),
