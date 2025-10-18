@@ -202,6 +202,16 @@ intellijPlatform {
 }
 
 tasks {
+    // Configure test task to disable CDS (Class Data Sharing) to avoid warning:
+    // "Archived non-system classes are disabled because the java.system.class.loader
+    // property is specified (value = "com.intellij.util.lang.PathClassLoader")"
+    //
+    // IntelliJ Platform uses a custom PathClassLoader which conflicts with CDS's
+    // archived non-system classes feature. Disabling CDS for tests eliminates the
+    // warning while maintaining test functionality. Production builds are unaffected.
+    withType<Test> {
+        jvmArgs("-Xshare:off")
+    }
 
     // Create task for generating configuration files
     register("generateConfigProperties") {
