@@ -8,7 +8,6 @@ import com.google.common.collect.Maps
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.testFramework.utils.vfs.createFile
 import ai.kilocode.jetbrains.editor.EditorAndDocManager
 import ai.kilocode.jetbrains.editor.createURI
 import ai.kilocode.jetbrains.service.DocumentSyncService
@@ -104,7 +103,9 @@ class MainThreadDocuments(var project: Project) : MainThreadDocumentsShape {
         if (!file.exists()) {
             file.parentFile.mkdirs()
             val vf = vfs.findFileByIoFile(file.parentFile)
-            vf?.createFile(file.name)
+            ApplicationManager.getApplication().runWriteAction {
+                vf?.createChildData(this, file.name)
+            }
         }
 
         project.getService(EditorAndDocManager::class.java).openDocument(uri)
