@@ -20,7 +20,7 @@ import kotlin.coroutines.resumeWithException
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <T> LazyPromise.toCompletableFuture(): CompletableFuture<T> {
     val future = CompletableFuture<T>()
-    
+
     this.invokeOnCompletion { throwable ->
         if (throwable != null) {
             future.completeExceptionally(throwable)
@@ -34,7 +34,7 @@ fun <T> LazyPromise.toCompletableFuture(): CompletableFuture<T> {
             }
         }
     }
-    
+
     return future
 }
 
@@ -65,7 +65,7 @@ suspend fun <T> LazyPromise.await(): T {
                 }
             }
         }
-        
+
         continuation.invokeOnCancellation {
             // You can add logic to cancel the Promise here if LazyPromise supports it
         }
@@ -89,7 +89,7 @@ suspend fun <T> LazyPromise.await(): T {
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <T> LazyPromise.handle(
     onSuccess: (T) -> Unit,
-    onError: (Throwable) -> Unit = { throw it }
+    onError: (Throwable) -> Unit = { throw it },
 ) {
     this.invokeOnCompletion { throwable ->
         if (throwable != null) {
@@ -125,7 +125,7 @@ fun <T> LazyPromise.handle(
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <T, R> LazyPromise.thenMap(mapper: (T) -> R): LazyPromise {
     val result = LazyPromise()
-    
+
     this.invokeOnCompletion { throwable ->
         if (throwable != null) {
             result.resolveErr(throwable)
@@ -140,6 +140,6 @@ fun <T, R> LazyPromise.thenMap(mapper: (T) -> R): LazyPromise {
             }
         }
     }
-    
+
     return result
-} 
+}

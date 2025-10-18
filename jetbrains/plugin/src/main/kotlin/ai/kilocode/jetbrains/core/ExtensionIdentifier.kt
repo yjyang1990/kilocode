@@ -23,7 +23,7 @@ class ExtensionIdentifier(val value: String) {
          */
         fun equals(
             a: ExtensionIdentifier?,
-            b: ExtensionIdentifier?
+            b: ExtensionIdentifier?,
         ): Boolean {
             if (a == null) {
                 return b == null
@@ -42,7 +42,7 @@ class ExtensionIdentifier(val value: String) {
          */
         fun equals(
             a: ExtensionIdentifier?,
-            b: String?
+            b: String?,
         ): Boolean {
             if (a == null) {
                 return b == null
@@ -61,7 +61,7 @@ class ExtensionIdentifier(val value: String) {
          */
         fun equals(
             a: String?,
-            b: ExtensionIdentifier?
+            b: ExtensionIdentifier?,
         ): Boolean {
             if (a == null) {
                 return b == null
@@ -100,8 +100,8 @@ class ExtensionIdentifier(val value: String) {
     override fun hashCode(): Int {
         return _lower.hashCode()
     }
-    
+
     override fun toString(): String {
         return value
     }
-} 
+}
