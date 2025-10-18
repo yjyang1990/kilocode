@@ -235,6 +235,7 @@ fun handleCodeAction(command: String, promptType: String, params: Any, project: 
     val messageContent = when {
         // Add to context command
         command.contains("addToContext") -> {
+            @Suppress("UNCHECKED_CAST")
             val promptParams = if (params is Map<*, *>) params as Map<String, Any?> else emptyMap()
             mapOf(
                 "type" to "invoke",
@@ -244,6 +245,7 @@ fun handleCodeAction(command: String, promptType: String, params: Any, project: 
         }
         // Command executed in current task
         command.endsWith("InCurrentTask") -> {
+            @Suppress("UNCHECKED_CAST")
             val promptParams = if (params is Map<*, *>) params as Map<String, Any?> else emptyMap()
             val basePromptType = when {
                 command.contains("explain") -> "EXPLAIN"
@@ -261,6 +263,7 @@ fun handleCodeAction(command: String, promptType: String, params: Any, project: 
         else -> {
             val promptParams = if (params is List<*>) {
                 // Process parameter list from createAction
+                @Suppress("UNCHECKED_CAST")
                 val argsList = params as List<Any>
                 if (argsList.size >= 4) {
                     mapOf(
@@ -273,6 +276,7 @@ fun handleCodeAction(command: String, promptType: String, params: Any, project: 
                     emptyMap()
                 }
             } else if (params is Map<*, *>) {
+                @Suppress("UNCHECKED_CAST")
                 params as Map<String, Any?>
             } else {
                 emptyMap()

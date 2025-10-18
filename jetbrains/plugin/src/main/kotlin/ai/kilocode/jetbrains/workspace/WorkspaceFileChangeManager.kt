@@ -96,10 +96,8 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
         val workspaceData = project.getService(WorkspaceManager::class.java).getProjectWorkspaceData(project)
 
         extHostWorkspace?.let {
-            if(workspaceData != null) {
-                logger.info("Send workspace root change to extension process: ${workspaceData.name}, folders: ${workspaceData.folders.size}")
-                it.acceptWorkspaceData(workspaceData)
-            }
+            logger.info("Send workspace root change to extension process: ${workspaceData.name}, folders: ${workspaceData.folders.size}")
+            it.acceptWorkspaceData(workspaceData)
         }
     }
 

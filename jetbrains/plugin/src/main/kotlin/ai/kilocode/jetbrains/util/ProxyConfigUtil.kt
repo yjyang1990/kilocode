@@ -56,10 +56,12 @@ object ProxyConfigUtil {
     /**
      * Get IDE proxy configuration
      *
-     * Note: This method uses deprecated HttpConfigurable fields that are scheduled for removal.
-     * These fields are still the official API in IntelliJ Platform 2024.1 and no replacement
+     * Note: This method uses deprecated HttpConfigurable class that is scheduled for removal.
+     * As of IntelliJ Platform 2024.3, this is still the official API and no replacement
      * has been provided yet. The @Suppress annotation is used to acknowledge this deprecation
      * while waiting for JetBrains to provide an alternative API.
+     *
+     * See: https://youtrack.jetbrains.com/issue/IDEA-307815
      */
     @Suppress("DEPRECATION")
     private fun getIDEProxyConfig(): ProxyConfig {

@@ -197,6 +197,7 @@ class MainThreadDiaglogs : MainThreadDiaglogsShape {
      */
     private fun create(map: Map<String, Any?>?): MainThreadDialogOpenOptions? {
         map?.let {
+            @Suppress("UNCHECKED_CAST")
             return MainThreadDialogOpenOptions(
                 defaultUri = it["defaultUri"] as? Map<String, String?>,
                 openLabel = it["openLabel"] as? String,

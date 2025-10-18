@@ -43,10 +43,7 @@ class WorkspaceManager(val project: Project) {
      * @param project The project to get workspace data for
      * @return Workspace data or null if the project is null
      */
-    fun getProjectWorkspaceData(project: Project): WorkspaceData? {
-        if (project == null) {
-            return null
-        }
+    fun getProjectWorkspaceData(project: Project): WorkspaceData {
 
         // Create workspace ID (using hash value of the project's base path)
         val workspaceId = getWorkspaceId(project)

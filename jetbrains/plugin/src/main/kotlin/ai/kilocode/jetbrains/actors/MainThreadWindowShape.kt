@@ -59,23 +59,15 @@ class MainThreadWindow(val project: Project) : MainThreadWindowShape {
         try {
             logger.info("Getting window initial state")
 
-            if (project != null) {
-                // Get current project window state
-                val frame = WindowManager.getInstance().getFrame(project)
-                val isFocused = frame?.isFocused ?: false
-                val isActive = frame?.isActive ?: false
-                
-                return mapOf(
-                    "isFocused" to isFocused,
-                    "isActive" to isActive
-                )
-            } else {
-                logger.warn("Cannot get current project, returning default window state")
-                return mapOf(
-                    "isFocused" to false,
-                    "isActive" to false
-                )
-            }
+            // Get current project window state
+            val frame = WindowManager.getInstance().getFrame(project)
+            val isFocused = frame?.isFocused ?: false
+            val isActive = frame?.isActive ?: false
+            
+            return mapOf(
+                "isFocused" to isFocused,
+                "isActive" to isActive
+            )
         } catch (e: Exception) {
             logger.error("Failed to get window initial state", e)
             return mapOf(

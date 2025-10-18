@@ -221,7 +221,9 @@ object SupportPrompt {
      */
     private fun generateDiagnosticText(diagnostics: List<Map<String, Any?>>?): String {
         if (diagnostics.isNullOrEmpty()) return ""
-        return "\nCurrent problems detected:\n" + diagnostics.joinToString("\n") { d ->
+        return "\nCurrent problems detected:\n" + diagnostics.joinToString("\n") { diagnostic ->
+            @Suppress("UNCHECKED_CAST")
+            val d = diagnostic as Map<String, Any?>
             val source = d["source"] as? String ?: "Error"
             val message = d["message"] as? String ?: ""
             val code = d["code"] as? String
@@ -241,6 +243,7 @@ object SupportPrompt {
         return pattern.replace(template) { matchResult ->
             val key = matchResult.groupValues[1]
             if (key == "diagnosticText") {
+                @Suppress("UNCHECKED_CAST")
                 generateDiagnosticText(params["diagnostics"] as? List<Map<String, Any?>>)
             } else if (params.containsKey(key)) {
                 // Ensure the value is treated as a string for replacement

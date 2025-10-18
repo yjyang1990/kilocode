@@ -12,7 +12,6 @@ import com.intellij.diff.contents.DiffContent
 import com.intellij.diff.contents.FileDocumentContentImpl
 import com.intellij.diff.editor.ChainDiffVirtualFile
 import com.intellij.diff.editor.DiffEditorTabFilesManager
-import com.intellij.diff.editor.DiffRequestProcessorEditor
 import com.intellij.diff.requests.SimpleDiffRequest
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
@@ -179,7 +178,7 @@ class EditorAndDocManager(val project: Project) : Disposable {
         val path = uri.path
         val scheme = uri.scheme
         val query = uri.query
-        if(scheme != null && scheme.isNotEmpty()){
+        if(scheme.isNotEmpty()){
             val contentFactory = DiffContentFactory.getInstance()
             if(scheme == "file"){
                 val vfs = LocalFileSystem.getInstance()
@@ -388,19 +387,39 @@ class EditorAndDocManager(val project: Project) : Disposable {
                         }
                     }else{
                         ApplicationManager.getApplication().invokeAndWait {
-                            FileEditorManager.getInstance(project).allEditors.forEach {
-                                if(it is DiffRequestProcessorEditor && handler.diff){
-                                    val differ = it
-                                    differ.processor.activeRequest?.let { req ->
-                                        for (filesToRefresh in req.filesToRefresh) {
-                                            if(filesToRefresh.path == handler.document.uri.path){
-                                                differ.dispose()
+                            // Note: DiffRequestProcessorEditor is deprecated, but we need to handle existing diff editors
+                            // The new API uses DiffEditorViewerFileEditors, but for compatibility we still check the old type
+                            @Suppress("DEPRECATION")
+                            FileEditorManager.getInstance(project).allEditors.forEach { editor ->
+                                // Check if it's a diff editor by class name to avoid direct type reference
+                                if(handler.diff && editor.javaClass.simpleName.contains("DiffRequestProcessorEditor")){
+                                    try {
+                                        // Use reflection to access processor and activeRequest
+                                        val processorField = editor.javaClass.getDeclaredField("processor")
+                                        processorField.isAccessible = true
+                                        val processor = processorField.get(editor)
+                                        
+                                        val activeRequestMethod = processor.javaClass.getMethod("getActiveRequest")
+                                        val activeRequest = activeRequestMethod.invoke(processor)
+                                        
+                                        if (activeRequest != null) {
+                                            val filesToRefreshMethod = activeRequest.javaClass.getMethod("getFilesToRefresh")
+                                            @Suppress("UNCHECKED_CAST")
+                                            val filesToRefresh = filesToRefreshMethod.invoke(activeRequest) as? List<*>
+                                            
+                                            filesToRefresh?.forEach { file ->
+                                                val pathMethod = file?.javaClass?.getMethod("getPath")
+                                                val path = pathMethod?.invoke(file) as? String
+                                                if(path == handler.document.uri.path){
+                                                    editor.dispose()
+                                                }
                                             }
                                         }
+                                    } catch (e: Exception) {
+                                        logger.warn("Failed to handle diff editor disposal: ${e.message}")
                                     }
                                 }
                             }
-
                         }
                     }
                 }

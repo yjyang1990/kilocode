@@ -331,6 +331,9 @@ class TerminalInstance(
         ApplicationManager.getApplication().invokeLater {
             try {
                 showTerminalToolWindow()
+                // Note: show() method is deprecated but there's no direct replacement in the current API
+                // The terminal visibility is now managed through the tool window
+                @Suppress("DEPRECATION")
                 shellWidget?.show(preserveFocus)
                 logger.info("✅ Terminal shown: $extHostTerminalId")
             } catch (e: Exception) {
@@ -351,6 +354,9 @@ class TerminalInstance(
         ApplicationManager.getApplication().invokeLater {
             try {
                 hideTerminalToolWindow()
+                // Note: hide() method is deprecated but there's no direct replacement in the current API
+                // The terminal visibility is now managed through the tool window
+                @Suppress("DEPRECATION")
                 shellWidget?.hide()
                 logger.info("✅ Terminal hidden: $extHostTerminalId")
             } catch (e: Exception) {
@@ -594,6 +600,7 @@ data class TerminalConfig(
         /**
          * Create TerminalConfig from Map
          */
+        @Suppress("UNCHECKED_CAST")
         fun fromMap(config: Map<String, Any?>): TerminalConfig {
             return TerminalConfig(
                 name = config["name"] as? String,

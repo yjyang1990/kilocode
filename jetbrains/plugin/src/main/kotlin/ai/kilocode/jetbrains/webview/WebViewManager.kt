@@ -241,7 +241,7 @@ class WebViewManager(var project: Project) : Disposable, ThemeChangeListener {
         // Get location info from extension and set resource root directory
         try {
             @Suppress("UNCHECKED_CAST")
-            val location = extension?.get("location") as? Map<String, Any?>
+            val location = extension.get("location") as? Map<String, Any?>
             val fsPath = location?.get("fsPath") as? String
 
             if (fsPath != null) {
@@ -274,6 +274,7 @@ class WebViewManager(var project: Project) : Disposable, ThemeChangeListener {
         val viewId = UUID.randomUUID().toString()
 
         val title = data.options["title"] as? String ?: data.viewType
+        @Suppress("UNCHECKED_CAST")
         val state = data.options["state"] as? Map<String, Any?> ?: emptyMap()
 
         val webview = WebViewInstance(data.viewType, viewId, title, state,project,data.extension)
@@ -794,6 +795,8 @@ class WebViewInstance(
 
     private fun setupJSBridge() {
         // Create JS query object to handle messages from webview
+        // Note: The static create() method is deprecated, but the instance method requires the browser parameter
+        @Suppress("DEPRECATION")
         jsQuery = JBCefJSQuery.create(browser)
 
         // Set callback for receiving messages from webview
@@ -838,7 +841,7 @@ class WebViewInstance(
     fun enableResourceInterception(extension: Map<String, Any?>) {
         try {
             @Suppress("UNCHECKED_CAST")
-            val location = extension?.get("location") as? Map<String, Any?>
+            val location = extension.get("location") as? Map<String, Any?>
             val fsPath = location?.get("fsPath") as? String
 
             // Get JCEF client

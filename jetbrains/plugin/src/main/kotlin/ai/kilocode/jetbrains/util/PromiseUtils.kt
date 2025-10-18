@@ -5,6 +5,7 @@
 package ai.kilocode.jetbrains.util
 
 import ai.kilocode.jetbrains.ipc.proxy.LazyPromise
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.resume
@@ -16,6 +17,7 @@ import kotlin.coroutines.resumeWithException
  * @param T Result type
  * @return CompletableFuture containing the Promise result
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <T> LazyPromise.toCompletableFuture(): CompletableFuture<T> {
     val future = CompletableFuture<T>()
     
@@ -47,6 +49,7 @@ fun <T> LazyPromise.toCompletableFuture(): CompletableFuture<T> {
  * @param T Result type
  * @return Result value of the Promise
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun <T> LazyPromise.await(): T {
     return suspendCancellableCoroutine { continuation ->
         this.invokeOnCompletion { throwable ->
@@ -83,6 +86,7 @@ suspend fun <T> LazyPromise.await(): T {
  * @param onSuccess Success callback function
  * @param onError Error callback function, default is empty
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <T> LazyPromise.handle(
     onSuccess: (T) -> Unit,
     onError: (Throwable) -> Unit = { throw it }
@@ -118,6 +122,7 @@ fun <T> LazyPromise.handle(
  * @param mapper Conversion function
  * @return New LazyPromise containing the converted result
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <T, R> LazyPromise.thenMap(mapper: (T) -> R): LazyPromise {
     val result = LazyPromise()
     
