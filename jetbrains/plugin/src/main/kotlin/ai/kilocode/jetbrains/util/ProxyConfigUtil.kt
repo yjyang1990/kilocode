@@ -5,7 +5,6 @@
 package ai.kilocode.jetbrains.util
 
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.util.net.HttpConfigurable
 import java.net.URI
 import java.net.URISyntaxException
 
@@ -62,11 +61,13 @@ object ProxyConfigUtil {
      * while waiting for JetBrains to provide an alternative API.
      *
      * See: https://youtrack.jetbrains.com/issue/IDEA-307815
+     *
+     * TODO: Replace with new proxy configuration API when available in future IntelliJ versions
      */
     @Suppress("DEPRECATION")
     private fun getIDEProxyConfig(): ProxyConfig {
         return try {
-            val proxyConfig = HttpConfigurable.getInstance()
+            val proxyConfig = com.intellij.util.net.HttpConfigurable.getInstance()
             
             // Check PAC proxy
             if (proxyConfig.USE_PAC_URL) {
