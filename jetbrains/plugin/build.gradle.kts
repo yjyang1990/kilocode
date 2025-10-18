@@ -64,7 +64,7 @@ project.afterEvaluate {
 fun Sync.prepareSandbox() {
     // Set duplicate strategy to include files, with later sources taking precedence
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    
+
     if (ext.get("debugMode") == "idea") {
         from("${project.projectDir.absolutePath}/src/main/resources/themes/") {
             into("${ext.get("debugResource")}/${ext.get("vscodePlugin")}/integrations/theme/default-themes/")
@@ -91,10 +91,10 @@ fun Sync.prepareSandbox() {
         }
 
         val pluginName = properties("pluginGroup").get().split(".").last()
-        
+
         from("../host/dist") { into("$pluginName/runtime/") }
         from("../host/package.json") { into("$pluginName/runtime/") }
-        
+
         // First copy host node_modules
         from("../resources/node_modules") {
             into("$pluginName/node_modules/")
@@ -105,7 +105,7 @@ fun Sync.prepareSandbox() {
 
         from("${vscodePluginDir.path}/extension") { into("$pluginName/${ext.get("vscodePlugin")}") }
         from("src/main/resources/themes/") { into("$pluginName/${ext.get("vscodePlugin")}/integrations/theme/default-themes/") }
-        
+
         // The platform.zip file required for release mode is associated with the code in ../base/vscode, currently using version 1.100.0. If upgrading this code later
         // Need to modify the vscodeVersion value in gradle.properties, then execute the task named genPlatform, which will generate a new platform.zip file for submission
         // To support new architectures, modify according to the logic in genPlatform.gradle script
@@ -132,7 +132,7 @@ fun Sync.prepareSandbox() {
 
         doLast {
             val pluginName = properties("pluginGroup").get().split(".").last()
-            File("${destinationDir}/$pluginName/${ext.get("vscodePlugin")}/.env").createNewFile()
+            File("$destinationDir/$pluginName/${ext.get("vscodePlugin")}/.env").createNewFile()
         }
     }
 }
@@ -142,7 +142,7 @@ version = properties("pluginVersion").get()
 
 repositories {
     mavenCentral()
-    
+
     intellijPlatform {
         defaultRepositories()
     }
@@ -153,19 +153,21 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
-    
+
     intellijPlatform {
         create(properties("platformType"), properties("platformVersion"))
-        
+
         // Bundled plugins
-        bundledPlugins(listOf(
-            "com.intellij.java",
-            "org.jetbrains.plugins.terminal"
-        ))
-        
+        bundledPlugins(
+            listOf(
+                "com.intellij.java",
+                "org.jetbrains.plugins.terminal",
+            ),
+        )
+
         // Plugin verifier
         pluginVerifier()
-        
+
         // Instrumentation tools
         instrumentationTools()
     }
@@ -185,13 +187,13 @@ java {
 intellijPlatform {
     pluginConfiguration {
         version = properties("pluginVersion")
-        
+
         ideaVersion {
             sinceBuild = properties("pluginSinceBuild")
             untilBuild = provider { null }
         }
     }
-    
+
     pluginVerification {
         ides {
             recommended()
@@ -251,20 +253,20 @@ tasks {
     // Convert the extension's JSON translation files to JetBrains ResourceBundle .properties format
     register("convertTranslations") {
         description = "Convert JSON translation files to the native ResourceBundle .properties format"
-        
+
         val sourceDir = file("../../src/i18n/locales")
         val targetDir = file("src/main/resources/messages")
-        
+
         inputs.dir(sourceDir)
         outputs.dir(targetDir)
-        
+
         doLast {
             if (!sourceDir.exists()) {
                 throw IllegalStateException("Source translation directory not found: ${sourceDir.absolutePath}")
             }
-            
+
             targetDir.mkdirs()
-            
+
             // Find all JSON bundles (jetbrains.json, kilocode.json, etc.)
             val jsonBundles = mutableSetOf<String>()
             sourceDir.listFiles()?.forEach { localeDir ->
@@ -275,7 +277,7 @@ tasks {
                 }
             }
             println("Found translation bundles: ${jsonBundles.joinToString(", ")}")
-            
+
             jsonBundles.forEach { bundleName ->
                 convertBundleToProperties(sourceDir, targetDir, bundleName)
             }
@@ -286,13 +288,12 @@ tasks {
     named("processResources") {
         dependsOn("convertTranslations")
     }
-
 }
 
 // Helper function to convert JSON bundle to .properties files
 fun convertBundleToProperties(sourceDir: File, targetDir: File, bundleName: String) {
     val gson = com.google.gson.Gson()
-    
+
     sourceDir.listFiles()?.forEach { localeDir ->
         if (localeDir.isDirectory) {
             val jsonFile = File(localeDir, "$bundleName.json")
@@ -300,24 +301,24 @@ fun convertBundleToProperties(sourceDir: File, targetDir: File, bundleName: Stri
                 try {
                     val locale = localeDir.name
                     val capitalizedBundleName = bundleName.replaceFirstChar { it.uppercase() }
-                    
+
                     // Determine properties file name
                     val propertiesFileName = if (locale == "en") {
                         "${capitalizedBundleName}Bundle.properties"
                     } else {
                         "${capitalizedBundleName}Bundle_${locale.replace("-", "_")}.properties"
                     }
-                    
+
                     val propertiesFile = File(targetDir, propertiesFileName)
-                    
+
                     // Parse JSON
                     val jsonContent = jsonFile.readText()
                     val jsonObject = gson.fromJson(jsonContent, com.google.gson.JsonObject::class.java)
-                    
+
                     // Convert to flat properties
                     val properties = mutableMapOf<String, String>()
                     flattenJsonObject(jsonObject, "", properties)
-                    
+
                     // Write properties file
                     propertiesFile.writeText("# Auto-generated from $bundleName.json - do not edit directly\n")
                     properties.toSortedMap().forEach { (key, value) ->
@@ -331,12 +332,11 @@ fun convertBundleToProperties(sourceDir: File, targetDir: File, bundleName: Stri
                             .replace(":", "\\:")
                             .replace("#", "\\#")
                             .replace("!", "\\!")
-                        
+
                         propertiesFile.appendText("$key=$escapedValue\n")
                     }
-                    
+
                     println("  → $locale: ${properties.size} keys → $propertiesFileName")
-                    
                 } catch (e: Exception) {
                     throw RuntimeException("Failed to convert $jsonFile", e)
                 }
@@ -351,7 +351,7 @@ fun flattenJsonObject(jsonObject: com.google.gson.JsonObject, prefix: String, pr
         val key = entry.key
         val element = entry.value
         val fullKey = if (prefix.isEmpty()) key else "$prefix.$key"
-        
+
         when {
             element.isJsonObject -> {
                 flattenJsonObject(element.asJsonObject, fullKey, properties)
