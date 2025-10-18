@@ -747,7 +747,7 @@ export async function applyNativeDiffTool(
 	// Not as a JSON string in block.params.args
 	const filesParam = block.params.files
 
-	// Parse the complete JSON arguments
+	// Validate that filesParam exists
 	if (!filesParam) {
 		cline.consecutiveMistakeCount++
 		cline.recordToolError("apply_diff")
@@ -757,23 +757,30 @@ export async function applyNativeDiffTool(
 		return
 	}
 
+	// filesParam should already be parsed by AssistantMessageParser.parseDoubleEncodedParams
+	// If it's still a string, try to parse it; otherwise use it directly
 	let nativeArgs: NativeToolArgs
-	try {
-		nativeArgs = JSON.parse(filesParam) as NativeToolArgs
-	} catch (error) {
-		const fallbackError = error instanceof Error ? error.message : String(error)
-		const detailedError = `
+	if (typeof filesParam === "string") {
+		try {
+			nativeArgs = JSON.parse(filesParam) as NativeToolArgs
+		} catch (error) {
+			const fallbackError = error instanceof Error ? error.message : String(error)
+			const detailedError = `
 Failed to parse apply_diff JSON arguments. This usually means:
 1. The JSON structure is malformed or incomplete
 2. Missing required 'files' array
 `
-		cline.consecutiveMistakeCount++
-		cline.recordToolError("apply_diff")
-		TelemetryService.instance.captureDiffApplicationError(cline.taskId, cline.consecutiveMistakeCount)
-		await cline.say("diff_error", `Failed to parse apply_diff JSON: ${fallbackError}`)
-		pushToolResult(detailedError)
-		cline.processQueuedMessages()
-		return
+			cline.consecutiveMistakeCount++
+			cline.recordToolError("apply_diff")
+			TelemetryService.instance.captureDiffApplicationError(cline.taskId, cline.consecutiveMistakeCount)
+			await cline.say("diff_error", `Failed to parse apply_diff JSON: ${fallbackError}`)
+			pushToolResult(detailedError)
+			cline.processQueuedMessages()
+			return
+		}
+	} else {
+		// Already parsed as an object/array
+		nativeArgs = { files: filesParam }
 	}
 
 	// Validate the parsed arguments
