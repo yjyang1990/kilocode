@@ -16,7 +16,7 @@ buildscript {
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "2.0.21"
-    id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.intellij.platform") version "2.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
     id("io.gitlab.arturbosch.detekt") version "1.23.7"
 }
@@ -90,19 +90,21 @@ fun Sync.prepareSandbox() {
             }
         }
 
-        from("../host/dist") { into("${intellij.pluginName.get()}/runtime/") }
-        from("../host/package.json") { into("${intellij.pluginName.get()}/runtime/") }
+        val pluginName = properties("pluginGroup").get().split(".").last()
+        
+        from("../host/dist") { into("$pluginName/runtime/") }
+        from("../host/package.json") { into("$pluginName/runtime/") }
         
         // First copy host node_modules
         from("../resources/node_modules") {
-            into("${intellij.pluginName.get()}/node_modules/")
+            into("$pluginName/node_modules/")
             list.forEach {
                 include(it)
             }
         }
 
-        from("${vscodePluginDir.path}/extension") { into("${intellij.pluginName.get()}/${ext.get("vscodePlugin")}") }
-        from("src/main/resources/themes/") { into("${intellij.pluginName.get()}/${ext.get("vscodePlugin")}/integrations/theme/default-themes/") }
+        from("${vscodePluginDir.path}/extension") { into("$pluginName/${ext.get("vscodePlugin")}") }
+        from("src/main/resources/themes/") { into("$pluginName/${ext.get("vscodePlugin")}/integrations/theme/default-themes/") }
         
         // The platform.zip file required for release mode is associated with the code in ../base/vscode, currently using version 1.100.0. If upgrading this code later
         // Need to modify the vscodeVersion value in gradle.properties, then execute the task named genPlatform, which will generate a new platform.zip file for submission
@@ -122,13 +124,15 @@ fun Sync.prepareSandbox() {
                 throw IllegalStateException("platform.zip file does not exist or is smaller than 1MB. This file is supported through git lfs and needs to be obtained through git lfs")
             }
 
-            from(File(layout.buildDirectory.get().asFile, "platform/platform.txt")) { into("${intellij.pluginName.get()}/") }
+            val pluginName = properties("pluginGroup").get().split(".").last()
+            from(File(layout.buildDirectory.get().asFile, "platform/platform.txt")) { into("$pluginName/") }
             // Copy platform node_modules last to ensure it takes precedence over host node_modules
-            from(File(layout.buildDirectory.get().asFile, "platform/node_modules")) { into("${intellij.pluginName.get()}/node_modules") }
+            from(File(layout.buildDirectory.get().asFile, "platform/node_modules")) { into("$pluginName/node_modules") }
         }
 
         doLast {
-            File("${destinationDir}/${intellij.pluginName.get()}/${ext.get("vscodePlugin")}/.env").createNewFile()
+            val pluginName = properties("pluginGroup").get().split(".").last()
+            File("${destinationDir}/$pluginName/${ext.get("vscodePlugin")}/.env").createNewFile()
         }
     }
 }
@@ -138,13 +142,33 @@ version = properties("pluginVersion").get()
 
 repositories {
     mavenCentral()
+    
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.4")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+    
+    intellijPlatform {
+        create(properties("platformType"), properties("platformVersion"))
+        
+        // Bundled plugins
+        bundledPlugins(listOf(
+            "com.intellij.java",
+            "org.jetbrains.plugins.terminal"
+        ))
+        
+        // Plugin verifier
+        pluginVerifier()
+        
+        // Instrumentation tools
+        instrumentationTools()
+    }
 }
 
 // Configure Java toolchain to force Java 21
@@ -156,19 +180,23 @@ java {
     }
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    version = properties("platformVersion")
-    type = properties("platformType")
-
-    plugins.set(
-        listOf(
-            "com.intellij.java",
-            // Add JCEF support
-            "org.jetbrains.plugins.terminal"
-        )
-    )
+// Configure IntelliJ Platform Gradle Plugin 2.x
+// Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
+intellijPlatform {
+    pluginConfiguration {
+        version = properties("pluginVersion")
+        
+        ideaVersion {
+            sinceBuild = properties("pluginSinceBuild")
+            untilBuild = provider { null }
+        }
+    }
+    
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
 }
 
 tasks {
@@ -200,20 +228,14 @@ tasks {
     // Set the JVM compatibility versions
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         dependsOn("generateConfigProperties")
-        kotlinOptions {
-            jvmTarget = "21"
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
         }
     }
 
     withType<JavaCompile> {
         sourceCompatibility = "21"
         targetCompatibility = "21"
-    }
-
-    patchPluginXml {
-        version.set(properties("pluginVersion"))
-        sinceBuild.set(properties("pluginSinceBuild"))
-        untilBuild.set("")
     }
 
     signPlugin {
@@ -367,7 +389,9 @@ detekt {
     config.setFrom(file("detekt.yml"))
     buildUponDefaultConfig = true
     allRules = false
-    
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     reports {
         html.required.set(true)
         xml.required.set(true)
