@@ -25,6 +25,7 @@ import ai.kilocode.jetbrains.actors.MainThreadMessageServiceShape
 import ai.kilocode.jetbrains.actors.MainThreadOutputServiceShape
 import ai.kilocode.jetbrains.actors.MainThreadSearchShape
 import ai.kilocode.jetbrains.actors.MainThreadSecretStateShape
+import ai.kilocode.jetbrains.actors.MainThreadStatusBarShape
 import ai.kilocode.jetbrains.actors.MainThreadStorageShape
 import ai.kilocode.jetbrains.actors.MainThreadTaskShape
 import ai.kilocode.jetbrains.actors.MainThreadTelemetryShape
@@ -269,7 +270,7 @@ class ServiceProxyRegistry private constructor() {
         val MainThreadProgress = createProxyIdentifier<Any>("MainThreadProgress")
         val MainThreadQuickDiff = createProxyIdentifier<Any>("MainThreadQuickDiff")
         val MainThreadQuickOpen = createProxyIdentifier<Any>("MainThreadQuickOpen")
-        val MainThreadStatusBar = createProxyIdentifier<Any>("MainThreadStatusBar")
+        val MainThreadStatusBar = createProxyIdentifier<MainThreadStatusBarShape>("MainThreadStatusBar")
         val MainThreadSecretState = createProxyIdentifier<MainThreadSecretStateShape>("MainThreadSecretState")
         val MainThreadStorage = createProxyIdentifier<MainThreadStorageShape>("MainThreadStorage")
         val MainThreadSpeech = createProxyIdentifier<Any>("MainThreadSpeechProvider")

@@ -25,6 +25,7 @@ import ai.kilocode.jetbrains.actors.MainThreadMessageService
 import ai.kilocode.jetbrains.actors.MainThreadOutputService
 import ai.kilocode.jetbrains.actors.MainThreadSearch
 import ai.kilocode.jetbrains.actors.MainThreadSecretState
+import ai.kilocode.jetbrains.actors.MainThreadStatusBar
 import ai.kilocode.jetbrains.actors.MainThreadStorage
 import ai.kilocode.jetbrains.actors.MainThreadTask
 import ai.kilocode.jetbrains.actors.MainThreadTelemetry
@@ -171,6 +172,9 @@ class RPCManager(
 
         // MainThreadConfiguration
         rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadConfiguration, MainThreadConfiguration())
+
+        // MainThreadStatusBar
+        rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadStatusBar, MainThreadStatusBar(project))
     }
 
     /**
