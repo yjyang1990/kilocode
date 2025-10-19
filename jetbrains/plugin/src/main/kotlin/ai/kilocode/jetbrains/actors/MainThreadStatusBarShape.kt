@@ -42,7 +42,7 @@ interface MainThreadStatusBarShape : Disposable {
         backgroundColor: Any?,
         color: Any?,
         accessibilityInformation: Boolean?,
-        priority: Any?,
+        priority: Double?,
         alignment: Any?,
     )
 
@@ -75,7 +75,7 @@ class MainThreadStatusBar(
         val backgroundColor: Any?,
         val color: Any?,
         val accessibilityInformation: Boolean?,
-        val priority: Any?,
+        val priority: Double?,
         val alignment: Any?,
     )
 
@@ -91,7 +91,7 @@ class MainThreadStatusBar(
         backgroundColor: Any?,
         color: Any?,
         accessibilityInformation: Boolean?,
-        priority: Any?,
+        priority: Double?,
         alignment: Any?,
     ) {
         logger.info("Setting status bar entry: id=$id, extensionId=$extensionId, text=$text")

@@ -778,6 +778,14 @@ class RPCProtocol(
                     // Handle primitive type conversions (similar to doInvokeMethod)
                     val isCompatible = when {
                         paramJavaClass.isAssignableFrom(argClass) -> true
+                        // Handle String to numeric type conversions
+                        arg is String && (
+                            paramJavaClass == Int::class.java ||
+                                paramJavaClass == Long::class.java ||
+                                paramJavaClass == Double::class.java ||
+                                paramJavaClass == Float::class.java ||
+                                paramJavaClass == Boolean::class.java
+                            ) -> true
                         // Handle Double to numeric type conversions
                         arg is Double && (
                             paramJavaClass == Int::class.java ||
@@ -785,7 +793,8 @@ class RPCProtocol(
                                 paramJavaClass == Float::class.java ||
                                 paramJavaClass == Short::class.java ||
                                 paramJavaClass == Byte::class.java ||
-                                paramJavaClass == Boolean::class.java
+                                paramJavaClass == Boolean::class.java ||
+                                paramJavaClass == Double::class.java
                             ) -> true
                         // Handle String compatibility
                         arg is String && paramJavaClass == String::class.java -> true
