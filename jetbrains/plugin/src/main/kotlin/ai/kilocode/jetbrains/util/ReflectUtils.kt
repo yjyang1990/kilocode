@@ -63,6 +63,19 @@ suspend fun doInvokeMethod(
                     ) ->
                     arg != 0.0
 
+                // Handle Double to Any? conversion - convert to appropriate numeric type
+                arg is Double && (
+                    paramType.type.isSubtypeOf(typeOf<Any?>()) ||
+                        paramType.type.isSubtypeOf(typeOf<Any>())
+                    ) -> {
+                    // If the double is a whole number, convert to Int, otherwise keep as Double
+                    if (arg % 1.0 == 0.0 && arg >= Int.MIN_VALUE && arg <= Int.MAX_VALUE) {
+                        arg.toInt()
+                    } else {
+                        arg
+                    }
+                }
+
                 else -> arg
             }
 
