@@ -173,21 +173,21 @@ export function getModelParams({
 			format,
 			...params,
 			// kilocode_change start
-			reasoning:
-				reasoningEffort === "minimal" && supportsTogglingReasoning(modelId)
-					? { enabled: false }
-					: getOpenRouterReasoning({ model, reasoningBudget, reasoningEffort, settings }),
+			reasoning: shouldDisableReasoning(modelId, reasoningEffort)
+				? { enabled: false }
+				: getOpenRouterReasoning({ model, reasoningBudget, reasoningEffort, settings }),
 			// kilocode_change end
 		}
 	}
 }
 
 // kilocode_change start
-function supportsTogglingReasoning(modelId: string) {
-	return (
+function shouldDisableReasoning(modelId: string, reasoningEffort: ReasoningEffortWithMinimal | undefined) {
+	const supportsReasoningToggle =
 		modelId.startsWith("deepseek/deepseek-v3.1") ||
 		modelId.startsWith("deepseek/deepseek-chat-v3.1") ||
-		modelId.startsWith("x-ai/grok-4-fast")
-	)
+		modelId.startsWith("x-ai/grok-4-fast") ||
+		modelId.startsWith("z-ai/glm-4.6")
+	return supportsReasoningToggle && reasoningEffort === "minimal"
 }
 // kilocode_change end

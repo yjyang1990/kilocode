@@ -14,7 +14,9 @@
 	"task": {
 		"noAssistantMessages": "Die Antwort des Modells endete unerwartet (keine Assistant-Nachrichten). Dies könnte ein Hinweis auf Raten-Limitierung sein.",
 		"notLoggedInError": "Anfrage kann nicht abgeschlossen werden. Stelle sicher, dass du mit dem ausgewählten Anbieter verbunden und angemeldet bist.\n\n{{error}}",
-		"maxCompletionTokens": "Die maximale Anzahl an Completion-Tokens wurde erreicht."
+		"maxCompletionTokens": "Die maximale Anzahl an Completion-Tokens wurde erreicht.",
+		"disableApplyDiff": "Falls dieser Fehler weiterhin auftritt, deaktiviere bitte 'Bearbeitung durch Diffs' in den erweiterten Einstellungen.",
+		"disableEditFile": "Falls dieser Fehler weiterhin auftritt, deaktiviere bitte die experimentelle Funktion 'Schnelles Anwenden'."
 	},
 	"checkpoints": {
 		"nestedGitRepos": "Checkpoints sind nicht verfügbar, da ein verschachteltes Git-Repository erkannt wurde unter: {{path}}. Bitte entferne oder verschiebe verschachtelte Git-Repositories, um die Checkpoint-Funktion zu nutzen, oder deaktiviere Checkpoints in den Einstellungen, um diese Warnung zu unterdrücken.",
@@ -71,6 +73,7 @@
 				"tokenError": "Ein gültiger Token muss gesetzt werden, um Autocomplete zu verwenden",
 				"lastCompletion": "Letzter Vorschlag:",
 				"sessionTotal": "Sitzungsgesamtkosten:",
+				"provider": "Anbieter:",
 				"model": "Modell:"
 			},
 			"cost": {
@@ -96,7 +99,6 @@
 			"cancelSuggestions": "Bearbeitungsvorschläge abbrechen",
 			"applyCurrentSuggestion": "Aktuellen Bearbeitungsvorschlag anwenden",
 			"applyAllSuggestions": "Alle Bearbeitungsvorschläge anwenden",
-			"promptCodeSuggestion": "Schnellaufgabe",
 			"category": "Kilo Code"
 		},
 		"codeAction": {
@@ -133,5 +135,10 @@
 		"checkpointsUnavailable": "Kann neue Änderungen nicht anzeigen, Checkpoints sind nicht verfügbar.",
 		"noChanges": "Kann neue Änderungen nicht anzeigen, keine Änderungen gefunden.",
 		"error": "Kann neue Änderungen nicht anzeigen, ein Fehler ist aufgetreten."
+	},
+	"creditsstatusbar": {
+		"loading": "Lädt...",
+		"clickToRefresh": "Klicke zum Aktualisieren",
+		"minute": "Minute"
 	}
 }

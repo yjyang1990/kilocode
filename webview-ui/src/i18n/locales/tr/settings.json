@@ -289,6 +289,8 @@
 		"getChutesApiKey": "Chutes API Anahtarı Al",
 		"fireworksApiKey": "Fireworks API Anahtarı",
 		"getFireworksApiKey": "Fireworks API Anahtarı Al",
+		"syntheticApiKey": "Synthetic API Anahtarı",
+		"getSyntheticApiKey": "Synthetic API Anahtarı Al",
 		"featherlessApiKey": "Featherless API Anahtarı",
 		"getFeatherlessApiKey": "Featherless API Anahtarı Al",
 		"ioIntelligenceApiKey": "IO Intelligence API Anahtarı",
@@ -312,6 +314,10 @@
 		"sambaNovaApiKey": "SambaNova API Anahtarı",
 		"getHuggingFaceApiKey": "Hugging Face API Anahtarı Al",
 		"huggingFaceApiKey": "Hugging Face API Anahtarı",
+		"getOvhCloudAiEndpointsApiKey": "OVHcloud AI Endpoints API Anahtarı Al",
+		"ovhCloudAiEndpointsApiKey": "OVHcloud AI Endpoints API Anahtarı",
+		"ovhCloudAiEndpointsBaseUrl": "Temel URL",
+		"getOvhCloudAiEndpointsBaseUrl": "Özel temel URL kullan",
 		"huggingFaceModelId": "Model ID",
 		"huggingFaceLoading": "Yükleniyor...",
 		"huggingFaceModelsCount": "({{count}} model)",
@@ -758,13 +764,21 @@
 		},
 		"MULTI_FILE_APPLY_DIFF": {
 			"name": "Eşzamanlı dosya düzenlemelerini etkinleştir",
-			"description": "Etkinleştirildiğinde, Kilo Code tek bir istekte birden fazla dosyayı düzenleyebilir. Devre dışı bırakıldığında, Kilo Code dosyaları tek tek düzenlemek zorundadır. Bunu devre dışı bırakmak, daha az yetenekli modellerle çalışırken veya dosya değişiklikleri üzerinde daha fazla kontrol istediğinde yardımcı olabilir."
+			"description": "Etkinleştirildiğinde, Kilo Code tek bir istekte birden fazla dosyayı düzenleyebilir. Devre dışı bırakıldığında, Kilo Code dosyaları tek tek düzenlemek zorundadır. Bunu devre dışı bırakmak, daha az yetenekli modellerle çalışırken veya dosya değişiklikleri üzerinde daha fazla kontrol istediğinde yardımcı olabilir。"
 		},
 		"MORPH_FAST_APPLY": {
-			"name": "Morph Fast Apply'ı etkinleştir",
-			"description": "Etkinleştirildiğinde, Kilo Code dosyaları Morph Fast Apply kullanarak düzenleyebilir. Kilo Code API Sağlayıcısı, OpenRouter veya bir Morph API anahtarı gerektirir.",
+			"name": "Hızlı Uygulama'yı etkinleştir",
+			"description": "Etkinleştirildiğinde, Kilo Code dosyaları kod değişiklikleri için optimize edilmiş özel modellerle Hızlı Uygulama kullanarak düzenleyebilir. Kilo Code API Sağlayıcısı, OpenRouter veya bir Morph API anahtarı gerektirir.",
 			"apiKey": "Morph API anahtarı (isteğe bağlı)",
-			"placeholder": "Morph API anahtarınızı girin (isteğe bağlı)"
+			"placeholder": "Morph API anahtarınızı girin (isteğe bağlı)",
+			"modelLabel": "Model Seçimi",
+			"modelDescription": "Dosya düzenlemeleri için hangi Hızlı Uygulama modelinin kullanılacağını seçin",
+			"models": {
+				"auto": "Otomatik (Varsayılan - en uygun olanı seçer)",
+				"morphFast": "Morph v3 Fast (Daha hızlı, düşük maliyet)",
+				"morphLarge": "Morph v3 Large (Daha yetenekli)",
+				"relace": "Relace Apply v3"
+			}
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Arka plan düzenleme",
@@ -871,6 +885,7 @@
 			"regionMismatch": "Uyarı: ARN'nizdeki bölge ({{arnRegion}}) seçtiğiniz bölge ({{region}}) ile eşleşmiyor. Bu erişim sorunlarına neden olabilir. Sağlayıcı, ARN'deki bölgeyi kullanacak."
 		},
 		"modelAvailability": "Sağladığınız model kimliği ({{modelId}}) kullanılamıyor. Lütfen başka bir model seçin.",
+		"modelDeprecated": "Bu model artık kullanılamıyor. Lütfen farklı bir model seçin.",
 		"providerNotAllowed": "Sağlayıcı '{{provider}}' kuruluşunuz tarafından izin verilmiyor",
 		"modelNotAllowed": "Model '{{model}}' sağlayıcı '{{provider}}' için kuruluşunuz tarafından izin verilmiyor",
 		"profileInvalid": "Bu profil, kuruluşunuz tarafından izin verilmeyen bir sağlayıcı veya model içeriyor",
@@ -913,6 +928,15 @@
 		"taskTimeline": {
 			"description": "Görev mesajlarını türe göre renklendirilmiş görsel bir zaman çizelgesi olarak görüntüleyin, böylece görevin ilerlemesini hızlıca görebilir ve görevin geçmişindeki belirli noktalara geri dönmek için kaydırabilirsiniz.",
 			"label": "Görev zaman çizelgesini göster"
+		},
+		"costThreshold": {
+			"label": "Eşik değerin altındaki maliyeti gizle",
+			"description": "Sadece bu miktarın üzerindeki istek maliyetlerini göster. Ayrıntılar paneli açıkken maliyetler her zaman görünür.",
+			"currentValue": "Mevcut eşik: ${{value}}"
+		},
+		"showTimestamps": {
+			"label": "Zaman damgalarını göster",
+			"description": "Sohbet görünümündeki her mesaj için zaman damgası göster"
 		}
 	},
 	"ghost": {

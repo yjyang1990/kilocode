@@ -130,7 +130,8 @@
 		"settings": "Configurações de Modos",
 		"description": "Personas especializadas que adaptam o comportamento do Roo.",
 		"searchPlaceholder": "Pesquisar modos...",
-		"noResults": "Nenhum resultado encontrado"
+		"noResults": "Nenhum resultado encontrado",
+		"organizationModes": "Modos da organização"
 	},
 	"errorReadingFile": "Erro ao ler arquivo",
 	"noValidImages": "Nenhuma imagem válida foi processada",
@@ -294,7 +295,7 @@
 	"announcement": {
 		"title": "🎉 Roo Code {{version}} Lançado",
 		"stealthModel": {
-			"feature": "<bold>Modelo stealth GRATUITO por tempo limitado</bold> - Code Supernova: Um modelo de codificação agêntica versátil que suporta entradas de imagem, acessível através do Roo Code Cloud.",
+			"feature": "<bold>Modelo stealth GRATUITO por tempo limitado</bold> - Code Supernova: Agora atualizado com uma <bold>janela de contexto de 1M tokens</bold>! Um modelo de codificação agêntica versátil que suporta entradas de imagem, acessível através do Roo Code Cloud.",
 			"note": "(Nota: prompts e completações são registrados pelo criador do modelo e usados para melhorá-lo)",
 			"connectButton": "Conectar ao Roo Code Cloud",
 			"selectModel": "Selecione <code>roo/code-supernova</code> do provedor Roo Code Cloud em Configurações para começar.",

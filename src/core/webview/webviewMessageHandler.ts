@@ -6,7 +6,7 @@ import pWaitFor from "p-wait-for"
 import * as vscode from "vscode"
 // kilocode_change start
 import axios from "axios"
-import { getKiloBaseUriFromToken } from "../../shared/kilocode/token"
+import { getKiloBaseUriFromToken } from "@roo-code/types"
 import {
 	ProfileData,
 	SeeNewChangesPayload,
@@ -21,7 +21,10 @@ import {
 	type ClineMessage,
 	type TelemetrySetting,
 	TelemetryEventName,
-	ghostServiceSettingsSchema, // kilocode_change
+	// kilocode_change start
+	ghostServiceSettingsSchema,
+	fastApplyModelSchema,
+	// kilocode_change end
 	UserSettingsConfig,
 } from "@roo-code/types"
 import { CloudService } from "@roo-code/cloud"
@@ -78,6 +81,7 @@ import { setPendingTodoList } from "../tools/updateTodoListTool"
 import { UsageTracker } from "../../utils/usage-tracker"
 import { seeNewChanges } from "../checkpoints/kilocode/seeNewChanges" // kilocode_change
 import { getTaskHistory } from "../../shared/kilocode/getTaskHistory" // kilocode_change
+import { fetchAndRefreshOrganizationModesOnStartup, refreshOrganizationModes } from "./kiloWebviewMessgeHandlerHelpers"
 
 export const webviewMessageHandler = async (
 	provider: ClineProvider,
@@ -449,6 +453,11 @@ export const webviewMessageHandler = async (
 			const customModes = await provider.customModesManager.getCustomModes()
 			await updateGlobalState("customModes", customModes)
 
+			// kilocode_change start: Fetch organization modes on startup
+			// Fetch organization modes on startup if an organization is selected
+			await fetchAndRefreshOrganizationModesOnStartup(provider, updateGlobalState)
+			// kilocode_change end
+
 			// Refresh workflow toggles
 			const { refreshWorkflowToggles } = await import("../context/instructions/workflows") // kilocode_change
 			await refreshWorkflowToggles(provider.context, provider.cwd) // kilocode_change
@@ -788,6 +797,7 @@ export const webviewMessageHandler = async (
 
 			const routerModels: Record<RouterName, ModelRecord> = {
 				openrouter: {},
+				gemini: {}, // kilocode_change
 				"vercel-ai-gateway": {},
 				huggingface: {},
 				litellm: {},
@@ -797,8 +807,10 @@ export const webviewMessageHandler = async (
 				requesty: {},
 				unbound: {},
 				glama: {},
+				chutes: {}, // kilocode_change
 				ollama: {},
 				lmstudio: {},
+				ovhcloud: {}, // kilocode_change
 			}
 
 			const safeGetModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
@@ -823,6 +835,16 @@ export const webviewMessageHandler = async (
 					key: "openrouter",
 					options: { provider: "openrouter", apiKey: openRouterApiKey, baseUrl: openRouterBaseUrl },
 				},
+				// kilocode_change start
+				{
+					key: "gemini",
+					options: {
+						provider: "gemini",
+						apiKey: apiConfiguration.geminiApiKey,
+						baseUrl: apiConfiguration.googleGeminiBaseUrl,
+					},
+				},
+				// kilocode_change end
 				{
 					key: "requesty",
 					options: {
@@ -833,6 +855,7 @@ export const webviewMessageHandler = async (
 				},
 				{ key: "glama", options: { provider: "glama" } },
 				{ key: "unbound", options: { provider: "unbound", apiKey: apiConfiguration.unboundApiKey } },
+				{ key: "chutes", options: { provider: "chutes", apiKey: apiConfiguration.chutesApiKey } }, // kilocode_change
 				{
 					key: "kilocode-openrouter",
 					options: {
@@ -851,6 +874,16 @@ export const webviewMessageHandler = async (
 						baseUrl: apiConfiguration.deepInfraBaseUrl,
 					},
 				},
+				// kilocode_change start
+				{
+					key: "ovhcloud",
+					options: {
+						provider: "ovhcloud",
+						apiKey: apiConfiguration.ovhCloudAiEndpointsApiKey,
+						baseUrl: apiConfiguration.ovhCloudAiEndpointsBaseUrl,
+					},
+				},
+				// kilocode_change end
 			]
 			// kilocode_change end
 
@@ -1429,6 +1462,12 @@ export const webviewMessageHandler = async (
 			await updateGlobalState("morphApiKey", message.text)
 			await provider.postStateToWebview()
 			break
+		case "fastApplyModel": {
+			const nextModel = fastApplyModelSchema.safeParse(message.text).data ?? "auto"
+			await updateGlobalState("fastApplyModel", nextModel)
+			await provider.postStateToWebview()
+			break
+		}
 		// kilocode_change end
 		case "updateVSCodeSetting": {
 			const { setting, value } = message
@@ -1712,6 +1751,14 @@ export const webviewMessageHandler = async (
 			await updateGlobalState("showTaskTimeline", message.bool ?? false)
 			await provider.postStateToWebview()
 			break
+		case "showTimestamps":
+			await updateGlobalState("showTimestamps", message.bool ?? false)
+			await provider.postStateToWebview()
+			break
+		case "hideCostBelowThreshold":
+			await updateGlobalState("hideCostBelowThreshold", message.value)
+			await provider.postStateToWebview()
+			break
 		case "allowVeryLargeReads":
 			await updateGlobalState("allowVeryLargeReads", message.bool ?? false)
 			await provider.postStateToWebview()
@@ -1985,6 +2032,7 @@ export const webviewMessageHandler = async (
 					await provider.providerSettingsManager.saveConfig(message.text, message.apiConfiguration)
 					const listApiConfig = await provider.providerSettingsManager.listConfig()
 					await updateGlobalState("listApiConfigMeta", listApiConfig)
+					vscode.commands.executeCommand("kilo-code.ghost.reload") // kilocode_change: Reload ghost model when API provider settings change
 				} catch (error) {
 					provider.log(
 						`Error save api configuration: ${JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}`,
@@ -1994,9 +2042,11 @@ export const webviewMessageHandler = async (
 			}
 			break
 		case "upsertApiConfiguration":
-			// kilocode_change start: check for kilocodeToken change to remove organizationId
+			// kilocode_change start: check for kilocodeToken change to remove organizationId and fetch organization modes
 			if (message.text && message.apiConfiguration) {
 				let configToSave = message.apiConfiguration
+				let organizationChanged = false
+
 				try {
 					const { ...currentConfig } = await provider.providerSettingsManager.getProfile({
 						name: message.text,
@@ -2008,8 +2058,17 @@ export const webviewMessageHandler = async (
 
 					if (hadPreviousToken && hasNewToken && tokensAreDifferent) {
 						configToSave = { ...message.apiConfiguration, kilocodeOrganizationId: undefined }
+						await updateGlobalState("hasPerformedOrganizationAutoSwitch", undefined)
 					}
-					if (currentConfig.kilocodeOrganizationId !== message.apiConfiguration.kilocodeOrganizationId) {
+
+					organizationChanged =
+						currentConfig.kilocodeOrganizationId !== message.apiConfiguration.kilocodeOrganizationId
+
+					if (organizationChanged) {
+						// Fetch organization-specific custom modes
+						await refreshOrganizationModes(message, provider, updateGlobalState)
+
+						// Flush and refetch models
 						await flushModels("kilocode-openrouter")
 						const models = await getModels({
 							provider: "kilocode-openrouter",
@@ -2026,8 +2085,13 @@ export const webviewMessageHandler = async (
 				}
 
 				await provider.upsertProviderProfile(message.text, configToSave)
+
+				// Ensure state is posted to webview after profile update to reflect organization mode changes
+				if (organizationChanged) {
+					await provider.postStateToWebview()
+				}
 			}
-			// kilocode_change end
+			// kilocode_change end: check for kilocodeToken change to remove organizationId and fetch organization modes
 			break
 		case "renameApiConfiguration":
 			if (message.values && message.apiConfiguration) {
@@ -2548,8 +2612,43 @@ export const webviewMessageHandler = async (
 					})
 				}
 
+				try {
+					const shouldAutoSwitch =
+						response.data.organizations &&
+						response.data.organizations.length > 0 &&
+						!apiConfiguration.kilocodeOrganizationId &&
+						!getGlobalState("hasPerformedOrganizationAutoSwitch")
+
+					if (shouldAutoSwitch) {
+						const firstOrg = response.data.organizations![0]
+						provider.log(
+							`[Auto-switch] Performing automatic organization switch to: ${firstOrg.name} (${firstOrg.id})`,
+						)
+
+						const upsertMessage: WebviewMessage = {
+							type: "upsertApiConfiguration",
+							text: currentApiConfigName ?? "default",
+							apiConfiguration: {
+								...apiConfiguration,
+								kilocodeOrganizationId: firstOrg.id,
+							},
+						}
+
+						await webviewMessageHandler(provider, upsertMessage)
+						await updateGlobalState("hasPerformedOrganizationAutoSwitch", true)
+
+						vscode.window.showInformationMessage(`Automatically switched to organization: ${firstOrg.name}`)
+
+						provider.log(`[Auto-switch] Successfully switched to organization: ${firstOrg.name}`)
+					}
+				} catch (error) {
+					provider.log(
+						`[Auto-switch] Error during automatic organization switch: ${error instanceof Error ? error.message : String(error)}`,
+					)
+				}
+
 				provider.postMessageToWebview({
-					type: "profileDataResponse", // Assuming this response type is still appropriate for /api/profile
+					type: "profileDataResponse",
 					payload: { success: true, data: { kilocodeToken, ...response.data } },
 				})
 			} catch (error: any) {

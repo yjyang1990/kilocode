@@ -14,7 +14,9 @@
 	"task": {
 		"noAssistantMessages": "Phản hồi của mô hình kết thúc bất ngờ (không có tin nhắn trợ lý). Điều này có thể là dấu hiệu của giới hạn tốc độ.",
 		"notLoggedInError": "Không thể hoàn thành yêu cầu, hãy đảm bảo bạn đã kết nối và đăng nhập bằng nhà cung cấp đã chọn.\n\n{{error}}",
-		"maxCompletionTokens": "Đã đạt đến số lượng token hoàn thành tối đa."
+		"maxCompletionTokens": "Đã đạt đến số lượng token hoàn thành tối đa.",
+		"disableApplyDiff": "Nếu lỗi này tiếp tục xảy ra, vui lòng tắt Chỉnh sửa Thông qua Diffs trong Cài đặt Nâng cao.",
+		"disableEditFile": "Nếu lỗi này tiếp tục xảy ra, vui lòng tắt tính năng thử nghiệm Fast Apply."
 	},
 	"checkpoints": {
 		"nestedGitRepos": "Điểm kiểm tra không khả dụng vì phát hiện kho lưu trữ Git lồng nhau tại: {{path}}. Vui lòng xóa hoặc di chuyển các kho lưu trữ Git lồng nhau để sử dụng tính năng điểm kiểm tra hoặc tắt điểm kiểm tra trong cài đặt để loại bỏ cảnh báo này.",
@@ -71,6 +73,7 @@
 				"tokenError": "Phải đặt token hợp lệ để sử dụng Autocomplete",
 				"lastCompletion": "Gợi ý cuối cùng:",
 				"sessionTotal": "Tổng chi phí phiên:",
+				"provider": "Nhà cung cấp:",
 				"model": "Mô hình:"
 			},
 			"cost": {
@@ -96,7 +99,6 @@
 			"cancelSuggestions": "Hủy Các Chỉnh Sửa Được Đề Xuất",
 			"applyCurrentSuggestion": "Áp Dụng Chỉnh Sửa Được Đề Xuất Hiện Tại",
 			"applyAllSuggestions": "Áp Dụng Tất Cả Các Chỉnh Sửa Được Đề Xuất",
-			"promptCodeSuggestion": "Tác Vụ Nhanh",
 			"category": "Kilo Code"
 		},
 		"codeAction": {
@@ -133,5 +135,10 @@
 		"checkpointsUnavailable": "Không thể hiển thị các thay đổi mới, điểm kiểm tra không khả dụng.",
 		"noChanges": "Không thể hiển thị các thay đổi mới, không tìm thấy thay đổi nào.",
 		"error": "Không thể hiển thị các thay đổi mới, đã xảy ra lỗi."
+	},
+	"creditsstatusbar": {
+		"loading": "Đang tải...",
+		"clickToRefresh": "Nhấp để làm mới",
+		"minute": "phút"
 	}
 }

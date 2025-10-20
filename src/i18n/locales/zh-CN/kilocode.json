@@ -14,7 +14,9 @@
 	"task": {
 		"noAssistantMessages": "模型响应意外结束（没有助理消息）。这可能是 API 请求频率限制的迹象。",
 		"notLoggedInError": "无法完成请求，请确保您已连接并使用所选提供商登录。\n\n{{error}}",
-		"maxCompletionTokens": "已达到最大完成 Token 数量。"
+		"maxCompletionTokens": "已达到最大完成 Token 数量。",
+		"disableApplyDiff": "如果此错误持续出现，请在高级设置中禁用差异更新功能。",
+		"disableEditFile": "如果此错误持续出现，请禁用快速应用实验性功能。"
 	},
 	"checkpoints": {
 		"nestedGitRepos": "存档点功能不可用，因为在 {{path}} 检测到嵌套的 Git 仓库。请移除或重新定位嵌套的 Git 仓库以使用存档点功能，或在设置中禁用存档点以消除此警告。",
@@ -77,6 +79,7 @@
 				"tokenError": "必须设置有效 Token 才能使用 Autocomplete",
 				"lastCompletion": "最后建议:",
 				"sessionTotal": "会话总费用:",
+				"provider": "提供商:",
 				"model": "模型:"
 			},
 			"cost": {
@@ -102,7 +105,6 @@
 			"cancelSuggestions": "取消建议编辑",
 			"applyCurrentSuggestion": "应用当前建议编辑",
 			"applyAllSuggestions": "应用所有建议编辑",
-			"promptCodeSuggestion": "快速任务",
 			"category": "Kilo Code"
 		},
 		"codeAction": {
@@ -133,5 +135,10 @@
 			"cancelButton": "取消"
 		},
 		"tipMessage": "Kilo Code: 按下 {{shortcut}} 生成终端命令"
+	},
+	"creditsstatusbar": {
+		"loading": "加载中...",
+		"clickToRefresh": "点击刷新",
+		"minute": "分钟"
 	}
 }

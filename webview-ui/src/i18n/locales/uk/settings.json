@@ -307,6 +307,8 @@
 		"getFeatherlessApiKey": "Отримати ключ API Featherless",
 		"fireworksApiKey": "Ключ API Fireworks",
 		"getFireworksApiKey": "Отримати ключ API Fireworks",
+		"syntheticApiKey": "Ключ API Synthetic",
+		"getSyntheticApiKey": "Отримати ключ API Synthetic",
 		"moonshotApiKey": "Ключ API Moonshot",
 		"getMoonshotApiKey": "Отримати ключ API Moonshot",
 		"moonshotBaseUrl": "Точка входу Moonshot",
@@ -323,6 +325,10 @@
 		"openAiApiKey": "Ключ API OpenAI",
 		"getHuggingFaceApiKey": "Отримати ключ API Hugging Face",
 		"huggingFaceApiKey": "Ключ API Hugging Face",
+		"getOvhCloudAiEndpointsApiKey": "Отримати ключ API OVHcloud AI Endpoints",
+		"ovhCloudAiEndpointsApiKey": "Ключ API OVHcloud AI Endpoints",
+		"ovhCloudAiEndpointsBaseUrl": "Базовий URL",
+		"getOvhCloudAiEndpointsBaseUrl": "Використовувати користувацький базовий URL",
 		"huggingFaceModelId": "ID моделі",
 		"huggingFaceLoading": "Завантаження...",
 		"huggingFaceModelsCount": "({{count}} моделей)",
@@ -597,6 +603,15 @@
 		"taskTimeline": {
 			"label": "Показувати хронологію завдань",
 			"description": "Відображати візуальну хронологію повідомлень завдання, розфарбовану за типом, що дозволяє швидко переглядати хід виконання завдання та повертатися до певних моментів у історії завдання."
+		},
+		"costThreshold": {
+			"label": "Сховати вартість нижче порогового значення",
+			"currentValue": "Поточний поріг: ${{value}}",
+			"description": "Показувати лише витрати на запити, що перевищують цю суму. Витрати завжди видно, коли відкрита панель деталей."
+		},
+		"showTimestamps": {
+			"label": "Показувати часові мітки",
+			"description": "Показувати часову мітку для кожного повідомлення у вікні чату"
 		}
 	},
 	"notifications": {
@@ -817,12 +832,6 @@
 			"name": "Увімкнути одночасне редагування файлів",
 			"description": "Якщо ввімкнено, Kilo Code може редагувати кілька файлів за один запит. Якщо вимкнено, Kilo Code повинен редагувати файли по одному. Вимкнення цього може допомогти при роботі з менш здатними моделями або коли ти хочеш більше контролю над модифікаціями файлів."
 		},
-		"MORPH_FAST_APPLY": {
-			"name": "Увімкнути Morph Fast Apply",
-			"description": "Якщо ввімкнено, Kilo Code може редагувати файли за допомогою Morph Fast Apply. Потребує провайдера API Kilo Code, OpenRouter або ключа API Morph.",
-			"apiKey": "Ключ API Morph (необов'язково)",
-			"placeholder": "Введіть ваш ключ API Morph (необов'язково)"
-		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "Редагування у фоновому режимі",
 			"description": "Запобігає порушенню фокусу редактора, коли увімкнено. Редагування файлів відбувається у фоновому режимі без відкриття diff-перегляду або крадіжки фокусу. Ви можете продовжувати працювати без переривань, поки Kilo Code вносить зміни. Файли можуть відкриватися без фокусу для захоплення діагностики або залишатися повністю закритими."
@@ -853,6 +862,20 @@
 		"RUN_SLASH_COMMAND": {
 			"name": "Увімкнути slash команди, ініційовані моделлю",
 			"description": "Коли увімкнено, Kilo Code може запускати ваші slash команди для виконання робочих процесів."
+		},
+		"MORPH_FAST_APPLY": {
+			"name": "Увімкнути швидке застосування",
+			"description": "Коли увімкнено, Kilo Code може редагувати файли за допомогою швидкого застосування зі спеціалізованими моделями, оптимізованими для модифікацій коду. Потребує провайдера Kilo Code API, OpenRouter або ключа API Morph.",
+			"apiKey": "Ключ API Morph (необов'язково)",
+			"placeholder": "Введіть ваш ключ API Morph (необов'язково)",
+			"modelLabel": "Вибір моделі",
+			"modelDescription": "Виберіть, яку модель швидкого застосування використовувати для редагування файлів",
+			"models": {
+				"auto": "Автоматично (За замовчуванням - вибирає найкращу доступну)",
+				"morphFast": "Morph v3 Fast (Швидше, нижча вартість)",
+				"morphLarge": "Morph v3 Large (Більш здатна)",
+				"relace": "Relace Apply v3"
+			}
 		},
 		"INLINE_ASSIST": {
 			"name": "Autocomplete",
@@ -928,6 +951,7 @@
 			"regionMismatch": "Попередження: регіон у твоєму ARN ({{arnRegion}}) не відповідає вибраному регіону ({{region}}). Це може спричинити проблеми з доступом. Провайдер використовуватиме регіон з ARN."
 		},
 		"modelAvailability": "Ідентифікатор моделі ({{modelId}}), який ти надав, недоступний. Будь ласка, вибери іншу модель.",
+		"modelDeprecated": "Ця модель більше недоступна. Будь ласка, вибери іншу модель.",
 		"providerNotAllowed": "Провайдер '{{provider}}' не дозволений твоєю організацією",
 		"modelNotAllowed": "Модель '{{model}}' не дозволена для провайдера '{{provider}}' твоєю організацією",
 		"profileInvalid": "Цей профіль містить провайдера або модель, які не дозволені твоєю організацією",

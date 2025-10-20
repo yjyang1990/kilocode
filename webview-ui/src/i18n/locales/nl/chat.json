@@ -122,7 +122,8 @@
 		"settings": "Modus Instellingen",
 		"description": "Gespecialiseerde persona's die het gedrag van Kilo Code aanpassen.",
 		"searchPlaceholder": "Zoek modi...",
-		"noResults": "Geen resultaten gevonden"
+		"noResults": "Geen resultaten gevonden",
+		"organizationModes": "Organisatiemodi"
 	},
 	"addImages": "Afbeeldingen toevoegen aan bericht",
 	"sendMessage": "Bericht verzenden",
@@ -279,7 +280,7 @@
 	"announcement": {
 		"title": "🎉 Roo Code {{version}} uitgebracht",
 		"stealthModel": {
-			"feature": "<bold>Beperkt tijd GRATIS stealth model</bold> - Code Supernova: Een veelzijdig agentisch codeermodel dat beeldinvoer ondersteunt, beschikbaar via Roo Code Cloud.",
+			"feature": "<bold>Beperkt tijd GRATIS stealth model</bold> - Code Supernova: Nu geüpgraded met een <bold>1M token contextvenster</bold>! Een veelzijdig agentisch codeermodel dat beeldinvoer ondersteunt, beschikbaar via Roo Code Cloud.",
 			"note": "(Opmerking: prompts en aanvullingen worden gelogd door de modelmaker en gebruikt om het model te verbeteren)",
 			"connectButton": "Verbinden met Roo Code Cloud",
 			"selectModel": "Selecteer <code>roo/code-supernova</code> van de Roo Code Cloud provider in Instellingen om te beginnen.",

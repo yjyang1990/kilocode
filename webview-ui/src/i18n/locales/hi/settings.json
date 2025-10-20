@@ -288,6 +288,8 @@
 		"getChutesApiKey": "Chutes API कुंजी प्राप्त करें",
 		"fireworksApiKey": "Fireworks API कुंजी",
 		"getFireworksApiKey": "Fireworks API कुंजी प्राप्त करें",
+		"syntheticApiKey": "Synthetic API कुंजी",
+		"getSyntheticApiKey": "Synthetic API कुंजी प्राप्त करें",
 		"featherlessApiKey": "Featherless API कुंजी",
 		"getFeatherlessApiKey": "Featherless API कुंजी प्राप्त करें",
 		"ioIntelligenceApiKey": "IO Intelligence API कुंजी",
@@ -311,6 +313,10 @@
 		"sambaNovaApiKey": "SambaNova API कुंजी",
 		"getHuggingFaceApiKey": "Hugging Face API कुंजी प्राप्त करें",
 		"huggingFaceApiKey": "Hugging Face API कुंजी",
+		"getOvhCloudAiEndpointsApiKey": "OVHcloud AI Endpoints API कुंजी प्राप्त करें",
+		"ovhCloudAiEndpointsApiKey": "OVHcloud AI Endpoints API कुंजी",
+		"ovhCloudAiEndpointsBaseUrl": "आधार URL",
+		"getOvhCloudAiEndpointsBaseUrl": "कस्टम आधार URL का उपयोग करें",
 		"huggingFaceModelId": "मॉडल ID",
 		"huggingFaceLoading": "लोड हो रहा है...",
 		"huggingFaceModelsCount": "({{count}} मॉडल)",
@@ -760,10 +766,18 @@
 			"description": "जब सक्षम किया जाता है, तो Kilo Code एक ही अनुरोध में कई फ़ाइलों को संपादित कर सकता है। जब अक्षम किया जाता है, तो Kilo Code को एक समय में एक फ़ाइल संपादित करनी होगी। इसे अक्षम करना तब मदद कर सकता है जब आप कम सक्षम मॉडल के साथ काम कर रहे हों या जब आप फ़ाइल संशोधनों पर अधिक नियंत्रण चाहते हों।"
 		},
 		"MORPH_FAST_APPLY": {
-			"name": "Morph Fast Apply सक्षम करें",
-			"description": "जब सक्षम होता है, तो Kilo Code फ़ाइलों को Morph Fast Apply का उपयोग करके संपादित कर सकता है। Kilo Code API प्रदाता, OpenRouter या Morph API कुंजी की आवश्यकता है।",
+			"name": "Fast Apply सक्षम करें",
+			"description": "जब सक्षम होता है, तो Kilo Code कोड संशोधनों के लिए अनुकूलित विशेष मॉडल के साथ Fast Apply का उपयोग करके फ़ाइलें संपादित कर सकता है। Kilo Code API प्रदाता, OpenRouter, या Morph API कुंजी की आवश्यकता है।",
 			"apiKey": "Morph API कुंजी (वैकल्पिक)",
-			"placeholder": "अपनी Morph API कुंजी दर्ज करें (वैकल्पिक)"
+			"placeholder": "अपनी Morph API कुंजी दर्ज करें (वैकल्पिक)",
+			"modelLabel": "मॉडल चयन",
+			"modelDescription": "फ़ाइल संपादन के लिए किस Fast Apply मॉडल का उपयोग करना है चुनें",
+			"models": {
+				"auto": "स्वचालित (डिफ़ॉल्ट - सर्वोत्तम उपलब्ध चुनता है)",
+				"morphFast": "Morph v3 Fast (तेज़, कम लागत)",
+				"morphLarge": "Morph v3 Large (अधिक सक्षम)",
+				"relace": "Relace Apply v3"
+			}
 		},
 		"PREVENT_FOCUS_DISRUPTION": {
 			"name": "बैकग्राउंड संपादन",
@@ -870,6 +884,7 @@
 			"regionMismatch": "चेतावनी: आपके ARN में क्षेत्र ({{arnRegion}}) आपके चयनित क्षेत्र ({{region}}) से मेल नहीं खाता। इससे पहुंच संबंधी समस्याएं हो सकती हैं। प्रदाता ARN से क्षेत्र का उपयोग करेगा।"
 		},
 		"modelAvailability": "आपके द्वारा प्रदान की गई मॉडल ID ({{modelId}}) उपलब्ध नहीं है। कृपया कोई अन्य मॉडल चुनें।",
+		"modelDeprecated": "यह मॉडल अब उपलब्ध नहीं है। कृपया कोई अन्य मॉडल चुनें।",
 		"providerNotAllowed": "प्रदाता '{{provider}}' आपके संगठन द्वारा अनुमत नहीं है",
 		"modelNotAllowed": "मॉडल '{{model}}' प्रदाता '{{provider}}' के लिए आपके संगठन द्वारा अनुमत नहीं है",
 		"profileInvalid": "इस प्रोफ़ाइल में एक प्रदाता या मॉडल शामिल है जो आपके संगठन द्वारा अनुमत नहीं है",
@@ -912,6 +927,15 @@
 		"taskTimeline": {
 			"label": "कार्य टाइमलाइन दिखाएँ",
 			"description": "कार्य संदेशों की एक दृश्य समयरेखा प्रदर्शित करें, जो प्रकार के अनुसार रंगीन हैं, जिससे आप कार्य की प्रगति को जल्दी से देख सकें और कार्य के इतिहास में विशिष्ट बिंदुओं पर वापस स्क्रॉल कर सकें।"
+		},
+		"costThreshold": {
+			"label": "थ्रेशोल्ड से नीचे की लागत छिपाएं",
+			"currentValue": "वर्तमान थ्रेशोल्ड: ${{value}}",
+			"description": "केवल इस राशि से अधिक के अनुरोध की लागतों को दिखाएं। जब विवरण पेन खुला होता है, तो लागतें हमेशा दिखाई देती हैं।"
+		},
+		"showTimestamps": {
+			"label": "टाइमस्टैम्प दिखाएं",
+			"description": "चैट दृश्य में प्रत्येक संदेश के लिए टाइमस्टैम्प दिखाएं"
 		}
 	},
 	"ghost": {

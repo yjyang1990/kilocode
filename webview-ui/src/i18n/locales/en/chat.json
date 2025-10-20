@@ -132,7 +132,8 @@
 		"settings": "Mode Settings",
 		"description": "Specialized personas that tailor Kilo Code's behavior.",
 		"searchPlaceholder": "Search modes...",
-		"noResults": "No results found"
+		"noResults": "No results found",
+		"organizationModes": "Organization Modes"
 	},
 	"enhancePromptDescription": "The 'Enhance Prompt' button helps improve your prompt by providing additional context, clarification, or rephrasing. Try typing a prompt in here and clicking the button again to see how it works.",
 	"addImages": "Add images to message",
@@ -302,7 +303,7 @@
 	"announcement": {
 		"title": "🎉 Roo Code {{version}} Released",
 		"stealthModel": {
-			"feature": "<bold>Limited-time FREE stealth model</bold> - Code Supernova: A versatile agentic coding model that supports image inputs, accessible through Roo Code Cloud.",
+			"feature": "<bold>Limited-time FREE stealth model</bold> - Code Supernova: Now upgraded with a <bold>1M token context window</bold>! A versatile agentic coding model that supports image inputs, accessible through Roo Code Cloud.",
 			"note": "(Note: prompts and completions are logged by the model creator and used to improve the model)",
 			"connectButton": "Connect to Roo Code Cloud",
 			"selectModel": "Select <code>roo/code-supernova</code> from the Roo Code Cloud provider in Settings to get started.",
