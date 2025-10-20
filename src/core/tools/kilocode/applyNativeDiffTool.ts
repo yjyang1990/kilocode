@@ -38,7 +38,6 @@ export async function applyNativeDiffTool(
 	askApproval: AskApproval,
 	handleError: HandleError,
 	pushToolResult: PushToolResult,
-	removeClosingTag: RemoveClosingTag,
 ) {
 	// For native JSON tools, the arguments come directly as objects in block.params
 	// Not as a JSON string in block.params.args

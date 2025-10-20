@@ -65,7 +65,7 @@ export async function applyDiffTool(
 ) {
 	if (getActiveToolUseStyle(cline.apiConfiguration) === "json") {
 		console.log("Using native multi-file apply diff tool")
-		return applyNativeDiffTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
+		return applyNativeDiffTool(cline, block, askApproval, handleError, pushToolResult)
 	}
 	console.log("Using XML multi-file apply diff tool")
 	return applyXMLDiffTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
