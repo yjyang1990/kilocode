@@ -51,6 +51,12 @@ interface MainThreadStatusBarShape : Disposable {
      * @param id Entry identifier
      */
     fun removeEntry(id: Int)
+
+    /**
+     * Dispose a status bar entry (alias for removeEntry for VSCode compatibility)
+     * @param id Entry identifier
+     */
+    fun disposeEntry(id: Int)
 }
 
 /**
@@ -124,6 +130,12 @@ class MainThreadStatusBar(
 
         // In a real implementation, we would remove the widget from the status bar
         // For now, we just log the removal
+    }
+
+    override fun disposeEntry(id: Int) {
+        logger.info("Disposing status bar entry: id=$id")
+        // disposeEntry is functionally equivalent to removeEntry for VSCode compatibility
+        removeEntry(id)
     }
 
     private fun updateStatusBar(project: Project, entry: StatusBarEntry) {
