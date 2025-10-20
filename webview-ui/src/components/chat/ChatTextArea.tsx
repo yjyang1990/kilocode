@@ -71,7 +71,7 @@ interface ChatTextAreaProps {
 	// Edit mode props
 	isEditMode?: boolean
 	onCancel?: () => void
-	sendMessageOnEnter?: boolean
+	sendMessageOnEnter?: boolean // kilocode_change
 }
 
 export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
@@ -588,6 +588,7 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 				const isComposing = event.nativeEvent?.isComposing ?? false
 
+				// kilocode_change start
 				const shouldSendMessage =
 					!isComposing &&
 					event.key === "Enter" &&
@@ -604,6 +605,7 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				if (handleHistoryNavigation(event, showContextMenu, isComposing)) {
 					return
 				}
+				// kilocode_change end
 
 				if (event.key === "Backspace" && !isComposing) {
 					const charBeforeCursor = inputValue[cursorPosition - 1]

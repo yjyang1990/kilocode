@@ -14,7 +14,7 @@ import { Slider } from "../ui"
 
 type DisplaySettingsProps = HTMLAttributes<HTMLDivElement> & {
 	showTaskTimeline?: boolean
-	sendMessageOnEnter?: boolean
+	sendMessageOnEnter?: boolean // kilocode_change
 	showTimestamps?: boolean
 	ghostServiceSettings?: any
 	reasoningBlockCollapsed: boolean
