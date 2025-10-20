@@ -30,9 +30,6 @@ describe("applyDiffTool experiment routing", () => {
 				deref: vi.fn().mockReturnValue(mockProvider),
 			},
 			cwd: "/test",
-			apiConfiguration: {
-				toolStyle: "xml",
-			},
 			diffStrategy: {
 				applyDiff: vi.fn(),
 				getProgressStatus: vi.fn(),
