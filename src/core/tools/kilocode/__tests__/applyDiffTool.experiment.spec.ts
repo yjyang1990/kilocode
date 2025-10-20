@@ -1,15 +1,15 @@
-import { applyDiffTool } from "../multiApplyDiffTool"
-import { EXPERIMENT_IDS } from "../../../shared/experiments"
+import { applyDiffTool } from "../../multiApplyDiffTool"
+import { EXPERIMENT_IDS } from "../../../../shared/experiments"
 
 // Mock the applyDiffTool module
-vi.mock("../applyDiffTool", () => ({
+vi.mock("../../applyDiffTool", () => ({
 	applyDiffToolLegacy: vi.fn(),
 }))
 
 // Import after mocking to get the mocked version
-import { applyDiffToolLegacy } from "../applyDiffTool"
+import { applyDiffToolLegacy } from "../../applyDiffTool"
 
-describe("applyDiffTool experiment routing", () => {
+describe("applyDiffTool experiment routing - JSON toolStyle", () => {
 	let mockCline: any
 	let mockBlock: any
 	let mockAskApproval: any
@@ -31,7 +31,7 @@ describe("applyDiffTool experiment routing", () => {
 			},
 			cwd: "/test",
 			apiConfiguration: {
-				toolStyle: "xml",
+				toolStyle: "json",
 			},
 			diffStrategy: {
 				applyDiff: vi.fn(),
@@ -48,8 +48,17 @@ describe("applyDiffTool experiment routing", () => {
 
 		mockBlock = {
 			params: {
-				path: "test.ts",
-				diff: "test diff",
+				files: [
+					{
+						path: "test.ts",
+						diffs: [
+							{
+								content: "test diff",
+								start_line: 1,
+							},
+						],
+					},
+				],
 			},
 			partial: false,
 		}
@@ -58,60 +67,6 @@ describe("applyDiffTool experiment routing", () => {
 		mockHandleError = vi.fn()
 		mockPushToolResult = vi.fn()
 		mockRemoveClosingTag = vi.fn((tag, value) => value)
-	})
-
-	it("should use legacy tool when MULTI_FILE_APPLY_DIFF experiment is disabled", async () => {
-		mockProvider.getState.mockResolvedValue({
-			experiments: {
-				[EXPERIMENT_IDS.MULTI_FILE_APPLY_DIFF]: false,
-			},
-		})
-
-		// Mock the legacy tool to resolve successfully
-		;(applyDiffToolLegacy as any).mockResolvedValue(undefined)
-
-		await applyDiffTool(
-			mockCline,
-			mockBlock,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
-
-		expect(applyDiffToolLegacy).toHaveBeenCalledWith(
-			mockCline,
-			mockBlock,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
-	})
-
-	it("should use legacy tool when experiments are not defined", async () => {
-		mockProvider.getState.mockResolvedValue({})
-
-		// Mock the legacy tool to resolve successfully
-		;(applyDiffToolLegacy as any).mockResolvedValue(undefined)
-
-		await applyDiffTool(
-			mockCline,
-			mockBlock,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
-
-		expect(applyDiffToolLegacy).toHaveBeenCalledWith(
-			mockCline,
-			mockBlock,
-			mockAskApproval,
-			mockHandleError,
-			mockPushToolResult,
-			mockRemoveClosingTag,
-		)
 	})
 
 	it("should use new tool when MULTI_FILE_APPLY_DIFF experiment is enabled", async () => {
