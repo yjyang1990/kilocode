@@ -2,4 +2,4 @@
 "@kilocode/cli": patch
 ---
 
-Improved providers support
+Support all providers that are supported by the VS Code extension
