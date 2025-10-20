@@ -18,9 +18,17 @@ You can find your Kilo Code API token on your profile page at [app.kilocode.ai](
 
 ## Known Issues
 
+### Theme Detection
+
+We don't detect the theme of your terminal, and are aware the the current theme doesn't work well on light mode terminals. Switch to the light theme using using `kilocode config`.
+
 ### Outdated dependency warnings
 
 When installing Kilo Code CLI you'll be greeted by some scary looking dependency deprecation warnings. We're aware of the issue and will resolve it shortly.
+
+### Windows Support
+
+We've only tested the CLI on Mac and Linux, and are aware that there are some issues on Windows. For now, if you can, we advise you to use a WSL environment to run the CLI.
 
 ## Usage
 
@@ -37,24 +45,24 @@ kilocode --mode architect
 kilocode --workspace /path/to/project
 ```
 
-### CI Mode (Non-Interactive)
+### Autonomous mode (Non-Interactive)
 
-CI mode allows Kilo Code to run in automated environments like CI/CD pipelines without requiring user interaction.
+Autonomous mode allows Kilo Code to run in automated environments like CI/CD pipelines without requiring user interaction.
 
 ```bash
-# Run in CI mode with a prompt
-kilocode --ci "Implement feature X"
+# Run in autonomous mode with a prompt
+kilocode --auto "Implement feature X"
 
-# Run in CI mode with piped input
-echo "Fix the bug in app.ts" | kilocode --ci
+# Run in autonomous mode with piped input
+echo "Fix the bug in app.ts" | kilocode --auto
 
-# Run in CI mode with timeout (in seconds)
-kilocode --ci "Run tests" --timeout 300
+# Run in autonomous mode with timeout (in seconds)
+kilocode --auto "Run tests" --timeout 300
 ```
 
-#### CI Mode Behavior
+#### Autonomous mode Behavior
 
-When running in CI mode (`--ci` flag):
+When running in Autonomous mode (`--auto` flag):
 
 1. **No User Interaction**: All approval requests are handled automatically based on configuration
 2. **Auto-Approval/Rejection**: Operations are approved or rejected based on your auto-approval settings
@@ -63,7 +71,7 @@ When running in CI mode (`--ci` flag):
 
 #### Auto-Approval Configuration
 
-CI mode respects your auto-approval configuration. Edit your config file with `kilocode config` to customize:
+Autonomous mode respects your auto-approval configuration. Edit your config file with `kilocode config` to customize:
 
 ```json
 {
@@ -128,11 +136,11 @@ CI mode respects your auto-approval configuration. Edit your config file with `k
 - `retry`: Auto-approve API retry requests
 - `todo`: Auto-approve todo list updates
 
-#### CI Mode Follow-up Questions
+#### Autonomous mode Follow-up Questions
 
-In CI mode, when the AI asks a follow-up question, it receives this response:
+In Autonomous mode, when the AI asks a follow-up question, it receives this response:
 
-> "This process is running in non-interactive CI mode. The user cannot make decisions, so you should make the decision autonomously."
+> "This process is running in non-interactive Autonomous mode. The user cannot make decisions, so you should make the decision autonomously."
 
 This instructs the AI to proceed without user input.
 
@@ -148,7 +156,7 @@ This instructs the AI to proceed without user input.
 # GitHub Actions example
 - name: Run Kilo Code
   run: |
-      echo "Implement the new feature" | kilocode --ci --timeout 600
+      echo "Implement the new feature" | kilocode --auto --timeout 600
 ```
 
 ## Local Development

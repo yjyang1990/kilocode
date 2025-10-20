@@ -4,24 +4,26 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react"
-import { Box, Text, useInput, useStdout } from "ink"
+import { Box, Text } from "ink"
 import { useAtomValue, useSetAtom } from "jotai"
-import { isProcessingAtom, errorAtom, addMessageAtom } from "../state/atoms/ui.js"
+import { isStreamingAtom, errorAtom, addMessageAtom } from "../state/atoms/ui.js"
 import { setCIModeAtom } from "../state/atoms/ci.js"
+import { configValidationAtom } from "../state/atoms/config.js"
 import { MessageDisplay } from "./messages/MessageDisplay.js"
 import { CommandInput } from "./components/CommandInput.js"
 import { StatusBar } from "./components/StatusBar.js"
+import { StatusIndicator } from "./components/StatusIndicator.js"
 import { initializeCommands } from "../commands/index.js"
 import { isCommandInput } from "../services/autocomplete.js"
 import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
 import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
 import { useFollowupHandler } from "../state/hooks/useFollowupHandler.js"
 import { useCIMode } from "../state/hooks/useCIMode.js"
-import useIsProcessingSubscription from "../state/hooks/useIsProcessingSubscription.js"
 import { useTheme } from "../state/hooks/useTheme.js"
 import { AppOptions } from "./App.js"
 import { logs } from "../services/logs.js"
-import { createWelcomeMessage } from "./utils/welcomeMessage.js"
+import { createConfigErrorInstructions, createWelcomeMessage } from "./utils/welcomeMessage.js"
+import { generateUpdateAvailableMessage, getAutoUpdateStatus } from "../utils/auto-update.js"
 
 // Initialize commands on module load
 initializeCommands()
@@ -32,10 +34,10 @@ interface UIAppProps {
 }
 
 export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
-	const { stdout } = useStdout()
-	const isProcessing = useAtomValue(isProcessingAtom)
+	const isStreaming = useAtomValue(isStreamingAtom)
 	const error = useAtomValue(errorAtom)
 	const theme = useTheme()
+	const configValidation = useAtomValue(configValidationAtom)
 
 	// Initialize CI mode configuration
 	const setCIMode = useSetAtom(setCIModeAtom)
@@ -50,8 +52,6 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	// Followup handler hook for automatic suggestion population
 	useFollowupHandler()
 
-	useIsProcessingSubscription()
-
 	// CI mode hook for automatic exit
 	const { shouldExit, exitReason } = useCIMode({
 		enabled: options.ci || false,
@@ -62,6 +62,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	// Track if prompt has been executed and welcome message shown
 	const promptExecutedRef = useRef(false)
 	const welcomeShownRef = useRef(false)
+	const autoUpdatedCheckedRef = useRef(false)
 
 	// Initialize CI mode atoms
 	useEffect(() => {
@@ -81,22 +82,13 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 			// Small delay for cleanup and final message display
 			setTimeout(() => {
 				onExit()
-			}, 100)
+			}, 500)
 		}
 	}, [shouldExit, exitReason, options.ci, onExit])
 
-	// In CI mode, we don't use useInput because it tries to enable raw mode on stdin
-	// which fails when stdin is piped. The app stays alive through the message loop instead.
-	useInput(
-		() => {
-			// No-op: we don't handle input in CI mode
-		},
-		{ isActive: !options.ci },
-	)
-
 	// Execute prompt automatically on mount if provided
 	useEffect(() => {
-		if (options.prompt && !promptExecutedRef.current) {
+		if (options.prompt && !promptExecutedRef.current && configValidation.valid) {
 			promptExecutedRef.current = true
 			const trimmedPrompt = options.prompt.trim()
 
@@ -111,7 +103,7 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 				}
 			}
 		}
-	}, [options.prompt, executeCommand, sendUserMessage, onExit])
+	}, [options.prompt])
 
 	// Simplified submit handler that delegates to appropriate hook
 	const handleSubmit = useCallback(
@@ -132,21 +124,47 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 	)
 
 	// Determine if any operation is in progress
-	const isAnyOperationInProgress = isProcessing || isExecutingCommand || isSendingMessage
+	const isAnyOperationInProgress = isStreaming || isExecutingCommand || isSendingMessage
 
 	// Show welcome message as a CliMessage on first render
 	useEffect(() => {
 		if (!welcomeShownRef.current) {
 			welcomeShownRef.current = true
-
 			addMessage(
 				createWelcomeMessage({
-					clearScreen: !options.ci,
+					clearScreen: !options.ci && configValidation.valid,
 					showInstructions: !options.ci || !options.prompt,
+					instructions: createConfigErrorInstructions(configValidation),
 				}),
 			)
 		}
-	}, [options.ci, options.prompt, addMessage])
+	}, [options.ci, options.prompt, addMessage, configValidation])
+
+	// Auto-update check on mount
+	const checkVersion = async () => {
+		const status = await getAutoUpdateStatus()
+		if (status.isOutdated) {
+			addMessage(generateUpdateAvailableMessage(status))
+		}
+	}
+
+	useEffect(() => {
+		if (!autoUpdatedCheckedRef.current && !options.ci) {
+			autoUpdatedCheckedRef.current = true
+			checkVersion()
+		}
+	}, [])
+
+	// Exit if provider configuration is invalid
+	useEffect(() => {
+		if (!configValidation.valid) {
+			logs.error("Invalid configuration", "UI", { errors: configValidation.errors })
+			// Give time for the welcome message to render
+			setTimeout(() => {
+				onExit()
+			}, 500)
+		}
+	}, [configValidation])
 
 	return (
 		// Using stdout.rows causes layout shift during renders
@@ -161,9 +179,9 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 				</Box>
 			)}
 
-			{!options.ci && (
+			{!options.ci && configValidation.valid && (
 				<>
-					{isProcessing && <Text color={theme.ui.text.dimmed}>Thinking...</Text>}
+					<StatusIndicator disabled={false} />
 					<CommandInput onSubmit={handleSubmit} disabled={isAnyOperationInProgress} />
 					<StatusBar />
 				</>

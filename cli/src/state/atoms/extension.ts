@@ -12,7 +12,6 @@ import type {
 	ProviderSettings,
 	McpServer,
 } from "../../types/messages.js"
-import { logs } from "../../services/logs.js"
 
 /**
  * Atom to hold the complete ExtensionState
@@ -140,6 +139,15 @@ export const lastChatMessageAtom = atom<ExtensionChatMessage | null>((get) => {
 export const hasActiveTaskAtom = atom<boolean>((get) => {
 	const task = get(currentTaskAtom)
 	return task !== null
+})
+
+/**
+ * Derived atom to check if there's a resume_task ask pending
+ * This checks if the last message is a resume_task or resume_completed_task
+ */
+export const hasResumeTaskAtom = atom<boolean>((get) => {
+	const lastMessage = get(lastChatMessageAtom)
+	return lastMessage?.ask === "resume_task" || lastMessage?.ask === "resume_completed_task"
 })
 
 /**

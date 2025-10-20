@@ -156,8 +156,7 @@ export {
 export {
 	// Core UI state atoms
 	messagesAtom,
-	inputValueAtom,
-	isProcessingAtom,
+	isStreamingAtom,
 	errorAtom,
 
 	// Autocomplete state atoms
@@ -186,8 +185,6 @@ export {
 	addMessageAtom,
 	clearMessagesAtom,
 	updateLastMessageAtom,
-	setInputValueAtom,
-	clearInputAtom,
 	setSuggestionsAtom,
 	setArgumentSuggestionsAtom,
 	selectNextSuggestionAtom,
