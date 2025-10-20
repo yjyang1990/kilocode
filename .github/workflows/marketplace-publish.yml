@@ -173,14 +173,13 @@ jobs:
               with:
                   name: ${{ env.BUNDLE_NAME }}
                   path: jetbrains/plugin/build/distributions/${{ env.BUNDLE_NAME }}
-            # Disabled while we figure out why our JetBrains builds are no longer being approved.
-            #- name: JetBrains Marketplace Publisher
-            #  run: |
-            #      curl \
-            #      -X POST \
-            #      -H "Authorization: Bearer ${{ secrets.JETBRAINS_MARKETPLACE_TOKEN }}" \
-            #      -F "file=@jetbrains/plugin/build/distributions/${{ env.BUNDLE_NAME }}" \
-            #      -F "pluginId=28350" \
-            #      -F "channel=stable" \
-            #      -F "isHidden=false" \
-            #      https://plugins.jetbrains.com/plugin/uploadPlugin
+            - name: JetBrains Marketplace Publisher
+              run: |
+                 curl \
+                 -X POST \
+                 -H "Authorization: Bearer ${{ secrets.JETBRAINS_MARKETPLACE_TOKEN }}" \
+                 -F "file=@jetbrains/plugin/build/distributions/${{ env.BUNDLE_NAME }}" \
+                 -F "pluginId=28350" \
+                 -F "channel=stable" \
+                 -F "isHidden=false" \
+                 https://plugins.jetbrains.com/plugin/uploadPlugin
