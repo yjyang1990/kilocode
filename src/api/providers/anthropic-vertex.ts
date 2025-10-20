@@ -36,9 +36,8 @@ export class AnthropicVertexHandler extends BaseProvider implements SingleComple
 
 		//kilocode_change start
 		// Manually construct the baseURL because the format has changed (there are no longer
-		// dedicated hosts), but updating the required anthropic libraries has signidficant
+		// dedicated hosts), but the required updated Anthropic libraries have significant
 		// breaking changes for other parts of the application.
-		// TODO: Upgrade the anthropic libraries
 		const updatedBaseUrl = `https://aiplatform.googleapis.com/v1`
 
 		const googleAuthConfig =

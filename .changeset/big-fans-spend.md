@@ -2,4 +2,4 @@
 "kilo-code": minor
 ---
 
-Update baseURL for Vertex Anthropic models to fix.
+Update base URL for Vertex Anthropic models to work around outdated library.
