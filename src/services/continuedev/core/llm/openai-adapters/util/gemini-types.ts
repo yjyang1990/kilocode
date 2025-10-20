@@ -1,4 +1,3 @@
-import { JSONSchema7Object } from "json-schema"
 import { ChatCompletionTool } from "openai/resources/index.mjs"
 
 type GeminiObjectSchemaType = "TYPE_UNSPECIFIED" | "STRING" | "NUMBER" | "INTEGER" | "BOOLEAN" | "ARRAY" | "OBJECT"
@@ -166,7 +165,7 @@ type GeminiFunctionCallContentPart = {
 	functionCall: {
 		id?: string
 		name: string
-		args: JSONSchema7Object
+		args: unknown
 	}
 }
 
@@ -174,7 +173,7 @@ type GeminiFunctionResponseContentPart = {
 	functionResponse: {
 		id?: string
 		name: string
-		response: JSONSchema7Object
+		response: unknown
 	}
 }
 
