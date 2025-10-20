@@ -65,6 +65,7 @@ export const toolParamNames = [
 	"target_file",
 	"instructions",
 	"code_edit",
+	"files",
 	// kilocode_change end
 	"args",
 	"start_line",
@@ -74,7 +75,6 @@ export const toolParamNames = [
 	"todos",
 	"prompt",
 	"image",
-	"files",
 ] as const
 
 export type ToolParamName = (typeof toolParamNames)[number]
