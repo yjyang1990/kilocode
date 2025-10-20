@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.108.0
-
-### Minor Changes
+## [v4.108.0]
 
 - [#2674](https://github.com/Kilo-Org/kilocode/pull/2674) [`2836aed`](https://github.com/Kilo-Org/kilocode/commit/2836aeddbbd6884f2c6f2421ca79387c25f5cd94) Thanks [@mcowger](https://github.com/mcowger)! - add send message on enter setting with configurable behavior
 
