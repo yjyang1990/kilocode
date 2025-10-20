@@ -1,4 +1,4 @@
-import { ModeConfig, ToolName } from "@roo-code/types"
+import { ToolName } from "@roo-code/types"
 import { CodeIndexManager } from "../../../../services/code-index/manager"
 import { Mode, getModeConfig, isToolAllowedForMode, getGroupName } from "../../../../shared/modes"
 import { ClineProviderState } from "../../../webview/ClineProvider"
@@ -12,7 +12,6 @@ export function getAllowedJSONToolsForMode(
 	mode: Mode,
 	codeIndexManager?: CodeIndexManager,
 	clineProviderState?: ClineProviderState,
-	isMultiFileApplyDiffEnabled: boolean = false,
 	supportsImages?: boolean,
 ): OpenAI.Chat.ChatCompletionTool[] {
 	const config = getModeConfig(mode, clineProviderState?.customModes)
@@ -85,15 +84,12 @@ export function getAllowedJSONToolsForMode(
 		nativeToolsMap.set(tool.function.name, tool)
 	})
 
-	// Prepare for supporting multi file diffs in the future.
-	// For now, regardless of what the user selects, just present the
-	// Single file definitions and instructions to the model.
-	// This allows the user to maintain their experiment options without having to
-	// Change their tool calling style.
-	if (isMultiFileApplyDiffEnabled) {
-		nativeToolsMap.set("apply_diff", apply_diff_multi_file)
-	} else {
-		nativeToolsMap.set("apply_diff", apply_diff_single_file)
+	if (clineProviderState?.apiConfiguration.diffEnabled) {
+		if (clineProviderState?.experiments.multiFileApplyDiff) {
+			nativeToolsMap.set("apply_diff", apply_diff_multi_file)
+		} else {
+			nativeToolsMap.set("apply_diff", apply_diff_single_file)
+		}
 	}
 
 	// Map allowed tools to their native definitions
