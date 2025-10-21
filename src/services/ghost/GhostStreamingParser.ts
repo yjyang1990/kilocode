@@ -203,7 +203,7 @@ function mapNormalizedToOriginalIndex(
 export class GhostStreamingParser {
 	public buffer: string = ""
 	private completedChanges: ParsedChange[] = []
-	private lastProcessedIndex: number = 0
+
 	private context: GhostSuggestionContext | null = null
 
 	constructor() {}
@@ -222,7 +222,6 @@ export class GhostStreamingParser {
 	public reset(): void {
 		this.buffer = ""
 		this.completedChanges = []
-		this.lastProcessedIndex = 0
 	}
 
 	/**
@@ -276,7 +275,7 @@ export class GhostStreamingParser {
 		const newChanges: ParsedChange[] = []
 
 		// Look for complete <change> blocks starting from where we left off
-		const searchText = this.buffer.substring(this.lastProcessedIndex)
+		const searchText = this.buffer
 
 		// Updated regex to handle both single-line XML format and traditional format with whitespace
 		const changeRegex =
@@ -299,11 +298,6 @@ export class GhostStreamingParser {
 			})
 
 			lastMatchEnd = match.index + match[0].length
-		}
-
-		// Update our processed index to avoid re-processing the same content
-		if (lastMatchEnd > 0) {
-			this.lastProcessedIndex += lastMatchEnd
 		}
 
 		return newChanges
