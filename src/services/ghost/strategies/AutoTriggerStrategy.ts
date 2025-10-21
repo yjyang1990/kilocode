@@ -82,7 +82,7 @@ export class AutoTriggerStrategy {
 		if (this.shouldTreatAsComment(prefix, languageId)) {
 			return {
 				systemPrompt: this.getCommentsSystemInstructions(),
-				userPrompt: this.getCommentsUserPrompt(autocompleteInput, prefix, suffix, languageId),
+				userPrompt: this.getCommentsUserPrompt(prefix, suffix, languageId),
 			}
 		} else {
 			return {
@@ -179,12 +179,7 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 		)
 	}
 
-	getCommentsUserPrompt(
-		autocompleteInput: AutocompleteInput,
-		prefix: string,
-		suffix: string,
-		languageId: string,
-	): string {
+	getCommentsUserPrompt(prefix: string, suffix: string, languageId: string): string {
 		// Extract the comment from the prefix
 		const lines = prefix.split("\n")
 		const lastLine = lines[lines.length - 1]
