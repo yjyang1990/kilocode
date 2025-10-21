@@ -71,7 +71,6 @@ async function listTeams(context: any): Promise<void> {
 		for (const org of organizations) {
 			const isCurrent = org.id === currentOrgId
 			content += `${isCurrent ? "→ " : "  "}${org.name} (${org.role})${isCurrent ? " (current)" : ""}\n`
-			content += `    ID: ${org.id}\n`
 		}
 	}
 
