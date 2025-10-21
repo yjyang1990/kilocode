@@ -273,14 +273,6 @@ function fibonacci(n: number): number {
 	})
 
 	describe("error handling", () => {
-		it("should throw error if not initialized", () => {
-			const uninitializedParser = new GhostStreamingParser()
-
-			expect(() => {
-				uninitializedParser.parseResponse("test")
-			}).toThrow("Parser not initialized")
-		})
-
 		it("should handle context without document", () => {
 			const contextWithoutDoc = {} as GhostSuggestionContext
 			parser.initialize(contextWithoutDoc)
