@@ -70,7 +70,7 @@ async function listTeams(context: any): Promise<void> {
 	if (organizations.length > 0) {
 		for (const org of organizations) {
 			const isCurrent = org.id === currentOrgId
-			content += `${isCurrent ? "→ " : "  "}${org.name} (${org.role})${isCurrent ? " (current)" : ""}\n`
+			content += `${isCurrent ? "→ " : "  "}${org.name} (${normalizeTeamName(org.name)})${isCurrent ? " (current)" : ""}\n`
 		}
 	}
 
