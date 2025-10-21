@@ -120,13 +120,29 @@ describe("GhostRecentOperations", () => {
 		const prefix = enrichedContext.document.getText()
 		const suffix = ""
 		const languageId = enrichedContext.document.languageId
+
+		// Convert recent operations to recentlyEditedRanges
+		const recentlyEditedRanges =
+			enrichedContext.recentOperations?.map((op) => ({
+				filepath: enrichedContext.document.uri.fsPath,
+				range: op.lineRange
+					? {
+							start: { line: op.lineRange.start, character: 0 },
+							end: { line: op.lineRange.end, character: 0 },
+						}
+					: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+				timestamp: op.timestamp ?? Date.now(),
+				lines: op.content ? op.content.split("\n") : [],
+				symbols: new Set(op.affectedSymbol ? [op.affectedSymbol] : []),
+			})) ?? []
+
 		const autocompleteInput: AutocompleteInput = {
 			isUntitledFile: false,
 			completionId: crypto.randomUUID(),
 			filepath: enrichedContext.document.uri.fsPath,
 			pos: { line: 0, character: 0 },
 			recentlyVisitedRanges: [],
-			recentlyEditedRanges: [],
+			recentlyEditedRanges,
 		}
 		const { userPrompt } = autoTriggerStrategy.getPrompts(
 			autocompleteInput,

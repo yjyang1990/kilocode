@@ -92,12 +92,12 @@ export class AutoTriggerStrategy {
 		if (this.shouldTreatAsComment(prefix, languageId)) {
 			return {
 				systemPrompt: this.getCommentsSystemInstructions(),
-				userPrompt: this.getCommentsUserPrompt(context, prefix, languageId),
+				userPrompt: this.getCommentsUserPrompt(autocompleteInput, prefix, suffix, languageId),
 			}
 		} else {
 			return {
 				systemPrompt: this.getSystemInstructions(),
-				userPrompt: this.getUserPrompt(context, prefix, suffix),
+				userPrompt: this.getUserPrompt(autocompleteInput, prefix, suffix, languageId),
 			}
 		}
 	}
@@ -115,32 +115,29 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 	/**
 	 * Build minimal prompt for auto-trigger
 	 */
-	getUserPrompt(context: GhostSuggestionContext | undefined, prefix: string, suffix: string): string {
+	getUserPrompt(autocompleteInput: AutocompleteInput, prefix: string, suffix: string, languageId: string): string {
 		let prompt = ""
 
-		// Start with recent typing context
-		if (context?.recentOperations && context.recentOperations.length > 0) {
+		// Start with recent typing context from autocompleteInput
+		if (autocompleteInput.recentlyEditedRanges && autocompleteInput.recentlyEditedRanges.length > 0) {
 			prompt += "## Recent Typing\n"
-			context.recentOperations.forEach((op, index) => {
-				prompt += `${index + 1}. ${op.description}\n`
+			autocompleteInput.recentlyEditedRanges.forEach((range, index) => {
+				const description = `Edited ${range.filepath} at line ${range.range.start.line}`
+				prompt += `${index + 1}. ${description}\n`
 			})
 			prompt += "\n"
 		}
 
-		// Add current position
-		if (context?.range && context.document) {
-			const line = context.range.start.line + 1
-			const char = context.range.start.character + 1
-			prompt += `## Current Position\n`
-			prompt += `Line ${line}, Character ${char}\n\n`
-		}
+		// Add current position from autocompleteInput
+		const line = autocompleteInput.pos.line + 1
+		const char = autocompleteInput.pos.character + 1
+		prompt += `## Current Position\n`
+		prompt += `Line ${line}, Character ${char}\n\n`
 
 		// Add the full document with cursor marker
-		if (context?.document) {
-			prompt += "## Full Code\n"
-			prompt += formatDocumentWithCursor(context.document, context.range)
-			prompt += "\n\n"
-		}
+		const codeWithCursor = `${prefix}${CURSOR_MARKER}${suffix}`
+		prompt += "## Full Code\n"
+		prompt += `\`\`\`${languageId}\n${codeWithCursor}\n\`\`\`\n\n`
 
 		// Add specific instructions
 		prompt += "## Instructions\n"
@@ -192,23 +189,34 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 		)
 	}
 
-	getCommentsUserPrompt(context: GhostSuggestionContext | undefined, prefix: string, languageId: string): string {
-		if (!context?.document || !context.range) {
-			return "No context available for comment-driven generation."
-		}
+	getCommentsUserPrompt(
+		autocompleteInput: AutocompleteInput,
+		prefix: string,
+		suffix: string,
+		languageId: string,
+	): string {
+		// Extract the comment from the prefix
+		const lines = prefix.split("\n")
+		const lastLine = lines[lines.length - 1]
+		const previousLine = lines.length > 1 ? lines[lines.length - 2] : ""
 
-		const language = languageId || context.document.languageId
-		const comment = cleanComment(extractComment(context.document, context.range.start.line), language)
+		// Determine which line contains the comment
+		const commentLine = isCommentLine(lastLine, languageId) ? lastLine : previousLine
+		const comment = cleanComment(commentLine, languageId)
+
+		const codeWithCursor = `${prefix}${CURSOR_MARKER}${suffix}`
 
 		let prompt = `## Comment-Driven Development
-- Language: ${language}
+- Language: ${languageId}
 - Comment to Implement:
 \`\`\`
 ${comment}
 \`\`\`
 
 ## Full Code
-${formatDocumentWithCursor(context.document, context.range)}
+\`\`\`${languageId}
+${codeWithCursor}
+\`\`\`
 
 ## Instructions
 Generate code that implements the functionality described in the comment.
