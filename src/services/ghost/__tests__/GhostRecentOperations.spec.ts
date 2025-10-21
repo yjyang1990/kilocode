@@ -115,7 +115,6 @@ describe("GhostRecentOperations", () => {
 		expect(enrichedContext.recentOperations).toBeDefined()
 		expect(enrichedContext.recentOperations?.length).toBeGreaterThan(0)
 
-		// Convert context to AutocompleteInput using helper
 		const autocompleteInput = contextToAutocompleteInput(enrichedContext)
 
 		// Generate prompt
@@ -138,7 +137,6 @@ describe("GhostRecentOperations", () => {
 		// Generate context
 		const enrichedContext = await context.generate(suggestionContext)
 
-		// Convert context to AutocompleteInput using helper
 		const autocompleteInput = contextToAutocompleteInput(enrichedContext)
 
 		// Generate prompt
