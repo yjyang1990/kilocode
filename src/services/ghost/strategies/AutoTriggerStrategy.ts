@@ -1,4 +1,4 @@
-import { GhostSuggestionContext, AutocompleteInput } from "../types"
+import { AutocompleteInput } from "../types"
 import { CURSOR_MARKER } from "../ghostConstants"
 import { isCommentLine, cleanComment } from "./CommentHelpers"
 import type { TextDocument, Range } from "vscode"
