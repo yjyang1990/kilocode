@@ -268,10 +268,8 @@ export class GhostProvider {
 
 		const context = await this.ghostContext.generate(initialContext)
 
-		// Convert context to AutocompleteInput using helper
 		const autocompleteInput = contextToAutocompleteInput(context)
 
-		// Extract prefix, suffix, and languageId for the new API
 		const position = context.range?.start ?? context.document.positionAt(0)
 		const { prefix, suffix } = extractPrefixSuffix(context.document, position)
 		const languageId = context.document.languageId
