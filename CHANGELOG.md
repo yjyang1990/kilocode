@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.109.0
-
-### Minor Changes
+## [v4.109.0]
 
 - [#3088](https://github.com/Kilo-Org/kilocode/pull/3088) [`84a1fa3`](https://github.com/Kilo-Org/kilocode/commit/84a1fa3f84eac42fa76da9be09270cdb57b19b34) Thanks [@mcowger](https://github.com/mcowger)! - Update base URL for Vertex Anthropic models to work around outdated library.
 
