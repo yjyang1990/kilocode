@@ -230,7 +230,7 @@ export class GhostStreamingParser {
 	 */
 	public finishStream(fullResponse: string): StreamingParseResult {
 		// Add chunk to buffer
-		this.buffer += fullResponse
+		this.buffer = fullResponse
 
 		// Extract any newly completed changes from the current buffer
 		const newChanges = this.extractCompletedChanges()
