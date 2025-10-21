@@ -1,7 +1,7 @@
 import inquirer from "inquirer"
 import { loadConfig, saveConfig, CLIConfig } from "../config"
 import openConfigFile from "../config/openConfig"
-import wait from "../ui/utils/wait"
+import wait from "../utils/wait"
 
 export default async function authWizard() {
 	const config = await loadConfig()
