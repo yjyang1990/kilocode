@@ -3,9 +3,8 @@ import * as vscode from "vscode"
 import { GhostContext } from "../GhostContext"
 import { GhostDocumentStore } from "../GhostDocumentStore"
 import { AutoTriggerStrategy } from "../strategies/AutoTriggerStrategy"
-import { GhostSuggestionContext, AutocompleteInput } from "../types"
+import { GhostSuggestionContext, contextToAutocompleteInput } from "../types"
 import { MockTextDocument } from "../../mocking/MockTextDocument"
-import crypto from "crypto"
 
 // Mock vscode
 vi.mock("vscode", () => ({
@@ -116,34 +115,13 @@ describe("GhostRecentOperations", () => {
 		expect(enrichedContext.recentOperations).toBeDefined()
 		expect(enrichedContext.recentOperations?.length).toBeGreaterThan(0)
 
+		// Convert context to AutocompleteInput using helper
+		const autocompleteInput = contextToAutocompleteInput(enrichedContext)
+
 		// Generate prompt
 		const prefix = enrichedContext.document.getText()
 		const suffix = ""
 		const languageId = enrichedContext.document.languageId
-
-		// Convert recent operations to recentlyEditedRanges
-		const recentlyEditedRanges =
-			enrichedContext.recentOperations?.map((op) => ({
-				filepath: enrichedContext.document.uri.fsPath,
-				range: op.lineRange
-					? {
-							start: { line: op.lineRange.start, character: 0 },
-							end: { line: op.lineRange.end, character: 0 },
-						}
-					: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
-				timestamp: op.timestamp ?? Date.now(),
-				lines: op.content ? op.content.split("\n") : [],
-				symbols: new Set(op.affectedSymbol ? [op.affectedSymbol] : []),
-			})) ?? []
-
-		const autocompleteInput: AutocompleteInput = {
-			isUntitledFile: false,
-			completionId: crypto.randomUUID(),
-			filepath: enrichedContext.document.uri.fsPath,
-			pos: { line: 0, character: 0 },
-			recentlyVisitedRanges: [],
-			recentlyEditedRanges,
-		}
 		const { userPrompt } = autoTriggerStrategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 		// Verify that the prompt includes the recent operations section
@@ -160,18 +138,13 @@ describe("GhostRecentOperations", () => {
 		// Generate context
 		const enrichedContext = await context.generate(suggestionContext)
 
+		// Convert context to AutocompleteInput using helper
+		const autocompleteInput = contextToAutocompleteInput(enrichedContext)
+
 		// Generate prompt
 		const prefix = enrichedContext.document.getText()
 		const suffix = ""
 		const languageId = enrichedContext.document.languageId
-		const autocompleteInput: AutocompleteInput = {
-			isUntitledFile: false,
-			completionId: crypto.randomUUID(),
-			filepath: enrichedContext.document.uri.fsPath,
-			pos: { line: 0, character: 0 },
-			recentlyVisitedRanges: [],
-			recentlyEditedRanges: [],
-		}
 		const { userPrompt } = autoTriggerStrategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 		// Verify that the prompt does not include recent operations section
