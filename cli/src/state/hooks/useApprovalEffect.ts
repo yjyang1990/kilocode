@@ -12,6 +12,11 @@
  * - No stale closures - reads state from store at execution time
  * - Prevents re-processing same message on re-renders
  *
+ * PARTIAL MESSAGE HANDLING:
+ * - Sets pending approval even for partial messages (allows UI to show approval modal immediately)
+ * - Only triggers auto-approval when message is complete (partial=false)
+ * - This ensures the approval modal appears as soon as the ask message arrives
+ *
  * @module useApprovalEffect
  */
 
@@ -153,18 +158,18 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 	useEffect(() => {
 		let timeoutId: NodeJS.Timeout | null = null
 
-		// If message is answered, clear pending approval and don't process
+		// CRITICAL: Check if message is answered FIRST, before any other checks
+		// This ensures we clear pending approval even if we've already processed this timestamp
 		if (message.isAnswered) {
 			clearPendingApproval()
+			// Also clear the processed timestamp so we don't skip future messages
+			if (lastProcessedTsRef.current === message.ts) {
+				lastProcessedTsRef.current = null
+			}
 			return
 		}
 
-		// Skip if this is a partial message
-		if (message.partial) {
-			return
-		}
-
-		// CRITICAL FIX: Skip if we've already processed this exact message timestamp
+		// Skip if we've already processed this exact message timestamp
 		// This prevents re-processing on re-renders when the message object reference changes
 		if (lastProcessedTsRef.current === message.ts) {
 			return
@@ -179,17 +184,19 @@ export function useApprovalEffect(message: ExtensionChatMessage): void {
 		// Check if this message is already pending
 		const currentPending = store.get(pendingApprovalAtom)
 		if (currentPending?.ts === message.ts) {
-			// Don't set pending again, but continue with auto-approval check
+			// Don't set pending again, but continue with auto-approval check for complete messages
 		} else {
-			// Set pending approval (this will be skipped if already processing)
+			// Set pending approval even for partial messages (this allows UI to show approval modal)
+			// The approval modal will appear immediately, but auto-approval only happens when complete
 			setPendingApproval(message)
 		}
 
 		// Mark this timestamp as processed
 		lastProcessedTsRef.current = message.ts
 
-		// Handle auto-approval once per message timestamp
-		if (!autoApprovalHandledRef.current.has(message.ts)) {
+		// Handle auto-approval once per message timestamp, but ONLY for complete messages
+		// This allows the approval modal to show for partial messages while preventing premature auto-approval
+		if (!message.partial && !autoApprovalHandledRef.current.has(message.ts)) {
 			autoApprovalHandledRef.current.add(message.ts)
 
 			// Get approval decision from service
