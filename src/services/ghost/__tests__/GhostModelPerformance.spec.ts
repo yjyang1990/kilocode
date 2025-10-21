@@ -1,7 +1,6 @@
 import * as vscode from "vscode"
 import { describe, it, expect } from "vitest"
 import { AutoTriggerStrategy } from "../strategies/AutoTriggerStrategy"
-import { MockWorkspace } from "./MockWorkspace"
 import { ApiHandler, buildApiHandler } from "../../../api"
 import { GhostModel } from "../GhostModel"
 import { allowNetConnect } from "../../../vitest.setup"
@@ -17,19 +16,9 @@ const KEYS = {
 describe("GhostModelPerformance", () => {
 	const generatePrompt = (userInput: string) => {
 		const autoTriggerStrategy = new AutoTriggerStrategy()
-		const mockWorkspace = new MockWorkspace()
 
 		const testUri = vscode.Uri.parse("file:///example.ts")
-		const document = mockWorkspace.addDocument(testUri, "")
 
-		const context = {
-			userInput,
-			document: document,
-		}
-
-		const prefix = ""
-		const suffix = ""
-		const languageId = "typescript"
 		const autocompleteInput: AutocompleteInput = {
 			isUntitledFile: false,
 			completionId: crypto.randomUUID(),
@@ -39,12 +28,7 @@ describe("GhostModelPerformance", () => {
 			recentlyEditedRanges: [],
 		}
 
-		const { systemPrompt, userPrompt } = autoTriggerStrategy.getPrompts(
-			autocompleteInput,
-			prefix,
-			suffix,
-			languageId,
-		)
+		const { systemPrompt, userPrompt } = autoTriggerStrategy.getPrompts(autocompleteInput, "", "", "typescript")
 
 		return { systemPrompt, suggestionPrompt: userPrompt }
 	}
