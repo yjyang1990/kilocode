@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.109.1
-
-### Patch Changes
+## [v4.109.1]
 
 - [#3203](https://github.com/Kilo-Org/kilocode/pull/3203) [`aeb8bf3`](https://github.com/Kilo-Org/kilocode/commit/aeb8bf37df44532517db96511e3f0f85861f55b8) Thanks [@chrarnoldus](https://github.com/chrarnoldus)! - Fix Z.ai provider giving an Unauthorized error
 
