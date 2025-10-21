@@ -55,15 +55,6 @@ export function addCursorMarker(document: TextDocument, range?: Range): string {
 	return `${beforeCursor}${CURSOR_MARKER}${afterCursor}`
 }
 
-export function formatDocumentWithCursor(document: TextDocument, range?: Range, languageId?: string): string {
-	const lang = languageId || document.languageId
-	const codeWithCursor = addCursorMarker(document, range)
-
-	return `\`\`\`${lang}
-${codeWithCursor}
-\`\`\``
-}
-
 export class AutoTriggerStrategy {
 	shouldTreatAsComment(prefix: string, languageId: string): boolean {
 		const lines = prefix.split("\n")

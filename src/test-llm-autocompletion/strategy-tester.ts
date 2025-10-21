@@ -36,7 +36,7 @@ export class StrategyTester {
 		}
 
 		// Remove the cursor marker from the code before creating the document
-		// formatDocumentWithCursor will add it back at the correct position
+		// the code will add it back at the correct position
 		const codeWithoutMarker = code.replace(CURSOR_MARKER, "")
 
 		const uri = vscode.Uri.parse("file:///test.js")
