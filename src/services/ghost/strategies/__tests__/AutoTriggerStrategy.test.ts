@@ -4,6 +4,21 @@ import { AutoTriggerStrategy } from "../AutoTriggerStrategy"
 import { GhostSuggestionContext, AutocompleteInput } from "../../types"
 import crypto from "crypto"
 
+function createAutocompleteInput(
+	filepath: string = "/test.ts",
+	line: number = 0,
+	character: number = 0,
+): AutocompleteInput {
+	return {
+		isUntitledFile: false,
+		completionId: crypto.randomUUID(),
+		filepath,
+		pos: { line, character },
+		recentlyVisitedRanges: [],
+		recentlyEditedRanges: [],
+	}
+}
+
 describe("AutoTriggerStrategy", () => {
 	let strategy: AutoTriggerStrategy
 
@@ -87,24 +102,12 @@ describe("AutoTriggerStrategy", () => {
 				isEmpty: true,
 			} as vscode.Range
 
-			const context: GhostSuggestionContext = {
-				document: mockDocument,
-				range: mockRange,
-			}
-
-			const prefix = "// TODO: implement sum function\n"
-			const suffix = ""
-			const languageId = "typescript"
-			const autocompleteInput: AutocompleteInput = {
-				isUntitledFile: false,
-				completionId: crypto.randomUUID(),
-				filepath: "/test.ts",
-				pos: { line: 1, character: 0 },
-				recentlyVisitedRanges: [],
-				recentlyEditedRanges: [],
-			}
-
-			const { systemPrompt, userPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
+			const { systemPrompt, userPrompt } = strategy.getPrompts(
+				createAutocompleteInput("/test.ts", 1, 0),
+				"// TODO: implement sum function\n",
+				"",
+				"typescript",
+			)
 
 			// Verify system prompt contains comment-specific keywords
 			expect(systemPrompt.toLowerCase()).toContain("comment")
@@ -135,24 +138,12 @@ describe("AutoTriggerStrategy", () => {
 				isEmpty: true,
 			} as vscode.Range
 
-			const context: GhostSuggestionContext = {
-				document: mockDocument,
-				range: mockRange,
-			}
-
-			const prefix = "// FIXME: handle edge case"
-			const suffix = "\n"
-			const languageId = "typescript"
-			const autocompleteInput: AutocompleteInput = {
-				isUntitledFile: false,
-				completionId: crypto.randomUUID(),
-				filepath: "/test.ts",
-				pos: { line: 0, character: 26 },
-				recentlyVisitedRanges: [],
-				recentlyEditedRanges: [],
-			}
-
-			const { systemPrompt, userPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
+			const { systemPrompt, userPrompt } = strategy.getPrompts(
+				createAutocompleteInput("/test.ts", 0, 26),
+				"// FIXME: handle edge case",
+				"\n",
+				"typescript",
+			)
 
 			// Verify system prompt contains comment-specific keywords
 			expect(systemPrompt.toLowerCase()).toContain("comment")
@@ -181,24 +172,12 @@ describe("AutoTriggerStrategy", () => {
 				end: { line: 0, character: 13 } as vscode.Position,
 			} as vscode.Range
 
-			const context: GhostSuggestionContext = {
-				document: mockDocument,
-				range: mockRange,
-			}
-
-			const prefix = "const x = 1;\n"
-			const suffix = ""
-			const languageId = "typescript"
-			const autocompleteInput: AutocompleteInput = {
-				isUntitledFile: false,
-				completionId: crypto.randomUUID(),
-				filepath: "/test.ts",
-				pos: { line: 0, character: 13 },
-				recentlyVisitedRanges: [],
-				recentlyEditedRanges: [],
-			}
-
-			const { systemPrompt, userPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
+			const { systemPrompt, userPrompt } = strategy.getPrompts(
+				createAutocompleteInput("/test.ts", 0, 13),
+				"const x = 1;\n",
+				"",
+				"typescript",
+			)
 
 			// Verify system prompt contains auto-trigger keywords
 			expect(systemPrompt).toContain("Auto-Completion")
@@ -228,24 +207,12 @@ describe("AutoTriggerStrategy", () => {
 				isEmpty: true,
 			} as vscode.Range
 
-			const context: GhostSuggestionContext = {
-				document: mockDocument,
-				range: mockRange,
-			}
-
-			const prefix = "const x = 1;\n"
-			const suffix = "\n"
-			const languageId = "typescript"
-			const autocompleteInput: AutocompleteInput = {
-				isUntitledFile: false,
-				completionId: crypto.randomUUID(),
-				filepath: "/test.ts",
-				pos: { line: 1, character: 0 },
-				recentlyVisitedRanges: [],
-				recentlyEditedRanges: [],
-			}
-
-			const { systemPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
+			const { systemPrompt } = strategy.getPrompts(
+				createAutocompleteInput("/test.ts", 1, 0),
+				"const x = 1;\n",
+				"\n",
+				"typescript",
+			)
 
 			// Should use auto-trigger, not comment-driven
 			expect(systemPrompt).toContain("Auto-Completion")
