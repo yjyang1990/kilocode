@@ -311,32 +311,6 @@ export class GhostProvider {
 
 			if (chunk.type === "text") {
 				response += chunk.text
-
-				// Process the text chunk through our streaming parser
-				const parseResult = this.streamingParser.processChunk(chunk.text)
-
-				if (parseResult.hasNewSuggestions) {
-					// Update our suggestions with the new parsed results
-					this.suggestions = parseResult.suggestions
-
-					// If this is the first suggestion, show it immediately
-					if (!hasShownFirstSuggestion && this.suggestions.hasSuggestions()) {
-						hasShownFirstSuggestion = true
-						this.stopProcessing() // Stop the loading animation
-						this.selectClosestSuggestion()
-						void this.render() // Render asynchronously to not block streaming
-					} else if (hasShownFirstSuggestion) {
-						// Update existing suggestions
-						this.selectClosestSuggestion()
-						void this.render() // Update UI asynchronously
-					}
-				}
-
-				// If the response appears complete, finalize
-				if (parseResult.isComplete && hasShownFirstSuggestion) {
-					this.selectClosestSuggestion()
-					void this.render()
-				}
 			}
 		}
 
@@ -373,7 +347,7 @@ export class GhostProvider {
 			}
 
 			// Finish the streaming parser to apply sanitization if needed
-			const finalParseResult = this.streamingParser.finishStream()
+			const finalParseResult = this.streamingParser.parseResponse(response)
 			if (finalParseResult.hasNewSuggestions && !hasShownFirstSuggestion) {
 				// Handle case where sanitization produced suggestions
 				this.suggestions = finalParseResult.suggestions
