@@ -2,4 +2,4 @@
 "@kilocode/cli": patch
 ---
 
-Kilocode Profile and Teams support
+Support Kilo Code for Teams
