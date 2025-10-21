@@ -267,7 +267,44 @@ export class GhostProvider {
 		this.isRequestCancelled = false
 
 		const context = await this.ghostContext.generate(initialContext)
-		const { systemPrompt, userPrompt } = this.autoTriggerStrategy.getPrompts(context)
+
+		// Extract prefix, suffix, and languageId for the new API
+		const position = context.range?.start ?? context.document.positionAt(0)
+		const offset = context.document.offsetAt(position)
+		const text = context.document.getText()
+		const prefix = text.substring(0, offset)
+		const suffix = text.substring(offset)
+		const languageId = context.document.languageId
+
+		// Convert context to AutocompleteInput
+		const autocompleteInput = {
+			isUntitledFile: context.document.isUntitled,
+			completionId: crypto.randomUUID(),
+			filepath: context.document.uri.fsPath,
+			pos: { line: position.line, character: position.character },
+			recentlyVisitedRanges: [],
+			recentlyEditedRanges:
+				context.recentOperations?.map((op) => ({
+					filepath: context.document.uri.fsPath,
+					range: op.lineRange
+						? {
+								start: { line: op.lineRange.start, character: 0 },
+								end: { line: op.lineRange.end, character: 0 },
+							}
+						: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+					timestamp: op.timestamp ?? Date.now(),
+					lines: op.content ? op.content.split("\n") : [],
+					symbols: new Set(op.affectedSymbol ? [op.affectedSymbol] : []),
+				})) ?? [],
+		}
+
+		const { systemPrompt, userPrompt } = this.autoTriggerStrategy.getPrompts(
+			autocompleteInput,
+			prefix,
+			suffix,
+			languageId,
+			context,
+		)
 		if (this.isRequestCancelled) {
 			return
 		}

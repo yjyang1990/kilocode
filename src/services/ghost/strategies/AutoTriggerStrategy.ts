@@ -1,4 +1,4 @@
-import { GhostSuggestionContext, extractPrefix } from "../types"
+import { GhostSuggestionContext, extractPrefix, AutocompleteInput } from "../types"
 import { CURSOR_MARKER } from "../ghostConstants"
 import { isCommentLine, extractComment, cleanComment } from "./CommentHelpers"
 import type { TextDocument, Range } from "vscode"
@@ -79,22 +79,25 @@ export class AutoTriggerStrategy {
 		}
 	}
 
-	getPrompts(context: GhostSuggestionContext): {
+	getPrompts(
+		autocompleteInput: AutocompleteInput,
+		prefix: string,
+		suffix: string,
+		languageId: string,
+		context?: GhostSuggestionContext,
+	): {
 		systemPrompt: string
 		userPrompt: string
 	} {
-		const prefix = extractPrefix(context)
-		const languageId = context.document?.languageId || ""
-
 		if (this.shouldTreatAsComment(prefix, languageId)) {
 			return {
 				systemPrompt: this.getCommentsSystemInstructions(),
-				userPrompt: this.getCommentsUserPrompt(context),
+				userPrompt: this.getCommentsUserPrompt(context, prefix, languageId),
 			}
 		} else {
 			return {
 				systemPrompt: this.getSystemInstructions(),
-				userPrompt: this.getUserPrompt(context),
+				userPrompt: this.getUserPrompt(context, prefix, suffix),
 			}
 		}
 	}
@@ -112,11 +115,11 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 	/**
 	 * Build minimal prompt for auto-trigger
 	 */
-	getUserPrompt(context: GhostSuggestionContext): string {
+	getUserPrompt(context: GhostSuggestionContext | undefined, prefix: string, suffix: string): string {
 		let prompt = ""
 
 		// Start with recent typing context
-		if (context.recentOperations && context.recentOperations.length > 0) {
+		if (context?.recentOperations && context.recentOperations.length > 0) {
 			prompt += "## Recent Typing\n"
 			context.recentOperations.forEach((op, index) => {
 				prompt += `${index + 1}. ${op.description}\n`
@@ -125,7 +128,7 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 		}
 
 		// Add current position
-		if (context.range && context.document) {
+		if (context?.range && context.document) {
 			const line = context.range.start.line + 1
 			const char = context.range.start.character + 1
 			prompt += `## Current Position\n`
@@ -133,7 +136,7 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 		}
 
 		// Add the full document with cursor marker
-		if (context.document) {
+		if (context?.document) {
 			prompt += "## Full Code\n"
 			prompt += formatDocumentWithCursor(context.document, context.range)
 			prompt += "\n\n"
@@ -189,12 +192,12 @@ Provide non-intrusive completions after a typing pause. Be conservative and help
 		)
 	}
 
-	getCommentsUserPrompt(context: GhostSuggestionContext): string {
-		if (!context.document || !context.range) {
+	getCommentsUserPrompt(context: GhostSuggestionContext | undefined, prefix: string, languageId: string): string {
+		if (!context?.document || !context.range) {
 			return "No context available for comment-driven generation."
 		}
 
-		const language = context.document.languageId
+		const language = languageId || context.document.languageId
 		const comment = cleanComment(extractComment(context.document, context.range.start.line), language)
 
 		let prompt = `## Comment-Driven Development

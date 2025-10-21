@@ -3,8 +3,9 @@ import * as vscode from "vscode"
 import { GhostContext } from "../GhostContext"
 import { GhostDocumentStore } from "../GhostDocumentStore"
 import { AutoTriggerStrategy } from "../strategies/AutoTriggerStrategy"
-import { GhostSuggestionContext } from "../types"
+import { GhostSuggestionContext, AutocompleteInput } from "../types"
 import { MockTextDocument } from "../../mocking/MockTextDocument"
+import crypto from "crypto"
 
 // Mock vscode
 vi.mock("vscode", () => ({
@@ -116,7 +117,24 @@ describe("GhostRecentOperations", () => {
 		expect(enrichedContext.recentOperations?.length).toBeGreaterThan(0)
 
 		// Generate prompt
-		const { userPrompt } = autoTriggerStrategy.getPrompts(enrichedContext)
+		const prefix = enrichedContext.document.getText()
+		const suffix = ""
+		const languageId = enrichedContext.document.languageId
+		const autocompleteInput: AutocompleteInput = {
+			isUntitledFile: false,
+			completionId: crypto.randomUUID(),
+			filepath: enrichedContext.document.uri.fsPath,
+			pos: { line: 0, character: 0 },
+			recentlyVisitedRanges: [],
+			recentlyEditedRanges: [],
+		}
+		const { userPrompt } = autoTriggerStrategy.getPrompts(
+			autocompleteInput,
+			prefix,
+			suffix,
+			languageId,
+			enrichedContext,
+		)
 
 		// Verify that the prompt includes the recent operations section
 		// The new strategy system uses "## Recent Typing" format
@@ -133,7 +151,24 @@ describe("GhostRecentOperations", () => {
 		const enrichedContext = await context.generate(suggestionContext)
 
 		// Generate prompt
-		const { userPrompt } = autoTriggerStrategy.getPrompts(enrichedContext)
+		const prefix = enrichedContext.document.getText()
+		const suffix = ""
+		const languageId = enrichedContext.document.languageId
+		const autocompleteInput: AutocompleteInput = {
+			isUntitledFile: false,
+			completionId: crypto.randomUUID(),
+			filepath: enrichedContext.document.uri.fsPath,
+			pos: { line: 0, character: 0 },
+			recentlyVisitedRanges: [],
+			recentlyEditedRanges: [],
+		}
+		const { userPrompt } = autoTriggerStrategy.getPrompts(
+			autocompleteInput,
+			prefix,
+			suffix,
+			languageId,
+			enrichedContext,
+		)
 
 		// Verify that the prompt does not include recent operations section
 		// The current document content will still be in the prompt, so we should only check

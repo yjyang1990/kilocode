@@ -5,6 +5,8 @@ import { MockWorkspace } from "./MockWorkspace"
 import { ApiHandler, buildApiHandler } from "../../../api"
 import { GhostModel } from "../GhostModel"
 import { allowNetConnect } from "../../../vitest.setup"
+import { AutocompleteInput } from "../types"
+import crypto from "crypto"
 
 const KEYS = {
 	KILOCODE: null,
@@ -25,7 +27,25 @@ describe("GhostModelPerformance", () => {
 			document: document,
 		}
 
-		const { systemPrompt, userPrompt } = autoTriggerStrategy.getPrompts(context)
+		const prefix = ""
+		const suffix = ""
+		const languageId = "typescript"
+		const autocompleteInput: AutocompleteInput = {
+			isUntitledFile: false,
+			completionId: crypto.randomUUID(),
+			filepath: testUri.fsPath,
+			pos: { line: 0, character: 0 },
+			recentlyVisitedRanges: [],
+			recentlyEditedRanges: [],
+		}
+
+		const { systemPrompt, userPrompt } = autoTriggerStrategy.getPrompts(
+			autocompleteInput,
+			prefix,
+			suffix,
+			languageId,
+			context,
+		)
 
 		return { systemPrompt, suggestionPrompt: userPrompt }
 	}
