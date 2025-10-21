@@ -232,7 +232,7 @@ export class GhostStreamingParser {
 		this.buffer = fullResponse
 
 		// Extract any newly completed changes from the current buffer
-		const newChanges = this.extractCompletedChanges()
+		const newChanges = this.extractCompletedChanges(this.buffer)
 
 		let hasNewSuggestions = newChanges.length > 0
 
@@ -249,7 +249,7 @@ export class GhostStreamingParser {
 			if (sanitizedBuffer !== this.buffer) {
 				// Re-process with sanitized buffer
 				this.buffer = sanitizedBuffer
-				const sanitizedChanges = this.extractCompletedChanges()
+				const sanitizedChanges = this.extractCompletedChanges(this.buffer)
 				if (sanitizedChanges.length > 0) {
 					this.completedChanges.push(...sanitizedChanges)
 					hasNewSuggestions = true
@@ -271,11 +271,8 @@ export class GhostStreamingParser {
 	/**
 	 * Extract completed <change> blocks from the buffer
 	 */
-	private extractCompletedChanges(): ParsedChange[] {
+	private extractCompletedChanges(searchText: string): ParsedChange[] {
 		const newChanges: ParsedChange[] = []
-
-		// Look for complete <change> blocks starting from where we left off
-		const searchText = this.buffer
 
 		// Updated regex to handle both single-line XML format and traditional format with whitespace
 		const changeRegex =
