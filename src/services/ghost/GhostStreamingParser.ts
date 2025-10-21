@@ -228,23 +228,13 @@ export class GhostStreamingParser {
 	}
 
 	/**
-	 * Process a new chunk of text and return any newly completed suggestions
+	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
-	public processChunk(chunk: string): StreamingParseResult {
-		if (!this.context) {
-			throw new Error("Parser not initialized. Call initialize() first.")
-		}
-
-		if (!this.streamFinished) {
-			return {
-				suggestions: new GhostSuggestionsState(),
-				isComplete: false,
-				hasNewSuggestions: false,
-			}
-		}
+	public finishStream(fullResponse: string): StreamingParseResult {
+		this.streamFinished = true
 
 		// Add chunk to buffer
-		this.buffer += chunk
+		this.buffer += fullResponse
 
 		// Extract any newly completed changes from the current buffer
 		const newChanges = this.extractCompletedChanges()
@@ -281,14 +271,6 @@ export class GhostStreamingParser {
 			isComplete,
 			hasNewSuggestions,
 		}
-	}
-
-	/**
-	 * Mark the stream as finished and process any remaining content with sanitization
-	 */
-	public finishStream(fullResponse: string): StreamingParseResult {
-		this.streamFinished = true
-		return this.processChunk(fullResponse)
 	}
 
 	/**
