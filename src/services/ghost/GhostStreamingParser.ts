@@ -205,7 +205,6 @@ export class GhostStreamingParser {
 	private completedChanges: ParsedChange[] = []
 	private lastProcessedIndex: number = 0
 	private context: GhostSuggestionContext | null = null
-	private streamFinished: boolean = false
 
 	constructor() {}
 
@@ -224,15 +223,12 @@ export class GhostStreamingParser {
 		this.buffer = ""
 		this.completedChanges = []
 		this.lastProcessedIndex = 0
-		this.streamFinished = false
 	}
 
 	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
 	public finishStream(fullResponse: string): StreamingParseResult {
-		this.streamFinished = true
-
 		// Add chunk to buffer
 		this.buffer += fullResponse
 
@@ -249,7 +245,7 @@ export class GhostStreamingParser {
 
 		// Apply very conservative sanitization only when the stream is finished
 		// and we still have no completed changes but have content in the buffer
-		if (this.completedChanges.length === 0 && this.buffer.trim().length > 0 && this.streamFinished) {
+		if (this.completedChanges.length === 0 && this.buffer.trim().length > 0) {
 			const sanitizedBuffer = sanitizeXMLConservative(this.buffer)
 			if (sanitizedBuffer !== this.buffer) {
 				// Re-process with sanitized buffer
