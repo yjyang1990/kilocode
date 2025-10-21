@@ -222,15 +222,17 @@ export class GhostProvider {
 
 		// Heuristic to filter out changes far from cursor (likely external or LLM edits)
 		const editor = vscode.window.activeTextEditor
-		if (editor && editor.document === event.document) {
-			const cursorPos = editor.selection.active
-			const isNearCursor = event.contentChanges.some((change) => {
-				const distance = Math.abs(cursorPos.line - change.range.start.line)
-				return distance <= 2
-			})
-			if (!isNearCursor) {
-				return
-			}
+		if (!editor || editor.document !== event.document) {
+			return
+		}
+
+		const cursorPos = editor.selection.active
+		const isNearCursor = event.contentChanges.some((change) => {
+			const distance = Math.abs(cursorPos.line - change.range.start.line)
+			return distance <= 2
+		})
+		if (!isNearCursor) {
+			return
 		}
 
 		await this.documentStore.storeDocument({ document: event.document })

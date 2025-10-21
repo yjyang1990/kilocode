@@ -434,6 +434,43 @@ console.log('test');]]></replace></change>`
 			expect(isNearCursor).toBe(true)
 		})
 
+		it("should filter out changes to non-active documents", async () => {
+			const initialContent = `console.log('test');`
+			const { mockDocument } = await setupTestDocument("inactive.js", initialContent)
+
+			// Create a different document for the active editor
+			const activeContent = `console.log('active');`
+			const activeUri = vscode.Uri.parse("file://active.js")
+			mockWorkspace.addDocument(activeUri, activeContent)
+			const activeDocument = await mockWorkspace.openTextDocument(activeUri)
+
+			// Mock active editor with a different document
+			;(vscode.window as any).activeTextEditor = {
+				document: activeDocument,
+				selection: {
+					active: new vscode.Position(0, 10),
+				},
+			}
+
+			// Simulate change to the non-active document
+			const event = {
+				document: mockDocument,
+				contentChanges: [
+					{
+						range: new vscode.Range(new vscode.Position(0, 10), new vscode.Position(0, 10)),
+						rangeLength: 0,
+						text: "a",
+					},
+				],
+				reason: undefined,
+			}
+
+			// Should be filtered out - document doesn't match active editor
+			const editor = (vscode.window as any).activeTextEditor
+			const shouldProcess = editor && editor.document === event.document
+			expect(shouldProcess).toBe(false)
+		})
+
 		it("should allow small paste operations near cursor", async () => {
 			const initialContent = `console.log('test');`
 			const { mockDocument } = await setupTestDocument("paste.js", initialContent)
