@@ -60,6 +60,16 @@ async function listTeams(context: any): Promise<void> {
 	const organizations = profileData.organizations || []
 	const currentOrgId = currentProvider.kilocodeOrganizationId
 
+	if (organizations.length < 1) {
+		addMessage({
+			id: Date.now().toString(),
+			type: "system",
+			content: `You're currently not a part of any Kilo Code teams. Go to https://app.kilocode.ai/get-started/teams to get started with Kilo Code for Teams!`,
+			ts: Date.now(),
+		})
+		return
+	}
+
 	let content = "**Available Teams:**\n\n"
 
 	// Add Personal option
@@ -67,15 +77,11 @@ async function listTeams(context: any): Promise<void> {
 	content += `${isPersonal ? "→ " : "  "}Personal${isPersonal ? " (current)" : ""}\n`
 
 	// Add organizations
-	if (organizations.length > 0) {
-		for (const org of organizations) {
-			const isCurrent = org.id === currentOrgId
-			content += `${isCurrent ? "→ " : "  "}${org.name} (${normalizeTeamName(org.name)})${isCurrent ? " (current)" : ""}\n`
-		}
+	for (const org of organizations) {
+		const isCurrent = org.id === currentOrgId
+		content += `${isCurrent ? "→ " : "  "}${normalizeTeamName(org.name)}${isCurrent ? " (current)" : ""}\n`
 	}
-
-	content += `\n**Total:** ${organizations.length + 1} team${organizations.length !== 0 ? "s" : ""}\n`
-	content += `\nUse \`/teams select <team-name>\` to switch teams (e.g., 'kilo-code' for 'Kilo Code')\n`
+	content += `\nUse \`/teams select ${normalizeTeamName(organizations[0].name)}\` select the ${organizations[0].name} profile\n`
 	content += `Use \`/teams select personal\` to switch to personal account\n`
 
 	addMessage({
