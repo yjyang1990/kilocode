@@ -190,7 +190,7 @@ export const ImageGenerationSettings = ({
 					</div>
 
 					{/* Model Selection */}
-					<div style={{ display: isUsingOpenRouter ? undefined : "none" } /*kilocode_change*/}>
+					<div>
 						<label className="block font-medium mb-1">
 							{t("settings:experimental.IMAGE_GENERATION.modelSelectionLabel")}
 						</label>
