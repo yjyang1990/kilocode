@@ -104,13 +104,7 @@ describe("AutoTriggerStrategy", () => {
 				recentlyEditedRanges: [],
 			}
 
-			const { systemPrompt, userPrompt } = strategy.getPrompts(
-				autocompleteInput,
-				prefix,
-				suffix,
-				languageId,
-				context,
-			)
+			const { systemPrompt, userPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 			// Verify system prompt contains comment-specific keywords
 			expect(systemPrompt.toLowerCase()).toContain("comment")
@@ -158,13 +152,7 @@ describe("AutoTriggerStrategy", () => {
 				recentlyEditedRanges: [],
 			}
 
-			const { systemPrompt, userPrompt } = strategy.getPrompts(
-				autocompleteInput,
-				prefix,
-				suffix,
-				languageId,
-				context,
-			)
+			const { systemPrompt, userPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 			// Verify system prompt contains comment-specific keywords
 			expect(systemPrompt.toLowerCase()).toContain("comment")
@@ -210,13 +198,7 @@ describe("AutoTriggerStrategy", () => {
 				recentlyEditedRanges: [],
 			}
 
-			const { systemPrompt, userPrompt } = strategy.getPrompts(
-				autocompleteInput,
-				prefix,
-				suffix,
-				languageId,
-				context,
-			)
+			const { systemPrompt, userPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 			// Verify system prompt contains auto-trigger keywords
 			expect(systemPrompt).toContain("Auto-Completion")
@@ -263,7 +245,7 @@ describe("AutoTriggerStrategy", () => {
 				recentlyEditedRanges: [],
 			}
 
-			const { systemPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId, context)
+			const { systemPrompt } = strategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 			// Should use auto-trigger, not comment-driven
 			expect(systemPrompt).toContain("Auto-Completion")

@@ -144,13 +144,7 @@ describe("GhostRecentOperations", () => {
 			recentlyVisitedRanges: [],
 			recentlyEditedRanges,
 		}
-		const { userPrompt } = autoTriggerStrategy.getPrompts(
-			autocompleteInput,
-			prefix,
-			suffix,
-			languageId,
-			enrichedContext,
-		)
+		const { userPrompt } = autoTriggerStrategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 		// Verify that the prompt includes the recent operations section
 		// The new strategy system uses "## Recent Typing" format
@@ -178,13 +172,7 @@ describe("GhostRecentOperations", () => {
 			recentlyVisitedRanges: [],
 			recentlyEditedRanges: [],
 		}
-		const { userPrompt } = autoTriggerStrategy.getPrompts(
-			autocompleteInput,
-			prefix,
-			suffix,
-			languageId,
-			enrichedContext,
-		)
+		const { userPrompt } = autoTriggerStrategy.getPrompts(autocompleteInput, prefix, suffix, languageId)
 
 		// Verify that the prompt does not include recent operations section
 		// The current document content will still be in the prompt, so we should only check

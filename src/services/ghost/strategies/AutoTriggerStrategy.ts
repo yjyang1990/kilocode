@@ -84,7 +84,6 @@ export class AutoTriggerStrategy {
 		prefix: string,
 		suffix: string,
 		languageId: string,
-		context?: GhostSuggestionContext,
 	): {
 		systemPrompt: string
 		userPrompt: string

@@ -303,7 +303,6 @@ export class GhostProvider {
 			prefix,
 			suffix,
 			languageId,
-			context,
 		)
 		if (this.isRequestCancelled) {
 			return

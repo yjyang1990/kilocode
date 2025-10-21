@@ -80,7 +80,6 @@ export class StrategyTester {
 			prefix,
 			suffix,
 			languageId,
-			context,
 		)
 
 		const response = await this.llmClient.sendPrompt(systemPrompt, userPrompt)

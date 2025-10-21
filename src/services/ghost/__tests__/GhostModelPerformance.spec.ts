@@ -44,7 +44,6 @@ describe("GhostModelPerformance", () => {
 			prefix,
 			suffix,
 			languageId,
-			context,
 		)
 
 		return { systemPrompt, suggestionPrompt: userPrompt }
