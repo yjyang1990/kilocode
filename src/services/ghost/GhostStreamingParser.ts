@@ -235,6 +235,14 @@ export class GhostStreamingParser {
 			throw new Error("Parser not initialized. Call initialize() first.")
 		}
 
+		if (!this.streamFinished) {
+			return {
+				suggestions: new GhostSuggestionsState(),
+				isComplete: false,
+				hasNewSuggestions: false,
+			}
+		}
+
 		// Add chunk to buffer
 		this.buffer += chunk
 
@@ -278,9 +286,9 @@ export class GhostStreamingParser {
 	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
-	public finishStream(): StreamingParseResult {
+	public finishStream(fullResponse: string): StreamingParseResult {
 		this.streamFinished = true
-		return this.processChunk("")
+		return this.processChunk(fullResponse)
 	}
 
 	/**
