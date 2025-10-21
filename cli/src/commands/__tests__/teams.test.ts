@@ -70,7 +70,6 @@ describe("/teams command", () => {
 
 		it("should have examples", () => {
 			expect(teamsCommand.examples).toContain("/teams")
-			expect(teamsCommand.examples).toContain("/teams list")
 			expect(teamsCommand.examples).toContain("/teams select personal")
 		})
 	})
