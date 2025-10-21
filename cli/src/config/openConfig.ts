@@ -1,6 +1,6 @@
 import { spawn } from "child_process"
 import { platform } from "os"
-import { ensureConfigDir, configExists, saveConfig, DEFAULT_CONFIG, getConfigPath } from "../../config"
+import { ensureConfigDir, configExists, saveConfig, DEFAULT_CONFIG, getConfigPath } from "."
 
 export default async function openConfigFile() {
 	try {

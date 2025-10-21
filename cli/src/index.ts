@@ -10,7 +10,7 @@ import { CLI } from "./cli.js"
 import { DEFAULT_MODES } from "./constants/modes/defaults.js"
 import { getTelemetryService } from "./services/telemetry/index.js"
 import { Package } from "./constants/package.js"
-import openConfigFile from "./ui/utils/openConfig.js"
+import openConfigFile from "./config/openConfig.js"
 import authWizard from "./utils/authWizard.js"
 import { configExists } from "./config/persistence.js"
 
