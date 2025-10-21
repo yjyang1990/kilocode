@@ -227,7 +227,7 @@ export class GhostStreamingParser {
 	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
-	public finishStream(fullResponse: string): StreamingParseResult {
+	public parseResponse(fullResponse: string): StreamingParseResult {
 		this.buffer = fullResponse
 
 		// Extract any newly completed changes from the current buffer

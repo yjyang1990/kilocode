@@ -347,7 +347,7 @@ export class GhostProvider {
 			}
 
 			// Finish the streaming parser to apply sanitization if needed
-			const finalParseResult = this.streamingParser.finishStream(response)
+			const finalParseResult = this.streamingParser.parseResponse(response)
 			if (finalParseResult.hasNewSuggestions && !hasShownFirstSuggestion) {
 				// Handle case where sanitization produced suggestions
 				this.suggestions = finalParseResult.suggestions

@@ -92,7 +92,7 @@ describe("Ghost Streaming Integration", () => {
 			const usageInfo = await model.generateResponse("system prompt", "user prompt", onChunk)
 
 			// Process complete response
-			const parseResult = streamingParser.finishStream(fullResponse)
+			const parseResult = streamingParser.parseResponse(fullResponse)
 			finalSuggestionTime = performance.now()
 
 			const endTime = performance.now()
@@ -142,7 +142,7 @@ describe("Ghost Streaming Integration", () => {
 			await model.generateResponse("system", "user", onChunk)
 
 			// Process complete response
-			const parseResult = streamingParser.finishStream(fullResponse)
+			const parseResult = streamingParser.parseResponse(fullResponse)
 
 			// Should have processed both suggestions
 			expect(parseResult.hasNewSuggestions).toBe(true)
@@ -180,7 +180,7 @@ describe("Ghost Streaming Integration", () => {
 			await model.generateResponse("system", "user", onChunk)
 
 			// Try to process incomplete response
-			const parseResult = streamingParser.finishStream(fullResponse)
+			const parseResult = streamingParser.parseResponse(fullResponse)
 
 			// Should have no complete suggestions due to cancellation
 			expect(parseResult.hasNewSuggestions).toBe(false)
@@ -220,7 +220,7 @@ describe("Ghost Streaming Integration", () => {
 
 			// Process complete response
 			try {
-				const parseResult = streamingParser.finishStream(fullResponse)
+				const parseResult = streamingParser.parseResponse(fullResponse)
 				// Should only process the valid suggestion
 				if (parseResult.hasNewSuggestions) {
 					expect(streamingParser.getCompletedChanges()).toHaveLength(1)
@@ -260,7 +260,7 @@ describe("Ghost Streaming Integration", () => {
 
 			await model.generateResponse("system", "user", onChunk)
 
-			const parseResult = streamingParser.finishStream(fullResponse)
+			const parseResult = streamingParser.parseResponse(fullResponse)
 			const totalTime = performance.now() - startTime
 
 			// Should process successfully

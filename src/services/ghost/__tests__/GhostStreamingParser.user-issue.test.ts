@@ -46,7 +46,7 @@ describe("GhostStreamingParser - User Issue Fix", () => {
 ]]></replace></change`
 
 		// Simulate stream completion with full response
-		const result = parser.finishStream(userIssueXML)
+		const result = parser.parseResponse(userIssueXML)
 
 		// Verify that the sanitization worked and we got suggestions
 		expect(result.hasNewSuggestions).toBe(true)
@@ -68,7 +68,7 @@ describe("GhostStreamingParser - User Issue Fix", () => {
 ]]></replace></change`
 
 		// Simulate stream completion
-		const result = parser.finishStream(brokenXML)
+		const result = parser.parseResponse(brokenXML)
 
 		expect(result.hasNewSuggestions).toBe(true)
 		expect(result.suggestions.hasSuggestions()).toBe(true)

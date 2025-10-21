@@ -42,7 +42,7 @@ describe("GhostStreamingParser", () => {
 	describe("finishStream", () => {
 		it("should handle incomplete XML", () => {
 			const incompleteXml = "<change><search><![CDATA["
-			const result = parser.finishStream(incompleteXml)
+			const result = parser.parseResponse(incompleteXml)
 
 			expect(result.hasNewSuggestions).toBe(false)
 			expect(result.isComplete).toBe(false)
@@ -57,7 +57,7 @@ describe("GhostStreamingParser", () => {
 	return true;
 }]]></replace></change>`
 
-			const result = parser.finishStream(completeChange)
+			const result = parser.parseResponse(completeChange)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -71,7 +71,7 @@ describe("GhostStreamingParser", () => {
 	return true;
 }]]></replace></change>`
 
-			const result = parser.finishStream(fullResponse)
+			const result = parser.parseResponse(fullResponse)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -81,7 +81,7 @@ describe("GhostStreamingParser", () => {
 			const fullResponse = `<change><search><![CDATA[function test() {]]></search><replace><![CDATA[function test() {
 	// First change]]></replace></change><change><search><![CDATA[return true;]]></search><replace><![CDATA[return false; // Second change]]></replace></change>`
 
-			const result = parser.finishStream(fullResponse)
+			const result = parser.parseResponse(fullResponse)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(parser.getCompletedChanges()).toHaveLength(2)
@@ -95,7 +95,7 @@ describe("GhostStreamingParser", () => {
 	return true;
 }]]></replace></change>`
 
-			const result = parser.finishStream(completeResponse)
+			const result = parser.parseResponse(completeResponse)
 
 			expect(result.isComplete).toBe(true)
 		})
@@ -106,7 +106,7 @@ describe("GhostStreamingParser", () => {
 }]]></search><replace><![CDATA[function test() {
 	// Added comment`
 
-			const result = parser.finishStream(incompleteResponse)
+			const result = parser.parseResponse(incompleteResponse)
 
 			expect(result.isComplete).toBe(false)
 		})
@@ -119,7 +119,7 @@ describe("GhostStreamingParser", () => {
 	return true;
 }]]></replace></change>`
 
-			const result = parser.finishStream(changeWithCursor)
+			const result = parser.parseResponse(changeWithCursor)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			// Verify cursor marker is preserved in search content for matching
@@ -133,7 +133,7 @@ describe("GhostStreamingParser", () => {
 			const changeWithCursor = `<change><search><![CDATA[return true;]]></search><replace><![CDATA[// Comment here<<<AUTOCOMPLETE_HERE>>>
 	return false;]]></replace></change>`
 
-			const result = parser.finishStream(changeWithCursor)
+			const result = parser.parseResponse(changeWithCursor)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			const changes = parser.getCompletedChanges()
@@ -171,7 +171,7 @@ function fibonacci(n: number): number {
 		return fibonacci(n - 1) + fibonacci(n - 2);
 }]]></replace></change>`
 
-			const result = parser.finishStream(changeWithCursor)
+			const result = parser.parseResponse(changeWithCursor)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -199,7 +199,7 @@ function fibonacci(n: number): number {
 		return fibonacci(n - 1) + fibonacci(n - 2);
 }]]></replace></change>`
 
-			const result = parser.finishStream(changeWithCursor)
+			const result = parser.parseResponse(changeWithCursor)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -208,7 +208,7 @@ function fibonacci(n: number): number {
 		it("should handle malformed XML gracefully", () => {
 			const malformedXml = `<change><search><![CDATA[test]]><replace><![CDATA[replacement]]></replace></change>`
 
-			const result = parser.finishStream(malformedXml)
+			const result = parser.parseResponse(malformedXml)
 
 			// Should not crash and should not produce suggestions
 			expect(result.hasNewSuggestions).toBe(false)
@@ -216,7 +216,7 @@ function fibonacci(n: number): number {
 		})
 
 		it("should handle empty response", () => {
-			const result = parser.finishStream("")
+			const result = parser.parseResponse("")
 
 			expect(result.hasNewSuggestions).toBe(false)
 			expect(result.isComplete).toBe(true) // Empty is considered complete
@@ -224,7 +224,7 @@ function fibonacci(n: number): number {
 		})
 
 		it("should handle whitespace-only response", () => {
-			const result = parser.finishStream("   \n\t  ")
+			const result = parser.parseResponse("   \n\t  ")
 
 			expect(result.hasNewSuggestions).toBe(false)
 			expect(result.isComplete).toBe(true)
@@ -236,7 +236,7 @@ function fibonacci(n: number): number {
 		it("should clear all state when reset", () => {
 			const change = `<change><search><![CDATA[test]]></search><replace><![CDATA[replacement]]></replace></change>`
 
-			parser.finishStream(change)
+			parser.parseResponse(change)
 			expect(parser.buffer).not.toBe("")
 			expect(parser.getCompletedChanges()).toHaveLength(1)
 
@@ -277,7 +277,7 @@ function fibonacci(n: number): number {
 			const uninitializedParser = new GhostStreamingParser()
 
 			expect(() => {
-				uninitializedParser.finishStream("test")
+				uninitializedParser.parseResponse("test")
 			}).toThrow("Parser not initialized")
 		})
 
@@ -286,7 +286,7 @@ function fibonacci(n: number): number {
 			parser.initialize(contextWithoutDoc)
 
 			const change = `<change><search><![CDATA[test]]></search><replace><![CDATA[replacement]]></replace></change>`
-			const result = parser.finishStream(change)
+			const result = parser.parseResponse(change)
 
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 		})
@@ -297,7 +297,7 @@ function fibonacci(n: number): number {
 			const largeChange = `<change><search><![CDATA[${"x".repeat(10000)}]]></search><replace><![CDATA[${"y".repeat(10000)}]]></replace></change>`
 
 			const startTime = performance.now()
-			const result = parser.finishStream(largeChange)
+			const result = parser.parseResponse(largeChange)
 			const endTime = performance.now()
 
 			expect(endTime - startTime).toBeLessThan(100) // Should complete in under 100ms
@@ -308,7 +308,7 @@ function fibonacci(n: number): number {
 			const largeResponse = Array(1000).fill("x").join("")
 			const startTime = performance.now()
 
-			parser.finishStream(largeResponse)
+			parser.parseResponse(largeResponse)
 			const endTime = performance.now()
 
 			expect(endTime - startTime).toBeLessThan(200) // Should complete in under 200ms
