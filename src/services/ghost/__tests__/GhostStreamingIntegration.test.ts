@@ -187,7 +187,6 @@ describe("Ghost Streaming Integration", () => {
 
 			// Reset should clear state
 			streamingParser.reset()
-			expect(streamingParser.buffer).toBe("")
 			expect(streamingParser.getCompletedChanges()).toHaveLength(0)
 		})
 

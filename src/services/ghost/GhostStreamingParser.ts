@@ -28,7 +28,7 @@ function removeCursorMarker(content: string): string {
 /**
  * Conservative XML sanitization - only fixes the specific case from user feedback
  */
-function sanitizeXMLConservative(buffer: string): string {
+export function sanitizeXMLConservative(buffer: string): string {
 	let sanitized = buffer
 
 	// Fix malformed CDATA sections first - this is the main bug from user logs
