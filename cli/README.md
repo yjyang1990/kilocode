@@ -45,6 +45,17 @@ kilocode --mode architect
 kilocode --workspace /path/to/project
 ```
 
+#### Slash Commands
+
+While in the interactive CLI, you can use slash commands:
+
+- `/help` - Display available commands
+- `/mode` - Switch between different modes
+- `/config` - Open the CLI configuration file in your editor
+- `/exit` - Exit the CLI
+
+Type `/help` for a full list of available commands.
+
 ### Autonomous mode (Non-Interactive)
 
 Autonomous mode allows Kilo Code to run in automated environments like CI/CD pipelines without requiring user interaction.
