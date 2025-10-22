@@ -437,7 +437,7 @@ export class GhostStreamingParser {
 			let currentNewLineNumber = hunk.newStart
 
 			for (const line of hunk.lines) {
-				const operationType = line.charAt(0) as GhostSuggestionEditOperationType
+				const operationType = line.charAt(0)
 				const content = line.substring(1)
 
 				switch (operationType) {
