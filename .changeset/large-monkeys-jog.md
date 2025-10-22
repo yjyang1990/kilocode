@@ -2,4 +2,4 @@
 "@kilocode/cli": patch
 ---
 
-Allow autoapprove commands from the UI
+Allow auto-approval of commands straight from the approval menu
