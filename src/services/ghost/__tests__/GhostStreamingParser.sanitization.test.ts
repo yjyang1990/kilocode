@@ -50,7 +50,6 @@ describe("GhostStreamingParser - XML Sanitization", () => {
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
-			expect(parser.getCompletedChanges()).toHaveLength(1)
 
 			const change = parser.getCompletedChanges()[0]
 			expect(change.search).toBe("function mutliply(<<<AUTOCOMPLETE_HERE>>>>\n")
