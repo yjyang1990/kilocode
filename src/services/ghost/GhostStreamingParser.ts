@@ -481,6 +481,7 @@ export class GhostStreamingParser {
 
 	/**
 	 * Get completed changes (for debugging)
+	 * @deprecated This method is obsolete and should not be used
 	 */
 	public getCompletedChanges(): ParsedChange[] {
 		return [...this.completedChanges]
