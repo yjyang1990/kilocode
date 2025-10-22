@@ -423,8 +423,7 @@ export class GhostStreamingParser {
 
 		// Generate diff between original and modified content
 		const relativePath = vscode.workspace.asRelativePath(document.uri, false)
-		const patch = structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
-		return patch
+		return structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
 	}
 
 	private convertToSuggestions(patch: ParsedDiff | undefined, document: vscode.TextDocument): GhostSuggestionsState {
