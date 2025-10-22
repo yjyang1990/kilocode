@@ -22,7 +22,6 @@ function ErrorFallback({ error }: { error: Error }) {
 
 export const ExtensionMessageRow: React.FC<ExtensionMessageRowProps> = ({ message }) => {
 	const theme = useTheme()
-	//logs.debug("Rendering ExtensionMessageRow", "ExtensionMessageRow", { message })
 
 	return (
 		<ErrorBoundary fallbackRender={ErrorFallback}>

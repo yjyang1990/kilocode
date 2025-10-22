@@ -19,6 +19,7 @@ import { isCommandInput } from "../services/autocomplete.js"
 import { useCommandHandler } from "../state/hooks/useCommandHandler.js"
 import { useMessageHandler } from "../state/hooks/useMessageHandler.js"
 import { useFollowupHandler } from "../state/hooks/useFollowupHandler.js"
+import { useApprovalMonitor } from "../state/hooks/useApprovalMonitor.js"
 import { useProfile } from "../state/hooks/useProfile.js"
 import { useCIMode } from "../state/hooks/useCIMode.js"
 import { useTheme } from "../state/hooks/useTheme.js"
@@ -56,6 +57,9 @@ export const UI: React.FC<UIAppProps> = ({ options, onExit }) => {
 
 	// Followup handler hook for automatic suggestion population
 	useFollowupHandler()
+
+	// Approval monitor hook for centralized approval handling
+	useApprovalMonitor()
 
 	// Profile hook for handling profile/balance data responses
 	useProfile()
