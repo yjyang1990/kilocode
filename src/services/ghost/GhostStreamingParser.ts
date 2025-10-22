@@ -318,9 +318,6 @@ export class GhostStreamingParser {
 		return newChanges
 	}
 
-	/**
-	 * Generate suggestions from completed changes
-	 */
 	private generatePatch(changes: ParsedChange[]): ParsedDiff | undefined {
 		if (!this.context?.document || changes.length === 0) {
 			return undefined
