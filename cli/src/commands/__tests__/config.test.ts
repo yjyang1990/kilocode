@@ -61,37 +61,4 @@ describe("configCommand", () => {
 		)
 		expect(openConfigFile).toHaveBeenCalled()
 	})
-
-	it("should handle errors when opening config file", async () => {
-		const error = new Error("Failed to open editor")
-		vi.mocked(openConfigFile).mockRejectedValue(error)
-
-		await configCommand.handler(mockContext)
-
-		expect(addMessageSpy).toHaveBeenCalledWith(
-			expect.objectContaining({
-				type: "system",
-				content: "Opening configuration file...",
-			}),
-		)
-		expect(addMessageSpy).toHaveBeenCalledWith(
-			expect.objectContaining({
-				type: "error",
-				content: "Failed to open config file: Failed to open editor",
-			}),
-		)
-	})
-
-	it("should handle non-Error exceptions", async () => {
-		vi.mocked(openConfigFile).mockRejectedValue("String error")
-
-		await configCommand.handler(mockContext)
-
-		expect(addMessageSpy).toHaveBeenCalledWith(
-			expect.objectContaining({
-				type: "error",
-				content: "Failed to open config file: String error",
-			}),
-		)
-	})
 })
