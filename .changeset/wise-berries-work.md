@@ -2,4 +2,4 @@
 "@kilocode/cli": patch
 ---
 
-Prompt history
+Added prompt history. Use your up/down keys to navigate through previous prompts!
