@@ -112,6 +112,7 @@ export type InputMode =
 	| "approval" // Approval pending (blocks input)
 	| "autocomplete" // Command autocomplete active
 	| "followup" // Followup suggestions active
+	| "history" // History navigation mode
 
 /**
  * Current input mode
@@ -233,6 +234,34 @@ export const hasMessagesAtom = atom<boolean>((get) => {
 export const lastMessageAtom = atom<CliMessage | null>((get) => {
 	const messages = get(messagesAtom)
 	return messages.length > 0 ? (messages[messages.length - 1] ?? null) : null
+})
+
+/**
+ * Derived atom to get the last ask message from extension messages
+ * Returns the most recent unanswered ask message that requires user approval, or null if none exists
+ */
+export const lastAskMessageAtom = atom<ExtensionChatMessage | null>((get) => {
+	const messages = get(chatMessagesAtom)
+
+	// Ask types that require user approval (not auto-handled)
+	const approvalAskTypes = [
+		"tool",
+		"command",
+		"followup",
+		"api_req_failed",
+		"browser_action_launch",
+		"use_mcp_server",
+	]
+
+	// Find the last unanswered ask message that requires approval
+	for (let i = messages.length - 1; i >= 0; i--) {
+		const msg = messages[i]
+		if (msg && msg.type === "ask" && !msg.isAnswered && msg.ask && approvalAskTypes.includes(msg.ask)) {
+			return msg
+		}
+	}
+
+	return null
 })
 
 /**
