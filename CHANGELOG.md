@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.109.2
-
-### Patch Changes
+## [v4.109.2]
 
 - [#3216](https://github.com/Kilo-Org/kilocode/pull/3216) [`3f34635`](https://github.com/Kilo-Org/kilocode/commit/3f3463554f7cf016db9b2851c40217e38a048840) Thanks [@markijbema](https://github.com/markijbema)! - Do not accept an autocomplete suggestion with shift-tab or ctrl-tab (only plain tab)
 
