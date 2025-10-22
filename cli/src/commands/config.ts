@@ -16,22 +16,13 @@ export const configCommand: Command = {
 	handler: async (context) => {
 		const { addMessage } = context
 
-		try {
-			addMessage({
-				id: Date.now().toString(),
-				type: "system",
-				content: "Opening configuration file...",
-				ts: Date.now(),
-			})
+		addMessage({
+			id: Date.now().toString(),
+			type: "system",
+			content: "Opening configuration file...",
+			ts: Date.now(),
+		})
 
-			await openConfigFile()
-		} catch (error) {
-			addMessage({
-				id: Date.now().toString(),
-				type: "error",
-				content: `Failed to open config file: ${error instanceof Error ? error.message : String(error)}`,
-				ts: Date.now(),
-			})
-		}
+		await openConfigFile()
 	},
 }
