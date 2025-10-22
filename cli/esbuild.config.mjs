@@ -10,6 +10,7 @@ function copyPostBuildFiles() {
 
 		copyFileSync("src/config/schema.json", "dist/config/schema.json")
 		copyFileSync("package.dist.json", "dist/package.json")
+		copyFileSync("npm-shrinkwrap.dist.json", "dist/npm-shrinkwrap.json")
 		copyFileSync("README.md", "dist/README.md")
 
 		try {
@@ -148,8 +149,6 @@ const __dirname = __dirname__(__filename);
 		"socket.io-client",
 		"sound-play",
 		"stream-json",
-		"string-width",
-		"strip-ansi",
 		"strip-bom",
 		"tiktoken",
 		"tmp",
