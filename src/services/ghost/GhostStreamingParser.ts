@@ -1,5 +1,5 @@
 import * as vscode from "vscode"
-import { structuredPatch } from "diff"
+import { ParsedDiff, structuredPatch } from "diff"
 import { GhostSuggestionContext, GhostSuggestionEditOperationType } from "./types"
 import { GhostSuggestionsState } from "./GhostSuggestions"
 import { CURSOR_MARKER } from "./ghostConstants"
@@ -426,17 +426,17 @@ export class GhostStreamingParser {
 		// Generate diff between original and modified content
 		const relativePath = vscode.workspace.asRelativePath(document.uri, false)
 		const patch = structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
+		return this.convertToSuggestions(patch, document)
+	}
 
-		// Create a suggestion file
+	private convertToSuggestions(patch: ParsedDiff, document: vscode.TextDocument): GhostSuggestionsState {
 		const suggestions = new GhostSuggestionsState()
 		const suggestionFile = suggestions.addFile(document.uri)
 
-		// Process each hunk in the patch
 		for (const hunk of patch.hunks) {
 			let currentOldLineNumber = hunk.oldStart
 			let currentNewLineNumber = hunk.newStart
 
-			// Iterate over each line within the hunk
 			for (const line of hunk.lines) {
 				const operationType = line.charAt(0) as GhostSuggestionEditOperationType
 				const content = line.substring(1)
