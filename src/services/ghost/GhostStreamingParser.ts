@@ -219,7 +219,6 @@ function skipChars(text: string, startPos: number, predicate: (char: string) => 
  * and emit suggestions as soon as complete <change> blocks are available
  */
 export class GhostStreamingParser {
-	public buffer: string = ""
 	private completedChanges: ParsedChange[] = []
 
 	private context: GhostSuggestionContext | null = null
@@ -238,7 +237,6 @@ export class GhostStreamingParser {
 	 * Reset parser state for a new parsing session
 	 */
 	public reset(): void {
-		this.buffer = ""
 		this.completedChanges = []
 	}
 
@@ -246,10 +244,10 @@ export class GhostStreamingParser {
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
 	public parseResponse(fullResponse: string): StreamingParseResult {
-		this.buffer = fullResponse
+		let llmResponse = fullResponse
 
 		// Extract any newly completed changes from the current buffer
-		const newChanges = this.extractCompletedChanges(this.buffer)
+		const newChanges = this.extractCompletedChanges(llmResponse)
 
 		let hasNewSuggestions = newChanges.length > 0
 
@@ -257,20 +255,20 @@ export class GhostStreamingParser {
 		this.completedChanges.push(...newChanges)
 
 		// Check if the response appears complete
-		let isComplete = isResponseComplete(this.buffer, this.completedChanges.length)
+		let isComplete = isResponseComplete(llmResponse, this.completedChanges.length)
 
 		// Apply very conservative sanitization only when the stream is finished
 		// and we still have no completed changes but have content in the buffer
-		if (this.completedChanges.length === 0 && this.buffer.trim().length > 0) {
-			const sanitizedBuffer = sanitizeXMLConservative(this.buffer)
-			if (sanitizedBuffer !== this.buffer) {
+		if (this.completedChanges.length === 0 && llmResponse.trim().length > 0) {
+			const sanitizedBuffer = sanitizeXMLConservative(llmResponse)
+			if (sanitizedBuffer !== llmResponse) {
 				// Re-process with sanitized buffer
-				this.buffer = sanitizedBuffer
-				const sanitizedChanges = this.extractCompletedChanges(this.buffer)
+				llmResponse = sanitizedBuffer
+				const sanitizedChanges = this.extractCompletedChanges(llmResponse)
 				if (sanitizedChanges.length > 0) {
 					this.completedChanges.push(...sanitizedChanges)
 					hasNewSuggestions = true
-					isComplete = isResponseComplete(this.buffer, this.completedChanges.length) // Re-check completion after sanitization
+					isComplete = isResponseComplete(llmResponse, this.completedChanges.length) // Re-check completion after sanitization
 				}
 			}
 		}
