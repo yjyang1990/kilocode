@@ -321,10 +321,8 @@ export class GhostStreamingParser {
 	 * Generate suggestions from completed changes
 	 */
 	private generateSuggestions(changes: ParsedChange[]): GhostSuggestionsState {
-		const suggestions = new GhostSuggestionsState()
-
 		if (!this.context?.document || changes.length === 0) {
-			return suggestions
+			return new GhostSuggestionsState()
 		}
 
 		const document = this.context.document
@@ -430,6 +428,7 @@ export class GhostStreamingParser {
 		const patch = structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
 
 		// Create a suggestion file
+		const suggestions = new GhostSuggestionsState()
 		const suggestionFile = suggestions.addFile(document.uri)
 
 		// Process each hunk in the patch
