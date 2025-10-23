@@ -39,7 +39,7 @@ import {
 	createPasteKey,
 	createSpecialKey,
 } from "../utils/keyParsing.js"
-import { autoEnableKittyProtocol, disableKittyProtocol } from "../utils/terminalCapabilities.js"
+import { autoEnableKittyProtocol } from "../utils/terminalCapabilities.js"
 import {
 	ESC,
 	PASTE_MODE_PREFIX,
@@ -445,12 +445,6 @@ export function KeyboardProvider({ children, config = {} }: KeyboardProviderProp
 
 			// Disable bracketed paste mode
 			process.stdout.write("\x1b[?2004l")
-
-			// Disable Kitty keyboard protocol if it was enabled
-			const currentKittyState = isKittyEnabled
-			if (currentKittyState) {
-				disableKittyProtocol()
-			}
 
 			// Restore original raw mode
 			if (!wasRaw) {
