@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.110.0
-
-### Minor Changes
+## [v4.110.0]
 
 - [#3104](https://github.com/Kilo-Org/kilocode/pull/3104) [`3008656`](https://github.com/Kilo-Org/kilocode/commit/30086567e31d8e774c89412afcdc96e3c46d57a0) Thanks [@markijbema](https://github.com/markijbema)! - Support multiline quoted strings within Auto-approved commands (especially useful for git commit)
 
