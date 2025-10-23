@@ -226,16 +226,25 @@ export class GhostStreamingParser {
 	}
 
 	/**
+	 * Sanitize response if needed and return sanitized response with completion status
+	 */
+	private sanitizeResponseIfNeeded(response: string): { sanitizedResponse: string; isComplete: boolean } {
+		let sanitizedResponse = response
+		let isComplete = isResponseComplete(sanitizedResponse)
+
+		if (!isComplete) {
+			sanitizedResponse = sanitizeXMLConservative(sanitizedResponse)
+			isComplete = isResponseComplete(sanitizedResponse) // Re-check completion after sanitization
+		}
+
+		return { sanitizedResponse, isComplete }
+	}
+
+	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
 	public parseResponse(fullResponse: string): StreamingParseResult {
-		let llmResponse = fullResponse
-		let isComplete = isResponseComplete(llmResponse)
-
-		if (!isComplete) {
-			llmResponse = sanitizeXMLConservative(llmResponse)
-			isComplete = isResponseComplete(llmResponse) // Re-check completion after sanitization
-		}
+		const { sanitizedResponse: llmResponse, isComplete } = this.sanitizeResponseIfNeeded(fullResponse)
 
 		const newChanges = this.extractCompletedChanges(llmResponse)
 		let hasNewSuggestions = newChanges.length > 0
