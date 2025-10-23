@@ -243,7 +243,7 @@ export class GhostStreamingParser {
 		const document = this.context!.document
 		const range = this.context!.range
 
-		const modifiedContent = this.generatePatch(newChanges, document, range)
+		const modifiedContent = this.generateModifiedContent(newChanges, document, range)
 		const relativePath = vscode.workspace.asRelativePath(document.uri, false)
 		const patch = structuredPatch(
 			relativePath,
@@ -304,7 +304,7 @@ export class GhostStreamingParser {
 		return newChanges
 	}
 
-	private generatePatch(
+	private generateModifiedContent(
 		changes: ParsedChange[],
 		document: vscode.TextDocument,
 		range: vscode.Range | undefined,
