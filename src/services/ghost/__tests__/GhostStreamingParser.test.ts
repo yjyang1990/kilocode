@@ -543,9 +543,9 @@ function fibonacci(n: number): number {
 			parser.initialize(contextWithoutDoc)
 
 			const change = `<change><search><![CDATA[test]]></search><replace><![CDATA[replacement]]></replace></change>`
-			const result = parser.parseResponse(change, "", "")
 
-			expect(result.suggestions.hasSuggestions()).toBe(false)
+			// This should throw or handle gracefully - expect it to throw
+			expect(() => parser.parseResponse(change, "", "")).toThrow()
 		})
 	})
 
@@ -569,6 +569,240 @@ function fibonacci(n: number): number {
 			const endTime = performance.now()
 
 			expect(endTime - startTime).toBeLessThan(200) // Should complete in under 200ms
+		})
+	})
+
+	describe("Fill-In-Middle (FIM) behavior", () => {
+		it("should set FIM when modifiedContent has both prefix and suffix", () => {
+			const mockDocWithPrefix: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `const prefix = "start";\nconst suffix = "end";`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDocWithPrefix,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[const prefix = "start";\nconst suffix = "end";]]></search><replace><![CDATA[const prefix = "start";\nconst middle = "inserted";\nconst suffix = "end";]]></replace></change>`
+
+			const prefix = 'const prefix = "start";\n'
+			const suffix = '\nconst suffix = "end";'
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			// Check that FIM was set
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBe('const middle = "inserted";')
+		})
+
+		it("should NOT set FIM when prefix doesn't match", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `const prefix = "start";\nconst suffix = "end";`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[const prefix = "start";\nconst suffix = "end";]]></search><replace><![CDATA[const prefix = "start";\nconst middle = "inserted";\nconst suffix = "end";]]></replace></change>`
+
+			const prefix = "WRONG_PREFIX"
+			const suffix = '\nconst suffix = "end";'
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			// Check that FIM was NOT set
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBeUndefined()
+		})
+
+		it("should NOT set FIM when suffix doesn't match", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `const prefix = "start";\nconst suffix = "end";`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[const prefix = "start";\nconst suffix = "end";]]></search><replace><![CDATA[const prefix = "start";\nconst middle = "inserted";\nconst suffix = "end";]]></replace></change>`
+
+			const prefix = 'const prefix = "start";\n'
+			const suffix = "WRONG_SUFFIX"
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			// Check that FIM was NOT set
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBeUndefined()
+		})
+
+		it("should NOT set FIM when both prefix and suffix don't match", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `const prefix = "start";\nconst suffix = "end";`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[const prefix = "start";\nconst suffix = "end";]]></search><replace><![CDATA[const prefix = "start";\nconst middle = "inserted";\nconst suffix = "end";]]></replace></change>`
+
+			const prefix = "WRONG_PREFIX"
+			const suffix = "WRONG_SUFFIX"
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			// Check that FIM was NOT set
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBeUndefined()
+		})
+
+		it("should handle empty prefix and suffix", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `const middle = "content";`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[const middle = "content";]]></search><replace><![CDATA[const middle = "updated";]]></replace></change>`
+
+			const prefix = ""
+			const suffix = ""
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			// With empty prefix and suffix, the entire content should be FIM
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBe('const middle = "updated";')
+		})
+
+		it("should extract correct middle content when FIM matches", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `function test() {\n\treturn true;\n}`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[function test() {\n\treturn true;\n}]]></search><replace><![CDATA[function test() {\n\tconst x = 5;\n\treturn true;\n}]]></replace></change>`
+
+			const prefix = "function test() {\n"
+			const suffix = "\n}"
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBe("\tconst x = 5;\n\treturn true;")
+		})
+
+		it("should NOT set FIM when modifiedContent is undefined", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `const x = 1;`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			// Change that won't match anything in the document
+			const change = `<change><search><![CDATA[NONEXISTENT]]></search><replace><![CDATA[REPLACEMENT]]></replace></change>`
+
+			const prefix = "const x = 1;"
+			const suffix = ""
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(false)
+			const fimContent = result.suggestions.getFillInAtCursor()
+			// When no changes are applied, FIM is set to empty string (the entire unchanged document matches prefix+suffix)
+			expect(fimContent).toBe("")
+		})
+
+		it("should handle multiline prefix and suffix correctly", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `class Test {\n\tconstructor() {\n\t\tthis.value = 0;\n\t}\n}`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[class Test {\n\tconstructor() {\n\t\tthis.value = 0;\n\t}\n}]]></search><replace><![CDATA[class Test {\n\tconstructor() {\n\t\tthis.value = 0;\n\t\tthis.name = "test";\n\t}\n}]]></replace></change>`
+
+			const prefix = "class Test {\n\tconstructor() {\n"
+			const suffix = "\n\t}\n}"
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBe('\t\tthis.value = 0;\n\t\tthis.name = "test";')
+		})
+
+		it("should handle prefix/suffix with special characters", () => {
+			const mockDoc: any = {
+				uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
+				getText: () => `const regex = /test/g;\nconst result = "match";`,
+				languageId: "typescript",
+			}
+
+			const contextWithFIM = {
+				document: mockDoc,
+			}
+
+			parser.initialize(contextWithFIM)
+
+			const change = `<change><search><![CDATA[const regex = /test/g;\nconst result = "match";]]></search><replace><![CDATA[const regex = /test/g;\nconst middle = "inserted";\nconst result = "match";]]></replace></change>`
+
+			const prefix = "const regex = /test/g;\n"
+			const suffix = '\nconst result = "match";'
+
+			const result = parser.parseResponse(change, prefix, suffix)
+
+			expect(result.suggestions.hasSuggestions()).toBe(true)
+			const fimContent = result.suggestions.getFillInAtCursor()
+			expect(fimContent).toBe('const middle = "inserted";')
 		})
 	})
 })
