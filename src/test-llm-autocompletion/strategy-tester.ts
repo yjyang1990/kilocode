@@ -154,7 +154,9 @@ export class StrategyTester {
 
 			if (op.type === "+") {
 				// Addition: add the new content
-				finalLines.push(op.content)
+				// Strip leading newlines to prevent extra blank lines
+				const content = op.content.replace(/^\n+/, "")
+				finalLines.push(content)
 			} else if (op.type === "-") {
 				// Deletion: skip the original line
 				currentOriginalLine++
