@@ -240,8 +240,15 @@ export class GhostStreamingParser {
 		let hasNewSuggestions = newChanges.length > 0
 
 		// Generate suggestions from all completed changes
-		const patch = this.generatePatch(newChanges)
-		const suggestions = this.convertToSuggestions(patch, this.context!.document)
+		const document = this.context?.document
+		const range = this.context?.range
+		
+		let patch: ParsedDiff | undefined
+		if (document) {
+			patch = this.generatePatch(newChanges, document, range)
+		}
+		
+		const suggestions = this.convertToSuggestions(patch, document)
 
 		return {
 			suggestions,
@@ -282,12 +289,15 @@ export class GhostStreamingParser {
 		return newChanges
 	}
 
-	private generatePatch(changes: ParsedChange[]): ParsedDiff | undefined {
-		if (!this.context?.document || changes.length === 0) {
+	private generatePatch(
+		changes: ParsedChange[],
+		document: vscode.TextDocument,
+		range: vscode.Range | undefined
+	): ParsedDiff | undefined {
+		if (changes.length === 0) {
 			return undefined
 		}
 
-		const document = this.context.document
 		const currentContent = document.getText()
 
 		// Add cursor marker to document content if it's not already there
@@ -295,9 +305,9 @@ export class GhostStreamingParser {
 		let modifiedContent = currentContent
 		const needsCursorMarker =
 			changes.some((change) => change.search.includes(CURSOR_MARKER)) && !currentContent.includes(CURSOR_MARKER)
-		if (needsCursorMarker && this.context.range) {
+		if (needsCursorMarker && range) {
 			// Add cursor marker at the specified range position
-			const cursorOffset = document.offsetAt(this.context.range.start)
+			const cursorOffset = document.offsetAt(range.start)
 			modifiedContent =
 				currentContent.substring(0, cursorOffset) + CURSOR_MARKER + currentContent.substring(cursorOffset)
 		}
@@ -390,9 +400,12 @@ export class GhostStreamingParser {
 		return structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
 	}
 
-	private convertToSuggestions(patch: ParsedDiff | undefined, document: vscode.TextDocument): GhostSuggestionsState {
+	private convertToSuggestions(
+		patch: ParsedDiff | undefined,
+		document: vscode.TextDocument | undefined
+	): GhostSuggestionsState {
 		const suggestions = new GhostSuggestionsState()
-		if (!patch) return suggestions
+		if (!patch || !document) return suggestions
 
 		const suggestionFile = suggestions.addFile(document.uri)
 
