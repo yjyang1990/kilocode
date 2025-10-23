@@ -242,12 +242,17 @@ export class GhostStreamingParser {
 		// Generate suggestions from all completed changes
 		const document = this.context?.document
 		const range = this.context?.range
-		
+
 		let patch: ParsedDiff | undefined
 		if (document) {
-			patch = this.generatePatch(newChanges, document, range)
+			const modifiedContent = this.generatePatch(newChanges, document, range)
+			if (modifiedContent) {
+				const currentContent = document.getText()
+				const relativePath = vscode.workspace.asRelativePath(document.uri, false)
+				patch = structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
+			}
 		}
-		
+
 		const suggestions = this.convertToSuggestions(patch, document)
 
 		return {
@@ -292,8 +297,8 @@ export class GhostStreamingParser {
 	private generatePatch(
 		changes: ParsedChange[],
 		document: vscode.TextDocument,
-		range: vscode.Range | undefined
-	): ParsedDiff | undefined {
+		range: vscode.Range | undefined,
+	): string | undefined {
 		if (changes.length === 0) {
 			return undefined
 		}
@@ -395,14 +400,12 @@ export class GhostStreamingParser {
 			modifiedContent = removeCursorMarker(modifiedContent)
 		}
 
-		// Generate diff between original and modified content
-		const relativePath = vscode.workspace.asRelativePath(document.uri, false)
-		return structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
+		return modifiedContent
 	}
 
 	private convertToSuggestions(
 		patch: ParsedDiff | undefined,
-		document: vscode.TextDocument | undefined
+		document: vscode.TextDocument | undefined,
 	): GhostSuggestionsState {
 		const suggestions = new GhostSuggestionsState()
 		if (!patch || !document) return suggestions
