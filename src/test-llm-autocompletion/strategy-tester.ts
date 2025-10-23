@@ -167,7 +167,9 @@ export class StrategyTester {
 			currentOriginalLine++
 		}
 
-		const resultText = finalLines.join("\n")
+		// Filter out undefined values that may occur from line number mismatches
+		const validLines = finalLines.filter((line) => line !== undefined)
+		const resultText = validLines.join("\n")
 
 		// Remove leading/trailing newlines that may come from diff generation
 		return resultText.replace(/^\n+/, "").replace(/\n+$/, "")
