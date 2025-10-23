@@ -71,7 +71,7 @@ export function sanitizeXMLConservative(buffer: string): string {
 /**
  * Check if the response appears to be complete
  */
-function isResponseComplete(buffer: string, completedChangesCount: number): boolean {
+function isResponseComplete(buffer: string): boolean {
 	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(buffer)
 	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(buffer)
 	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(buffer)
@@ -237,7 +237,7 @@ export class GhostStreamingParser {
 		let hasNewSuggestions = newChanges.length > 0
 
 		// Check if the response appears complete
-		let isComplete = isResponseComplete(llmResponse, newChanges.length)
+		let isComplete = isResponseComplete(llmResponse)
 
 		// Apply very conservative sanitization only when the stream is finished
 		// and we still have no completed changes but have content in the buffer
@@ -250,7 +250,7 @@ export class GhostStreamingParser {
 				if (sanitizedChanges.length > 0) {
 					newChanges.push(...sanitizedChanges)
 					hasNewSuggestions = true
-					isComplete = isResponseComplete(llmResponse, newChanges.length) // Re-check completion after sanitization
+					isComplete = isResponseComplete(llmResponse) // Re-check completion after sanitization
 				}
 			}
 		}
