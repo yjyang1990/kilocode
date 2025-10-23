@@ -10,6 +10,7 @@ import type { CommandSuggestion, ArgumentSuggestion } from "../../services/autoc
 import { chatMessagesAtom } from "./extension.js"
 import { splitMessages } from "../../ui/messages/utils/messageCompletion.js"
 import { textBufferStringAtom, textBufferCursorAtom, setTextAtom, clearTextAtom } from "./textBuffer.js"
+import { logs } from "../../services/logs.js"
 
 /**
  * Unified message type that can represent both CLI and extension messages
@@ -251,20 +252,20 @@ export const lastMessageAtom = atom<CliMessage | null>((get) => {
 export const lastAskMessageAtom = atom<ExtensionChatMessage | null>((get) => {
 	const messages = get(chatMessagesAtom)
 
-	// Ask types that require user approval (not auto-handled)
-	const approvalAskTypes = [
-		"tool",
-		"command",
-		"followup",
-		"api_req_failed",
-		"browser_action_launch",
-		"use_mcp_server",
-	]
+	// Ask types that require user approval
+	const approvalAskTypes = ["tool", "command", "browser_action_launch", "use_mcp_server"]
 
 	// Find the last unanswered ask message that requires approval
 	for (let i = messages.length - 1; i >= 0; i--) {
 		const msg = messages[i]
-		if (msg && msg.type === "ask" && !msg.isAnswered && msg.ask && approvalAskTypes.includes(msg.ask)) {
+		if (
+			msg &&
+			msg.type === "ask" &&
+			!msg.isAnswered &&
+			msg.ask &&
+			approvalAskTypes.includes(msg.ask) &&
+			!msg.partial
+		) {
 			return msg
 		}
 	}
