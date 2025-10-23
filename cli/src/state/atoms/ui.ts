@@ -10,7 +10,6 @@ import type { CommandSuggestion, ArgumentSuggestion } from "../../services/autoc
 import { chatMessagesAtom } from "./extension.js"
 import { splitMessages } from "../../ui/messages/utils/messageCompletion.js"
 import { textBufferStringAtom, textBufferCursorAtom, setTextAtom, clearTextAtom } from "./textBuffer.js"
-import { logs } from "../../services/logs.js"
 
 /**
  * Unified message type that can represent both CLI and extension messages
