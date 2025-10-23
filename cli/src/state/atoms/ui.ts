@@ -34,6 +34,14 @@ export const messagesAtom = atom<CliMessage[]>([])
 export const messageResetCounterAtom = atom<number>(0)
 
 /**
+ * Atom to track the cutoff timestamp for message display
+ * Messages with timestamp <= this value will be hidden from display
+ * Set to 0 to show all messages (default)
+ * Set to Date.now() to hide all previous messages
+ */
+export const messageCutoffTimestampAtom = atom<number>(0)
+
+/**
  * Atom to hold UI error messages
  */
 export const errorAtom = atom<string | null>(null)
@@ -440,10 +448,12 @@ export const getSelectedSuggestionAtom = atom<CommandSuggestion | ArgumentSugges
 /**
  * Derived atom that merges CLI messages and extension messages chronologically
  * This provides a unified view of all messages for display
+ * Filters out messages before the cutoff timestamp
  */
 export const mergedMessagesAtom = atom<UnifiedMessage[]>((get) => {
 	const cliMessages = get(messagesAtom)
 	const extensionMessages = get(chatMessagesAtom)
+	const cutoffTimestamp = get(messageCutoffTimestampAtom)
 
 	// Convert to unified format
 	const unified: UnifiedMessage[] = [
@@ -456,7 +466,10 @@ export const mergedMessagesAtom = atom<UnifiedMessage[]>((get) => {
 		return a.message.ts - b.message.ts
 	})
 
-	return sorted
+	// Filter out messages before the cutoff timestamp
+	const filtered = sorted.filter((msg) => msg.message.ts > cutoffTimestamp)
+
+	return filtered
 })
 
 // ============================================================================
@@ -560,6 +573,21 @@ export const getSelectedFollowupAtom = atom<FollowupSuggestion | null>((get) => 
  */
 export const hasFollowupSuggestionsAtom = atom<boolean>((get) => {
 	return get(followupSuggestionsAtom).length > 0
+})
+
+/**
+ * Action atom to set the message cutoff timestamp
+ * Messages with timestamp <= this value will be hidden from display
+ */
+export const setMessageCutoffTimestampAtom = atom(null, (get, set, timestamp: number) => {
+	set(messageCutoffTimestampAtom, timestamp)
+})
+
+/**
+ * Action atom to reset the message cutoff timestamp to 0 (show all messages)
+ */
+export const resetMessageCutoffAtom = atom(null, (get, set) => {
+	set(messageCutoffTimestampAtom, 0)
 })
 
 // ============================================================================
