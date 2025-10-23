@@ -97,7 +97,7 @@ export class StrategyTester {
 			}
 
 			parser.initialize(dummyContext)
-			const result = parser.parseResponse(xmlResponse)
+			const result = parser.parseResponse(xmlResponse, "", "")
 
 			// Check if we have any suggestions
 			if (!result.suggestions.hasSuggestions()) {

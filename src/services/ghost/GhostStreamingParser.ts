@@ -233,7 +233,7 @@ export class GhostStreamingParser {
 	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
-	public parseResponse(fullResponse: string): StreamingParseResult {
+	public parseResponse(fullResponse: string, prefix: string, suffix: string): StreamingParseResult {
 		const { sanitizedResponse, isComplete } = this.sanitizeResponseIfNeeded(fullResponse)
 
 		const newChanges = this.extractCompletedChanges(sanitizedResponse)
