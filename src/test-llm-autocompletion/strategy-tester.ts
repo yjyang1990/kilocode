@@ -97,7 +97,7 @@ export class StrategyTester {
 			}
 
 			parser.initialize(dummyContext)
-			const result = parser.parseResponse(xmlResponse)
+			const result = parser.parseResponse(xmlResponse, "", "")
 
 			// Check if we have any suggestions
 			if (!result.suggestions.hasSuggestions()) {
@@ -154,7 +154,9 @@ export class StrategyTester {
 
 			if (op.type === "+") {
 				// Addition: add the new content
-				finalLines.push(op.content)
+				// Strip leading newlines to prevent extra blank lines
+				const content = op.content.replace(/^\n+/, "")
+				finalLines.push(content)
 			} else if (op.type === "-") {
 				// Deletion: skip the original line
 				currentOriginalLine++
