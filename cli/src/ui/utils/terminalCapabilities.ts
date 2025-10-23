@@ -37,11 +37,12 @@ export function detectKittyProtocolSupport(): boolean {
  * Auto-detect and enable Kitty protocol if supported
  * Returns true if enabled, false otherwise
  */
+let kittyEnabled = false
 export function autoEnableKittyProtocol(): boolean {
 	// Query terminal for actual support
 	const isSupported = detectKittyProtocolSupport()
 
-	if (isSupported) {
+	if (isSupported && !kittyEnabled) {
 		// Enable Kitty keyboard protocol
 		// CSI > 1 u - Enable disambiguate escape codes
 		process.stdout.write("\x1b[>1u")
@@ -50,6 +51,7 @@ export function autoEnableKittyProtocol(): boolean {
 
 		process.on("exit", disableKittyProtocol)
 		process.on("SIGTERM", disableKittyProtocol)
+		kittyEnabled = true
 		return true
 	}
 
@@ -59,10 +61,9 @@ export function autoEnableKittyProtocol(): boolean {
 /**
  * Disable Kitty keyboard protocol
  */
-let kittyDisabled = false
 export function disableKittyProtocol(): void {
-	if (!kittyDisabled) {
+	if (kittyEnabled) {
 		process.stdout.write("\x1b[<u")
-		kittyDisabled = true
+		kittyEnabled = false
 	}
 }
