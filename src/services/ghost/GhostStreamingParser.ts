@@ -271,7 +271,7 @@ export class GhostStreamingParser {
 		}
 
 		// Generate suggestions from all completed changes
-		const patch = this.generatePatch(this.completedChanges)
+		const patch = this.generatePatch(newChanges)
 		const suggestions = this.convertToSuggestions(patch, this.context!.document)
 
 		this.completedChanges = newChanges
