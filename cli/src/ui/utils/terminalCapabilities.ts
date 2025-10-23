@@ -37,9 +37,9 @@ export function detectKittyProtocolSupport(): boolean {
  * Auto-detect and enable Kitty protocol if supported
  * Returns true if enabled, false otherwise
  */
-export async function autoEnableKittyProtocol(): Promise<boolean> {
+export function autoEnableKittyProtocol(): boolean {
 	// Query terminal for actual support
-	const isSupported = await detectKittyProtocolSupport()
+	const isSupported = detectKittyProtocolSupport()
 
 	if (isSupported) {
 		// Enable Kitty keyboard protocol
