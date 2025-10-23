@@ -204,8 +204,6 @@ function skipChars(text: string, startPos: number, predicate: (char: string) => 
  * and emit suggestions as soon as complete <change> blocks are available
  */
 export class GhostStreamingParser {
-	private completedChanges: ParsedChange[] = []
-
 	private context: GhostSuggestionContext | null = null
 
 	constructor() {}
@@ -215,14 +213,6 @@ export class GhostStreamingParser {
 	 */
 	public initialize(context: GhostSuggestionContext): void {
 		this.context = context
-		this.reset()
-	}
-
-	/**
-	 * Reset parser state for a new parsing session
-	 */
-	public reset(): void {
-		this.completedChanges = []
 	}
 
 	/**
@@ -243,17 +233,37 @@ export class GhostStreamingParser {
 	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
-	public parseResponse(fullResponse: string): StreamingParseResult {
+	public parseResponse(fullResponse: string, prefix: string, suffix: string): StreamingParseResult {
 		const { sanitizedResponse, isComplete } = this.sanitizeResponseIfNeeded(fullResponse)
 
 		const newChanges = this.extractCompletedChanges(sanitizedResponse)
 		let hasNewSuggestions = newChanges.length > 0
 
 		// Generate suggestions from all completed changes
-		const patch = this.generatePatch(newChanges)
-		const suggestions = this.convertToSuggestions(patch, this.context!.document)
+		const document = this.context!.document
+		const range = this.context!.range
 
-		this.completedChanges = newChanges
+		const modifiedContent = this.generateModifiedContent(newChanges, document, range)
+		const relativePath = vscode.workspace.asRelativePath(document.uri, false)
+		const patch = structuredPatch(
+			relativePath,
+			relativePath,
+			document.getText(),
+			modifiedContent ?? document.getText(),
+			"",
+			"",
+		)
+
+		const modifiedContent_has_prefix_and_suffix =
+			modifiedContent?.startsWith(prefix) && modifiedContent.endsWith(suffix)
+
+		const suggestions = this.convertToSuggestions(patch, document)
+
+		if (modifiedContent_has_prefix_and_suffix && modifiedContent) {
+			// Mark as FIM option
+			const middle = modifiedContent.slice(prefix.length, modifiedContent.length - suffix.length)
+			suggestions.setFillInAtCursor(middle)
+		}
 
 		return {
 			suggestions,
@@ -294,12 +304,15 @@ export class GhostStreamingParser {
 		return newChanges
 	}
 
-	private generatePatch(changes: ParsedChange[]): ParsedDiff | undefined {
-		if (!this.context?.document || changes.length === 0) {
+	private generateModifiedContent(
+		changes: ParsedChange[],
+		document: vscode.TextDocument,
+		range: vscode.Range | undefined,
+	): string | undefined {
+		if (changes.length === 0) {
 			return undefined
 		}
 
-		const document = this.context.document
 		const currentContent = document.getText()
 
 		// Add cursor marker to document content if it's not already there
@@ -307,9 +320,9 @@ export class GhostStreamingParser {
 		let modifiedContent = currentContent
 		const needsCursorMarker =
 			changes.some((change) => change.search.includes(CURSOR_MARKER)) && !currentContent.includes(CURSOR_MARKER)
-		if (needsCursorMarker && this.context.range) {
+		if (needsCursorMarker && range) {
 			// Add cursor marker at the specified range position
-			const cursorOffset = document.offsetAt(this.context.range.start)
+			const cursorOffset = document.offsetAt(range.start)
 			modifiedContent =
 				currentContent.substring(0, cursorOffset) + CURSOR_MARKER + currentContent.substring(cursorOffset)
 		}
@@ -397,14 +410,11 @@ export class GhostStreamingParser {
 			modifiedContent = removeCursorMarker(modifiedContent)
 		}
 
-		// Generate diff between original and modified content
-		const relativePath = vscode.workspace.asRelativePath(document.uri, false)
-		return structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
+		return modifiedContent
 	}
 
-	private convertToSuggestions(patch: ParsedDiff | undefined, document: vscode.TextDocument): GhostSuggestionsState {
+	private convertToSuggestions(patch: ParsedDiff, document: vscode.TextDocument): GhostSuggestionsState {
 		const suggestions = new GhostSuggestionsState()
-		if (!patch) return suggestions
 
 		const suggestionFile = suggestions.addFile(document.uri)
 
@@ -455,13 +465,5 @@ export class GhostStreamingParser {
 
 		suggestions.sortGroups()
 		return suggestions
-	}
-
-	/**
-	 * Get completed changes (for debugging)
-	 * @deprecated This method is obsolete and should not be used
-	 */
-	public getCompletedChanges(): ParsedChange[] {
-		return [...this.completedChanges]
 	}
 }
