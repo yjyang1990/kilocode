@@ -28,10 +28,8 @@ export const formatResponse = {
 	rooIgnoreError: (path: string) =>
 		`Access to ${path} is blocked by the .kilocodeignore file settings. You must try to continue in the task without using this file, or ask the user to update the .kilocodeignore file.`,
 
-	noToolsUsed: (toolUseStyle_kilocode: ToolUseStyle) =>
+	noToolsUsed: () =>
 		`[ERROR] You did not use a tool in your previous response! Please retry with a tool use.
-
-${toolUseStyle_kilocode === "json" ? "" : toolUseInstructionsReminder}
 
 # Next Steps
 
