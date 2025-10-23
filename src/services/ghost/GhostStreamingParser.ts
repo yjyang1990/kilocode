@@ -240,18 +240,19 @@ export class GhostStreamingParser {
 		let hasNewSuggestions = newChanges.length > 0
 
 		// Generate suggestions from all completed changes
-		const document = this.context?.document
-		const range = this.context?.range
+		const document = this.context!.document
+		const range = this.context!.range
 
-		let patch: ParsedDiff | undefined
-		if (document) {
-			const modifiedContent = this.generatePatch(newChanges, document, range)
-			if (modifiedContent) {
-				const currentContent = document.getText()
-				const relativePath = vscode.workspace.asRelativePath(document.uri, false)
-				patch = structuredPatch(relativePath, relativePath, currentContent, modifiedContent, "", "")
-			}
-		}
+		const modifiedContent = this.generatePatch(newChanges, document, range)
+		const relativePath = vscode.workspace.asRelativePath(document.uri, false)
+		const patch = structuredPatch(
+			relativePath,
+			relativePath,
+			document.getText(),
+			modifiedContent ?? document.getText(),
+			"",
+			"",
+		)
 
 		const suggestions = this.convertToSuggestions(patch, document)
 
@@ -403,12 +404,8 @@ export class GhostStreamingParser {
 		return modifiedContent
 	}
 
-	private convertToSuggestions(
-		patch: ParsedDiff | undefined,
-		document: vscode.TextDocument | undefined,
-	): GhostSuggestionsState {
+	private convertToSuggestions(patch: ParsedDiff, document: vscode.TextDocument): GhostSuggestionsState {
 		const suggestions = new GhostSuggestionsState()
-		if (!patch || !document) return suggestions
 
 		const suggestionFile = suggestions.addFile(document.uri)
 
