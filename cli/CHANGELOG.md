@@ -1,5 +1,25 @@
 # @kilocode/cli
 
+## 0.0.8
+
+### Patch Changes
+
+- [#3201](https://github.com/Kilo-Org/kilocode/pull/3201) [`c44f948`](https://github.com/Kilo-Org/kilocode/commit/c44f9482fd024f38b7216a7f74b20a96445461a7) Thanks [@RSO](https://github.com/RSO)! - Added an onboarding wizard that helps you get set up in the CLI.
+
+- [#3208](https://github.com/Kilo-Org/kilocode/pull/3208) [`cdc007c`](https://github.com/Kilo-Org/kilocode/commit/cdc007c1150d5210cc0b9c8e5c2b4c57efadfd44) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Allow auto-approval of commands straight from the approval menu
+
+- [#3202](https://github.com/Kilo-Org/kilocode/pull/3202) [`6ab57f4`](https://github.com/Kilo-Org/kilocode/commit/6ab57f441847e07dd6868a87913a41e0cb137fa8) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Added prompt history. Use your up/down keys to navigate through previous prompts!
+
+## 0.0.7
+
+### Patch Changes
+
+- [#3176](https://github.com/Kilo-Org/kilocode/pull/3176) [`4bcc1ee`](https://github.com/Kilo-Org/kilocode/commit/4bcc1ee557ae4b4244365a72679ec1f13332e856) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Support Kilo Code for Teams
+
+- [#3168](https://github.com/Kilo-Org/kilocode/pull/3168) [`476d835`](https://github.com/Kilo-Org/kilocode/commit/476d835b7ab9fee35e2832fe329b2256b36b78c7) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Fix compatibility with extension v4.107.0
+
+- [#3161](https://github.com/Kilo-Org/kilocode/pull/3161) [`712b104`](https://github.com/Kilo-Org/kilocode/commit/712b104acb323da51ac271b7eb95741b3cfa6d9d) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Improved install speed and fixed the outdated dependencies
+
 ## 0.0.6
 
 ### Patch Changes
