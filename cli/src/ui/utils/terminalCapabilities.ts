@@ -37,9 +37,9 @@ export function detectKittyProtocolSupport(): boolean {
  * Auto-detect and enable Kitty protocol if supported
  * Returns true if enabled, false otherwise
  */
-export function autoEnableKittyProtocol(): boolean {
+export async function autoEnableKittyProtocol(): Promise<boolean> {
 	// Query terminal for actual support
-	const isSupported = detectKittyProtocolSupport()
+	const isSupported = await detectKittyProtocolSupport()
 
 	if (isSupported) {
 		// Enable Kitty keyboard protocol
@@ -61,5 +61,5 @@ export function autoEnableKittyProtocol(): boolean {
  */
 export function disableKittyProtocol(): void {
 	// CSI < 1 u - Pop keyboard flags (disable)
-	process.stdout.write("\x1b[<1u")
+	process.stdout.write("\x1b[<u")
 }
