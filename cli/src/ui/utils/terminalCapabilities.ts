@@ -9,7 +9,7 @@
  */
 let kittyDetected = false
 let kittySupported = false
-let kittyEnabled = false
+const kittyEnabled = false
 
 export async function detectKittyProtocolSupport(): Promise<boolean> {
 	if (kittyDetected) {
@@ -99,17 +99,15 @@ export async function autoEnableKittyProtocol(): Promise<boolean> {
 	// Query terminal for actual support
 	const isSupported = await detectKittyProtocolSupport()
 
-	if (isSupported && !kittyEnabled) {
+	if (isSupported) {
 		// Enable Kitty keyboard protocol
 		// CSI > 1 u - Enable disambiguate escape codes
 		process.stdout.write("\x1b[>1u")
 		// CSI = 1 ; 1 u - Push keyboard flags, enable disambiguate
 		process.stdout.write("\x1b[=1;1u")
-		kittyEnabled = true
 
 		process.on("exit", disableKittyProtocol)
 		process.on("SIGTERM", disableKittyProtocol)
-		kittyEnabled = true
 		return true
 	}
 
@@ -120,8 +118,5 @@ export async function autoEnableKittyProtocol(): Promise<boolean> {
  * Disable Kitty keyboard protocol
  */
 export function disableKittyProtocol(): void {
-	if (kittyEnabled) {
-		process.stdout.write("\x1b[<u")
-		kittyEnabled = false
-	}
+	process.stdout.write("\x1b[<u")
 }
