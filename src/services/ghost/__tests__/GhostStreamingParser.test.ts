@@ -35,10 +35,6 @@ describe("GhostStreamingParser", () => {
 		parser.initialize(context)
 	})
 
-	afterEach(() => {
-		parser.reset()
-	})
-
 	describe("finishStream", () => {
 		it("should handle incomplete XML", () => {
 			const incompleteXml = "<change><search><![CDATA["

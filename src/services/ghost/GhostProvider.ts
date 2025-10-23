@@ -654,8 +654,6 @@ export class GhostProvider {
 		if (this.autoTriggerTimer) {
 			this.clearAutoTriggerTimer()
 		}
-		// Reset streaming parser when cancelling
-		this.streamingParser.reset()
 	}
 
 	/**

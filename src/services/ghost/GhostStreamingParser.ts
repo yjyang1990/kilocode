@@ -204,8 +204,6 @@ function skipChars(text: string, startPos: number, predicate: (char: string) => 
  * and emit suggestions as soon as complete <change> blocks are available
  */
 export class GhostStreamingParser {
-	private completedChanges: ParsedChange[] = []
-
 	private context: GhostSuggestionContext | null = null
 
 	constructor() {}
@@ -215,14 +213,6 @@ export class GhostStreamingParser {
 	 */
 	public initialize(context: GhostSuggestionContext): void {
 		this.context = context
-		this.reset()
-	}
-
-	/**
-	 * Reset parser state for a new parsing session
-	 */
-	public reset(): void {
-		this.completedChanges = []
 	}
 
 	/**
@@ -252,8 +242,6 @@ export class GhostStreamingParser {
 		// Generate suggestions from all completed changes
 		const patch = this.generatePatch(newChanges)
 		const suggestions = this.convertToSuggestions(patch, this.context!.document)
-
-		this.completedChanges = newChanges
 
 		return {
 			suggestions,
@@ -455,13 +443,5 @@ export class GhostStreamingParser {
 
 		suggestions.sortGroups()
 		return suggestions
-	}
-
-	/**
-	 * Get completed changes (for debugging)
-	 * @deprecated This method is obsolete and should not be used
-	 */
-	public getCompletedChanges(): ParsedChange[] {
-		return [...this.completedChanges]
 	}
 }
