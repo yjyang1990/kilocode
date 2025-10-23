@@ -3,8 +3,6 @@
  * Detects support for Kitty keyboard protocol and other advanced features
  */
 
-import { logs } from "../../services/logs"
-
 /**
  * Detect terminal type from environment variables
  */
