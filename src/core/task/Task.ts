@@ -1763,7 +1763,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				nextUserContent = [
 					{
 						type: "text",
-						text: formatResponse.noToolsUsed(),
+						text: formatResponse.noToolsUsed(getActiveToolUseStyle(this.apiConfiguration)),
 					},
 				]
 				this.consecutiveMistakeCount++
@@ -2452,7 +2452,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 					if (!didToolUse) {
 						this.userMessageContent.push({
 							type: "text",
-							text: formatResponse.noToolsUsed(),
+							text: formatResponse.noToolsUsed(getActiveToolUseStyle(this.apiConfiguration)),
 						})
 						this.consecutiveMistakeCount++
 					}
