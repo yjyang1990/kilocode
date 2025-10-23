@@ -252,7 +252,7 @@ export class GhostStreamingParser {
 		let hasNewSuggestions = newChanges.length > 0
 
 		// Add new changes to our completed list
-		this.completedChanges.push(...newChanges)
+		this.completedChanges = newChanges
 
 		// Check if the response appears complete
 		let isComplete = isResponseComplete(llmResponse, this.completedChanges.length)
