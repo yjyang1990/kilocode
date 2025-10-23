@@ -71,28 +71,13 @@ export function sanitizeXMLConservative(buffer: string): string {
 /**
  * Check if the response appears to be complete
  */
-function isResponseComplete(buffer: string, completedChangesCount: number): boolean {
-	// Simple heuristic: if the buffer doesn't end with an incomplete tag,
-	// consider it complete
-	const trimmedBuffer = buffer.trim()
+function isResponseComplete(buffer: string): boolean {
+	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(buffer)
+	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(buffer)
+	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(buffer)
+	const incompleteCDataMatch = /<!\[CDATA\[(?:(?!\]\]>)[\s\S])*$/i.test(buffer)
 
-	// If the buffer is empty or only whitespace, consider it complete
-	if (trimmedBuffer.length === 0) {
-		return true
-	}
-
-	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(trimmedBuffer)
-	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(trimmedBuffer)
-	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(trimmedBuffer)
-	const incompleteCDataMatch = /<!\[CDATA\[(?:(?!\]\]>)[\s\S])*$/i.test(trimmedBuffer)
-
-	// If we have incomplete tags, the response is not complete
-	if (incompleteChangeMatch || incompleteSearchMatch || incompleteReplaceMatch || incompleteCDataMatch) {
-		return false
-	}
-
-	// If we have at least one complete change and no incomplete tags, likely complete
-	return completedChangesCount > 0
+	return !(incompleteChangeMatch || incompleteSearchMatch || incompleteReplaceMatch || incompleteCDataMatch)
 }
 
 /**
@@ -241,41 +226,34 @@ export class GhostStreamingParser {
 	}
 
 	/**
+	 * Sanitize response if needed and return sanitized response with completion status
+	 */
+	private sanitizeResponseIfNeeded(response: string): { sanitizedResponse: string; isComplete: boolean } {
+		let sanitizedResponse = response
+		let isComplete = isResponseComplete(sanitizedResponse)
+
+		if (!isComplete) {
+			sanitizedResponse = sanitizeXMLConservative(sanitizedResponse)
+			isComplete = isResponseComplete(sanitizedResponse) // Re-check completion after sanitization
+		}
+
+		return { sanitizedResponse, isComplete }
+	}
+
+	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
 	public parseResponse(fullResponse: string): StreamingParseResult {
-		let llmResponse = fullResponse
+		const { sanitizedResponse, isComplete } = this.sanitizeResponseIfNeeded(fullResponse)
 
-		// Extract any newly completed changes from the current buffer
-		const newChanges = this.extractCompletedChanges(llmResponse)
-
+		const newChanges = this.extractCompletedChanges(sanitizedResponse)
 		let hasNewSuggestions = newChanges.length > 0
 
-		// Add new changes to our completed list
-		this.completedChanges.push(...newChanges)
-
-		// Check if the response appears complete
-		let isComplete = isResponseComplete(llmResponse, this.completedChanges.length)
-
-		// Apply very conservative sanitization only when the stream is finished
-		// and we still have no completed changes but have content in the buffer
-		if (this.completedChanges.length === 0 && llmResponse.trim().length > 0) {
-			const sanitizedBuffer = sanitizeXMLConservative(llmResponse)
-			if (sanitizedBuffer !== llmResponse) {
-				// Re-process with sanitized buffer
-				llmResponse = sanitizedBuffer
-				const sanitizedChanges = this.extractCompletedChanges(llmResponse)
-				if (sanitizedChanges.length > 0) {
-					this.completedChanges.push(...sanitizedChanges)
-					hasNewSuggestions = true
-					isComplete = isResponseComplete(llmResponse, this.completedChanges.length) // Re-check completion after sanitization
-				}
-			}
-		}
-
 		// Generate suggestions from all completed changes
-		const patch = this.generatePatch(this.completedChanges)
+		const patch = this.generatePatch(newChanges)
 		const suggestions = this.convertToSuggestions(patch, this.context!.document)
+
+		this.completedChanges = newChanges
 
 		return {
 			suggestions,
