@@ -47,6 +47,9 @@ export function autoEnableKittyProtocol(): boolean {
 		process.stdout.write("\x1b[>1u")
 		// CSI = 1 ; 1 u - Push keyboard flags, enable disambiguate
 		process.stdout.write("\x1b[=1;1u")
+
+		process.on("exit", disableKittyProtocol)
+		process.on("SIGTERM", disableKittyProtocol)
 		return true
 	}
 
@@ -56,7 +59,10 @@ export function autoEnableKittyProtocol(): boolean {
 /**
  * Disable Kitty keyboard protocol
  */
+let kittyDisabled = false
 export function disableKittyProtocol(): void {
-	// CSI < 1 u - Pop keyboard flags (disable)
-	process.stdout.write("\x1b[<1u")
+	if (!kittyDisabled) {
+		process.stdout.write("\x1b[<u")
+		kittyDisabled = true
+	}
 }
