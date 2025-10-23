@@ -239,19 +239,15 @@ export class GhostStreamingParser {
 		// Check if the response appears complete
 		let isComplete = isResponseComplete(llmResponse)
 
-		// Apply very conservative sanitization only when the stream is finished
-		// and we still have no completed changes but have content in the buffer
-		if (newChanges.length === 0 && llmResponse.trim().length > 0) {
-			const sanitizedBuffer = sanitizeXMLConservative(llmResponse)
-			if (sanitizedBuffer !== llmResponse) {
-				// Re-process with sanitized buffer
-				llmResponse = sanitizedBuffer
-				const sanitizedChanges = this.extractCompletedChanges(llmResponse)
-				if (sanitizedChanges.length > 0) {
-					newChanges.push(...sanitizedChanges)
-					hasNewSuggestions = true
-					isComplete = isResponseComplete(llmResponse) // Re-check completion after sanitization
-				}
+		const sanitizedBuffer = sanitizeXMLConservative(llmResponse)
+		if (sanitizedBuffer !== llmResponse) {
+			// Re-process with sanitized buffer
+			llmResponse = sanitizedBuffer
+			const sanitizedChanges = this.extractCompletedChanges(llmResponse)
+			if (sanitizedChanges.length > 0) {
+				newChanges.push(...sanitizedChanges)
+				hasNewSuggestions = true
+				isComplete = isResponseComplete(llmResponse) // Re-check completion after sanitization
 			}
 		}
 
