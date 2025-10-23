@@ -230,26 +230,15 @@ export class GhostStreamingParser {
 	 */
 	public parseResponse(fullResponse: string): StreamingParseResult {
 		let llmResponse = fullResponse
-
-		// Extract any newly completed changes from the current buffer
-		const newChanges = this.extractCompletedChanges(llmResponse)
-
-		let hasNewSuggestions = newChanges.length > 0
-
-		// Check if the response appears complete
 		let isComplete = isResponseComplete(llmResponse)
 
-		const sanitizedBuffer = sanitizeXMLConservative(llmResponse)
-		if (sanitizedBuffer !== llmResponse) {
-			// Re-process with sanitized buffer
-			llmResponse = sanitizedBuffer
-			const sanitizedChanges = this.extractCompletedChanges(llmResponse)
-			if (sanitizedChanges.length > 0) {
-				newChanges.push(...sanitizedChanges)
-				hasNewSuggestions = true
-				isComplete = isResponseComplete(llmResponse) // Re-check completion after sanitization
-			}
+		if (!isComplete) {
+			llmResponse = sanitizeXMLConservative(llmResponse)
+			isComplete = isResponseComplete(llmResponse) // Re-check completion after sanitization
 		}
+
+		const newChanges = this.extractCompletedChanges(llmResponse)
+		let hasNewSuggestions = newChanges.length > 0
 
 		// Generate suggestions from all completed changes
 		const patch = this.generatePatch(newChanges)
