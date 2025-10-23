@@ -254,7 +254,16 @@ export class GhostStreamingParser {
 			"",
 		)
 
+		const modifiedContent_has_prefix_and_suffix =
+			modifiedContent?.startsWith(prefix) && modifiedContent.endsWith(suffix)
+
 		const suggestions = this.convertToSuggestions(patch, document)
+
+		if (modifiedContent_has_prefix_and_suffix && modifiedContent) {
+			// Mark as FIM option
+			const middle = modifiedContent.slice(prefix.length, modifiedContent.length - suffix.length)
+			suggestions.setFillInAtCursor(middle)
+		}
 
 		return {
 			suggestions,
