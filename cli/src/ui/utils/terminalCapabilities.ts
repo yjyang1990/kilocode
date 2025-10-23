@@ -59,7 +59,10 @@ export async function autoEnableKittyProtocol(): Promise<boolean> {
 /**
  * Disable Kitty keyboard protocol
  */
+let kittyDisabled = false
 export function disableKittyProtocol(): void {
-	// CSI < 1 u - Pop keyboard flags (disable)
-	process.stdout.write("\x1b[<u")
+	if (!kittyDisabled) {
+		process.stdout.write("\x1b[<u")
+		kittyDisabled = true
+	}
 }
