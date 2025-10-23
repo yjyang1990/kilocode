@@ -72,27 +72,12 @@ export function sanitizeXMLConservative(buffer: string): string {
  * Check if the response appears to be complete
  */
 function isResponseComplete(buffer: string, completedChangesCount: number): boolean {
-	// Simple heuristic: if the buffer doesn't end with an incomplete tag,
-	// consider it complete
-	const trimmedBuffer = buffer.trim()
+	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(buffer)
+	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(buffer)
+	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(buffer)
+	const incompleteCDataMatch = /<!\[CDATA\[(?:(?!\]\]>)[\s\S])*$/i.test(buffer)
 
-	// If the buffer is empty or only whitespace, consider it complete
-	if (trimmedBuffer.length === 0) {
-		return true
-	}
-
-	const incompleteChangeMatch = /<change(?:\s[^>]*)?>(?:(?!<\/change>)[\s\S])*$/i.test(trimmedBuffer)
-	const incompleteSearchMatch = /<search(?:\s[^>]*)?>(?:(?!<\/search>)[\s\S])*$/i.test(trimmedBuffer)
-	const incompleteReplaceMatch = /<replace(?:\s[^>]*)?>(?:(?!<\/replace>)[\s\S])*$/i.test(trimmedBuffer)
-	const incompleteCDataMatch = /<!\[CDATA\[(?:(?!\]\]>)[\s\S])*$/i.test(trimmedBuffer)
-
-	// If we have incomplete tags, the response is not complete
-	if (incompleteChangeMatch || incompleteSearchMatch || incompleteReplaceMatch || incompleteCDataMatch) {
-		return false
-	}
-
-	// If we have at least one complete change and no incomplete tags, likely complete
-	return completedChangesCount > 0
+	return !(incompleteChangeMatch || incompleteSearchMatch || incompleteReplaceMatch || incompleteCDataMatch)
 }
 
 /**
