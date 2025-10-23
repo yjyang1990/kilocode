@@ -244,9 +244,9 @@ export class GhostStreamingParser {
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
 	public parseResponse(fullResponse: string): StreamingParseResult {
-		const { sanitizedResponse: llmResponse, isComplete } = this.sanitizeResponseIfNeeded(fullResponse)
+		const { sanitizedResponse, isComplete } = this.sanitizeResponseIfNeeded(fullResponse)
 
-		const newChanges = this.extractCompletedChanges(llmResponse)
+		const newChanges = this.extractCompletedChanges(sanitizedResponse)
 		let hasNewSuggestions = newChanges.length > 0
 
 		// Generate suggestions from all completed changes
