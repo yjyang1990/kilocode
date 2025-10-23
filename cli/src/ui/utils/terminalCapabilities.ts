@@ -4,25 +4,6 @@
  */
 
 /**
- * Detect terminal type from environment variables
- */
-export function detectTerminalType(): string {
-	const term = process.env.TERM || ""
-	const termProgram = process.env.TERM_PROGRAM || ""
-
-	if (termProgram.includes("iTerm")) return "iterm2"
-	if (termProgram.includes("Apple_Terminal")) return "terminal.app"
-	if (termProgram.includes("vscode")) return "vscode"
-	if (termProgram.includes("ghostty")) return "ghostty"
-	if (term.includes("kitty")) return "kitty"
-	if (term.includes("alacritty")) return "alacritty"
-	if (term.includes("wezterm")) return "wezterm"
-	if (term.includes("xterm")) return "xterm"
-
-	return "unknown"
-}
-
-/**
  * Check if terminal supports Kitty protocol
  * Partially copied from gemini-cli
  */
