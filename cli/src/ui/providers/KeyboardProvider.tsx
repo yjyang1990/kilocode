@@ -138,7 +138,6 @@ export function KeyboardProvider({ children, config = {} }: KeyboardProviderProp
 	useEffect(() => {
 		// Save original raw mode state
 		const wasRaw = stdin.isRaw
-		let kittyEnabled = false
 
 		// Setup centralized keyboard handler first
 		const unsubscribeKeyboard = setupKeyboard()
@@ -154,13 +153,18 @@ export function KeyboardProvider({ children, config = {} }: KeyboardProviderProp
 			process.stdout.write("\x1b[?2004h")
 
 			// Auto-detect and enable Kitty protocol if supported
-			kittyEnabled = await autoEnableKittyProtocol()
+			const kittyEnabled = await autoEnableKittyProtocol()
 			if (debugKeystrokeLogging) {
 				logs.debug(`Kitty protocol: ${kittyEnabled ? "enabled" : "not supported"}`, "KeyboardProvider")
 			}
 
 			// Update atom with actual state
 			setKittyProtocol(kittyEnabled)
+
+			keypressStream.on("keypress", handleKeypress)
+			if (usePassthrough) {
+				stdin.on("data", handleRawData)
+			}
 		}
 
 		init()
@@ -424,12 +428,6 @@ export function KeyboardProvider({ children, config = {} }: KeyboardProviderProp
 					pos = nextMarkerPos + PASTE_MODE_SUFFIX.length
 				}
 			}
-		}
-
-		// Setup event listeners
-		keypressStream.on("keypress", handleKeypress)
-		if (usePassthrough) {
-			stdin.on("data", handleRawData)
 		}
 
 		// Cleanup
