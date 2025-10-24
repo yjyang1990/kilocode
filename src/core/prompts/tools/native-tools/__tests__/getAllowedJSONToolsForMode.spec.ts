@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest"
-import { getAllowedJSONToolsForMode } from "../native-tools/getAllowedJSONToolsForMode"
-import { Mode } from "../../../../shared/modes"
-import { ClineProviderState } from "../../../webview/ClineProvider"
-import { apply_diff_multi_file, apply_diff_single_file } from "../native-tools/apply_diff"
+import { getAllowedJSONToolsForMode } from "../getAllowedJSONToolsForMode"
+import { Mode } from "../../../../../shared/modes"
+import { ClineProviderState } from "../../../../webview/ClineProvider"
+import { apply_diff_multi_file, apply_diff_single_file } from "../apply_diff"
 
 describe("getAllowedJSONToolsForMode", () => {
 	const mockCodeIndexManager = {
@@ -34,6 +34,7 @@ describe("getAllowedJSONToolsForMode", () => {
 			mockCodeIndexManager,
 			providerState as ClineProviderState,
 			true,
+			false,
 		)
 
 		const applyDiffTool = tools.find((tool) => "function" in tool && tool.function.name === "apply_diff")
@@ -58,6 +59,7 @@ describe("getAllowedJSONToolsForMode", () => {
 			mockCodeIndexManager,
 			providerState as ClineProviderState,
 			true,
+			false,
 		)
 
 		const applyDiffTool = tools.find((tool) => "function" in tool && tool.function.name === "apply_diff")

@@ -10,10 +10,10 @@ import { apply_diff_multi_file, apply_diff_single_file } from "./apply_diff"
 
 export function getAllowedJSONToolsForMode(
 	mode: Mode,
-	codeIndexManager?: CodeIndexManager,
-	clineProviderState?: ClineProviderState,
-	diffEnabled: boolean = false,
-	supportsImages?: boolean,
+	codeIndexManager: CodeIndexManager | undefined,
+	clineProviderState: ClineProviderState | undefined,
+	diffEnabled: boolean,
+	supportsImages: boolean,
 ): OpenAI.Chat.ChatCompletionTool[] {
 	const config = getModeConfig(mode, clineProviderState?.customModes)
 
