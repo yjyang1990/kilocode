@@ -60,7 +60,7 @@ export function parseDoubleEncodedParams(obj: any): any {
 
 const knownWrapperPropertyNames = [
 	"arguments", // seen with qwen3-coder
-	"result", // seen with haiku-4.5, sonnet-4.5
+	"result", // seen with gemini-2.5-flash, haiku-4.5, sonnet-4.5
 ]
 
 export function removeWrapperObject(toolName: string, parsedArgs: Record<string, unknown>, nestingLevel: number) {
