@@ -99,7 +99,7 @@ async function generatePrompt(
 
 	const basePrompt = `${roleDefinition}
 
-${markdownFormattingSection()}
+${markdownFormattingSection(toolUseStyle ?? "xml" /*kilocode_change*/)}
 
 ${getSharedToolUseSection(toolUseStyle /*kilocode_change*/)}
 

@@ -79,9 +79,7 @@ RULES
 
 - The project base directory is: ${cwd.toPosix()}
 `
-	rulesContent += `
-- All file paths must be relative to this directory. However, commands may change directories in terminals, so respect working directory specified by the response to ${toolUseStyle === "json" ? '"execute_command"' : "<execute_command>"}.
-`
+	rulesContent += `- All file paths must be relative to this directory. However, commands may change directories in terminals, so respect working directory specified by the response to ${toolUseStyle === "json" ? '"execute_command"' : "<execute_command>" /*kilocode_change*/}.`
 	rulesContent += `
 - You cannot \`cd\` into a different directory to complete a task. You are stuck operating from '${cwd.toPosix()}', so be sure to pass in the correct 'path' parameter when using tools that require a path.
 - Do not use the ~ character or $HOME to refer to the home directory.
