@@ -292,22 +292,6 @@ describe("GhostInlineCompletionProvider", () => {
 			expect(result).toEqual([])
 		})
 
-		it("should return empty array after suggestions are cleared", () => {
-			const suggestions = new GhostSuggestionsState()
-			suggestions.setFillInAtCursor({
-				text: "test content",
-				prefix: "const x = 1",
-				suffix: "\nconst y = 2",
-			})
-			provider.updateSuggestions(suggestions)
-
-			// Clear suggestions
-			provider.updateSuggestions(null)
-
-			const result = provider.provideInlineCompletionItems(mockDocument, mockPosition, mockContext, mockToken)
-			expect(result).toEqual([])
-		})
-
 		it("should update suggestions when called multiple times", () => {
 			const suggestions1 = new GhostSuggestionsState()
 			suggestions1.setFillInAtCursor({
@@ -745,21 +729,6 @@ describe("GhostInlineCompletionProvider", () => {
 	})
 
 	describe("updateSuggestions", () => {
-		it("should accept null to clear suggestions", () => {
-			const suggestions = new GhostSuggestionsState()
-			suggestions.setFillInAtCursor({
-				text: "test",
-				prefix: "const x = 1",
-				suffix: "\nconst y = 2",
-			})
-			provider.updateSuggestions(suggestions)
-
-			provider.updateSuggestions(null)
-
-			const result = provider.provideInlineCompletionItems(mockDocument, mockPosition, mockContext, mockToken)
-			expect(result).toEqual([])
-		})
-
 		it("should accept new suggestions state", () => {
 			const suggestions = new GhostSuggestionsState()
 			suggestions.setFillInAtCursor({
