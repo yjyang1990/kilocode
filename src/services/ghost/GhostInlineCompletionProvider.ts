@@ -12,6 +12,26 @@ export class GhostInlineCompletionProvider implements vscode.InlineCompletionIte
 			return
 		}
 
+		const fillInAtCursor = suggestions.getFillInAtCursor()
+
+		// Check if this suggestion already exists in the history
+		if (fillInAtCursor) {
+			const isDuplicate = this.suggestionsHistory.some((existingSuggestion) => {
+				const existingFillIn = existingSuggestion.getFillInAtCursor()
+				return (
+					existingFillIn &&
+					existingFillIn.text === fillInAtCursor.text &&
+					existingFillIn.prefix === fillInAtCursor.prefix &&
+					existingFillIn.suffix === fillInAtCursor.suffix
+				)
+			})
+
+			// Skip adding if it's a duplicate
+			if (isDuplicate) {
+				return
+			}
+		}
+
 		// Add to the end of the array (most recent)
 		this.suggestionsHistory.push(suggestions)
 

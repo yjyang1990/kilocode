@@ -245,6 +245,75 @@ describe("GhostInlineCompletionProvider", () => {
 			) as vscode.InlineCompletionItem[]
 			expect(result[0].insertText).toBe("suggestion 24")
 		})
+		it("should not add duplicate suggestions", () => {
+			const suggestions1 = new GhostSuggestionsState()
+			suggestions1.setFillInAtCursor({
+				text: "console.log('test')",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions1)
+
+			// Try to add the same suggestion again
+			const suggestions2 = new GhostSuggestionsState()
+			suggestions2.setFillInAtCursor({
+				text: "console.log('test')",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions2)
+
+			// Add a different suggestion
+			const suggestions3 = new GhostSuggestionsState()
+			suggestions3.setFillInAtCursor({
+				text: "console.log('different')",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions3)
+
+			// Should return the most recent non-duplicate suggestion
+			const result = provider.provideInlineCompletionItems(
+				mockDocument,
+				mockPosition,
+				mockContext,
+				mockToken,
+			) as vscode.InlineCompletionItem[]
+
+			// Should get the different suggestion (suggestions3), not the duplicate
+			expect(result[0].insertText).toBe("console.log('different')")
+		})
+
+		it("should allow same text with different prefix/suffix", () => {
+			const suggestions1 = new GhostSuggestionsState()
+			suggestions1.setFillInAtCursor({
+				text: "console.log('test')",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions1)
+
+			// Same text but different context - should be added
+			const suggestions2 = new GhostSuggestionsState()
+			suggestions2.setFillInAtCursor({
+				text: "console.log('test')",
+				prefix: "const a = 1",
+				suffix: "\nconst b = 2",
+			})
+			provider.updateSuggestions(suggestions2)
+
+			// Should match the second suggestion when context matches
+			const mockDocument2 = new MockTextDocument(vscode.Uri.file("/test2.ts"), "const a = 1\nconst b = 2")
+			const mockPosition2 = new vscode.Position(0, 11)
+			const result = provider.provideInlineCompletionItems(
+				mockDocument2,
+				mockPosition2,
+				mockContext,
+				mockToken,
+			) as vscode.InlineCompletionItem[]
+
+			expect(result[0].insertText).toBe("console.log('test')")
+		})
 	})
 
 	describe("updateSuggestions", () => {
