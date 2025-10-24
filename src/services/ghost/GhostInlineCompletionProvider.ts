@@ -45,6 +45,16 @@ export function findMatchingSuggestion(
 export class GhostInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
 	private suggestionsHistory: FillInAtCursorSuggestion[] = []
 
+	/**
+	 * Check if a cached suggestion is available for the given prefix and suffix
+	 * @param prefix - The text before the cursor position
+	 * @param suffix - The text after the cursor position
+	 * @returns True if a matching suggestion exists, false otherwise
+	 */
+	public cachedSuggestionAvailable(prefix: string, suffix: string): boolean {
+		return findMatchingSuggestion(prefix, suffix, this.suggestionsHistory) !== null
+	}
+
 	public updateSuggestions(suggestions: GhostSuggestionsState): void {
 		const fillInAtCursor = suggestions.getFillInAtCursor()
 
