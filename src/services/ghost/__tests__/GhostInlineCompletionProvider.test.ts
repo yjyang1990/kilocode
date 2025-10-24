@@ -1,7 +1,213 @@
 import * as vscode from "vscode"
-import { GhostInlineCompletionProvider } from "../GhostInlineCompletionProvider"
-import { GhostSuggestionsState } from "../GhostSuggestions"
+import { GhostInlineCompletionProvider, findMatchingSuggestion } from "../GhostInlineCompletionProvider"
+import { GhostSuggestionsState, FillInAtCursorSuggestion } from "../GhostSuggestions"
 import { MockTextDocument } from "../../mocking/MockTextDocument"
+
+describe("findMatchingSuggestion", () => {
+	describe("exact matching", () => {
+		it("should return suggestion text when prefix and suffix match exactly", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('Hello, World!');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			const result = findMatchingSuggestion("const x = 1", "\nconst y = 2", suggestions)
+			expect(result).toBe("console.log('Hello, World!');")
+		})
+
+		it("should return null when prefix does not match", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			const result = findMatchingSuggestion("different prefix", "\nconst y = 2", suggestions)
+			expect(result).toBeNull()
+		})
+
+		it("should return null when suffix does not match", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			const result = findMatchingSuggestion("const x = 1", "different suffix", suggestions)
+			expect(result).toBeNull()
+		})
+
+		it("should return null when suggestions array is empty", () => {
+			const result = findMatchingSuggestion("const x = 1", "\nconst y = 2", [])
+			expect(result).toBeNull()
+		})
+	})
+
+	describe("partial typing support", () => {
+		it("should return remaining suggestion when user has partially typed", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('Hello, World!');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			// User typed "cons" after the prefix
+			const result = findMatchingSuggestion("const x = 1cons", "\nconst y = 2", suggestions)
+			expect(result).toBe("ole.log('Hello, World!');")
+		})
+
+		it("should return full suggestion when no partial typing", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			const result = findMatchingSuggestion("const x = 1", "\nconst y = 2", suggestions)
+			expect(result).toBe("console.log('test');")
+		})
+
+		it("should return null when partially typed content does not match suggestion", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			// User typed "xyz" which doesn't match the suggestion
+			const result = findMatchingSuggestion("const x = 1xyz", "\nconst y = 2", suggestions)
+			expect(result).toBeNull()
+		})
+
+		it("should return empty string when user has typed entire suggestion", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			const result = findMatchingSuggestion("const x = 1console.log('test');", "\nconst y = 2", suggestions)
+			expect(result).toBe("")
+		})
+
+		it("should return null when suffix has changed during partial typing", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			// User typed partial content but suffix changed
+			const result = findMatchingSuggestion("const x = 1cons", "\nconst y = 3", suggestions)
+			expect(result).toBeNull()
+		})
+
+		it("should handle multi-character partial typing", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "function test() { return 42; }",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			// User typed "function te"
+			const result = findMatchingSuggestion("const x = 1function te", "\nconst y = 2", suggestions)
+			expect(result).toBe("st() { return 42; }")
+		})
+
+		it("should be case-sensitive in partial matching", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "Console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			// User typed "cons" (lowercase) but suggestion starts with "Console" (uppercase)
+			const result = findMatchingSuggestion("const x = 1cons", "\nconst y = 2", suggestions)
+			expect(result).toBeNull()
+		})
+	})
+
+	describe("multiple suggestions", () => {
+		it("should prefer most recent matching suggestion", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "first suggestion",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+				{
+					text: "second suggestion",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			const result = findMatchingSuggestion("const x = 1", "\nconst y = 2", suggestions)
+			expect(result).toBe("second suggestion")
+		})
+
+		it("should match different suggestions based on context", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "first suggestion",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+				{
+					text: "second suggestion",
+					prefix: "const a = 1",
+					suffix: "\nconst b = 2",
+				},
+			]
+
+			const result1 = findMatchingSuggestion("const x = 1", "\nconst y = 2", suggestions)
+			expect(result1).toBe("first suggestion")
+
+			const result2 = findMatchingSuggestion("const a = 1", "\nconst b = 2", suggestions)
+			expect(result2).toBe("second suggestion")
+		})
+
+		it("should prefer exact match over partial match", () => {
+			const suggestions: FillInAtCursorSuggestion[] = [
+				{
+					text: "console.log('partial');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				},
+				{
+					text: "exact match",
+					prefix: "const x = 1cons",
+					suffix: "\nconst y = 2",
+				},
+			]
+
+			// User is at position that matches exact prefix of second suggestion
+			const result = findMatchingSuggestion("const x = 1cons", "\nconst y = 2", suggestions)
+			expect(result).toBe("exact match")
+		})
+	})
+})
 
 describe("GhostInlineCompletionProvider", () => {
 	let provider: GhostInlineCompletionProvider

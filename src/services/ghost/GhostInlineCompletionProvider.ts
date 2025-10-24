@@ -4,18 +4,54 @@ import { extractPrefixSuffix } from "./types"
 
 const MAX_SUGGESTIONS_HISTORY = 20
 
+/**
+ * Find a matching suggestion from the history based on current prefix and suffix
+ * @param prefix - The text before the cursor position
+ * @param suffix - The text after the cursor position
+ * @param suggestionsHistory - Array of previous suggestions (most recent last)
+ * @returns The matching suggestion text, or null if no match found
+ */
+export function findMatchingSuggestion(
+	prefix: string,
+	suffix: string,
+	suggestionsHistory: FillInAtCursorSuggestion[],
+): string | null {
+	// Search from most recent to least recent
+	for (let i = suggestionsHistory.length - 1; i >= 0; i--) {
+		const fillInAtCursor = suggestionsHistory[i]
+
+		// First, try exact prefix/suffix match
+		if (prefix === fillInAtCursor.prefix && suffix === fillInAtCursor.suffix) {
+			return fillInAtCursor.text
+		}
+
+		// If no exact match, check for partial typing
+		// The user may have started typing the suggested text
+		if (prefix.startsWith(fillInAtCursor.prefix) && suffix === fillInAtCursor.suffix) {
+			// Extract what the user has typed between the original prefix and current position
+			const typedContent = prefix.substring(fillInAtCursor.prefix.length)
+
+			// Check if the typed content matches the beginning of the suggestion
+			if (fillInAtCursor.text.startsWith(typedContent)) {
+				// Return the remaining part of the suggestion (with already-typed portion removed)
+				return fillInAtCursor.text.substring(typedContent.length)
+			}
+		}
+	}
+
+	return null
+}
+
 export class GhostInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
 	private suggestionsHistory: FillInAtCursorSuggestion[] = []
 
 	public updateSuggestions(suggestions: GhostSuggestionsState): void {
 		const fillInAtCursor = suggestions.getFillInAtCursor()
 
-		// Only store if we have a fill-in suggestion
 		if (!fillInAtCursor) {
 			return
 		}
 
-		// Check if this suggestion already exists in the history
 		const isDuplicate = this.suggestionsHistory.some(
 			(existing) =>
 				existing.text === fillInAtCursor.text &&
@@ -23,7 +59,6 @@ export class GhostInlineCompletionProvider implements vscode.InlineCompletionIte
 				existing.suffix === fillInAtCursor.suffix,
 		)
 
-		// Skip adding if it's a duplicate
 		if (isDuplicate) {
 			return
 		}
@@ -45,36 +80,14 @@ export class GhostInlineCompletionProvider implements vscode.InlineCompletionIte
 	): vscode.ProviderResult<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
 		const { prefix, suffix } = extractPrefixSuffix(document, position)
 
-		// Search from most recent to least recent
-		for (let i = this.suggestionsHistory.length - 1; i >= 0; i--) {
-			const fillInAtCursor = this.suggestionsHistory[i]
+		const matchingText = findMatchingSuggestion(prefix, suffix, this.suggestionsHistory)
 
-			// First, try exact prefix/suffix match
-			if (prefix === fillInAtCursor.prefix && suffix === fillInAtCursor.suffix) {
-				const item: vscode.InlineCompletionItem = {
-					insertText: fillInAtCursor.text,
-					range: new vscode.Range(position, position),
-				}
-				return [item]
+		if (matchingText !== null) {
+			const item: vscode.InlineCompletionItem = {
+				insertText: matchingText,
+				range: new vscode.Range(position, position),
 			}
-
-			// If no exact match, check for partial typing
-			// The user may have started typing the suggested text
-			if (prefix.startsWith(fillInAtCursor.prefix) && suffix === fillInAtCursor.suffix) {
-				// Extract what the user has typed between the original prefix and current position
-				const typedContent = prefix.substring(fillInAtCursor.prefix.length)
-
-				// Check if the typed content matches the beginning of the suggestion
-				if (fillInAtCursor.text.startsWith(typedContent)) {
-					// Return the remaining part of the suggestion (with already-typed portion removed)
-					const remainingText = fillInAtCursor.text.substring(typedContent.length)
-					const item: vscode.InlineCompletionItem = {
-						insertText: remainingText,
-						range: new vscode.Range(position, position),
-					}
-					return [item]
-				}
-			}
+			return [item]
 		}
 
 		return []
