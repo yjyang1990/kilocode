@@ -240,7 +240,7 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			if (this.providerName == "KiloCode" && isAnyRecognizedKiloCodeError(error)) {
 				throw error
 			}
-			const metadata = error?.error?.metadata as { raw?: string; provider_name?: string }
+			const metadata = error?.error?.metadata as { raw?: string; provider_name?: string } | undefined
 			const rawError = safeJsonParse(metadata?.raw) as { error?: OpenAI.ErrorObject; detail?: string } | undefined
 			if (rawError?.error?.message || rawError?.detail) {
 				throw new Error(
