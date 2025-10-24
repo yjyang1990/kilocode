@@ -1763,7 +1763,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				nextUserContent = [
 					{
 						type: "text",
-						text: formatResponse.noToolsUsed(getActiveToolUseStyle(this.apiConfiguration)),
+						text: formatResponse.noToolsUsed(
+							getActiveToolUseStyle(this.apiConfiguration), // kilocode_change
+						),
 					},
 				]
 				this.consecutiveMistakeCount++
@@ -2452,7 +2454,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 					if (!didToolUse) {
 						this.userMessageContent.push({
 							type: "text",
-							text: formatResponse.noToolsUsed(getActiveToolUseStyle(this.apiConfiguration)),
+							text: formatResponse.noToolsUsed(
+								getActiveToolUseStyle(this.apiConfiguration), // kilocode_change
+							),
 						})
 						this.consecutiveMistakeCount++
 					}
