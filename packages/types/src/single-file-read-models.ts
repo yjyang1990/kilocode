@@ -10,5 +10,5 @@
  * @returns true if the model should use single file reads
  */
 export function shouldUseSingleFileRead(modelId: string): boolean {
-	return modelId.includes("claude-haiku-4.5") // kilocode_change
+	return modelId.includes("claude-haiku-4.5") || modelId.includes("claude-haiku-4-5") // kilocode_change
 }
