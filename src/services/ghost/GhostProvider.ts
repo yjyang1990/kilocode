@@ -293,6 +293,11 @@ export class GhostProvider {
 		const { prefix, suffix } = extractPrefixSuffix(context.document, position)
 		const languageId = context.document.languageId
 
+		// Check cache before making API call
+		if (this.inlineCompletionProvider.cachedSuggestionAvailable(prefix, suffix)) {
+			return
+		}
+
 		const { systemPrompt, userPrompt } = this.autoTriggerStrategy.getPrompts(
 			autocompleteInput,
 			prefix,

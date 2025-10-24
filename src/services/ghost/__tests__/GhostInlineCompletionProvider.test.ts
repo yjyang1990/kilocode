@@ -728,6 +728,69 @@ describe("GhostInlineCompletionProvider", () => {
 		})
 	})
 
+	describe("cachedSuggestionAvailable", () => {
+		it("should return true when prefix and suffix match", () => {
+			const suggestions = new GhostSuggestionsState()
+			suggestions.setFillInAtCursor({
+				text: "console.log('cached');",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions)
+
+			const result = provider.cachedSuggestionAvailable("const x = 1", "\nconst y = 2")
+			expect(result).toBe(true)
+		})
+
+		it("should return false when no matching suggestion exists", () => {
+			const suggestions = new GhostSuggestionsState()
+			suggestions.setFillInAtCursor({
+				text: "console.log('test');",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions)
+
+			const result = provider.cachedSuggestionAvailable("different prefix", "different suffix")
+			expect(result).toBe(false)
+		})
+
+		it("should return true for partial typing", () => {
+			const suggestions = new GhostSuggestionsState()
+			suggestions.setFillInAtCursor({
+				text: "console.log('test');",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions)
+
+			// User typed "cons" after the prefix
+			const result = provider.cachedSuggestionAvailable("const x = 1cons", "\nconst y = 2")
+			expect(result).toBe(true)
+		})
+
+		it("should return true when most recent matching suggestion exists", () => {
+			const suggestions1 = new GhostSuggestionsState()
+			suggestions1.setFillInAtCursor({
+				text: "first",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions1)
+
+			const suggestions2 = new GhostSuggestionsState()
+			suggestions2.setFillInAtCursor({
+				text: "second",
+				prefix: "const x = 1",
+				suffix: "\nconst y = 2",
+			})
+			provider.updateSuggestions(suggestions2)
+
+			const result = provider.cachedSuggestionAvailable("const x = 1", "\nconst y = 2")
+			expect(result).toBe(true)
+		})
+	})
+
 	describe("updateSuggestions", () => {
 		it("should accept new suggestions state", () => {
 			const suggestions = new GhostSuggestionsState()
