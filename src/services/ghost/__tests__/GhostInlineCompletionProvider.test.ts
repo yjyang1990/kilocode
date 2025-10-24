@@ -314,6 +314,228 @@ describe("GhostInlineCompletionProvider", () => {
 
 			expect(result[0].insertText).toBe("console.log('test')")
 		})
+
+		describe("partial typing support", () => {
+			it("should return remaining suggestion when user has partially typed the suggestion", () => {
+				// Set up a suggestion
+				const suggestions = new GhostSuggestionsState()
+				suggestions.setFillInAtCursor({
+					text: "console.log('Hello, World!');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions)
+
+				// Simulate user typing "cons" after the prefix
+				const partialDocument = new MockTextDocument(
+					vscode.Uri.file("/test.ts"),
+					"const x = 1cons\nconst y = 2",
+				)
+				const partialPosition = new vscode.Position(0, 15) // After "const x = 1cons"
+
+				const result = provider.provideInlineCompletionItems(
+					partialDocument,
+					partialPosition,
+					mockContext,
+					mockToken,
+				) as vscode.InlineCompletionItem[]
+
+				expect(result).toHaveLength(1)
+				// Should return the remaining part after "cons"
+				expect(result[0].insertText).toBe("ole.log('Hello, World!');")
+			})
+
+			it("should return full suggestion when user has typed nothing after prefix", () => {
+				const suggestions = new GhostSuggestionsState()
+				suggestions.setFillInAtCursor({
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions)
+
+				// User is at exact prefix position (no partial typing)
+				const result = provider.provideInlineCompletionItems(
+					mockDocument,
+					mockPosition,
+					mockContext,
+					mockToken,
+				) as vscode.InlineCompletionItem[]
+
+				expect(result).toHaveLength(1)
+				expect(result[0].insertText).toBe("console.log('test');")
+			})
+
+			it("should return empty when partially typed content does not match suggestion", () => {
+				const suggestions = new GhostSuggestionsState()
+				suggestions.setFillInAtCursor({
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions)
+
+				// User typed "xyz" which doesn't match the suggestion
+				const mismatchDocument = new MockTextDocument(
+					vscode.Uri.file("/test.ts"),
+					"const x = 1xyz\nconst y = 2",
+				)
+				const mismatchPosition = new vscode.Position(0, 14)
+
+				const result = provider.provideInlineCompletionItems(
+					mismatchDocument,
+					mismatchPosition,
+					mockContext,
+					mockToken,
+				)
+
+				expect(result).toEqual([])
+			})
+
+			it("should return empty string when user has typed entire suggestion", () => {
+				const suggestions = new GhostSuggestionsState()
+				suggestions.setFillInAtCursor({
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions)
+
+				// User has typed the entire suggestion - cursor is at the end of typed text
+				// Position 31 is right after the semicolon, before the newline
+				const completeDocument = new MockTextDocument(
+					vscode.Uri.file("/test.ts"),
+					"const x = 1console.log('test');\nconst y = 2",
+				)
+				const completePosition = new vscode.Position(0, 31) // After the semicolon, before newline
+
+				const result = provider.provideInlineCompletionItems(
+					completeDocument,
+					completePosition,
+					mockContext,
+					mockToken,
+				) as vscode.InlineCompletionItem[]
+
+				expect(result).toHaveLength(1)
+				// Should return empty string since everything is typed
+				expect(result[0].insertText).toBe("")
+			})
+
+			it("should not match when suffix has changed", () => {
+				const suggestions = new GhostSuggestionsState()
+				suggestions.setFillInAtCursor({
+					text: "console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions)
+
+				// User typed partial content but suffix changed
+				const changedSuffixDocument = new MockTextDocument(
+					vscode.Uri.file("/test.ts"),
+					"const x = 1cons\nconst y = 3",
+				)
+				const changedSuffixPosition = new vscode.Position(0, 15)
+
+				const result = provider.provideInlineCompletionItems(
+					changedSuffixDocument,
+					changedSuffixPosition,
+					mockContext,
+					mockToken,
+				)
+
+				expect(result).toEqual([])
+			})
+
+			it("should prefer exact match over partial match", () => {
+				// Add a suggestion that would match partially
+				const suggestions1 = new GhostSuggestionsState()
+				suggestions1.setFillInAtCursor({
+					text: "console.log('partial');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions1)
+
+				// Add a suggestion with exact match (more recent)
+				const suggestions2 = new GhostSuggestionsState()
+				suggestions2.setFillInAtCursor({
+					text: "exact match",
+					prefix: "const x = 1cons",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions2)
+
+				// User is at position that matches exact prefix of second suggestion
+				const document = new MockTextDocument(vscode.Uri.file("/test.ts"), "const x = 1cons\nconst y = 2")
+				const position = new vscode.Position(0, 15)
+
+				const result = provider.provideInlineCompletionItems(
+					document,
+					position,
+					mockContext,
+					mockToken,
+				) as vscode.InlineCompletionItem[]
+
+				expect(result).toHaveLength(1)
+				// Should return exact match (most recent), not partial
+				expect(result[0].insertText).toBe("exact match")
+			})
+
+			it("should handle multi-character partial typing", () => {
+				const suggestions = new GhostSuggestionsState()
+				suggestions.setFillInAtCursor({
+					text: "function test() { return 42; }",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions)
+
+				// User typed "function te"
+				const partialDocument = new MockTextDocument(
+					vscode.Uri.file("/test.ts"),
+					"const x = 1function te\nconst y = 2",
+				)
+				const partialPosition = new vscode.Position(0, 22)
+
+				const result = provider.provideInlineCompletionItems(
+					partialDocument,
+					partialPosition,
+					mockContext,
+					mockToken,
+				) as vscode.InlineCompletionItem[]
+
+				expect(result).toHaveLength(1)
+				expect(result[0].insertText).toBe("st() { return 42; }")
+			})
+
+			it("should handle case-sensitive partial matching", () => {
+				const suggestions = new GhostSuggestionsState()
+				suggestions.setFillInAtCursor({
+					text: "Console.log('test');",
+					prefix: "const x = 1",
+					suffix: "\nconst y = 2",
+				})
+				provider.updateSuggestions(suggestions)
+
+				// User typed "cons" (lowercase) but suggestion starts with "Console" (uppercase)
+				const partialDocument = new MockTextDocument(
+					vscode.Uri.file("/test.ts"),
+					"const x = 1cons\nconst y = 2",
+				)
+				const partialPosition = new vscode.Position(0, 15)
+
+				const result = provider.provideInlineCompletionItems(
+					partialDocument,
+					partialPosition,
+					mockContext,
+					mockToken,
+				)
+
+				// Should not match due to case difference
+				expect(result).toEqual([])
+			})
+		})
 	})
 
 	describe("updateSuggestions", () => {

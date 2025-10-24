@@ -54,12 +54,35 @@ export class GhostInlineCompletionProvider implements vscode.InlineCompletionIte
 			const suggestions = this.suggestionsHistory[i]
 			const fillInAtCursor = suggestions?.getFillInAtCursor()
 
-			if (fillInAtCursor && prefix === fillInAtCursor.prefix && suffix === fillInAtCursor.suffix) {
+			if (!fillInAtCursor) {
+				continue
+			}
+
+			// First, try exact prefix/suffix match
+			if (prefix === fillInAtCursor.prefix && suffix === fillInAtCursor.suffix) {
 				const item: vscode.InlineCompletionItem = {
 					insertText: fillInAtCursor.text,
 					range: new vscode.Range(position, position),
 				}
 				return [item]
+			}
+
+			// If no exact match, check for partial typing
+			// The user may have started typing the suggested text
+			if (prefix.startsWith(fillInAtCursor.prefix) && suffix === fillInAtCursor.suffix) {
+				// Extract what the user has typed between the original prefix and current position
+				const typedContent = prefix.substring(fillInAtCursor.prefix.length)
+
+				// Check if the typed content matches the beginning of the suggestion
+				if (fillInAtCursor.text.startsWith(typedContent)) {
+					// Return the remaining part of the suggestion (with already-typed portion removed)
+					const remainingText = fillInAtCursor.text.substring(typedContent.length)
+					const item: vscode.InlineCompletionItem = {
+						insertText: remainingText,
+						range: new vscode.Range(position, position),
+					}
+					return [item]
+				}
 			}
 		}
 
