@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from "jotai"
 import { messageResetCounterAtom, messageCutoffTimestampAtom } from "../atoms/ui.js"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 export function useTerminal(): void {
 	const width = useRef(process.stdout.columns)
@@ -8,7 +8,7 @@ export function useTerminal(): void {
 	const incrementResetCounter = useSetAtom(messageResetCounterAtom)
 	const messageCutoffTimestamp = useAtomValue(messageCutoffTimestampAtom)
 
-	const clearTerminal = () => {
+	const clearTerminal = useCallback(() => {
 		// Clear the terminal screen and reset cursor position
 		// \x1b[2J - Clear entire screen
 		// \x1b[3J - Clear scrollback buffer (needed for gnome-terminal)
@@ -17,13 +17,13 @@ export function useTerminal(): void {
 
 		// Increment reset counter to force Static component remount
 		incrementResetCounter((prev) => prev + 1)
-	}
+	}, [incrementResetCounter])
 
 	useEffect(() => {
 		if (messageCutoffTimestamp !== 0) {
 			clearTerminal()
 		}
-	}, [messageCutoffTimestamp])
+	}, [messageCutoffTimestamp, clearTerminal])
 
 	// Resize effect
 	useEffect(() => {

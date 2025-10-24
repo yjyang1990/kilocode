@@ -14,7 +14,6 @@ import { requestRouterModelsAtom } from "../atoms/actions.js"
 import { profileDataAtom, balanceDataAtom, profileLoadingAtom, balanceLoadingAtom } from "../atoms/profile.js"
 import { useWebviewMessage } from "./useWebviewMessage.js"
 import { getModelIdKey } from "../../constants/providers/models.js"
-import { useTerminal } from "./useTerminal.js"
 
 /**
  * Factory function type for creating CommandContext
