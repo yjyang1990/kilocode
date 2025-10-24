@@ -83,23 +83,23 @@ export function getAllowedJSONToolsForMode(
 	// Exclude apply_diff tools as they are handled specially below
 	const allowedTools: OpenAI.Chat.ChatCompletionTool[] = []
 
+	let isApplyDiffToolAllowedForMode = false
 	for (const nativeTool of nativeTools) {
 		const toolName = nativeTool.function.name
 
-		// Skip "apply_diff" for now, as we add it later based on specific conditions
-		if (toolName === "apply_diff") {
-			continue
-		}
-
 		// If the tool is in the allowed set, add it.
 		if (tools.has(toolName)) {
-			allowedTools.push(nativeTool)
+			if (toolName === "apply_diff") {
+				isApplyDiffToolAllowedForMode = true
+			} else {
+				allowedTools.push(nativeTool)
+			}
 		}
 	}
 
 	// Handle the "apply_diff" logic separately because the same tool has different
 	// implementations depending on whether multi-file diffs are enabled, but the same name is used.
-	if (diffEnabled) {
+	if (isApplyDiffToolAllowedForMode && diffEnabled) {
 		if (clineProviderState?.experiments.multiFileApplyDiff) {
 			allowedTools.push(apply_diff_multi_file)
 		} else {
