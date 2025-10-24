@@ -1,39 +1,35 @@
 import * as vscode from "vscode"
-import { GhostSuggestionsState } from "./GhostSuggestions"
+import { FillInAtCursorSuggestion, GhostSuggestionsState } from "./GhostSuggestions"
 import { extractPrefixSuffix } from "./types"
 
 const MAX_SUGGESTIONS_HISTORY = 20
 
 export class GhostInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
-	private suggestionsHistory: GhostSuggestionsState[] = []
+	private suggestionsHistory: FillInAtCursorSuggestion[] = []
 
-	public updateSuggestions(suggestions: GhostSuggestionsState | null): void {
-		if (suggestions == null) {
+	public updateSuggestions(suggestions: GhostSuggestionsState): void {
+		const fillInAtCursor = suggestions.getFillInAtCursor()
+
+		// Only store if we have a fill-in suggestion
+		if (!fillInAtCursor) {
 			return
 		}
 
-		const fillInAtCursor = suggestions.getFillInAtCursor()
-
 		// Check if this suggestion already exists in the history
-		if (fillInAtCursor) {
-			const isDuplicate = this.suggestionsHistory.some((existingSuggestion) => {
-				const existingFillIn = existingSuggestion.getFillInAtCursor()
-				return (
-					existingFillIn &&
-					existingFillIn.text === fillInAtCursor.text &&
-					existingFillIn.prefix === fillInAtCursor.prefix &&
-					existingFillIn.suffix === fillInAtCursor.suffix
-				)
-			})
+		const isDuplicate = this.suggestionsHistory.some(
+			(existing) =>
+				existing.text === fillInAtCursor.text &&
+				existing.prefix === fillInAtCursor.prefix &&
+				existing.suffix === fillInAtCursor.suffix,
+		)
 
-			// Skip adding if it's a duplicate
-			if (isDuplicate) {
-				return
-			}
+		// Skip adding if it's a duplicate
+		if (isDuplicate) {
+			return
 		}
 
 		// Add to the end of the array (most recent)
-		this.suggestionsHistory.push(suggestions)
+		this.suggestionsHistory.push(fillInAtCursor)
 
 		// Remove oldest if we exceed the limit
 		if (this.suggestionsHistory.length > MAX_SUGGESTIONS_HISTORY) {
@@ -51,12 +47,7 @@ export class GhostInlineCompletionProvider implements vscode.InlineCompletionIte
 
 		// Search from most recent to least recent
 		for (let i = this.suggestionsHistory.length - 1; i >= 0; i--) {
-			const suggestions = this.suggestionsHistory[i]
-			const fillInAtCursor = suggestions?.getFillInAtCursor()
-
-			if (!fillInAtCursor) {
-				continue
-			}
+			const fillInAtCursor = this.suggestionsHistory[i]
 
 			// First, try exact prefix/suffix match
 			if (prefix === fillInAtCursor.prefix && suffix === fillInAtCursor.suffix) {

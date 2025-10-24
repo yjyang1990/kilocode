@@ -434,7 +434,6 @@ export class GhostProvider {
 		TelemetryService.instance.captureEvent(TelemetryEventName.INLINE_ASSIST_REJECT_SUGGESTION, {
 			taskId: this.taskId,
 		})
-		this.inlineCompletionProvider.updateSuggestions(null)
 		this.suggestions.clear()
 
 		this.clearAutoTriggerTimer()
