@@ -57,24 +57,3 @@ export function parseDoubleEncodedParams(obj: any): any {
 	// Primitive types (number, boolean, etc.) return as-is
 	return obj
 }
-
-const knownWrapperPropertyNames = [
-	"arguments", // seen with qwen3-coder
-	"result", // seen with gemini-2.5-flash, haiku-4.5, sonnet-4.5
-]
-
-export function removeWrapperObject(toolName: string, parsedArgs: Record<string, unknown>, nestingLevel: number) {
-	const keys = Object.keys(parsedArgs)
-	if (keys.length === 1) {
-		const key = keys[0]
-		const value = parsedArgs[key]
-		if (knownWrapperPropertyNames.includes(key) && value && typeof value === "object") {
-			console.debug(
-				`Processing tool '${toolName}', assuming property '${key}' of type object (nesting level ${nestingLevel}) contains the actual arguments.`,
-				value,
-			)
-			return removeWrapperObject(toolName, value as Record<string, unknown>, nestingLevel + 1)
-		}
-	}
-	return parsedArgs
-}

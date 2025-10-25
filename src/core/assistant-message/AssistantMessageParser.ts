@@ -1,7 +1,7 @@
 import { type ToolName, toolNames } from "@roo-code/types"
 import { TextContent, ToolUse, ToolParamName, toolParamNames } from "../../shared/tools"
 import { AssistantMessageContent } from "./parseAssistantMessage"
-import { NativeToolCall, parseDoubleEncodedParams, removeWrapperObject } from "./kilocode/native-tool-call"
+import { NativeToolCall, parseDoubleEncodedParams } from "./kilocode/native-tool-call"
 import Anthropic from "@anthropic-ai/sdk" // kilocode_change
 
 /**
@@ -186,7 +186,7 @@ export class AssistantMessageParser {
 				const toolUse: ToolUse = {
 					type: "tool_use",
 					name: toolName as ToolName,
-					params: removeWrapperObject(toolName, parsedArgs, 0),
+					params: parsedArgs,
 					partial: false, // Now complete after accumulation
 					toolUseId: accumulatedCall.id,
 				}
