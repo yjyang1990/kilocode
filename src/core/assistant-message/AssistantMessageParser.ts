@@ -200,9 +200,9 @@ export class AssistantMessageParser {
 
 				yield {
 					type: "tool_use",
-					name: toolName,
-					id: accumulatedCall.id ?? "",
-					input: accumulatedCall.function?.arguments,
+					name: toolUse.name,
+					id: toolUse.toolUseId ?? "",
+					input: toolUse.params,
 				}
 			}
 		}
