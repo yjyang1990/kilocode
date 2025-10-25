@@ -254,9 +254,7 @@ export async function presentAssistantMessage(cline: Task) {
 				if (block.toolUseId) {
 					cline.userMessageContent.push({ type: "tool_result", tool_use_id: block.toolUseId, content: items })
 				} else {
-					for (const item of items) {
-						cline.userMessageContent.push(item)
-					}
+					cline.userMessageContent.push(...items)
 				}
 			}
 
