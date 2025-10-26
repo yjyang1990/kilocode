@@ -2432,9 +2432,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 					if (assistantMessage) {
 						assistantMessageContent.push({ type: "text", text: assistantMessage })
 					}
-					for (const toolUse of assistantToolUses) {
-						assistantMessageContent.push(toolUse)
-					}
+					assistantMessageContent.push(...assistantToolUses)
 					await this.addToApiConversationHistory({
 						role: "assistant",
 						content: assistantMessageContent,
