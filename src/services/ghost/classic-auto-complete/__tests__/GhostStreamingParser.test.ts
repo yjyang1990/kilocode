@@ -1,4 +1,4 @@
-import { GhostStreamingParser, findBestMatch } from "../GhostStreamingParser"
+import { parseGhostResponse, findBestMatch } from "../GhostStreamingParser"
 import * as vscode from "vscode"
 
 // Mock vscode module
@@ -12,14 +12,11 @@ vi.mock("vscode", () => ({
 }))
 
 describe("GhostStreamingParser", () => {
-	let parser: GhostStreamingParser
 	let mockDocument: vscode.TextDocument
 	let document: vscode.TextDocument
 	let range: vscode.Range | undefined
 
 	beforeEach(() => {
-		parser = new GhostStreamingParser()
-
 		// Create mock document
 		mockDocument = {
 			uri: { toString: () => "/test/file.ts", fsPath: "/test/file.ts" },
@@ -36,7 +33,7 @@ describe("GhostStreamingParser", () => {
 	describe("finishStream", () => {
 		it("should handle incomplete XML", () => {
 			const incompleteXml = "<change><search><![CDATA["
-			const result = parser.parseResponse(incompleteXml, "", "", document, range)
+			const result = parseGhostResponse(incompleteXml, "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(false)
 			expect(result.isComplete).toBe(false)
@@ -51,7 +48,7 @@ describe("GhostStreamingParser", () => {
 	return true;
 }]]></replace></change>`
 
-			const result = parser.parseResponse(completeChange, "", "", document, range)
+			const result = parseGhostResponse(completeChange, "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -65,7 +62,7 @@ describe("GhostStreamingParser", () => {
 	return true;
 }]]></replace></change>`
 
-			const result = parser.parseResponse(fullResponse, "", "", document, range)
+			const result = parseGhostResponse(fullResponse, "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -75,7 +72,7 @@ describe("GhostStreamingParser", () => {
 			const fullResponse = `<change><search><![CDATA[function test() {]]></search><replace><![CDATA[function test() {
 	// First change]]></replace></change><change><search><![CDATA[return true;]]></search><replace><![CDATA[return false; // Second change]]></replace></change>`
 
-			const result = parser.parseResponse(fullResponse, "", "", document, range)
+			const result = parseGhostResponse(fullResponse, "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(true)
 		})
@@ -88,7 +85,7 @@ describe("GhostStreamingParser", () => {
 	return true;
 }]]></replace></change>`
 
-			const result = parser.parseResponse(completeResponse, "", "", document, range)
+			const result = parseGhostResponse(completeResponse, "", "", document, range)
 
 			expect(result.isComplete).toBe(true)
 		})
@@ -99,7 +96,7 @@ describe("GhostStreamingParser", () => {
 }]]></search><replace><![CDATA[function test() {
 	// Added comment`
 
-			const result = parser.parseResponse(incompleteResponse, "", "", document, range)
+			const result = parseGhostResponse(incompleteResponse, "", "", document, range)
 
 			expect(result.isComplete).toBe(false)
 		})
@@ -133,7 +130,7 @@ function fibonacci(n: number): number {
 		return fibonacci(n - 1) + fibonacci(n - 2);
 }]]></replace></change>`
 
-			const result = parser.parseResponse(changeWithCursor, "", "", document, range)
+			const result = parseGhostResponse(changeWithCursor, "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -159,7 +156,7 @@ function fibonacci(n: number): number {
 		return fibonacci(n - 1) + fibonacci(n - 2);
 }]]></replace></change>`
 
-			const result = parser.parseResponse(changeWithCursor, "", "", document, range)
+			const result = parseGhostResponse(changeWithCursor, "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(true)
 			expect(result.suggestions.hasSuggestions()).toBe(true)
@@ -168,7 +165,7 @@ function fibonacci(n: number): number {
 		it("should handle malformed XML gracefully", () => {
 			const malformedXml = `<change><search><![CDATA[test]]><replace><![CDATA[replacement]]></replace></change>`
 
-			const result = parser.parseResponse(malformedXml, "", "", document, range)
+			const result = parseGhostResponse(malformedXml, "", "", document, range)
 
 			// Should not crash and should not produce suggestions
 			expect(result.hasNewSuggestions).toBe(false)
@@ -176,7 +173,7 @@ function fibonacci(n: number): number {
 		})
 
 		it("should handle empty response", () => {
-			const result = parser.parseResponse("", "", "", document, range)
+			const result = parseGhostResponse("", "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(false)
 			expect(result.isComplete).toBe(true) // Empty is considered complete
@@ -184,7 +181,7 @@ function fibonacci(n: number): number {
 		})
 
 		it("should handle whitespace-only response", () => {
-			const result = parser.parseResponse("   \n\t  ", "", "", document, range)
+			const result = parseGhostResponse("   \n\t  ", "", "", document, range)
 
 			expect(result.hasNewSuggestions).toBe(false)
 			expect(result.isComplete).toBe(true)
@@ -538,7 +535,7 @@ function fibonacci(n: number): number {
 			const change = `<change><search><![CDATA[test]]></search><replace><![CDATA[replacement]]></search><replace><![CDATA[replacement]]></replace></change>`
 
 			// This should throw or handle gracefully - expect it to throw
-			expect(() => parser.parseResponse(change, "", "", invalidDocument, range)).toThrow()
+			expect(() => parseGhostResponse(change, "", "", invalidDocument, range)).toThrow()
 		})
 	})
 
@@ -547,7 +544,7 @@ function fibonacci(n: number): number {
 			const largeChange = `<change><search><![CDATA[${"x".repeat(10000)}]]></search><replace><![CDATA[${"y".repeat(10000)}]]></replace></change>`
 
 			const startTime = performance.now()
-			const result = parser.parseResponse(largeChange, "", "", document, range)
+			const result = parseGhostResponse(largeChange, "", "", document, range)
 			const endTime = performance.now()
 
 			expect(endTime - startTime).toBeLessThan(100) // Should complete in under 100ms
@@ -558,7 +555,7 @@ function fibonacci(n: number): number {
 			const largeResponse = Array(1000).fill("x").join("")
 			const startTime = performance.now()
 
-			parser.parseResponse(largeResponse, "", "", document, range)
+			parseGhostResponse(largeResponse, "", "", document, range)
 			const endTime = performance.now()
 
 			expect(endTime - startTime).toBeLessThan(200) // Should complete in under 200ms
@@ -578,7 +575,7 @@ function fibonacci(n: number): number {
 			const prefix = 'const prefix = "start";\n'
 			const suffix = '\nconst suffix = "end";'
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDocWithPrefix, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDocWithPrefix, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(true)
 			// Check that FIM was set
@@ -602,7 +599,7 @@ function fibonacci(n: number): number {
 			const prefix = "WRONG_PREFIX"
 			const suffix = '\nconst suffix = "end";'
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 			// Check that FIM was NOT set
@@ -622,7 +619,7 @@ function fibonacci(n: number): number {
 			const prefix = 'const prefix = "start";\n'
 			const suffix = "WRONG_SUFFIX"
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 			// Check that FIM was NOT set
@@ -642,7 +639,7 @@ function fibonacci(n: number): number {
 			const prefix = "WRONG_PREFIX"
 			const suffix = "WRONG_SUFFIX"
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 			// Check that FIM was NOT set
@@ -662,7 +659,7 @@ function fibonacci(n: number): number {
 			const prefix = ""
 			const suffix = ""
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(true)
 			// With empty prefix and suffix, the entire content should be FIM
@@ -686,7 +683,7 @@ function fibonacci(n: number): number {
 			const prefix = "function test() {\n"
 			const suffix = "\n}"
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(true)
 			const fimContent = result.suggestions.getFillInAtCursor()
@@ -710,7 +707,7 @@ function fibonacci(n: number): number {
 			const prefix = "const x = 1;"
 			const suffix = ""
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			const fimContent = result.suggestions.getFillInAtCursor()
 			// When no changes are applied, FIM is set to empty string (the entire unchanged document matches prefix+suffix)
@@ -733,7 +730,7 @@ function fibonacci(n: number): number {
 			const prefix = "class Test {\n\tconstructor() {\n"
 			const suffix = "\n\t}\n}"
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(true)
 			const fimContent = result.suggestions.getFillInAtCursor()
@@ -756,7 +753,7 @@ function fibonacci(n: number): number {
 			const prefix = "const regex = /test/g;\n"
 			const suffix = '\nconst result = "match";'
 
-			const result = parser.parseResponse(change, prefix, suffix, mockDoc, undefined)
+			const result = parseGhostResponse(change, prefix, suffix, mockDoc, undefined)
 
 			expect(result.suggestions.hasSuggestions()).toBe(true)
 			const fimContent = result.suggestions.getFillInAtCursor()

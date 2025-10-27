@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import { MockWorkspace } from "./MockWorkspace"
 import * as vscode from "vscode"
-import { GhostStreamingParser } from "../classic-auto-complete/GhostStreamingParser"
+import { parseGhostResponse } from "../classic-auto-complete/GhostStreamingParser"
 import { GhostSuggestionContext } from "../types"
 
 vi.mock("vscode", () => ({
@@ -65,11 +65,9 @@ vi.mock("vscode", () => ({
 
 describe("GhostProvider", () => {
 	let mockWorkspace: MockWorkspace
-	let streamingParser: GhostStreamingParser
 
 	beforeEach(() => {
 		vi.clearAllMocks()
-		streamingParser = new GhostStreamingParser()
 		mockWorkspace = new MockWorkspace()
 
 		vi.mocked(vscode.workspace.openTextDocument).mockImplementation(async (uri: any) => {
@@ -107,7 +105,7 @@ describe("GhostProvider", () => {
 			const { context } = await setupTestDocument("empty.js", initialContent)
 
 			// Test empty response
-			const result = streamingParser.parseResponse("", "", "", context.document, context.range)
+			const result = parseGhostResponse("", "", "", context.document, context.range)
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 		})
 
@@ -117,7 +115,7 @@ describe("GhostProvider", () => {
 
 			// Test invalid XML format
 			const invalidXML = "This is not a valid XML format"
-			const result = streamingParser.parseResponse(invalidXML, "", "", context.document, context.range)
+			const result = parseGhostResponse(invalidXML, "", "", context.document, context.range)
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 		})
 
@@ -135,7 +133,7 @@ describe("GhostProvider", () => {
 			const xmlResponse = `<change><search><![CDATA[console.log('test');]]></search><replace><![CDATA[// Added comment
 console.log('test');]]></replace></change>`
 
-			const result = streamingParser.parseResponse(xmlResponse, "", "", context.document, context.range)
+			const result = parseGhostResponse(xmlResponse, "", "", context.document, context.range)
 			// Should work with the XML format
 			expect(result.suggestions.hasSuggestions()).toBe(true)
 		})
