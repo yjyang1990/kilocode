@@ -107,8 +107,7 @@ describe("GhostProvider", () => {
 			const { context } = await setupTestDocument("empty.js", initialContent)
 
 			// Test empty response
-			streamingParser.initialize(context)
-			const result = streamingParser.parseResponse("", "", "")
+			const result = streamingParser.parseResponse("", "", "", context.document, context.range)
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 		})
 
@@ -118,8 +117,7 @@ describe("GhostProvider", () => {
 
 			// Test invalid XML format
 			const invalidXML = "This is not a valid XML format"
-			streamingParser.initialize(context)
-			const result = streamingParser.parseResponse(invalidXML, "", "")
+			const result = streamingParser.parseResponse(invalidXML, "", "", context.document, context.range)
 			expect(result.suggestions.hasSuggestions()).toBe(false)
 		})
 
@@ -137,8 +135,7 @@ describe("GhostProvider", () => {
 			const xmlResponse = `<change><search><![CDATA[console.log('test');]]></search><replace><![CDATA[// Added comment
 console.log('test');]]></replace></change>`
 
-			streamingParser.initialize(context)
-			const result = streamingParser.parseResponse(xmlResponse, "", "")
+			const result = streamingParser.parseResponse(xmlResponse, "", "", context.document, context.range)
 			// Should work with the XML format
 			expect(result.suggestions.hasSuggestions()).toBe(true)
 		})

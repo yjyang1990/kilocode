@@ -313,9 +313,6 @@ export class GhostProvider {
 			await this.load()
 		}
 
-		// Initialize the streaming parser
-		this.streamingParser.initialize(context)
-
 		let hasShownFirstSuggestion = false
 		let cost = 0
 		let inputTokens = 0
@@ -368,7 +365,13 @@ export class GhostProvider {
 			}
 
 			// Finish the streaming parser to apply sanitization if needed
-			const finalParseResult = this.streamingParser.parseResponse(response, prefix, suffix)
+			const finalParseResult = this.streamingParser.parseResponse(
+				response,
+				prefix,
+				suffix,
+				context.document,
+				context.range,
+			)
 
 			if (finalParseResult.suggestions.getFillInAtCursor()) {
 				console.info("Final suggestion:", finalParseResult.suggestions.getFillInAtCursor())

@@ -35,8 +35,6 @@ describe("GhostStreamingParser - XML Sanitization", () => {
 			document: mockDocument,
 			range: { start: { line: 0, character: 17 }, end: { line: 0, character: 17 } } as vscode.Range,
 		}
-
-		parser.initialize(mockContext)
 	})
 
 	describe("sanitizeXMLConservative", () => {

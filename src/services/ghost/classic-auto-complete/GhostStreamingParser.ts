@@ -1,5 +1,4 @@
 import * as vscode from "vscode"
-import { GhostSuggestionContext } from "../types"
 import { GhostSuggestionsState } from "./GhostSuggestions"
 import { CURSOR_MARKER } from "./ghostConstants"
 
@@ -203,16 +202,7 @@ function skipChars(text: string, startPos: number, predicate: (char: string) => 
  * and emit suggestions as soon as complete <change> blocks are available
  */
 export class GhostStreamingParser {
-	private context: GhostSuggestionContext | null = null
-
 	constructor() {}
-
-	/**
-	 * Initialize the parser with context
-	 */
-	public initialize(context: GhostSuggestionContext): void {
-		this.context = context
-	}
 
 	/**
 	 * Sanitize response if needed and return sanitized response with completion status
@@ -232,16 +222,19 @@ export class GhostStreamingParser {
 	/**
 	 * Mark the stream as finished and process any remaining content with sanitization
 	 */
-	public parseResponse(fullResponse: string, prefix: string, suffix: string): StreamingParseResult {
+	public parseResponse(
+		fullResponse: string,
+		prefix: string,
+		suffix: string,
+		document: vscode.TextDocument,
+		range: vscode.Range | undefined,
+	): StreamingParseResult {
 		const { sanitizedResponse, isComplete } = this.sanitizeResponseIfNeeded(fullResponse)
 
 		const newChanges = this.extractCompletedChanges(sanitizedResponse)
 		let hasNewSuggestions = newChanges.length > 0
 
 		// Generate suggestions from all completed changes
-		const document = this.context!.document
-		const range = this.context!.range
-
 		const modifiedContent = this.generateModifiedContent(newChanges, document, range)
 
 		const modifiedContent_has_prefix_and_suffix =

@@ -96,8 +96,7 @@ export class StrategyTester {
 				range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)) as any,
 			}
 
-			parser.initialize(dummyContext)
-			const result = parser.parseResponse(xmlResponse, "", "")
+			const result = parser.parseResponse(xmlResponse, "", "", dummyContext.document, dummyContext.range)
 
 			// Check if we have any suggestions
 			if (!result.suggestions.hasSuggestions()) {
