@@ -3,6 +3,7 @@
 import type { ModelInfo } from "../model.js"
 
 export type SyntheticModelId =
+	| "hf:MiniMaxAI/MiniMax-M2"
 	| "hf:zai-org/GLM-4.6"
 	| "hf:zai-org/GLM-4.5"
 	| "hf:openai/gpt-oss-120b"
