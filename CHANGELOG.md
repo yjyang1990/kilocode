@@ -1,8 +1,6 @@
 # kilo-code
 
-## 4.111.1
-
-### Patch Changes
+## [v4.111.1]
 
 - [#3337](https://github.com/Kilo-Org/kilocode/pull/3337) [`85a4447`](https://github.com/Kilo-Org/kilocode/commit/85a4447da76fc51697fb098a9cdda1d2064f7d1b) Thanks [@mcowger](https://github.com/mcowger)! - Added MiniMax M2 to Synthetic Provider
 
