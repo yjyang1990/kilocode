@@ -1,6 +1,6 @@
 import * as vscode from "vscode"
 import { describe, it, expect } from "vitest"
-import { AutoTriggerStrategy } from "../strategies/AutoTriggerStrategy"
+import { AutoTriggerStrategy } from "../classic-auto-complete/AutoTriggerStrategy"
 import { ApiHandler, buildApiHandler } from "../../../api"
 import { GhostModel } from "../GhostModel"
 import { allowNetConnect } from "../../../vitest.setup"

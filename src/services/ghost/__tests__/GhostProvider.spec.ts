@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import { MockWorkspace } from "./MockWorkspace"
 import * as vscode from "vscode"
-import { GhostStreamingParser } from "../GhostStreamingParser"
+import { GhostStreamingParser } from "../classic-auto-complete/GhostStreamingParser"
 import { GhostSuggestionContext } from "../types"
 
 vi.mock("vscode", () => ({
