@@ -3,7 +3,7 @@ import { AutoTriggerStrategy } from "../services/ghost/classic-auto-complete/Aut
 import { GhostSuggestionContext, AutocompleteInput } from "../services/ghost/types.js"
 import { MockTextDocument } from "../services/mocking/MockTextDocument.js"
 import { CURSOR_MARKER } from "../services/ghost/classic-auto-complete/ghostConstants.js"
-import { GhostStreamingParser } from "../services/ghost/classic-auto-complete/GhostStreamingParser.js"
+import { parseGhostResponse } from "../services/ghost/classic-auto-complete/GhostStreamingParser.js"
 import * as vscode from "vscode"
 import crypto from "crypto"
 
@@ -88,7 +88,6 @@ export class StrategyTester {
 
 	parseCompletion(originalContent: string, xmlResponse: string): string | null {
 		try {
-			const parser = new GhostStreamingParser()
 			const uri = vscode.Uri.parse("file:///test.js")
 
 			const dummyContext: GhostSuggestionContext = {
@@ -96,8 +95,7 @@ export class StrategyTester {
 				range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)) as any,
 			}
 
-			parser.initialize(dummyContext)
-			const result = parser.parseResponse(xmlResponse, "", "")
+			const result = parseGhostResponse(xmlResponse, "", "", dummyContext.document, dummyContext.range)
 
 			// Check if we have any suggestions
 			if (!result.suggestions.hasSuggestions()) {
